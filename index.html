@@ -10,8 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Estilos (ruta absoluta) -->
-    <link rel="stylesheet" href="/ABRAHAM-HERNANDEZ/css/styles.css">
+    <!-- Estilos (ruta relativa) -->
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
@@ -35,7 +35,7 @@
                     <p class="hero-description">Desarrollador Web & Software apasionado por crear soluciones innovadoras y seguras.</p>
                     <div class="hero-buttons">
                         <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" class="btn btn-primary" target="_blank" rel="noopener">ITSA SEGURITY <i class="fas fa-arrow-right"></i></a>
-                        <a href="/ABRAHAM-HERNANDEZ/cv.pdf" class="btn btn-outline" download>Descargar CV <i class="fas fa-download"></i></a>
+                        <a href="cv.pdf" class="btn btn-outline" download>Descargar CV <i class="fas fa-download"></i></a>
                     </div>
                     <div class="hero-social">
                         <a href="https://wa.me/50589871374" target="_blank" rel="noopener" class="social-icon"><i class="fab fa-whatsapp"></i></a>
@@ -44,7 +44,7 @@
                     </div>
                 </div>
                 <div class="hero-image">
-                    <img src="/ABRAHAM-HERNANDEZ/profile.jpg" alt="Abraham Hernández" class="profile-photo">
+                    <img src="profile.jpg" alt="Abraham Hernández" class="profile-photo">
                 </div>
             </div>
         </section>
@@ -76,7 +76,7 @@
             </div>
         </section>
 
-        <!-- HABILIDADES -->
+        <!-- HABILIDADES (actualizadas con SQL y C#) -->
         <section class="skills" id="skills">
             <div class="container">
                 <h2 class="section-title">Habilidades técnicas</h2>
@@ -107,21 +107,31 @@
                         <div class="skill-bar"><div class="skill-progress" style="width: 80%;"></div></div>
                     </div>
                     <div class="skill-item">
-                        <i class="fas fa-database"></i>
+                        <i class="fab fa-python"></i> <!-- Python -->
                         <span>Python</span>
                         <div class="skill-bar"><div class="skill-progress" style="width: 75%;"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-database"></i> <!-- SQL -->
+                        <span>SQL</span>
+                        <div class="skill-bar"><div class="skill-progress" style="width: 80%;"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fab fa-microsoft"></i> <!-- C# (usamos icono de Microsoft) -->
+                        <span>C#</span>
+                        <div class="skill-bar"><div class="skill-progress" style="width: 70%;"></div></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- PROYECTOS -->
+        <!-- PROYECTOS (con imágenes reales de placeholder) -->
         <section class="projects" id="projects">
             <div class="container">
                 <h2 class="section-title">Proyectos destacados</h2>
                 <div class="projects-grid">
                     <div class="project-card">
-                        <div class="project-img" style="background-image: url('https://via.placeholder.com/600x400');"></div>
+                        <div class="project-img" style="background-image: url('https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80');"></div>
                         <div class="project-info">
                             <h3>Plataforma de seguridad</h3>
                             <p>Sistema de monitoreo en tiempo real para ITSA SEGURITY.</p>
@@ -132,7 +142,7 @@
                         </div>
                     </div>
                     <div class="project-card">
-                        <div class="project-img" style="background-image: url('https://via.placeholder.com/600x400');"></div>
+                        <div class="project-img" style="background-image: url('https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80');"></div>
                         <div class="project-info">
                             <h3>E-commerce tech</h3>
                             <p>Tienda virtual con carrito de compras y pasarela de pagos.</p>
@@ -143,7 +153,7 @@
                         </div>
                     </div>
                     <div class="project-card">
-                        <div class="project-img" style="background-image: url('https://via.placeholder.com/600x400');"></div>
+                        <div class="project-img" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80');"></div>
                         <div class="project-info">
                             <h3>Dashboard analítico</h3>
                             <p>Visualización de datos con gráficos interactivos.</p>
@@ -198,7 +208,7 @@
                         <p><i class="fas fa-phone-alt"></i> <a href="https://wa.me/50589871374">+505 8987 1374</a></p>
                         <p><i class="fab fa-github"></i> <a href="https://github.com/jhernandez30-cpu" target="_blank">github.com/jhernandez30-cpu</a></p>
                         <div class="linkedin-badge-container">
-                            <!-- Badge de LinkedIn proporcionado -->
+                            <!-- Badge de LinkedIn -->
                             <div class="badge-base LI-profile-badge" data-locale="es_ES" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="josue-abraham-hernandez-gonzalez-224a9a2a1" data-version="v1">
                                 <a class="badge-base__link LI-simple-link" href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1?trk=profile-badge">Abraham Hernández</a>
                             </div>
@@ -231,6 +241,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
-    <script src="/ABRAHAM-HERNANDEZ/js/script.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
