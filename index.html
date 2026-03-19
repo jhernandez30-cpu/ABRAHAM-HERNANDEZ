@@ -17,6 +17,52 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <!-- Particles.js -->
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <style>
+    /* Estilo adicional para los botones "Explorar" tipo imagen */
+    .explorar-btn {
+      display: inline-block;
+      margin-top: 15px;
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .explorar-btn i {
+      transition: transform 0.3s ease;
+    }
+    .explorar-btn:hover i {
+      transform: translateX(5px);
+    }
+    /* Botón de ITSA debajo de sobre mí */
+    .cta-empresa {
+      text-align: center;
+      margin: 40px 0 20px;
+    }
+    .cta-empresa .btn {
+      font-size: 1.2rem;
+      padding: 16px 40px;
+    }
+    /* Ajuste para que las tarjetas de proyectos se vean como la imagen */
+    .project-card {
+      text-align: center;
+      padding: 30px 20px;
+    }
+    .project-card .project-img {
+      background: transparent;
+      height: auto;
+      font-size: 3.5rem;
+      margin-bottom: 15px;
+      color: var(--accent);
+    }
+    .project-card h3 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+    .project-card p {
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
   <!-- Cursor personalizado -->
@@ -25,7 +71,7 @@
   <!-- Partículas de fondo -->
   <div id="particles-js"></div>
 
-  <!-- HERO SECTION (AQUÍ ESTÁN LOS BOTONES) -->
+  <!-- HERO SECTION -->
   <section id="hero">
     <div class="container hero-content">
       <div class="hero-text">
@@ -39,11 +85,8 @@
         <p style="margin-bottom: 30px; color: var(--text-secondary); font-size: 1.2rem;">
           +5 años creando soluciones web y software de alto impacto.
         </p>
-        <!-- BOTONES SOLICITADOS -->
         <div class="hero-buttons">
-          <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-primary">
-            <i class="fas fa-shield-alt"></i> ITSA SEGURITY
-          </a>
+          <!-- Botón de descarga de CV (se mantiene en el hero) -->
           <a href="cv.pdf" download class="btn btn-outline">
             <i class="fas fa-download"></i> Descargar CV
           </a>
@@ -80,12 +123,19 @@
     </div>
   </section>
 
+  <!-- BOTÓN ITSA SEGURITY (debajo de sobre mí) -->
+  <div class="container cta-empresa">
+    <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-primary">
+      <i class="fas fa-shield-alt"></i> ITSA SEGURITY
+    </a>
+  </div>
+
   <!-- HABILIDADES TÉCNICAS (completas) -->
   <section id="skills">
     <div class="container">
       <h2>Habilidades técnicas</h2>
       <div class="skills-grid">
-        <!-- Habilidades originales + nuevas -->
+        <!-- Habilidades -->
         <div class="skill-card">
           <div class="skill-icon"><i class="fab fa-html5"></i></div>
           <h3>HTML5 & CSS3</h3>
@@ -130,73 +180,67 @@
     </div>
   </section>
 
-  <!-- PROYECTOS -->
+  <!-- PROYECTOS DESTACADOS (estilo imagen) -->
   <section id="projects">
     <div class="container">
       <h2>Proyectos destacados</h2>
       <div class="projects-grid">
-        <div class="project-card">
+        <div class="project-card glass-card">
           <div class="project-img"><i class="fas fa-lock"></i></div>
-          <div class="project-info">
-            <h3>ITSA Segurity</h3>
-            <p>Plataforma de ciberseguridad con monitoreo en tiempo real.</p>
-            <div class="project-links">
-              <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank"><i class="fas fa-external-link-alt"></i> Demo</a>
-              <a href="#"><i class="fab fa-github"></i> Código</a>
-            </div>
-          </div>
+          <h3>ITSA Segurity</h3>
+          <p>Plataforma de ciberseguridad con monitoreo en tiempo real.</p>
+          <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="explorar-btn">
+            Explorar <i class="fas fa-arrow-right"></i>
+          </a>
         </div>
-        <div class="project-card">
+        <div class="project-card glass-card">
           <div class="project-img"><i class="fas fa-chart-line"></i></div>
-          <div class="project-info">
-            <h3>Dashboard Analytics</h3>
-            <p>Visualización de datos interactiva con D3.js.</p>
-            <div class="project-links">
-              <a href="#"><i class="fas fa-external-link-alt"></i> Demo</a>
-              <a href="#"><i class="fab fa-github"></i> Código</a>
-            </div>
-          </div>
+          <h3>Dashboard Analytics</h3>
+          <p>Visualización de datos interactiva con D3.js.</p>
+          <a href="#" class="explorar-btn">
+            Explorar <i class="fas fa-arrow-right"></i>
+          </a>
         </div>
-        <div class="project-card">
+        <div class="project-card glass-card">
           <div class="project-img"><i class="fas fa-robot"></i></div>
-          <div class="project-info">
-            <h3>AI Chatbot</h3>
-            <p>Asistente virtual con procesamiento de lenguaje natural.</p>
-            <div class="project-links">
-              <a href="#"><i class="fas fa-external-link-alt"></i> Demo</a>
-              <a href="#"><i class="fab fa-github"></i> Código</a>
-            </div>
-          </div>
+          <h3>AI Chatbot</h3>
+          <p>Asistente virtual con procesamiento de lenguaje natural.</p>
+          <a href="#" class="explorar-btn">
+            Explorar <i class="fas fa-arrow-right"></i>
+          </a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- EXPERIENCIA / SERVICIOS -->
+  <!-- EXPERIENCIA / SERVICIOS (también pueden tener estilo similar si quieres) -->
   <section id="experience">
     <div class="container">
       <h2>Servicios</h2>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-        <div class="glass-card" style="padding: 30px;">
+        <div class="glass-card" style="padding: 30px; text-align: center;">
           <i class="fas fa-laptop-code" style="font-size: 2.5rem; color: var(--accent);"></i>
           <h3 style="margin: 15px 0;">Desarrollo Web</h3>
           <p>Creación de sitios web modernos, rápidos y responsivos.</p>
+          <a href="#" class="explorar-btn">Explorar <i class="fas fa-arrow-right"></i></a>
         </div>
-        <div class="glass-card" style="padding: 30px;">
+        <div class="glass-card" style="padding: 30px; text-align: center;">
           <i class="fas fa-mobile-alt" style="font-size: 2.5rem; color: var(--accent);"></i>
           <h3 style="margin: 15px 0;">Apps Móviles</h3>
           <p>Aplicaciones nativas e híbridas para iOS y Android.</p>
+          <a href="#" class="explorar-btn">Explorar <i class="fas fa-arrow-right"></i></a>
         </div>
-        <div class="glass-card" style="padding: 30px;">
+        <div class="glass-card" style="padding: 30px; text-align: center;">
           <i class="fas fa-cloud" style="font-size: 2.5rem; color: var(--accent);"></i>
           <h3 style="margin: 15px 0;">Cloud & DevOps</h3>
           <p>Despliegue y escalado en AWS, Azure y Google Cloud.</p>
+          <a href="#" class="explorar-btn">Explorar <i class="fas fa-arrow-right"></i></a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CONTACTO (SIN BADGE DE LINKEDIN) -->
+  <!-- CONTACTO -->
   <section id="contact">
     <div class="container">
       <h2>Contacto</h2>
@@ -221,7 +265,6 @@
             <p><i class="fab fa-whatsapp" style="color: var(--accent);"></i> <a href="https://wa.me/50589871374">+505 8987 1374</a></p>
             <p><i class="fab fa-github" style="color: var(--accent);"></i> <a href="https://github.com/jhernandez30-cpu">@jhernandez30-cpu</a></p>
             <p><i class="fab fa-linkedin" style="color: var(--accent);"></i> <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank">LinkedIn: Abraham Hernández</a></p>
-            <!-- Badge de LinkedIn eliminado para evitar errores -->
           </div>
         </div>
       </div>
@@ -238,6 +281,5 @@
   <script src="js/animation.js"></script>
   <script src="js/particles.js"></script>
   <script src="js/script.js"></script>
-  <!-- Script de LinkedIn eliminado -->
 </body>
 </html>
