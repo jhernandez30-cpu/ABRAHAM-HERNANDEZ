@@ -142,20 +142,22 @@ gsap.from('.skill-item', {
     ease: 'back.out(1.2)'
 });
 
-// Skills progress bars animation
+// Skills progress bars animation (optimizada con fromTo)
 gsap.utils.toArray('.skill-progress').forEach(bar => {
-    const width = bar.style.width; // guardamos el ancho objetivo
-    bar.style.width = '0%'; // reset para animar
-    gsap.to(bar, {
-        scrollTrigger: {
-            trigger: bar,
-            start: 'top 90%',
-            toggleActions: 'play none none reverse'
-        },
-        width: width,
-        duration: 1.5,
-        ease: 'power2.inOut'
-    });
+    const targetWidth = bar.style.width; // "95%", "90%", etc.
+    gsap.fromTo(bar, 
+        { width: '0%' },
+        {
+            scrollTrigger: {
+                trigger: bar,
+                start: 'top 90%',
+                toggleActions: 'play none none reverse'
+            },
+            width: targetWidth,
+            duration: 1.5,
+            ease: 'power2.inOut'
+        }
+    );
 });
 
 // Projects stagger
@@ -196,7 +198,7 @@ gsap.from('.contact-content', {
     ease: 'power2.out'
 });
 
-// Counters animation
+// Counters animation (con ScrollTrigger)
 const counters = document.querySelectorAll('.stat-number');
 counters.forEach(counter => {
     const updateCount = () => {
@@ -217,7 +219,9 @@ counters.forEach(counter => {
     });
 });
 
-// Smooth scroll for internal links (opcional)
+// (Opcional) Smooth scroll interno - Se ha eliminado porque requiere plugin ScrollToPlugin.
+// Si deseas mantenerlo, debes incluir ScrollToPlugin.min.js y descomentar el siguiente código:
+/*
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
         e.preventDefault();
@@ -227,3 +231,4 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
+*/
