@@ -7,11 +7,11 @@
   <!-- Fuentes e iconos -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- CSS -->
-  <link rel="stylesheet" href="css/styles.css">
+  <!-- CSS (rutas relativas correctas) -->
   <link rel="stylesheet" href="css/hero.css">
-  <link rel="stylesheet" href="css/skills.css">
   <link rel="stylesheet" href="css/projects.css">
+  <link rel="stylesheet" href="css/skills.css">
+  <link rel="stylesheet" href="css/styles.css">
   <!-- GSAP y ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -79,29 +79,30 @@
     </div>
   </section>
 
-  <!-- HABILIDADES -->
+  <!-- HABILIDADES (con nuevas habilidades) -->
   <section id="skills">
     <div class="container">
       <h2>Habilidades técnicas</h2>
       <div class="skills-grid">
+        <!-- HABILIDADES TECNICAS -->
         <div class="skill-card">
-          <div class="skill-icon"><i class="fab fa-html5"></i></div>
-          <h3>HTML5 & CSS3</h3>
-          <div class="skill-bar"><div class="skill-progress" data-width="90"></div></div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-icon"><i class="fab fa-js"></i></div>
-          <h3>JavaScript / ES6+</h3>
-          <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-icon"><i class="fab fa-react"></i></div>
-          <h3>React & Next.js</h3>
+          <div class="skill-icon"><i class="fab fa-microsoft"></i></div>
+          <h3>C#</h3>
           <div class="skill-bar"><div class="skill-progress" data-width="80"></div></div>
         </div>
         <div class="skill-card">
-          <div class="skill-icon"><i class="fab fa-node"></i></div>
-          <h3>Node.js / Python</h3>
+          <div class="skill-icon"><i class="fas fa-database"></i></div>
+          <h3>SQL</h3>
+          <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fab fa-python"></i></div>
+          <h3>Python</h3>
+          <div class="skill-bar"><div class="skill-progress" data-width="90"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fas fa-chart-pie"></i></div>
+          <h3>Power BI</h3>
           <div class="skill-bar"><div class="skill-progress" data-width="75"></div></div>
         </div>
       </div>
@@ -198,7 +199,7 @@
             <h3 style="margin-bottom: 20px;">Redes y contacto directo</h3>
             <p><i class="fab fa-whatsapp" style="color: var(--accent);"></i> <a href="https://wa.me/50589871374">+505 8987 1374</a></p>
             <p><i class="fab fa-github" style="color: var(--accent);"></i> <a href="https://github.com/jhernandez30-cpu">@jhernandez30-cpu</a></p>
-            <div style="margin: 30px 0;">
+            <div style="margin: 30px 0; min-height: 250px;">
               <!-- Badge de LinkedIn proporcionado -->
               <div class="badge-base LI-profile-badge" data-locale="es_ES" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="josue-abraham-hernandez-gonzalez-224a9a2a1" data-version="v1">
                 <a class="badge-base__link LI-simple-link" href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1?trk=profile-badge">Abraham Hernández</a>
@@ -217,10 +218,10 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/particles.js"></script>
   <script src="js/animation.js"></script>
+  <script src="js/particles.js"></script>
   <script src="js/script.js"></script>
-  <!-- LinkedIn badge script -->
+  <!-- LinkedIn badge script (cargado al final) -->
   <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
 </body>
 </html>
