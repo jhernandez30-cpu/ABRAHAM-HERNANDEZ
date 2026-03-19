@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ease: 'power3.out'
   });
 
-  // ScrollTrigger para secciones
+  // ScrollTrigger para títulos de secciones (excepto hero)
   gsap.utils.toArray('section:not(#hero)').forEach(section => {
     gsap.from(section.querySelector('h2'), {
       scrollTrigger: {
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Skills bars animation
+  // Animación de barras de progreso en habilidades
   gsap.utils.toArray('.skill-progress').forEach(bar => {
     const width = bar.dataset.width || '0';
     gsap.to(bar, {
@@ -62,10 +62,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Proyectos stagger
-  gsap.from('.project-card', {
+  // Animación de contadores en estadísticas
+  const stats = document.querySelectorAll('.stat-number');
+  stats.forEach(stat => {
+    const target = parseInt(stat.getAttribute('data-target'));
+    gsap.to(stat, {
+      scrollTrigger: {
+        trigger: stat,
+        start: 'top 80%',
+      },
+      duration: 2,
+      innerText: target,
+      snap: { innerText: 1 },
+      ease: 'power2.out'
+    });
+  });
+
+  // Animación de entrada para tarjetas de servicios
+  gsap.from('.glass-card', {
     scrollTrigger: {
-      trigger: '#projects',
+      trigger: '#experience',
       start: 'top 80%',
     },
     y: 50,
