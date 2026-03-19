@@ -1,248 +1,226 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abraham Hernández | Desarrollador Web & Software</title>
-    <!-- Base URL: todas las rutas relativas partirán de aquí -->
-    <base href="/ABRAHAM-HERNANDEZ/">
-    <!-- Fuentes -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Estilos -->
-    <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abraham Hernández | Web & Software Developer</title>
+  <!-- Fuentes e iconos -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/skills.css">
+  <link rel="stylesheet" href="css/projects.css">
+  <!-- GSAP y ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Particles.js -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </head>
 <body>
+  <!-- Cursor personalizado -->
+  <div class="custom-cursor"></div>
 
-    <!-- Preloader -->
-    <div class="preloader" id="preloader">
-        <div class="loader"></div>
+  <!-- Partículas de fondo -->
+  <div id="particles-js"></div>
+
+  <!-- HERO SECTION -->
+  <section id="hero">
+    <div class="container hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          <span class="highlight">Abraham Hernández</span><br>
+          Desarrollador <span class="typed"></span>
+        </h1>
+        <div class="dynamic-text">
+          <span class="typed-text"></span><span class="cursor">&nbsp;</span>
+        </div>
+        <p style="margin-bottom: 30px; color: var(--text-secondary); font-size: 1.2rem;">
+          +5 años creando soluciones web y software de alto impacto.
+        </p>
+        <div class="hero-buttons">
+          <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-primary">
+            <i class="fas fa-shield-alt"></i> ITSA SEGURITY
+          </a>
+          <a href="cv.pdf" download class="btn btn-outline">
+            <i class="fas fa-download"></i> Descargar CV
+          </a>
+        </div>
+        <!-- Redes sociales rápidas -->
+        <div style="margin-top: 30px; display: flex; gap: 20px;">
+          <a href="https://wa.me/50589871374" target="_blank" style="color: var(--accent); font-size: 1.8rem;"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://github.com/jhernandez30-cpu" target="_blank" style="color: var(--accent); font-size: 1.8rem;"><i class="fab fa-github"></i></a>
+          <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" style="color: var(--accent); font-size: 1.8rem;"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="profile.jpg" alt="Abraham Hernández" class="profile-img">
+      </div>
     </div>
+  </section>
 
-    <!-- Canvas para partículas (fondo hero) -->
-    <canvas id="particles-canvas"></canvas>
+  <!-- SOBRE MÍ -->
+  <section id="about">
+    <div class="container">
+      <h2>Sobre mí</h2>
+      <div class="about-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center;">
+        <div>
+          <p style="font-size: 1.2rem; color: var(--text-secondary);">
+            Soy un desarrollador apasionado por la tecnología y la innovación. Me especializo en crear aplicaciones web robustas y software a medida que resuelven problemas reales. Mi objetivo es combinar diseño y funcionalidad para ofrecer experiencias digitales únicas.
+          </p>
+        </div>
+        <div class="glass-card" style="padding: 30px;">
+          <i class="fas fa-code" style="font-size: 3rem; color: var(--accent);"></i>
+          <h3 style="margin: 20px 0;">Full Stack & AI Enthusiast</h3>
+          <p>Trabajo con tecnologías modernas como React, Node.js, Python y siempre estoy explorando nuevas tendencias.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Contenido principal -->
-    <main class="content">
-        <!-- HERO SECTION -->
-        <section class="hero" id="hero">
-            <div class="container hero-container">
-                <div class="hero-text">
-                    <p class="hero-greeting">Hola, soy</p>
-                    <h1 class="hero-name">Abraham Hernández</h1>
-                    <h2 class="hero-title" id="typing"></h2>
-                    <p class="hero-description">Desarrollador Web & Software apasionado por crear soluciones innovadoras y seguras.</p>
-                    <div class="hero-buttons">
-                        <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" class="btn btn-primary" target="_blank" rel="noopener">ITSA SEGURITY <i class="fas fa-arrow-right"></i></a>
-                        <a href="cv.pdf" class="btn btn-outline" download>Descargar CV <i class="fas fa-download"></i></a>
-                    </div>
-                    <div class="hero-social">
-                        <a href="https://wa.me/50589871374" target="_blank" rel="noopener" class="social-icon"><i class="fab fa-whatsapp"></i></a>
-                        <a href="https://github.com/jhernandez30-cpu" target="_blank" rel="noopener" class="social-icon"><i class="fab fa-github"></i></a>
-                        <a href="https://linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" rel="noopener" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <img src="profile.jpg" alt="Abraham Hernández" class="profile-photo">
-                </div>
+  <!-- HABILIDADES -->
+  <section id="skills">
+    <div class="container">
+      <h2>Habilidades técnicas</h2>
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fab fa-html5"></i></div>
+          <h3>HTML5 & CSS3</h3>
+          <div class="skill-bar"><div class="skill-progress" data-width="90"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fab fa-js"></i></div>
+          <h3>JavaScript / ES6+</h3>
+          <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fab fa-react"></i></div>
+          <h3>React & Next.js</h3>
+          <div class="skill-bar"><div class="skill-progress" data-width="80"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fab fa-node"></i></div>
+          <h3>Node.js / Python</h3>
+          <div class="skill-bar"><div class="skill-progress" data-width="75"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROYECTOS -->
+  <section id="projects">
+    <div class="container">
+      <h2>Proyectos destacados</h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="project-img"><i class="fas fa-lock"></i></div>
+          <div class="project-info">
+            <h3>ITSA Segurity</h3>
+            <p>Plataforma de ciberseguridad con monitoreo en tiempo real.</p>
+            <div class="project-links">
+              <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank"><i class="fas fa-external-link-alt"></i> Demo</a>
+              <a href="#"><i class="fab fa-github"></i> Código</a>
             </div>
-        </section>
-
-        <!-- SOBRE MÍ -->
-        <section class="about" id="about">
-            <div class="container">
-                <h2 class="section-title">Sobre mí</h2>
-                <div class="about-content">
-                    <div class="about-text">
-                        <p>Soy desarrollador de software con experiencia en creación de aplicaciones web robustas y seguras. Me especializo en transformar ideas en código eficiente y escalable. Actualmente lidero proyectos tecnológicos en <strong>ITSA SEGURITY</strong>, donde aplicamos innovación para proteger activos digitales.</p>
-                        <p>Mi enfoque combina diseño limpio, rendimiento y las últimas tendencias en desarrollo. Disfruto colaborar con equipos multidisciplinarios y aprender nuevas tecnologías cada día.</p>
-                    </div>
-                    <div class="about-stats">
-                        <div class="stat">
-                            <span class="stat-number" data-count="5">0</span>
-                            <span class="stat-label">Años experiencia</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number" data-count="20">0</span>
-                            <span class="stat-label">Proyectos completados</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number" data-count="10">0</span>
-                            <span class="stat-label">Clientes felices</span>
-                        </div>
-                    </div>
-                </div>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-img"><i class="fas fa-chart-line"></i></div>
+          <div class="project-info">
+            <h3>Dashboard Analytics</h3>
+            <p>Visualización de datos interactiva con D3.js.</p>
+            <div class="project-links">
+              <a href="#"><i class="fas fa-external-link-alt"></i> Demo</a>
+              <a href="#"><i class="fab fa-github"></i> Código</a>
             </div>
-        </section>
-
-        <!-- HABILIDADES -->
-        <section class="skills" id="skills">
-            <div class="container">
-                <h2 class="section-title">Habilidades técnicas</h2>
-                <div class="skills-grid">
-                    <div class="skill-item">
-                        <i class="fab fa-html5"></i>
-                        <span>HTML5</span>
-                        <div class="skill-bar"><div class="skill-progress" style="width: 95%;"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <i class="fab fa-css3-alt"></i>
-                        <span>CSS3</span>
-                        <div class="skill-bar"><div class="skill-progress" style="width: 90%;"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <i class="fab fa-js"></i>
-                        <span>JavaScript</span>
-                        <div class="skill-bar"><div class="skill-progress" style="width: 88%;"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <i class="fab fa-react"></i>
-                        <span>React</span>
-                        <div class="skill-bar"><div class="skill-progress" style="width: 85%;"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <i class="fab fa-node"></i>
-                        <span>Node.js</span>
-                        <div class="skill-bar"><div class="skill-progress" style="width: 80%;"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <i class="fab fa-python"></i>
-                        <span>Python</span>
-                        <div class="skill-bar"><div class="skill-progress" style="width: 75%;"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <i class="fas fa-database"></i>
-                        <span>SQL</span>
-                        <div class="skill-bar"><div class="skill-progress" style="width: 80%;"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <i class="fab fa-microsoft"></i>
-                        <span>C#</span>
-                        <div class="skill-bar"><div class="skill-progress" style="width: 70%;"></div></div>
-                    </div>
-                </div>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-img"><i class="fas fa-robot"></i></div>
+          <div class="project-info">
+            <h3>AI Chatbot</h3>
+            <p>Asistente virtual con procesamiento de lenguaje natural.</p>
+            <div class="project-links">
+              <a href="#"><i class="fas fa-external-link-alt"></i> Demo</a>
+              <a href="#"><i class="fab fa-github"></i> Código</a>
             </div>
-        </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <!-- PROYECTOS -->
-        <section class="projects" id="projects">
-            <div class="container">
-                <h2 class="section-title">Proyectos destacados</h2>
-                <div class="projects-grid">
-                    <div class="project-card">
-                        <div class="project-img" style="background-image: url('https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80');"></div>
-                        <div class="project-info">
-                            <h3>Plataforma de seguridad</h3>
-                            <p>Sistema de monitoreo en tiempo real para ITSA SEGURITY.</p>
-                            <div class="project-links">
-                                <a href="#" target="_blank" class="btn-small">Demo <i class="fas fa-eye"></i></a>
-                                <a href="#" target="_blank" class="btn-small">Código <i class="fab fa-github"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-card">
-                        <div class="project-img" style="background-image: url('https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80');"></div>
-                        <div class="project-info">
-                            <h3>E-commerce tech</h3>
-                            <p>Tienda virtual con carrito de compras y pasarela de pagos.</p>
-                            <div class="project-links">
-                                <a href="#" target="_blank" class="btn-small">Demo <i class="fas fa-eye"></i></a>
-                                <a href="#" target="_blank" class="btn-small">Código <i class="fab fa-github"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-card">
-                        <div class="project-img" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80');"></div>
-                        <div class="project-info">
-                            <h3>Dashboard analítico</h3>
-                            <p>Visualización de datos con gráficos interactivos.</p>
-                            <div class="project-links">
-                                <a href="#" target="_blank" class="btn-small">Demo <i class="fas fa-eye"></i></a>
-                                <a href="#" target="_blank" class="btn-small">Código <i class="fab fa-github"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <!-- EXPERIENCIA / SERVICIOS -->
+  <section id="experience">
+    <div class="container">
+      <h2>Servicios</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+        <div class="glass-card" style="padding: 30px;">
+          <i class="fas fa-laptop-code" style="font-size: 2.5rem; color: var(--accent);"></i>
+          <h3 style="margin: 15px 0;">Desarrollo Web</h3>
+          <p>Creación de sitios web modernos, rápidos y responsivos.</p>
+        </div>
+        <div class="glass-card" style="padding: 30px;">
+          <i class="fas fa-mobile-alt" style="font-size: 2.5rem; color: var(--accent);"></i>
+          <h3 style="margin: 15px 0;">Apps Móviles</h3>
+          <p>Aplicaciones nativas e híbridas para iOS y Android.</p>
+        </div>
+        <div class="glass-card" style="padding: 30px;">
+          <i class="fas fa-cloud" style="font-size: 2.5rem; color: var(--accent);"></i>
+          <h3 style="margin: 15px 0;">Cloud & DevOps</h3>
+          <p>Despliegue y escalado en AWS, Azure y Google Cloud.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO + BADGE LINKEDIN -->
+  <section id="contact">
+    <div class="container">
+      <h2>Contacto</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px;">
+        <div>
+          <form class="glass-card" style="padding: 40px;">
+            <div style="margin-bottom: 20px;">
+              <input type="text" placeholder="Nombre" style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;">
             </div>
-        </section>
-
-        <!-- EXPERIENCIA -->
-        <section class="experience" id="experience">
-            <div class="container">
-                <h2 class="section-title">Experiencia & Servicios</h2>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <h3>Líder de Desarrollo - ITSA SEGURITY</h3>
-                            <span class="timeline-date">2022 - Actualidad</span>
-                            <p>Arquitectura de soluciones de seguridad, desarrollo full-stack, gestión de equipos.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <h3>Desarrollador Freelance</h3>
-                            <span class="timeline-date">2020 - 2022</span>
-                            <p>Creación de sitios web, tiendas online y aplicaciones a medida para clientes internacionales.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <h3>Servicios</h3>
-                            <p>Desarrollo web, consultoría técnica, integración de APIs, optimización de rendimiento y seguridad.</p>
-                        </div>
-                    </div>
-                </div>
+            <div style="margin-bottom: 20px;">
+              <input type="email" placeholder="Email" style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;">
             </div>
-        </section>
-
-        <!-- CONTACTO -->
-        <section class="contact" id="contact">
-            <div class="container">
-                <h2 class="section-title">Contacto</h2>
-                <div class="contact-content">
-                    <div class="contact-info">
-                        <p><i class="fas fa-phone-alt"></i> <a href="https://wa.me/50589871374">+505 8987 1374</a></p>
-                        <p><i class="fab fa-github"></i> <a href="https://github.com/jhernandez30-cpu" target="_blank">github.com/jhernandez30-cpu</a></p>
-                        <div class="linkedin-badge-container">
-                            <!-- Badge de LinkedIn -->
-                            <div class="badge-base LI-profile-badge" data-locale="es_ES" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="josue-abraham-hernandez-gonzalez-224a9a2a1" data-version="v1">
-                                <a class="badge-base__link LI-simple-link" href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1?trk=profile-badge">Abraham Hernández</a>
-                            </div>
-                        </div>
-                    </div>
-                    <form class="contact-form" id="contact-form">
-                        <input type="text" placeholder="Nombre" required>
-                        <input type="email" placeholder="Email" required>
-                        <textarea placeholder="Mensaje" rows="5" required></textarea>
-                        <button type="submit" class="btn btn-primary">Enviar mensaje</button>
-                    </form>
-                </div>
+            <div style="margin-bottom: 20px;">
+              <textarea placeholder="Mensaje" rows="5" style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;"></textarea>
             </div>
-        </section>
-
-        <!-- FOOTER -->
-        <footer class="footer">
-            <div class="container">
-                <p>© 2025 Abraham Hernández. Todos los derechos reservados.</p>
-                <div class="footer-social">
-                    <a href="https://wa.me/50589871374" target="_blank"><i class="fab fa-whatsapp"></i></a>
-                    <a href="https://github.com/jhernandez30-cpu" target="_blank"><i class="fab fa-github"></i></a>
-                    <a href="https://linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-                </div>
+            <button class="btn btn-primary" style="width: 100%;">Enviar mensaje</button>
+          </form>
+        </div>
+        <div>
+          <div class="glass-card" style="padding: 30px;">
+            <h3 style="margin-bottom: 20px;">Redes y contacto directo</h3>
+            <p><i class="fab fa-whatsapp" style="color: var(--accent);"></i> <a href="https://wa.me/50589871374">+505 8987 1374</a></p>
+            <p><i class="fab fa-github" style="color: var(--accent);"></i> <a href="https://github.com/jhernandez30-cpu">@jhernandez30-cpu</a></p>
+            <div style="margin: 30px 0;">
+              <!-- Badge de LinkedIn proporcionado -->
+              <div class="badge-base LI-profile-badge" data-locale="es_ES" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="josue-abraham-hernandez-gonzalez-224a9a2a1" data-version="v1">
+                <a class="badge-base__link LI-simple-link" href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1?trk=profile-badge">Abraham Hernández</a>
+              </div>
             </div>
-        </footer>
-    </main>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
-    <script src="js/script.js"></script>
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 Abraham Hernández - Todos los derechos reservados</p>
+    <p style="margin-top: 10px; color: var(--text-secondary);">Diseñado con <i class="fas fa-heart" style="color: var(--accent);"></i> y tecnología de vanguardia</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/particles.js"></script>
+  <script src="js/animation.js"></script>
+  <script src="js/script.js"></script>
+  <!-- LinkedIn badge script -->
+  <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
 </body>
 </html>
