@@ -16,6 +16,8 @@
   --glass-border: rgba(255, 255, 255, 0.1);
   --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   --neon-shadow: 0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow);
+  --navbar-height: 70px;
+  --tooltip-bg: rgba(0, 255, 157, 0.9);
 }
 
 body {
@@ -24,7 +26,7 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
-  cursor: none; /* Para cursor personalizado */
+  cursor: none;
 }
 
 a {
@@ -52,12 +54,10 @@ a {
   border-color: var(--accent);
 }
 
-/* Scroll suave */
 html {
   scroll-behavior: smooth;
 }
 
-/* Secciones */
 section {
   padding: 100px 20px;
   position: relative;
@@ -70,7 +70,6 @@ section {
   padding: 0 20px;
 }
 
-/* Títulos */
 h2 {
   font-size: 3rem;
   font-weight: 700;
@@ -81,7 +80,6 @@ h2 {
   background-clip: text;
 }
 
-/* Botones */
 .btn {
   display: inline-block;
   padding: 14px 32px;
@@ -118,7 +116,6 @@ h2 {
   box-shadow: 0 0 20px var(--accent-glow);
 }
 
-/* Glassmorphism */
 .glass-card {
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
@@ -127,7 +124,6 @@ h2 {
   box-shadow: var(--card-shadow);
 }
 
-/* Footer */
 footer {
   text-align: center;
   padding: 40px;
@@ -135,13 +131,7 @@ footer {
   border-top: 1px solid var(--glass-border);
 }
 
-/* ========== NUEVOS ESTILOS ========== */
-:root {
-  --navbar-height: 70px;
-  --tooltip-bg: rgba(0, 255, 157, 0.9);
-}
-
-/* Navbar fijo */
+/* Navbar */
 .navbar {
   position: fixed;
   top: 0;
@@ -157,13 +147,16 @@ footer {
   justify-content: center;
   transition: transform 0.3s ease;
 }
+
 .navbar.hidden {
   transform: translateY(-100%);
 }
+
 .nav-links {
   display: flex;
   gap: 40px;
 }
+
 .nav-links a {
   color: var(--text-primary);
   text-decoration: none;
@@ -171,10 +164,12 @@ footer {
   transition: color 0.3s;
   position: relative;
 }
+
 .nav-links a:hover,
 .nav-links a.active {
   color: var(--accent);
 }
+
 .nav-links a.active::after {
   content: '';
   position: absolute;
@@ -207,10 +202,12 @@ footer {
   border: none;
   box-shadow: var(--neon-shadow);
 }
+
 .back-to-top.visible {
   opacity: 1;
   visibility: visible;
 }
+
 .back-to-top:hover {
   transform: scale(1.1);
 }
@@ -229,10 +226,12 @@ footer {
   z-index: 9999;
   transition: opacity 0.5s, visibility 0.5s;
 }
+
 .loader-wrapper.hidden {
   opacity: 0;
   visibility: hidden;
 }
+
 .loader {
   width: 60px;
   height: 60px;
@@ -241,6 +240,7 @@ footer {
   border-radius: 50%;
   animation: spin 1s infinite linear;
 }
+
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
@@ -253,6 +253,7 @@ footer {
   margin: 60px 0;
   text-align: center;
 }
+
 .stat-item {
   background: var(--glass-bg);
   backdrop-filter: blur(5px);
@@ -260,12 +261,14 @@ footer {
   border-radius: 20px;
   padding: 30px 20px;
 }
+
 .stat-number {
   font-size: 3.5rem;
   font-weight: 800;
   color: var(--accent);
   line-height: 1.2;
 }
+
 .stat-label {
   font-size: 1.2rem;
   color: var(--text-secondary);
@@ -278,6 +281,7 @@ footer {
   position: relative;
   cursor: help;
 }
+
 [data-tooltip]:before {
   content: attr(data-tooltip);
   position: absolute;
@@ -296,6 +300,7 @@ footer {
   pointer-events: none;
   z-index: 100;
 }
+
 [data-tooltip]:hover:before {
   opacity: 1;
   visibility: visible;
@@ -306,13 +311,14 @@ footer {
 .skill-card, .glass-card {
   transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
 }
+
 .skill-card:hover, .glass-card:hover {
   transform: translateY(-10px) scale(1.02);
   border-color: var(--accent);
   box-shadow: 0 0 30px var(--accent-glow);
 }
 
-/* Efecto parallax en secciones (opcional, requiere imagen de fondo) */
+/* Parallax */
 .parallax {
   background-attachment: fixed;
   background-position: center;
@@ -320,18 +326,19 @@ footer {
   background-size: cover;
 }
 
-/* Ajuste para que el hero no quede tapado por el navbar */
+/* Ajuste hero navbar */
 #hero {
   padding-top: calc(100px + var(--navbar-height));
 }
 
-/* ===== PROYECTOS (estilos globales) ===== */
+/* Proyectos */
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
   margin-top: 50px;
 }
+
 .project-card {
   background: var(--glass-bg);
   backdrop-filter: blur(5px);
@@ -341,52 +348,62 @@ footer {
   transition: all 0.3s ease;
   text-align: left;
 }
+
 .project-card:hover {
   transform: translateY(-5px);
   border-color: var(--accent);
   box-shadow: var(--neon-shadow);
 }
+
 .project-card .project-img {
   font-size: 3rem;
   color: var(--accent);
   margin-bottom: 20px;
   text-align: center;
 }
+
 .project-card h3 {
   font-size: 1.5rem;
   margin-bottom: 15px;
 }
+
 .project-card p {
   margin-bottom: 10px;
   font-size: 0.95rem;
   color: var(--text-secondary);
 }
+
 .project-card .project-links {
   display: flex;
   gap: 15px;
   margin-top: 20px;
 }
+
 .project-links .btn-outline {
   padding: 8px 20px;
   font-size: 0.9rem;
 }
 
-/* ===== SECCIÓN VALOR ===== */
+/* ===== SECCIÓN VALOR PROFESIONAL (CORREGIDO) ===== */
 .value-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 30px;
   margin-top: 50px;
 }
+
 .value-grid .glass-card {
   transition: all 0.3s ease;
+  padding: 25px;
+  text-align: center;
 }
+
 .value-grid .glass-card:hover {
   transform: translateY(-5px);
   border-color: var(--accent);
 }
 
-/* Ajuste de lista en sobre mí */
+/* Ajuste lista sobre mí */
 #about ul li {
   margin-bottom: 12px;
   font-size: 1.1rem;
