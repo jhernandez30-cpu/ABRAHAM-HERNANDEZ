@@ -339,4 +339,59 @@ footer {
     bottom: 20px;
     right: 20px;
   }
+
+  /* ===== MEJORAS PARA PROYECTOS Y VALOR ===== */
+.project-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(5px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 25px;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+.project-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+  box-shadow: var(--neon-shadow);
+}
+.project-card .project-img {
+  font-size: 3rem;
+  color: var(--accent);
+  margin-bottom: 20px;
+  text-align: center;
+}
+.project-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+.project-card p {
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+.project-card .project-links {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+.project-links .btn-outline {
+  padding: 8px 20px;
+  font-size: 0.9rem;
+}
+
+/* Sección Valor */
+.value-grid .glass-card {
+  transition: all 0.3s ease;
+}
+.value-grid .glass-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+}
+
+/* Ajuste de lista en sobre mí */
+#about ul li {
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
 }
