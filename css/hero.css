@@ -30,11 +30,19 @@
   font-weight: 800;
   line-height: 1.2;
   margin-bottom: 20px;
+  color: var(--text-primary); /* Nombre en blanco */
 }
 
+/* Si se usa la clase .highlight en algún otro lugar, mantiene el color acento */
 .hero-text .highlight {
   color: var(--accent);
   text-shadow: var(--neon-shadow);
+}
+
+/* Pero si el nombre tiene .highlight, lo sobrescribimos para que sea blanco */
+.hero-text h1 .highlight {
+  color: var(--text-primary);
+  text-shadow: none;
 }
 
 .dynamic-text {
@@ -82,9 +90,4 @@
   .profile-img {
     margin: 0 auto;
   }
-
-  /* Ajuste para que el hero no quede tapado por el navbar (ya se puso en styles.css, pero por si acaso) */
-#hero {
-  padding-top: calc(100px + var(--navbar-height));
-}
 }
