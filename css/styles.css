@@ -325,22 +325,13 @@ footer {
   padding-top: calc(100px + var(--navbar-height));
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .nav-links {
-    gap: 20px;
-    font-size: 0.9rem;
-  }
-  .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  .back-to-top {
-    bottom: 20px;
-    right: 20px;
-  }
-
-  /* ===== MEJORAS PARA PROYECTOS Y VALOR ===== */
+/* ===== PROYECTOS (estilos globales) ===== */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 50px;
+}
 .project-card {
   background: var(--glass-bg);
   backdrop-filter: blur(5px);
@@ -380,7 +371,13 @@ footer {
   font-size: 0.9rem;
 }
 
-/* Sección Valor */
+/* ===== SECCIÓN VALOR ===== */
+.value-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 50px;
+}
 .value-grid .glass-card {
   transition: all 0.3s ease;
 }
@@ -394,4 +391,28 @@ footer {
   margin-bottom: 12px;
   font-size: 1.1rem;
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-links {
+    gap: 20px;
+    font-size: 0.9rem;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .back-to-top {
+    bottom: 20px;
+    right: 20px;
+  }
+  .hero-text h1 {
+    font-size: 2rem;
+  }
+  .projects-grid {
+    gap: 20px;
+  }
+  .value-grid {
+    gap: 20px;
+  }
 }
