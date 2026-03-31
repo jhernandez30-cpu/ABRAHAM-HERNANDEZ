@@ -78,8 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Animación de entrada para tarjetas de la sección "Valor profesional" (#value)
-  gsap.from('#value .glass-card', {
+  // Animación de entrada para tarjetas de valor (ahora usan .project-card en #value)
+  gsap.from('#value .project-card', {
     scrollTrigger: {
       trigger: '#value',
       start: 'top 80%',
