@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Abraham Hernández | Web & Software Developer</title>
+  <title>Abraham Hernández | Frontend Developer · Vue · React · Tiempo Real</title>
   <!-- Fuentes e iconos -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -11,13 +11,17 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/hero.css">
   <link rel="stylesheet" href="css/skills.css">
-  <!-- projects.css no se usa, pero lo dejamos por si acaso -->
-  <link rel="stylesheet" href="css/projects.css">
   <!-- GSAP y ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <!-- Particles.js -->
-  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <!-- Three.js para fondo 3D -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+      }
+    }
+  </script>
 </head>
 <body>
   <!-- LOADER -->
@@ -31,7 +35,8 @@
       <a href="#hero" class="nav-link active">Inicio</a>
       <a href="#about" class="nav-link">Sobre mí</a>
       <a href="#skills" class="nav-link">Habilidades</a>
-      <a href="#experience" class="nav-link">Servicios</a>
+      <a href="#projects" class="nav-link">Proyectos</a>
+      <a href="#value" class="nav-link">Valor</a>
       <a href="#contact" class="nav-link">Contacto</a>
     </div>
   </nav>
@@ -44,8 +49,8 @@
   <!-- Cursor personalizado -->
   <div class="custom-cursor"></div>
 
-  <!-- Partículas de fondo -->
-  <div id="particles-js"></div>
+  <!-- Fondo Three.js -->
+  <canvas id="bg-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></canvas>
 
   <!-- HERO SECTION -->
   <section id="hero">
@@ -53,14 +58,22 @@
       <div class="hero-text">
         <h1 class="hero-title">
           <span class="highlight">Abraham Hernández</span><br>
-          Desarrollador <span class="typed"></span>
+          <span class="typed"></span>
         </h1>
         <div class="dynamic-text">
           <span class="typed-text"></span><span class="cursor">&nbsp;</span>
         </div>
         <p style="margin-bottom: 30px; color: var(--text-secondary); font-size: 1.2rem;">
-          +5 años creando soluciones web y software de alto impacto.
+          Construyo dashboards y sistemas en tiempo real que automatizan procesos y reducen trabajo manual.
         </p>
+        <div class="hero-buttons">
+          <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-primary" data-tooltip="Visita mi empresa">
+            <i class="fas fa-shield-alt"></i> ITSA SEGURITY
+          </a>
+          <a href="cv.pdf" download class="btn btn-outline" data-tooltip="Descarga mi CV">
+            <i class="fas fa-download"></i> Descargar CV
+          </a>
+        </div>
         <!-- Redes sociales con tooltip -->
         <div style="margin-top: 30px; display: flex; gap: 20px; justify-content: center;">
           <a href="https://wa.me/50589871374" target="_blank" data-tooltip="WhatsApp" style="color: var(--accent); font-size: 1.8rem;"><i class="fab fa-whatsapp"></i></a>
@@ -74,20 +87,23 @@
     </div>
   </section>
 
-  <!-- SOBRE MÍ -->
-  <section id="about" class="parallax">
+  <!-- SOBRE MÍ (más conciso) -->
+  <section id="about">
     <div class="container">
       <h2>Sobre mí</h2>
       <div class="about-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center;">
         <div>
-          <p style="font-size: 1.2rem; color: var(--text-secondary);">
-            Soy un desarrollador apasionado por la tecnología y la innovación. Me especializo en crear aplicaciones web robustas y software a medida que resuelven problemas reales. Mi objetivo es combinar diseño y funcionalidad para ofrecer experiencias digitales únicas.
-          </p>
+          <ul style="list-style: none; padding: 0;">
+            <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Frontend con Vue, React, Next.js</li>
+            <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Apps en tiempo real (WebSockets, Socket.IO)</li>
+            <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Automatización con Python y APIs</li>
+            <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Trabajo en equipos ágiles (Scrum)</li>
+          </ul>
         </div>
-        <div class="glass-card" style="padding: 30px;">
-          <i class="fas fa-code" style="font-size: 3rem; color: var(--accent);"></i>
-          <h3 style="margin: 20px 0;">Full Stack & AI Enthusiast</h3>
-          <p>Trabajo con tecnologías modernas como React, Node.js, Python y siempre estoy explorando nuevas tendencias.</p>
+        <div class="glass-card" style="padding: 30px; text-align: center;">
+          <i class="fas fa-bullhorn" style="font-size: 3rem; color: var(--accent);"></i>
+          <h3 style="margin: 20px 0;">Impacto real</h3>
+          <p>He ayudado a empresas a reducir hasta un 40% el tiempo en tareas repetitivas con dashboards automatizados.</p>
         </div>
       </div>
     </div>
@@ -111,7 +127,7 @@
         <div class="stat-label">Años de experiencia</div>
       </div>
       <div class="stat-item">
-        <div class="stat-number" id="stat2" data-target="20">0</div>
+        <div class="stat-number" id="stat2" data-target="15">0</div>
         <div class="stat-label">Proyectos completados</div>
       </div>
       <div class="stat-item">
@@ -121,82 +137,123 @@
     </div>
   </div>
 
-  <!-- HABILIDADES TÉCNICAS (MODIFICADO) -->
+  <!-- HABILIDADES TÉCNICAS (más ordenadas) -->
   <section id="skills">
     <div class="container">
       <h2>Habilidades técnicas</h2>
       <div class="skills-grid">
-        <!-- JavaScript -->
-        <div class="skill-card" data-tooltip="85%">
-          <div class="skill-icon"><i class="fab fa-js"></i></div>
-          <h3>JavaScript / ES6+</h3>
-          <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
-        </div>
-        <!-- C# -->
-        <div class="skill-card" data-tooltip="80%">
-          <div class="skill-icon"><i class="fab fa-microsoft"></i></div>
-          <h3>C#</h3>
-          <div class="skill-bar"><div class="skill-progress" data-width="80"></div></div>
-        </div>
-        <!-- LINQ (nuevo) -->
-        <div class="skill-card" data-tooltip="80%">
-          <div class="skill-icon"><i class="fas fa-code"></i></div>
-          <h3>LINQ</h3>
-          <div class="skill-bar"><div class="skill-progress" data-width="80"></div></div>
-        </div>
-        <!-- EF Core (nuevo) -->
-        <div class="skill-card" data-tooltip="85%">
-          <div class="skill-icon"><i class="fas fa-table"></i></div>
-          <h3>EF Core</h3>
-          <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
-        </div>
-        <!-- Blazor Server (nuevo) -->
-        <div class="skill-card" data-tooltip="75%">
-          <div class="skill-icon"><i class="fab fa-microsoft"></i></div>
-          <h3>Blazor Server</h3>
-          <div class="skill-bar"><div class="skill-progress" data-width="75"></div></div>
-        </div>
-        <!-- SQL -->
-        <div class="skill-card" data-tooltip="85%">
-          <div class="skill-icon"><i class="fas fa-database"></i></div>
-          <h3>SQL</h3>
-          <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
-        </div>
-        <!-- Python -->
         <div class="skill-card" data-tooltip="90%">
-          <div class="skill-icon"><i class="fab fa-python"></i></div>
-          <h3>Python</h3>
+          <div class="skill-icon"><i class="fab fa-vuejs"></i></div>
+          <h3>Vue / React</h3>
           <div class="skill-bar"><div class="skill-progress" data-width="90"></div></div>
         </div>
-        <!-- Power BI -->
+        <div class="skill-card" data-tooltip="85%">
+          <div class="skill-icon"><i class="fab fa-js"></i></div>
+          <h3>JavaScript / TypeScript</h3>
+          <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
+        </div>
+        <div class="skill-card" data-tooltip="80%">
+          <div class="skill-icon"><i class="fas fa-exchange-alt"></i></div>
+          <h3>WebSockets / Socket.IO</h3>
+          <div class="skill-bar"><div class="skill-progress" data-width="80"></div></div>
+        </div>
         <div class="skill-card" data-tooltip="75%">
-          <div class="skill-icon"><i class="fas fa-chart-pie"></i></div>
-          <h3>Power BI</h3>
+          <div class="skill-icon"><i class="fab fa-python"></i></div>
+          <h3>Python (Automatización)</h3>
           <div class="skill-bar"><div class="skill-progress" data-width="75"></div></div>
+        </div>
+        <div class="skill-card" data-tooltip="85%">
+          <div class="skill-icon"><i class="fas fa-database"></i></div>
+          <h3>SQL / APIs REST</h3>
+          <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
+        </div>
+        <div class="skill-card" data-tooltip="80%">
+          <div class="skill-icon"><i class="fab fa-git-alt"></i></div>
+          <h3>Git / GitHub Actions</h3>
+          <div class="skill-bar"><div class="skill-progress" data-width="80"></div></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SERVICIOS -->
-  <section id="experience">
+  <!-- PROYECTOS (estructura mejorada: problema → solución → stack → resultado) -->
+  <section id="projects">
     <div class="container">
-      <h2>Servicios</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-        <div class="glass-card" style="padding: 30px; text-align: center;" data-tooltip="Desarrollo web a medida">
-          <i class="fas fa-laptop-code" style="font-size: 2.5rem; color: var(--accent);"></i>
-          <h3 style="margin: 15px 0;">Desarrollo Web</h3>
-          <p>Creación de sitios web modernos, rápidos y responsivos.</p>
+      <h2>Proyectos destacados</h2>
+      <div class="projects-grid">
+        <!-- Proyecto 1 -->
+        <div class="project-card">
+          <div class="project-img"><i class="fas fa-lock"></i></div>
+          <div class="project-info">
+            <h3>ITSA Segurity</h3>
+            <p><strong>Problema:</strong> Empresas sin visibilidad en tiempo real de amenazas.</p>
+            <p><strong>Solución:</strong> Dashboard con WebSockets que muestra alertas al instante.</p>
+            <p><strong>Stack:</strong> React, Socket.IO, Node.js, MongoDB.</p>
+            <p><strong>Resultado:</strong> Reducción del 30% en tiempo de respuesta ante incidentes.</p>
+            <div class="project-links">
+              <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-outline" style="padding: 8px 20px;">Live demo →</a>
+              <a href="https://github.com/jhernandez30-cpu/ITSA-Segurity" target="_blank" class="btn btn-outline" style="padding: 8px 20px;">Código</a>
+            </div>
+          </div>
         </div>
-        <div class="glass-card" style="padding: 30px; text-align: center;" data-tooltip="Apps para iOS y Android">
-          <i class="fas fa-mobile-alt" style="font-size: 2.5rem; color: var(--accent);"></i>
-          <h3 style="margin: 15px 0;">Apps Móviles</h3>
-          <p>Aplicaciones nativas e híbridas para iOS y Android.</p>
+        <!-- Proyecto 2 -->
+        <div class="project-card">
+          <div class="project-img"><i class="fas fa-chart-line"></i></div>
+          <div class="project-info">
+            <h3>Dashboard Analytics</h3>
+            <p><strong>Problema:</strong> Datos dispersos sin visualización clara.</p>
+            <p><strong>Solución:</strong> Dashboard interactivo con filtros en tiempo real.</p>
+            <p><strong>Stack:</strong> Vue, D3.js, Express, PostgreSQL.</p>
+            <p><strong>Resultado:</strong> Toma de decisiones 50% más rápida para el equipo de marketing.</p>
+            <div class="project-links">
+              <a href="#" target="_blank" class="btn btn-outline" style="padding: 8px 20px;">Live demo →</a>
+              <a href="#" class="btn btn-outline" style="padding: 8px 20px;">Código</a>
+            </div>
+          </div>
         </div>
-        <div class="glass-card" style="padding: 30px; text-align: center;" data-tooltip="Infraestructura en la nube">
-          <i class="fas fa-cloud" style="font-size: 2.5rem; color: var(--accent);"></i>
-          <h3 style="margin: 15px 0;">Cloud & DevOps</h3>
-          <p>Despliegue y escalado en AWS, Azure y Google Cloud.</p>
+        <!-- Proyecto 3 -->
+        <div class="project-card">
+          <div class="project-img"><i class="fas fa-robot"></i></div>
+          <div class="project-info">
+            <h3>AI Chatbot</h3>
+            <p><strong>Problema:</strong> Atención al cliente 24/7 con alta demanda.</p>
+            <p><strong>Solución:</strong> Chatbot con NLP que responde consultas comunes y escala a agente humano.</p>
+            <p><strong>Stack:</strong> React, Python (Flask), Rasa, MongoDB.</p>
+            <p><strong>Resultado:</strong> 40% de consultas resueltas sin intervención humana, ahorro de 20h/semana.</p>
+            <div class="project-links">
+              <a href="#" target="_blank" class="btn btn-outline" style="padding: 8px 20px;">Live demo →</a>
+              <a href="#" class="btn btn-outline" style="padding: 8px 20px;">Código</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN "VALOR PROFESIONAL" (nueva) -->
+  <section id="value">
+    <div class="container">
+      <h2>Valor profesional</h2>
+      <div class="value-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 50px;">
+        <div class="glass-card" style="padding: 25px; text-align: center;">
+          <i class="fas fa-bolt" style="font-size: 2.5rem; color: var(--accent);"></i>
+          <h3>Experiencia en tiempo real</h3>
+          <p>WebSockets, Socket.IO, actualizaciones en vivo.</p>
+        </div>
+        <div class="glass-card" style="padding: 25px; text-align: center;">
+          <i class="fas fa-robot" style="font-size: 2.5rem; color: var(--accent);"></i>
+          <h3>Automatización con Python</h3>
+          <p>Scripts que ahorran horas de trabajo repetitivo.</p>
+        </div>
+        <div class="glass-card" style="padding: 25px; text-align: center;">
+          <i class="fas fa-plug" style="font-size: 2.5rem; color: var(--accent);"></i>
+          <h3>Integración API REST</h3>
+          <p>Consumo y exposición de servicios robustos.</p>
+        </div>
+        <div class="glass-card" style="padding: 25px; text-align: center;">
+          <i class="fas fa-users" style="font-size: 2.5rem; color: var(--accent);"></i>
+          <h3>Trabajo en equipos ágiles</h3>
+          <p>Scrum, revisiones de código, CI/CD.</p>
         </div>
       </div>
     </div>
@@ -244,7 +301,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/particles.js"></script>
+  <script type="module" src="js/three-background.js"></script>
+  <script src="js/particles.js"></script> <!-- opcional, lo dejamos pero no se usa porque three.js lo reemplaza -->
   <script src="js/animation.js"></script>
   <script src="js/script.js"></script>
 </body>
