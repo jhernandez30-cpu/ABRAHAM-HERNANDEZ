@@ -78,8 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Animación de entrada para tarjetas de valor (ahora usan .project-card en #value)
-  gsap.from('#value .project-card', {
+    // Animación de entrada para las tarjetas de valor (estilo habilidades)
+  gsap.from('#value .skill-card', {
     scrollTrigger: {
       trigger: '#value',
       start: 'top 80%',
@@ -90,4 +90,3 @@ document.addEventListener('DOMContentLoaded', () => {
     stagger: 0.2,
     ease: 'back.out(1.2)'
   });
-});
