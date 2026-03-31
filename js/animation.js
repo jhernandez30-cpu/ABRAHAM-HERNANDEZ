@@ -78,19 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Animación de entrada para tarjetas de servicios (sección #experience)
-  gsap.from('.glass-card', {
-    scrollTrigger: {
-      trigger: '#experience',
-      start: 'top 80%',
-    },
-    y: 50,
-    opacity: 0,
-    duration: 0.8,
-    stagger: 0.2,
-    ease: 'back.out(1.2)'
-  });
-
   // Animación de entrada para tarjetas de la sección "Valor profesional" (#value)
   gsap.from('#value .glass-card', {
     scrollTrigger: {
