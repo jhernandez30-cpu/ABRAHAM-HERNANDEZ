@@ -24,14 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
     ease: 'elastic.out(1, 0.5)'
   });
 
-  gsap.from('.hero-buttons a', {
-    duration: 1,
-    y: 30,
-    opacity: 0,
-    stagger: 0.2,
-    delay: 1,
-    ease: 'power3.out'
-  });
+  // NOTA: La animación de .hero-buttons a se ha eliminado porque esos botones ya no existen en el hero.
+  // Ahora los botones están debajo de "Sobre mí" y no requieren animación de entrada.
 
   // ScrollTrigger para títulos de secciones (excepto hero)
   gsap.utils.toArray('section:not(#hero)').forEach(section => {
@@ -71,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const el = entry.target;
           const target = parseInt(el.getAttribute('data-target'));
           let current = 0;
-          const increment = target / 60; // 60 frames ≈ 1s si requestAnimationFrame va a 60fps
+          const increment = target / 60;
           const updateCounter = () => {
             current += increment;
             if (current < target) {
@@ -83,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           };
           updateCounter();
-          observer.unobserve(el); // Para que no se ejecute de nuevo
+          observer.unobserve(el);
         }
       });
     }, { threshold: 0.5 });
