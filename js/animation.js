@@ -1,4 +1,4 @@
-// === animation.js (GSAP) ===
+// === animation.js (GSAP + Intersection Observer para contadores) ===
 document.addEventListener('DOMContentLoaded', () => {
   // Hero título animado
   gsap.from('.hero-title', {
@@ -62,23 +62,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Animación de contadores en estadísticas
-  const stats = document.querySelectorAll('.stat-number');
-  stats.forEach(stat => {
-    const target = parseInt(stat.getAttribute('data-target'));
-    gsap.to(stat, {
-      scrollTrigger: {
-        trigger: stat,
-        start: 'top 80%',
-      },
-      duration: 2,
-      innerText: target,
-      snap: { innerText: 1 },
-      ease: 'power2.out'
-    });
-  });
+  // ===== CONTADORES ANIMADOS (Intersection Observer) =====
+  const counters = document.querySelectorAll('.stat-number');
+  if (counters.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = parseInt(el.getAttribute('data-target'));
+          let current = 0;
+          const increment = target / 60; // 60 frames ≈ 1s si requestAnimationFrame va a 60fps
+          const updateCounter = () => {
+            current += increment;
+            if (current < target) {
+              el.innerText = Math.ceil(current);
+              requestAnimationFrame(updateCounter);
+            } else {
+              el.innerText = target;
+              observer.unobserve(el);
+            }
+          };
+          updateCounter();
+          observer.unobserve(el); // Para que no se ejecute de nuevo
+        }
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(c => observer.observe(c));
+  }
 
-    // Animación de entrada para las tarjetas de valor (estilo habilidades)
+  // Animación de entrada para las tarjetas de valor (estilo habilidades)
   gsap.from('#value .skill-card', {
     scrollTrigger: {
       trigger: '#value',
@@ -90,3 +102,4 @@ document.addEventListener('DOMContentLoaded', () => {
     stagger: 0.2,
     ease: 'back.out(1.2)'
   });
+});
