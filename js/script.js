@@ -42,12 +42,15 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   typeEffect();
 
-  // ===== LOADER =====
-  window.addEventListener('load', function() {
-    setTimeout(function() {
-      document.getElementById('loader').classList.add('hidden');
-    }, 500); // Simula un tiempo de carga
-  });
+  // ===== LOADER (ocultar inmediatamente) =====
+  const loader = document.getElementById('loader');
+  if (loader) {
+    loader.style.opacity = '0';
+    loader.style.visibility = 'hidden';
+    setTimeout(() => {
+      loader.style.display = 'none';
+    }, 100); // Reducido a 100ms para que desaparezca rápido
+  }
 
   // ===== NAVBAR =====
   const navbar = document.getElementById('navbar');
@@ -58,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
   window.addEventListener('scroll', function() {
     const currentScroll = window.pageYOffset;
 
-    // Ocultar navbar al bajar, mostrar al subir
     if (currentScroll > lastScroll && currentScroll > 100) {
       navbar.classList.add('hidden');
     } else {
@@ -66,7 +68,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     lastScroll = currentScroll;
 
-    // Resaltar sección activa en el navbar
     let current = '';
     sections.forEach(section => {
       const sectionTop = section.offsetTop - 100;
@@ -83,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    // Mostrar/ocultar botón volver arriba
     const backToTop = document.getElementById('backToTop');
     if (window.pageYOffset > 500) {
       backToTop.classList.add('visible');
@@ -92,7 +92,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Scroll suave al hacer clic en enlaces del navbar
   navLinks.forEach(link => {
     link.addEventListener('click', function(e) {
       e.preventDefault();
@@ -104,7 +103,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Botón volver arriba: clic
   document.getElementById('backToTop').addEventListener('click', function() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
@@ -122,7 +120,6 @@ document.addEventListener('DOMContentLoaded', function() {
       const emailError = email.nextElementSibling;
       const messageError = message.nextElementSibling;
 
-      // Resetear errores
       [nameError, emailError, messageError].forEach(err => err.style.display = 'none');
       name.style.borderColor = 'var(--glass-border)';
       email.style.borderColor = 'var(--glass-border)';
@@ -153,7 +150,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       if (isValid) {
-        // Simular envío exitoso
         document.getElementById('formSuccess').style.display = 'block';
         form.reset();
         setTimeout(() => {
