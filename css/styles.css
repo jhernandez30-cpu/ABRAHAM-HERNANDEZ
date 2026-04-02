@@ -331,6 +331,53 @@ footer {
   padding-top: calc(100px + var(--navbar-height));
 }
 
+/* ===== ESTILOS GLOBALES PARA SKILLS (para que funcionen en #skills y en #value) ===== */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.skill-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(5px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 30px;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.skill-card:hover {
+  transform: translateY(-10px);
+  border-color: var(--accent);
+  box-shadow: var(--neon-shadow);
+}
+
+.skill-icon {
+  font-size: 3rem;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.skill-bar {
+  width: 100%;
+  height: 10px;
+  background: #333;
+  border-radius: 5px;
+  margin-top: 15px;
+  overflow: hidden;
+}
+
+.skill-progress {
+  height: 100%;
+  background: var(--accent);
+  width: 0;
+  border-radius: 5px;
+  box-shadow: var(--neon-shadow);
+}
+
 /* Proyectos */
 .projects-grid {
   display: grid;
@@ -384,25 +431,6 @@ footer {
   font-size: 0.9rem;
 }
 
-/* ===== SECCIÓN VALOR PROFESIONAL (CORREGIDO) ===== */
-.value-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 30px;
-  margin-top: 50px;
-}
-
-.value-grid .glass-card {
-  transition: all 0.3s ease;
-  padding: 25px;
-  text-align: center;
-}
-
-.value-grid .glass-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--accent);
-}
-
 /* Ajuste lista sobre mí */
 #about ul li {
   margin-bottom: 12px;
@@ -426,10 +454,10 @@ footer {
   .hero-text h1 {
     font-size: 2rem;
   }
-  .projects-grid {
+  .skills-grid {
     gap: 20px;
   }
-  .value-grid {
+  .projects-grid {
     gap: 20px;
   }
 }
