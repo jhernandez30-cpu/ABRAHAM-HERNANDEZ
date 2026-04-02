@@ -7,10 +7,54 @@
   <!-- Fuentes e iconos -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- CSS (solo los necesarios) -->
+  <!-- CSS principales -->
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/hero.css">
-  <!-- skills.css eliminado para evitar conflictos -->
+  <!-- Eliminado skills.css para evitar conflictos -->
+  
+  <!-- Estilos críticos en línea para garantizar que #value se vea siempre -->
+  <style>
+    /* Garantizar visibilidad inmediata de la sección #value */
+    #value {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    #value .skills-grid {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+      gap: 30px !important;
+      margin-top: 50px !important;
+    }
+    #value .skill-card {
+      background: var(--glass-bg, rgba(255,255,255,0.05)) !important;
+      backdrop-filter: blur(5px) !important;
+      border: 1px solid var(--glass-border, rgba(255,255,255,0.1)) !important;
+      border-radius: 20px !important;
+      padding: 30px !important;
+      text-align: center !important;
+      transition: all 0.3s ease !important;
+    }
+    #value .skill-card:hover {
+      transform: translateY(-10px) !important;
+      border-color: var(--accent, #00ff9d) !important;
+      box-shadow: 0 0 20px rgba(0,255,157,0.4) !important;
+    }
+    #value .skill-icon {
+      font-size: 3rem !important;
+      color: var(--accent, #00ff9d) !important;
+      margin-bottom: 20px !important;
+    }
+    #value .skill-card h3 {
+      font-size: 1.5rem !important;
+      margin-bottom: 15px !important;
+    }
+    #value .skill-card p {
+      color: var(--text-secondary, #b0b0b0) !important;
+      font-size: 0.95rem !important;
+    }
+  </style>
+
   <!-- GSAP y ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -22,48 +66,10 @@
       }
     }
   </script>
-  <!-- Estilos de respaldo para garantizar que #value se vea como #skills -->
-  <style>
-    /* Garantizar que la sección #value herede los mismos estilos que #skills */
-    #value .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-      margin-top: 50px;
-    }
-    #value .skill-card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(5px);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      padding: 30px;
-      transition: all 0.3s ease;
-      text-align: center;
-    }
-    #value .skill-card:hover {
-      transform: translateY(-10px);
-      border-color: var(--accent);
-      box-shadow: var(--neon-shadow);
-    }
-    #value .skill-icon {
-      font-size: 3rem;
-      color: var(--accent);
-      margin-bottom: 20px;
-    }
-    #value .skill-card h3 {
-      font-size: 1.5rem;
-      margin-bottom: 15px;
-    }
-    #value .skill-card p {
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      line-height: 1.5;
-    }
-  </style>
 </head>
 <body>
-  <!-- LOADER -->
-  <div class="loader-wrapper" id="loader">
+  <!-- LOADER (se ocultará inmediatamente al cargar) -->
+  <div class="loader-wrapper" id="loader" style="transition: opacity 0.3s;">
     <div class="loader"></div>
   </div>
 
@@ -87,7 +93,7 @@
   <!-- Cursor personalizado -->
   <div class="custom-cursor"></div>
 
-  <!-- Fondo Three.js -->
+  <!-- Fondo Three.js (se añadirá con un pequeño retraso para no bloquear) -->
   <canvas id="bg-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></canvas>
 
   <!-- HERO SECTION -->
@@ -259,7 +265,7 @@
     </div>
   </section>
 
-  <!-- ¿POR QUÉ TRABAJAR CONMIGO? (mismo estilo que Habilidades técnicas) -->
+  <!-- ¿POR QUÉ TRABAJAR CONMIGO? -->
   <section id="value">
     <div class="container">
       <h2>¿Por qué trabajar conmigo?</h2>
@@ -333,5 +339,31 @@
   <script type="module" src="js/three-background.js"></script>
   <script src="js/animation.js"></script>
   <script src="js/script.js"></script>
+  <script>
+    // Forzar la ocultación del loader inmediatamente y asegurar que la sección #value sea visible
+    (function() {
+      // Ocultar loader lo antes posible
+      var loader = document.getElementById('loader');
+      if (loader) {
+        loader.style.opacity = '0';
+        loader.style.visibility = 'hidden';
+        setTimeout(function() {
+          loader.style.display = 'none';
+        }, 300);
+      }
+      // Garantizar que la sección #value no tenga estilos que la oculten
+      var valueSection = document.getElementById('value');
+      if (valueSection) {
+        valueSection.style.display = 'block';
+        valueSection.style.visibility = 'visible';
+        valueSection.style.opacity = '1';
+      }
+      // También forzar que el grid sea visible
+      var valueGrid = document.querySelector('#value .skills-grid');
+      if (valueGrid) {
+        valueGrid.style.display = 'grid';
+      }
+    })();
+  </script>
 </body>
 </html>
