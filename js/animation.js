@@ -24,9 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ease: 'elastic.out(1, 0.5)'
   });
 
-  // NOTA: La animación de .hero-buttons a se ha eliminado porque esos botones ya no existen en el hero.
-  // Ahora los botones están debajo de "Sobre mí" y no requieren animación de entrada.
-
   // ScrollTrigger para títulos de secciones (excepto hero)
   gsap.utils.toArray('section:not(#hero)').forEach(section => {
     gsap.from(section.querySelector('h2'), {
@@ -84,16 +81,5 @@ document.addEventListener('DOMContentLoaded', () => {
     counters.forEach(c => observer.observe(c));
   }
 
-  // Animación de entrada para las tarjetas de valor (estilo habilidades)
-  gsap.from('#value .skill-card', {
-    scrollTrigger: {
-      trigger: '#value',
-      start: 'top 80%',
-    },
-    y: 50,
-    opacity: 0,
-    duration: 0.8,
-    stagger: 0.2,
-    ease: 'back.out(1.2)'
-  });
+  // NOTA: Se ha eliminado la animación de #value .skill-card para que aparezcan siempre visibles.
 });
