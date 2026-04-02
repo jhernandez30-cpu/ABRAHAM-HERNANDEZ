@@ -68,8 +68,8 @@
   </script>
 </head>
 <body>
-  <!-- LOADER (se ocultará inmediatamente al cargar) -->
-  <div class="loader-wrapper" id="loader" style="transition: opacity 0.3s;">
+  <!-- LOADER (se oculta inmediatamente) -->
+  <div class="loader-wrapper" id="loader" style="transition: none;">
     <div class="loader"></div>
   </div>
 
@@ -93,7 +93,7 @@
   <!-- Cursor personalizado -->
   <div class="custom-cursor"></div>
 
-  <!-- Fondo Three.js (se añadirá con un pequeño retraso para no bloquear) -->
+  <!-- Fondo Three.js -->
   <canvas id="bg-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></canvas>
 
   <!-- HERO SECTION -->
@@ -339,31 +339,5 @@
   <script type="module" src="js/three-background.js"></script>
   <script src="js/animation.js"></script>
   <script src="js/script.js"></script>
-  <script>
-    // Forzar la ocultación del loader inmediatamente y asegurar que la sección #value sea visible
-    (function() {
-      // Ocultar loader lo antes posible
-      var loader = document.getElementById('loader');
-      if (loader) {
-        loader.style.opacity = '0';
-        loader.style.visibility = 'hidden';
-        setTimeout(function() {
-          loader.style.display = 'none';
-        }, 300);
-      }
-      // Garantizar que la sección #value no tenga estilos que la oculten
-      var valueSection = document.getElementById('value');
-      if (valueSection) {
-        valueSection.style.display = 'block';
-        valueSection.style.visibility = 'visible';
-        valueSection.style.opacity = '1';
-      }
-      // También forzar que el grid sea visible
-      var valueGrid = document.querySelector('#value .skills-grid');
-      if (valueGrid) {
-        valueGrid.style.display = 'grid';
-      }
-    })();
-  </script>
 </body>
 </html>
