@@ -10,7 +10,7 @@
   <!-- CSS (solo los necesarios) -->
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/hero.css">
-  <link rel="stylesheet" href="css/skills.css">
+  <!-- skills.css eliminado para evitar conflictos -->
   <!-- GSAP y ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -22,6 +22,44 @@
       }
     }
   </script>
+  <!-- Estilos de respaldo para garantizar que #value se vea como #skills -->
+  <style>
+    /* Garantizar que la sección #value herede los mismos estilos que #skills */
+    #value .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+    }
+    #value .skill-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(5px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 30px;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+    #value .skill-card:hover {
+      transform: translateY(-10px);
+      border-color: var(--accent);
+      box-shadow: var(--neon-shadow);
+    }
+    #value .skill-icon {
+      font-size: 3rem;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+    #value .skill-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+    #value .skill-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+  </style>
 </head>
 <body>
   <!-- LOADER -->
@@ -52,7 +90,7 @@
   <!-- Fondo Three.js -->
   <canvas id="bg-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></canvas>
 
-  <!-- HERO SECTION (sin botones, solo redes) -->
+  <!-- HERO SECTION -->
   <section id="hero">
     <div class="container hero-content">
       <div class="hero-text">
@@ -66,7 +104,6 @@
         <p style="margin-bottom: 30px; color: var(--text-secondary); font-size: 1.2rem;">
           Construyo dashboards y sistemas en tiempo real que automatizan procesos y reducen trabajo manual.
         </p>
-        <!-- Redes sociales con tooltip -->
         <div style="margin-top: 30px; display: flex; gap: 20px; justify-content: center;">
           <a href="https://wa.me/50589871374" target="_blank" data-tooltip="WhatsApp" style="color: var(--accent); font-size: 1.8rem;"><i class="fab fa-whatsapp"></i></a>
           <a href="https://github.com/jhernandez30-cpu" target="_blank" data-tooltip="GitHub" style="color: var(--accent); font-size: 1.8rem;"><i class="fab fa-github"></i></a>
