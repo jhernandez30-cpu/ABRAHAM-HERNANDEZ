@@ -331,7 +331,7 @@ footer {
   padding-top: calc(100px + var(--navbar-height));
 }
 
-/* ===== ESTILOS GLOBALES PARA SKILLS (para #skills y #value) ===== */
+/* ===== ESTILOS GLOBALES PARA SKILLS (para que funcionen en #skills y en #value) ===== */
 .skills-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -376,54 +376,6 @@ footer {
   width: 0;
   border-radius: 5px;
   box-shadow: var(--neon-shadow);
-}
-
-/* ===== ESTILOS ESPECÍFICOS PARA #value (por si acaso) ===== */
-#value {
-  padding: 100px 20px;
-  position: relative;
-  z-index: 2;
-}
-
-#value .skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 30px;
-  margin-top: 50px;
-}
-
-#value .skill-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(5px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 30px;
-  transition: all 0.3s ease;
-  text-align: center;
-}
-
-#value .skill-card:hover {
-  transform: translateY(-10px);
-  border-color: var(--accent);
-  box-shadow: var(--neon-shadow);
-}
-
-#value .skill-icon {
-  font-size: 3rem;
-  color: var(--accent);
-  margin-bottom: 20px;
-}
-
-#value .skill-card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-  color: var(--text-primary);
-}
-
-#value .skill-card p {
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.5;
 }
 
 /* Proyectos */
