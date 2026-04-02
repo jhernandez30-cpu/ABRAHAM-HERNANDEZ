@@ -7,7 +7,7 @@
   <!-- Fuentes e iconos -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- CSS -->
+  <!-- CSS (solo los necesarios) -->
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/hero.css">
   <link rel="stylesheet" href="css/skills.css">
@@ -52,7 +52,7 @@
   <!-- Fondo Three.js -->
   <canvas id="bg-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></canvas>
 
-  <!-- HERO SECTION -->
+  <!-- HERO SECTION (sin botones, solo redes) -->
   <section id="hero">
     <div class="container hero-content">
       <div class="hero-text">
@@ -66,14 +66,6 @@
         <p style="margin-bottom: 30px; color: var(--text-secondary); font-size: 1.2rem;">
           Construyo dashboards y sistemas en tiempo real que automatizan procesos y reducen trabajo manual.
         </p>
-        <div class="hero-buttons">
-          <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-primary" data-tooltip="Visita mi empresa">
-            <i class="fas fa-shield-alt"></i> ITSA SEGURITY
-          </a>
-          <a href="cv.pdf" download class="btn btn-outline" data-tooltip="Descarga mi CV">
-            <i class="fas fa-download"></i> Descargar CV
-          </a>
-        </div>
         <!-- Redes sociales con tooltip -->
         <div style="margin-top: 30px; display: flex; gap: 20px; justify-content: center;">
           <a href="https://wa.me/50589871374" target="_blank" data-tooltip="WhatsApp" style="color: var(--accent); font-size: 1.8rem;"><i class="fab fa-whatsapp"></i></a>
@@ -108,6 +100,16 @@
       </div>
     </div>
   </section>
+
+  <!-- BOTONES DESTACADOS (debajo de Sobre mí) -->
+  <div class="container" style="display: flex; justify-content: center; gap: 20px; margin: 20px 0 40px; flex-wrap: wrap;">
+    <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-primary" data-tooltip="Visita mi empresa">
+      <i class="fas fa-shield-alt"></i> ITSA SEGURITY
+    </a>
+    <a href="cv.pdf" download class="btn btn-outline" data-tooltip="Descarga mi CV">
+      <i class="fas fa-download"></i> Descargar CV
+    </a>
+  </div>
 
   <!-- ESTADÍSTICAS ANIMADAS -->
   <div class="container">
