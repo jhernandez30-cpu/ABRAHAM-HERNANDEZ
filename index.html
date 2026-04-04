@@ -4,13 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Abraham Hernández | Frontend Developer · Vue · React · Tiempo Real</title>
+  
+  <!-- Meta etiquetas SEO -->
+  <meta name="description" content="Portafolio de Abraham Hernández, desarrollador frontend especializado en Vue, React, aplicaciones en tiempo real y automatización con Python. +5 años de experiencia.">
+  <meta name="keywords" content="desarrollador frontend, Vue, React, WebSockets, Python, portafolio, Abraham Hernández">
+  <meta name="author" content="Abraham Hernández">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Favicon (puedes reemplazar la URL con tu propio icono) -->
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1061/1061315.png">
+  
   <!-- Fuentes e iconos -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
   <!-- CSS principales -->
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/hero.css">
-  <!-- Eliminado skills.css para evitar conflictos -->
   
   <!-- Estilos críticos en línea para garantizar que #value se vea siempre -->
   <style>
@@ -53,6 +63,18 @@
       color: var(--text-secondary, #b0b0b0) !important;
       font-size: 0.95rem !important;
     }
+
+    /* Texto oculto visualmente para lectores de pantalla */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
   </style>
 
   <!-- GSAP y ScrollTrigger -->
@@ -66,6 +88,8 @@
       }
     }
   </script>
+  <!-- Política de seguridad CSP -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:;">
 </head>
 <body>
   <!-- LOADER (se oculta inmediatamente) -->
@@ -73,17 +97,19 @@
     <div class="loader"></div>
   </div>
 
-  <!-- NAVBAR -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-links">
-      <a href="#hero" class="nav-link active">Inicio</a>
-      <a href="#about" class="nav-link">Sobre mí</a>
-      <a href="#skills" class="nav-link">Habilidades</a>
-      <a href="#projects" class="nav-link">Proyectos</a>
-      <a href="#value" class="nav-link">Por qué elegirme</a>
-      <a href="#contact" class="nav-link">Contacto</a>
-    </div>
-  </nav>
+  <!-- HEADER con navbar -->
+  <header>
+    <nav class="navbar" id="navbar">
+      <div class="nav-links">
+        <a href="#hero" class="nav-link active">Inicio</a>
+        <a href="#about" class="nav-link">Sobre mí</a>
+        <a href="#skills" class="nav-link">Habilidades</a>
+        <a href="#projects" class="nav-link">Proyectos</a>
+        <a href="#value" class="nav-link">Por qué elegirme</a>
+        <a href="#contact" class="nav-link">Contacto</a>
+      </div>
+    </nav>
+  </header>
 
   <!-- BOTÓN VOLVER ARRIBA -->
   <div class="back-to-top" id="backToTop">
@@ -96,238 +122,251 @@
   <!-- Fondo Three.js -->
   <canvas id="bg-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></canvas>
 
-  <!-- HERO SECTION -->
-  <section id="hero">
-    <div class="container hero-content">
-      <div class="hero-text">
-        <h1 class="hero-title">
-          Abraham Hernández<br>
-          <span class="typed"></span>
-        </h1>
-        <div class="dynamic-text">
-          <span class="typed-text"></span><span class="cursor">&nbsp;</span>
-        </div>
-        <p style="margin-bottom: 30px; color: var(--text-secondary); font-size: 1.2rem;">
-          Construyo dashboards y sistemas en tiempo real que automatizan procesos y reducen trabajo manual.
-        </p>
-        <div style="margin-top: 30px; display: flex; gap: 20px; justify-content: center;">
-          <a href="https://wa.me/50589871374" target="_blank" data-tooltip="WhatsApp" style="color: var(--accent); font-size: 1.8rem;"><i class="fab fa-whatsapp"></i></a>
-          <a href="https://github.com/jhernandez30-cpu" target="_blank" data-tooltip="GitHub" style="color: var(--accent); font-size: 1.8rem;"><i class="fab fa-github"></i></a>
-          <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" data-tooltip="LinkedIn" style="color: var(--accent); font-size: 1.8rem;"><i class="fab fa-linkedin"></i></a>
-        </div>
-      </div>
-      <div class="hero-image">
-        <img src="profile.jpg" alt="Abraham Hernández" class="profile-img" data-tooltip="¡Hola, soy Abraham!">
-      </div>
-    </div>
-  </section>
-
-  <!-- SOBRE MÍ -->
-  <section id="about">
-    <div class="container">
-      <h2>Sobre mí</h2>
-      <div class="about-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center;">
-        <div>
-          <ul style="list-style: none; padding: 0;">
-            <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Frontend con Vue, React, Next.js</li>
-            <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Apps en tiempo real (WebSockets, Socket.IO)</li>
-            <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Automatización con Python y APIs</li>
-            <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Trabajo en equipos ágiles (Scrum)</li>
-          </ul>
-        </div>
-        <div class="glass-card" style="padding: 30px; text-align: center;">
-          <i class="fas fa-bullhorn" style="font-size: 3rem; color: var(--accent);"></i>
-          <h3 style="margin: 20px 0;">Impacto real</h3>
-          <p>He ayudado a empresas a reducir hasta un 40% el tiempo en tareas repetitivas con dashboards automatizados.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- BOTONES DESTACADOS (debajo de Sobre mí) -->
-  <div class="container" style="display: flex; justify-content: center; gap: 20px; margin: 20px 0 40px; flex-wrap: wrap;">
-    <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-primary" data-tooltip="Visita mi empresa">
-      <i class="fas fa-shield-alt"></i> ITSA SEGURITY
-    </a>
-    <a href="cv.pdf" download class="btn btn-outline" data-tooltip="Descarga mi CV">
-      <i class="fas fa-download"></i> Descargar CV
-    </a>
-  </div>
-
-  <!-- ESTADÍSTICAS ANIMADAS -->
-  <div class="container">
-    <div class="stats-grid">
-      <div class="stat-item">
-        <div class="stat-number" id="stat1" data-target="5">0</div>
-        <div class="stat-label">Años de experiencia</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number" id="stat2" data-target="15">0</div>
-        <div class="stat-label">Proyectos completados</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number" id="stat3" data-target="10">0</div>
-        <div class="stat-label">Clientes satisfechos</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- HABILIDADES TÉCNICAS -->
-  <section id="skills">
-    <div class="container">
-      <h2>Habilidades técnicas</h2>
-      <div class="skills-grid">
-        <div class="skill-card" data-tooltip="90%">
-          <div class="skill-icon"><i class="fab fa-vuejs"></i></div>
-          <h3>Vue / React</h3>
-          <div class="skill-bar"><div class="skill-progress" data-width="90"></div></div>
-        </div>
-        <div class="skill-card" data-tooltip="85%">
-          <div class="skill-icon"><i class="fab fa-js"></i></div>
-          <h3>JavaScript / TypeScript</h3>
-          <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
-        </div>
-        <div class="skill-card" data-tooltip="80%">
-          <div class="skill-icon"><i class="fas fa-exchange-alt"></i></div>
-          <h3>WebSockets / Socket.IO</h3>
-          <div class="skill-bar"><div class="skill-progress" data-width="80"></div></div>
-        </div>
-        <div class="skill-card" data-tooltip="75%">
-          <div class="skill-icon"><i class="fab fa-python"></i></div>
-          <h3>Python (Automatización)</h3>
-          <div class="skill-bar"><div class="skill-progress" data-width="75"></div></div>
-        </div>
-        <div class="skill-card" data-tooltip="85%">
-          <div class="skill-icon"><i class="fas fa-database"></i></div>
-          <h3>SQL / APIs REST</h3>
-          <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
-        </div>
-        <div class="skill-card" data-tooltip="80%">
-          <div class="skill-icon"><i class="fab fa-git-alt"></i></div>
-          <h3>Git / GitHub Actions</h3>
-          <div class="skill-bar"><div class="skill-progress" data-width="80"></div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROYECTOS DESTACADOS -->
-  <section id="projects">
-    <div class="container">
-      <h2>Proyectos destacados</h2>
-      <div class="projects-grid">
-        <!-- Proyecto 1 -->
-        <div class="project-card">
-          <div class="project-img"><i class="fas fa-lock"></i></div>
-          <div class="project-info">
-            <h3>ITSA Segurity</h3>
-            <p><strong>Problema:</strong> Empresas sin visibilidad en tiempo real de amenazas.</p>
-            <p><strong>Solución:</strong> Dashboard con WebSockets que muestra alertas al instante.</p>
-            <p><strong>Stack:</strong> React, Socket.IO, Node.js, MongoDB.</p>
-            <p><strong>Resultado:</strong> Reducción del 30% en tiempo de respuesta ante incidentes.</p>
-            <div class="project-links">
-              <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-outline" style="padding: 8px 20px;">Live demo →</a>
-              <a href="https://github.com/jhernandez30-cpu/ITSA-Segurity" target="_blank" class="btn btn-outline" style="padding: 8px 20px;">Código</a>
-            </div>
+  <!-- CONTENIDO PRINCIPAL -->
+  <main>
+    <!-- HERO SECTION -->
+    <section id="hero">
+      <div class="container hero-content">
+        <div class="hero-text">
+          <h1 class="hero-title">
+            Abraham Hernández<br>
+            <span class="typed"></span>
+          </h1>
+          <div class="dynamic-text">
+            <span class="typed-text"></span><span class="cursor">&nbsp;</span>
+          </div>
+          <p style="margin-bottom: 30px; color: var(--text-secondary); font-size: 1.2rem;">
+            Construyo dashboards y sistemas en tiempo real que automatizan procesos y reducen trabajo manual.
+          </p>
+          <!-- Redes sociales con aria-label para accesibilidad -->
+          <div style="margin-top: 30px; display: flex; gap: 20px; justify-content: center;">
+            <a href="https://wa.me/50589871374" target="_blank" aria-label="WhatsApp" data-tooltip="WhatsApp" style="color: var(--accent); font-size: 1.8rem;">
+              <i class="fab fa-whatsapp"></i>
+              <span class="sr-only">WhatsApp</span>
+            </a>
+            <a href="https://github.com/jhernandez30-cpu" target="_blank" aria-label="GitHub" data-tooltip="GitHub" style="color: var(--accent); font-size: 1.8rem;">
+              <i class="fab fa-github"></i>
+              <span class="sr-only">GitHub</span>
+            </a>
+            <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" aria-label="LinkedIn" data-tooltip="LinkedIn" style="color: var(--accent); font-size: 1.8rem;">
+              <i class="fab fa-linkedin"></i>
+              <span class="sr-only">LinkedIn</span>
+            </a>
           </div>
         </div>
-        <!-- Proyecto 2 -->
-        <div class="project-card">
-          <div class="project-img"><i class="fas fa-chart-line"></i></div>
-          <div class="project-info">
-            <h3>Dashboard Analytics</h3>
-            <p><strong>Problema:</strong> Datos dispersos sin visualización clara.</p>
-            <p><strong>Solución:</strong> Dashboard interactivo con filtros en tiempo real.</p>
-            <p><strong>Stack:</strong> Vue, D3.js, Express, PostgreSQL.</p>
-            <p><strong>Resultado:</strong> Toma de decisiones 50% más rápida para el equipo de marketing.</p>
-            <div class="project-links">
-              <a href="#" target="_blank" class="btn btn-outline" style="padding: 8px 20px;">Live demo →</a>
-              <a href="#" class="btn btn-outline" style="padding: 8px 20px;">Código</a>
-            </div>
-          </div>
+        <div class="hero-image">
+          <img src="profile.jpg" alt="Abraham Hernández - Desarrollador Frontend" class="profile-img" data-tooltip="¡Hola, soy Abraham!">
         </div>
-        <!-- Proyecto 3 -->
-        <div class="project-card">
-          <div class="project-img"><i class="fas fa-robot"></i></div>
-          <div class="project-info">
-            <h3>AI Chatbot</h3>
-            <p><strong>Problema:</strong> Atención al cliente 24/7 con alta demanda.</p>
-            <p><strong>Solución:</strong> Chatbot con NLP que responde consultas comunes y escala a agente humano.</p>
-            <p><strong>Stack:</strong> React, Python (Flask), Rasa, MongoDB.</p>
-            <p><strong>Resultado:</strong> 40% de consultas resueltas sin intervención humana, ahorro de 20h/semana.</p>
-            <div class="project-links">
-              <a href="#" target="_blank" class="btn btn-outline" style="padding: 8px 20px;">Live demo →</a>
-              <a href="#" class="btn btn-outline" style="padding: 8px 20px;">Código</a>
-            </div>
+      </div>
+    </section>
+
+    <!-- SOBRE MÍ -->
+    <section id="about">
+      <div class="container">
+        <h2>Sobre mí</h2>
+        <div class="about-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center;">
+          <div>
+            <ul style="list-style: none; padding: 0;">
+              <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Frontend con Vue, React, Next.js</li>
+              <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Apps en tiempo real (WebSockets, Socket.IO)</li>
+              <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Automatización con Python y APIs</li>
+              <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Trabajo en equipos ágiles (Scrum)</li>
+            </ul>
+          </div>
+          <div class="glass-card" style="padding: 30px; text-align: center;">
+            <i class="fas fa-bullhorn" style="font-size: 3rem; color: var(--accent);"></i>
+            <h3 style="margin: 20px 0;">Impacto real</h3>
+            <p>He ayudado a empresas a reducir hasta un 40% el tiempo en tareas repetitivas con dashboards automatizados.</p>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ¿POR QUÉ TRABAJAR CONMIGO? -->
-  <section id="value">
+    <!-- BOTONES DESTACADOS (debajo de Sobre mí) -->
+    <div class="container" style="display: flex; justify-content: center; gap: 20px; margin: 20px 0 40px; flex-wrap: wrap;">
+      <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-primary" data-tooltip="Visita mi empresa" aria-label="Visitar ITSA Segurity">
+        <i class="fas fa-shield-alt"></i> ITSA SEGURITY
+      </a>
+      <a href="cv.pdf" download class="btn btn-outline" data-tooltip="Descarga mi CV" aria-label="Descargar currículum en PDF">
+        <i class="fas fa-download"></i> Descargar CV
+      </a>
+    </div>
+
+    <!-- ESTADÍSTICAS ANIMADAS -->
     <div class="container">
-      <h2>¿Por qué trabajar conmigo?</h2>
-      <div class="skills-grid">
-        <div class="skill-card">
-          <div class="skill-icon"><i class="fas fa-bolt"></i></div>
-          <h3>Experiencia en tiempo real</h3>
-          <p>WebSockets, Socket.IO, actualizaciones en vivo para dashboards y notificaciones.</p>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number" id="stat1" data-target="5">0</div>
+          <div class="stat-label">Años de experiencia</div>
         </div>
-        <div class="skill-card">
-          <div class="skill-icon"><i class="fas fa-robot"></i></div>
-          <h3>Automatización con Python</h3>
-          <p>Scripts que ahorran horas de trabajo repetitivo y optimizan procesos internos.</p>
+        <div class="stat-item">
+          <div class="stat-number" id="stat2" data-target="15">0</div>
+          <div class="stat-label">Proyectos completados</div>
         </div>
-        <div class="skill-card">
-          <div class="skill-icon"><i class="fas fa-plug"></i></div>
-          <h3>Integración API REST</h3>
-          <p>Consumo y exposición de servicios robustos, con documentación OpenAPI.</p>
-        </div>
-        <div class="skill-card">
-          <div class="skill-icon"><i class="fas fa-users"></i></div>
-          <h3>Trabajo en equipos ágiles</h3>
-          <p>Scrum, revisiones de código, CI/CD y colaboración con equipos multidisciplinares.</p>
+        <div class="stat-item">
+          <div class="stat-number" id="stat3" data-target="10">0</div>
+          <div class="stat-label">Clientes satisfechos</div>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- CONTACTO -->
-  <section id="contact">
-    <div class="container">
-      <h2>Contacto</h2>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px;">
-        <div>
-          <form class="glass-card" style="padding: 40px;" id="contactForm">
-            <div style="margin-bottom: 20px;">
-              <input type="text" placeholder="Nombre" id="name" style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;">
-              <small class="error-message" style="color: #ff4444; display: none;"></small>
-            </div>
-            <div style="margin-bottom: 20px;">
-              <input type="email" placeholder="Email" id="email" style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;">
-              <small class="error-message" style="color: #ff4444; display: none;"></small>
-            </div>
-            <div style="margin-bottom: 20px;">
-              <textarea placeholder="Mensaje" rows="5" id="message" style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;"></textarea>
-              <small class="error-message" style="color: #ff4444; display: none;"></small>
-            </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Enviar mensaje</button>
-            <div id="formSuccess" style="color: var(--accent); text-align: center; margin-top: 15px; display: none;">¡Mensaje enviado con éxito!</div>
-          </form>
-        </div>
-        <div>
-          <div class="glass-card" style="padding: 30px;">
-            <h3 style="margin-bottom: 20px;">Redes y contacto directo</h3>
-            <p><i class="fab fa-whatsapp" style="color: var(--accent);"></i> <a href="https://wa.me/50589871374" data-tooltip="Envíame un WhatsApp">+505 8987 1374</a></p>
-            <p><i class="fab fa-github" style="color: var(--accent);"></i> <a href="https://github.com/jhernandez30-cpu" data-tooltip="Mi GitHub">@jhernandez30-cpu</a></p>
-            <p><i class="fab fa-linkedin" style="color: var(--accent);"></i> <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" data-tooltip="Mi LinkedIn">LinkedIn: Abraham Hernández</a></p>
+    <!-- HABILIDADES TÉCNICAS -->
+    <section id="skills">
+      <div class="container">
+        <h2>Habilidades técnicas</h2>
+        <div class="skills-grid">
+          <div class="skill-card" data-tooltip="90%">
+            <div class="skill-icon"><i class="fab fa-vuejs"></i></div>
+            <h3>Vue / React</h3>
+            <div class="skill-bar"><div class="skill-progress" data-width="90"></div></div>
+          </div>
+          <div class="skill-card" data-tooltip="85%">
+            <div class="skill-icon"><i class="fab fa-js"></i></div>
+            <h3>JavaScript / TypeScript</h3>
+            <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
+          </div>
+          <div class="skill-card" data-tooltip="80%">
+            <div class="skill-icon"><i class="fas fa-exchange-alt"></i></div>
+            <h3>WebSockets / Socket.IO</h3>
+            <div class="skill-bar"><div class="skill-progress" data-width="80"></div></div>
+          </div>
+          <div class="skill-card" data-tooltip="75%">
+            <div class="skill-icon"><i class="fab fa-python"></i></div>
+            <h3>Python (Automatización)</h3>
+            <div class="skill-bar"><div class="skill-progress" data-width="75"></div></div>
+          </div>
+          <div class="skill-card" data-tooltip="85%">
+            <div class="skill-icon"><i class="fas fa-database"></i></div>
+            <h3>SQL / APIs REST</h3>
+            <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
+          </div>
+          <div class="skill-card" data-tooltip="80%">
+            <div class="skill-icon"><i class="fab fa-git-alt"></i></div>
+            <h3>Git / GitHub Actions</h3>
+            <div class="skill-bar"><div class="skill-progress" data-width="80"></div></div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- PROYECTOS DESTACADOS -->
+    <section id="projects">
+      <div class="container">
+        <h2>Proyectos destacados</h2>
+        <div class="projects-grid">
+          <!-- Proyecto 1 -->
+          <div class="project-card">
+            <div class="project-img"><i class="fas fa-lock"></i></div>
+            <div class="project-info">
+              <h3>ITSA Segurity</h3>
+              <p><strong>Problema:</strong> Empresas sin visibilidad en tiempo real de amenazas.</p>
+              <p><strong>Solución:</strong> Dashboard con WebSockets que muestra alertas al instante.</p>
+              <p><strong>Stack:</strong> React, Socket.IO, Node.js, MongoDB.</p>
+              <p><strong>Resultado:</strong> Reducción del 30% en tiempo de respuesta ante incidentes.</p>
+              <div class="project-links">
+                <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Ver demo de ITSA Segurity">Live demo →</a>
+                <a href="https://github.com/jhernandez30-cpu/ITSA-Segurity" target="_blank" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Ver código en GitHub">Código</a>
+              </div>
+            </div>
+          </div>
+          <!-- Proyecto 2 -->
+          <div class="project-card">
+            <div class="project-img"><i class="fas fa-chart-line"></i></div>
+            <div class="project-info">
+              <h3>Dashboard Analytics</h3>
+              <p><strong>Problema:</strong> Datos dispersos sin visualización clara.</p>
+              <p><strong>Solución:</strong> Dashboard interactivo con filtros en tiempo real.</p>
+              <p><strong>Stack:</strong> Vue, D3.js, Express, PostgreSQL.</p>
+              <p><strong>Resultado:</strong> Toma de decisiones 50% más rápida para el equipo de marketing.</p>
+              <div class="project-links">
+                <a href="#" class="btn btn-outline" style="padding: 8px 20px; opacity: 0.6; cursor: not-allowed;" aria-label="Demo no disponible aún">Próximamente</a>
+                <a href="#" class="btn btn-outline" style="padding: 8px 20px; opacity: 0.6; cursor: not-allowed;" aria-label="Código no disponible aún">Código</a>
+              </div>
+            </div>
+          </div>
+          <!-- Proyecto 3 -->
+          <div class="project-card">
+            <div class="project-img"><i class="fas fa-robot"></i></div>
+            <div class="project-info">
+              <h3>AI Chatbot</h3>
+              <p><strong>Problema:</strong> Atención al cliente 24/7 con alta demanda.</p>
+              <p><strong>Solución:</strong> Chatbot con NLP que responde consultas comunes y escala a agente humano.</p>
+              <p><strong>Stack:</strong> React, Python (Flask), Rasa, MongoDB.</p>
+              <p><strong>Resultado:</strong> 40% de consultas resueltas sin intervención humana, ahorro de 20h/semana.</p>
+              <div class="project-links">
+                <a href="#" class="btn btn-outline" style="padding: 8px 20px; opacity: 0.6; cursor: not-allowed;" aria-label="Demo no disponible aún">Próximamente</a>
+                <a href="#" class="btn btn-outline" style="padding: 8px 20px; opacity: 0.6; cursor: not-allowed;" aria-label="Código no disponible aún">Código</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ¿POR QUÉ TRABAJAR CONMIGO? -->
+    <section id="value">
+      <div class="container">
+        <h2>¿Por qué trabajar conmigo?</h2>
+        <div class="skills-grid">
+          <div class="skill-card">
+            <div class="skill-icon"><i class="fas fa-bolt"></i></div>
+            <h3>Experiencia en tiempo real</h3>
+            <p>WebSockets, Socket.IO, actualizaciones en vivo para dashboards y notificaciones.</p>
+          </div>
+          <div class="skill-card">
+            <div class="skill-icon"><i class="fas fa-robot"></i></div>
+            <h3>Automatización con Python</h3>
+            <p>Scripts que ahorran horas de trabajo repetitivo y optimizan procesos internos.</p>
+          </div>
+          <div class="skill-card">
+            <div class="skill-icon"><i class="fas fa-plug"></i></div>
+            <h3>Integración API REST</h3>
+            <p>Consumo y exposición de servicios robustos, con documentación OpenAPI.</p>
+          </div>
+          <div class="skill-card">
+            <div class="skill-icon"><i class="fas fa-users"></i></div>
+            <h3>Trabajo en equipos ágiles</h3>
+            <p>Scrum, revisiones de código, CI/CD y colaboración con equipos multidisciplinares.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACTO (con formulario funcional usando Formspree) -->
+    <section id="contact">
+      <div class="container">
+        <h2>Contacto</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px;">
+          <div>
+            <form class="glass-card" style="padding: 40px;" id="contactForm" action="https://formspree.io/f/tu-id-de-formspree" method="POST">
+              <div style="margin-bottom: 20px;">
+                <input type="text" placeholder="Nombre" id="name" name="name" style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required>
+                <small class="error-message" style="color: #ff4444; display: none;"></small>
+              </div>
+              <div style="margin-bottom: 20px;">
+                <input type="email" placeholder="Email" id="email" name="email" style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required>
+                <small class="error-message" style="color: #ff4444; display: none;"></small>
+              </div>
+              <div style="margin-bottom: 20px;">
+                <textarea placeholder="Mensaje" rows="5" id="message" name="message" style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required></textarea>
+                <small class="error-message" style="color: #ff4444; display: none;"></small>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Enviar mensaje</button>
+              <div id="formSuccess" style="color: var(--accent); text-align: center; margin-top: 15px; display: none;">¡Mensaje enviado con éxito!</div>
+            </form>
+          </div>
+          <div>
+            <div class="glass-card" style="padding: 30px;">
+              <h3 style="margin-bottom: 20px;">Redes y contacto directo</h3>
+              <p><i class="fab fa-whatsapp" style="color: var(--accent);"></i> <a href="https://wa.me/50589871374" target="_blank" aria-label="WhatsApp">+505 8987 1374</a></p>
+              <p><i class="fab fa-github" style="color: var(--accent);"></i> <a href="https://github.com/jhernandez30-cpu" target="_blank" aria-label="GitHub">@jhernandez30-cpu</a></p>
+              <p><i class="fab fa-linkedin" style="color: var(--accent);"></i> <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" aria-label="LinkedIn">LinkedIn: Abraham Hernández</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <!-- FOOTER -->
   <footer>
