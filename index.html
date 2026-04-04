@@ -332,27 +332,34 @@
       </div>
     </section>
 
-    <!-- CONTACTO (con formulario funcional usando Formspree) -->
+    <!-- CONTACTO CON FORMSPREE AJAX -->
     <section id="contact">
       <div class="container">
         <h2>Contacto</h2>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px;">
           <div>
-            <form class="glass-card" style="padding: 40px;" id="contactForm" action="https://formspree.io/f/tu-id-de-formspree" method="POST">
+            <!-- Contenedores para mensajes globales de Formspree -->
+            <div data-fs-success class="glass-card" style="display: none; padding: 20px; text-align: center; margin-bottom: 20px; color: var(--accent);">
+              ✅ ¡Mensaje enviado con éxito! Te responderé pronto.
+            </div>
+            <div data-fs-error class="glass-card" style="display: none; padding: 20px; text-align: center; margin-bottom: 20px; color: #ff4444;">
+              ❌ Hubo un error. Por favor, inténtalo de nuevo.
+            </div>
+
+            <form id="contactForm" class="glass-card" style="padding: 40px;">
               <div style="margin-bottom: 20px;">
-                <input type="text" placeholder="Nombre" id="name" name="name" style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required>
-                <small class="error-message" style="color: #ff4444; display: none;"></small>
+                <input type="text" placeholder="Nombre" id="name" name="name" data-fs-field style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required>
+                <span data-fs-error="name" class="error-message" style="color: #ff4444; display: none;"></span>
               </div>
               <div style="margin-bottom: 20px;">
-                <input type="email" placeholder="Email" id="email" name="email" style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required>
-                <small class="error-message" style="color: #ff4444; display: none;"></small>
+                <input type="email" placeholder="Email" id="email" name="email" data-fs-field style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required>
+                <span data-fs-error="email" class="error-message" style="color: #ff4444; display: none;"></span>
               </div>
               <div style="margin-bottom: 20px;">
-                <textarea placeholder="Mensaje" rows="5" id="message" name="message" style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required></textarea>
-                <small class="error-message" style="color: #ff4444; display: none;"></small>
+                <textarea placeholder="Mensaje" rows="5" id="message" name="message" data-fs-field style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required></textarea>
+                <span data-fs-error="message" class="error-message" style="color: #ff4444; display: none;"></span>
               </div>
-              <button type="submit" class="btn btn-primary" style="width: 100%;">Enviar mensaje</button>
-              <div id="formSuccess" style="color: var(--accent); text-align: center; margin-top: 15px; display: none;">¡Mensaje enviado con éxito!</div>
+              <button type="submit" data-fs-submit-btn class="btn btn-primary" style="width: 100%;">Enviar mensaje</button>
             </form>
           </div>
           <div>
@@ -378,5 +385,12 @@
   <script type="module" src="js/three-background.js"></script>
   <script src="js/animation.js"></script>
   <script src="js/script.js"></script>
+
+  <!-- Formspree Ajax (inicialización) -->
+  <script>
+    window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+    formspree('initForm', { formElement: '#contactForm', formId: 'xaqlpvko' });
+  </script>
+  <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 </body>
 </html>
