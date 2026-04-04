@@ -1,0 +1,6 @@
+# Permitir a todos los bots acceder al sitio
+User-agent: *
+Allow: /
+
+# Indicar la ubicación del sitemap
+Sitemap: https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/sitemap.xml
