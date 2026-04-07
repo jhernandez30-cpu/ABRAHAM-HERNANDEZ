@@ -508,4 +508,58 @@ footer {
   body::after {
     display: none;
   }
+
+  /* Logo en navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5%;
+}
+
+.logo a {
+  font-family: 'Courier New', monospace;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: 2px;
+  transition: text-shadow 0.3s ease;
+}
+
+.logo a:hover {
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* Ajuste responsive para el navbar */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 10px 0;
+  }
+  .logo {
+    margin-bottom: 10px;
+  }
+  .logo a {
+    font-size: 1.5rem;
+  }
+  .nav-links {
+    gap: 15px;
+  }
+}
+
+/* Logo en footer */
+.footer-logo {
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem;
+  color: var(--accent);
+  margin-bottom: 15px;
+  letter-spacing: 2px;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.footer-logo:hover {
+  opacity: 1;
+}
 }
