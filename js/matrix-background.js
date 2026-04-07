@@ -1,5 +1,6 @@
 // === Fondo Matrix Rain ===
 (function() {
+  // Crear canvas para el fondo
   const canvas = document.createElement('canvas');
   canvas.id = 'matrix-canvas';
   canvas.style.position = 'fixed';
@@ -13,11 +14,9 @@
 
   const ctx = canvas.getContext('2d');
   let width, height;
-  let columns = [];
   let drops = [];
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+{}[]|;:,.<>?/`~";
   const fontSize = 20;
-  let charArray = [];
 
   function resize() {
     width = window.innerWidth;
@@ -25,11 +24,9 @@
     canvas.width = width;
     canvas.height = height;
     ctx.font = `${fontSize}px "Courier New", monospace`;
-    
-    columns = Math.floor(width / fontSize);
-    charArray = [];
+    const columns = Math.floor(width / fontSize);
+    drops = [];
     for (let i = 0; i < columns; i++) {
-      charArray[i] = [];
       drops[i] = Math.random() * -height;
     }
   }
@@ -39,13 +36,12 @@
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = '#00ff9d'; // color neón
     ctx.shadowBlur = 0;
-    
+
     for (let i = 0; i < drops.length; i++) {
       const randomChar = characters.charAt(Math.floor(Math.random() * characters.length));
       const x = i * fontSize;
       const y = drops[i] * fontSize;
       ctx.fillText(randomChar, x, y);
-      
       if (y > height && Math.random() > 0.975) {
         drops[i] = 0;
       }
@@ -54,9 +50,7 @@
     requestAnimationFrame(draw);
   }
 
-  window.addEventListener('resize', () => {
-    resize();
-  });
+  window.addEventListener('resize', resize);
   resize();
   draw();
 })();
