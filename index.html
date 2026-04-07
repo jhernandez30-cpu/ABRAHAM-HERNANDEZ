@@ -11,7 +11,7 @@
   <meta name="author" content="Abraham Hernández">
   <meta name="robots" content="index, follow">
   
-  <!-- Favicon (puedes reemplazar la URL con tu propio icono) -->
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1061/1061315.png">
   
   <!-- Fuentes e iconos -->
@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/hero.css">
   
-  <!-- Estilos críticos en línea para garantizar que #value se vea siempre -->
+  <!-- Estilos críticos en línea -->
   <style>
     /* Garantizar visibilidad inmediata de la sección #value */
     #value {
@@ -64,7 +64,7 @@
       font-size: 0.95rem !important;
     }
 
-    /* Texto oculto visualmente para lectores de pantalla */
+    /* Texto oculto para lectores de pantalla */
     .sr-only {
       position: absolute;
       width: 1px;
@@ -80,19 +80,12 @@
   <!-- GSAP y ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <!-- Three.js para fondo 3D -->
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
-      }
-    }
-  </script>
-  <!-- Política de seguridad CSP -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:;">
+
+  <!-- Política de seguridad CSP (actualizada) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:;">
 </head>
 <body>
-  <!-- LOADER (se oculta inmediatamente) -->
+  <!-- LOADER -->
   <div class="loader-wrapper" id="loader" style="transition: none;">
     <div class="loader"></div>
   </div>
@@ -119,9 +112,6 @@
   <!-- Cursor personalizado -->
   <div class="custom-cursor"></div>
 
-  <!-- Fondo Three.js -->
-  <canvas id="bg-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></canvas>
-
   <!-- CONTENIDO PRINCIPAL -->
   <main>
     <!-- HERO SECTION -->
@@ -138,7 +128,7 @@
           <p style="margin-bottom: 30px; color: var(--text-secondary); font-size: 1.2rem;">
             Construyo dashboards y sistemas en tiempo real que automatizan procesos y reducen trabajo manual.
           </p>
-          <!-- Redes sociales con aria-label para accesibilidad -->
+          <!-- Redes sociales con accesibilidad -->
           <div style="margin-top: 30px; display: flex; gap: 20px; justify-content: center;">
             <a href="https://wa.me/50589871374" target="_blank" aria-label="WhatsApp" data-tooltip="WhatsApp" style="color: var(--accent); font-size: 1.8rem;">
               <i class="fab fa-whatsapp"></i>
@@ -182,7 +172,7 @@
       </div>
     </section>
 
-    <!-- BOTONES DESTACADOS (debajo de Sobre mí) -->
+    <!-- BOTONES DESTACADOS -->
     <div class="container" style="display: flex; justify-content: center; gap: 20px; margin: 20px 0 40px; flex-wrap: wrap;">
       <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-primary" data-tooltip="Visita mi empresa" aria-label="Visitar ITSA Segurity">
         <i class="fas fa-shield-alt"></i> ITSA SEGURITY
@@ -338,14 +328,12 @@
         <h2>Contacto</h2>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px;">
           <div>
-            <!-- Contenedores para mensajes globales de Formspree -->
             <div data-fs-success class="glass-card" style="display: none; padding: 20px; text-align: center; margin-bottom: 20px; color: var(--accent);">
               ✅ ¡Mensaje enviado con éxito! Te responderé pronto.
             </div>
             <div data-fs-error class="glass-card" style="display: none; padding: 20px; text-align: center; margin-bottom: 20px; color: #ff4444;">
               ❌ Hubo un error. Por favor, inténtalo de nuevo.
             </div>
-
             <form id="contactForm" class="glass-card" style="padding: 40px;">
               <div style="margin-bottom: 20px;">
                 <input type="text" placeholder="Nombre" id="name" name="name" data-fs-field style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required>
@@ -382,7 +370,6 @@
   </footer>
 
   <!-- Scripts -->
-  <script type="module" src="js/three-background.js"></script>
   <script src="js/animation.js"></script>
   <script src="js/script.js"></script>
 
@@ -392,5 +379,8 @@
     formspree('initForm', { formElement: '#contactForm', formId: 'xaqlpvko' });
   </script>
   <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+
+  <!-- Fondo Matrix Rain (externo) -->
+  <script src="js/matrix-background.js"></script>
 </body>
 </html>
