@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/hero.css">
   
-  <!-- Estilos críticos en línea -->
+  <!-- Estilos críticos en línea (incluye logo) -->
   <style>
     /* Garantizar visibilidad inmediata de la sección #value */
     #value {
@@ -75,6 +75,55 @@
       clip: rect(0, 0, 0, 0);
       border: 0;
     }
+
+    /* Logo en navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 5%;
+    }
+    .logo a {
+      font-family: 'Courier New', monospace;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--accent, #00ff9d);
+      text-decoration: none;
+      letter-spacing: 2px;
+      transition: text-shadow 0.3s ease;
+    }
+    .logo a:hover {
+      text-shadow: 0 0 8px var(--accent-glow, rgba(0,255,157,0.4));
+    }
+    /* Logo en footer */
+    .footer-logo {
+      font-family: 'Courier New', monospace;
+      font-size: 1.2rem;
+      color: var(--accent, #00ff9d);
+      margin-bottom: 15px;
+      letter-spacing: 2px;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+    .footer-logo:hover {
+      opacity: 1;
+    }
+    /* Responsive navbar */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        padding: 10px 0;
+      }
+      .logo {
+        margin-bottom: 10px;
+      }
+      .logo a {
+        font-size: 1.5rem;
+      }
+      .nav-links {
+        gap: 15px;
+      }
+    }
   </style>
 
   <!-- GSAP y ScrollTrigger -->
@@ -90,9 +139,12 @@
     <div class="loader"></div>
   </div>
 
-  <!-- HEADER con navbar -->
+  <!-- HEADER con navbar y logo -->
   <header>
     <nav class="navbar" id="navbar">
+      <div class="logo">
+        <a href="#hero">&lt;JAH&gt;</a>
+      </div>
       <div class="nav-links">
         <a href="#hero" class="nav-link active">Inicio</a>
         <a href="#about" class="nav-link">Sobre mí</a>
@@ -363,8 +415,9 @@
     </section>
   </main>
 
-  <!-- FOOTER -->
+  <!-- FOOTER con logo -->
   <footer>
+    <div class="footer-logo">&lt;JAH&gt;</div>
     <p>© 2025 Abraham Hernández - Todos los derechos reservados</p>
     <p style="margin-top: 10px; color: var(--text-secondary);">Diseñado con <i class="fas fa-heart" style="color: var(--accent);"></i> y tecnología de vanguardia</p>
   </footer>
