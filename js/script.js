@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loader.style.visibility = 'hidden';
     setTimeout(() => {
       loader.style.display = 'none';
-    }, 100); // Reducido a 100ms para que desaparezca rápido
+    }, 100);
   }
 
   // ===== NAVBAR =====
@@ -79,7 +79,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     navLinks.forEach(link => {
       link.classList.remove('active');
-      if (link.getAttribute('href') === `#${current}`) {
+      const href = link.getAttribute('href');
+      // Para enlaces internos (tipo "#hero" o "index.html#hero")
+      if (href === `#${current}` || href === `index.html#${current}`) {
         link.classList.add('active');
       }
     });
@@ -92,17 +94,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  // ===== SCROLL SUAVE SOLO PARA ENLACES INTERNOS =====
   navLinks.forEach(link => {
     link.addEventListener('click', function(e) {
-      e.preventDefault();
-      const targetId = this.getAttribute('href');
-      document.querySelector(targetId).scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
+      const href = this.getAttribute('href');
+      
+      // Verificar si es un enlace interno (apunta a una sección dentro de la misma página)
+      const isInternal = href === '#hero' || href === '#about' || href === '#skills' || 
+                         href === '#projects' || href === '#value' || href === '#contact' ||
+                         href.startsWith('index.html#');
+      
+      if (isInternal) {
+        e.preventDefault(); // Solo prevenimos el comportamiento por defecto para enlaces internos
+        let targetId = href;
+        if (href.startsWith('index.html#')) {
+          targetId = href.split('#')[1];
+        } else {
+          targetId = href.substring(1);
+        }
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }
+      // Si el enlace es a otra página (como "interactua.html"), NO hacemos nada,
+      // dejamos que el navegador navegue normalmente.
     });
   });
 
+  // Botón volver arriba
   document.getElementById('backToTop').addEventListener('click', function() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
