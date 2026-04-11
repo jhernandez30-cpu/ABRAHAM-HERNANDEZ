@@ -5,15 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interactúa | Abraham Hernández - Herramientas IA</title>
   
-  <!-- Meta etiquetas -->
   <meta name="description" content="Herramientas de inteligencia artificial para negocios y aprendizaje. Potencia tu estrategia, captación, competencia y desarrollo con IA.">
   <meta name="author" content="Abraham Hernández">
   
-  <!-- Fuentes e iconos -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   
-  <!-- Estilos internos (coherentes con el portafolio) -->
   <style>
     * {
       margin: 0;
@@ -42,7 +39,6 @@
       overflow-x: hidden;
     }
 
-    /* Fondo de código estático (igual al portafolio) */
     body::before {
       content: "";
       position: fixed;
@@ -53,20 +49,8 @@
       z-index: -1;
       pointer-events: none;
       background-image: 
-        repeating-linear-gradient(
-          0deg,
-          rgba(0, 255, 157, 0.03) 0px,
-          rgba(0, 255, 157, 0.03) 1px,
-          transparent 1px,
-          transparent 2px
-        ),
-        repeating-linear-gradient(
-          90deg,
-          rgba(0, 255, 157, 0.02) 0px,
-          rgba(0, 255, 157, 0.02) 1px,
-          transparent 1px,
-          transparent 40px
-        );
+        repeating-linear-gradient(0deg, rgba(0,255,157,0.03) 0px, rgba(0,255,157,0.03) 1px, transparent 1px, transparent 2px),
+        repeating-linear-gradient(90deg, rgba(0,255,157,0.02) 0px, rgba(0,255,157,0.02) 1px, transparent 1px, transparent 40px);
       background-size: 100% 24px, 100% 100%;
     }
 
@@ -76,7 +60,6 @@
       padding: 0 20px;
     }
 
-    /* Navbar */
     .navbar {
       position: fixed;
       top: 0;
@@ -122,7 +105,6 @@
       color: var(--accent);
     }
 
-    /* Secciones */
     .section {
       padding: 120px 20px 80px;
       min-height: 100vh;
@@ -190,35 +172,12 @@
       font-size: 0.95rem;
     }
 
-    /* Curso destacado */
-    .curso-destacado {
-      background: linear-gradient(135deg, rgba(0,255,157,0.1), rgba(0,0,0,0.3));
-      border: 1px solid var(--accent);
-      border-radius: 20px;
-      padding: 40px;
-      text-align: center;
-      margin-top: 60px;
-    }
-
-    .curso-destacado h3 {
-      font-size: 2rem;
-      margin-bottom: 15px;
-      color: var(--accent);
-    }
-
-    .curso-destacado p {
-      font-size: 1.2rem;
-      margin-bottom: 25px;
-    }
-
     .btn {
       display: inline-block;
       padding: 12px 28px;
       border-radius: 50px;
       font-weight: 600;
       transition: all 0.3s ease;
-      border: none;
-      cursor: pointer;
       text-decoration: none;
       font-size: 1rem;
     }
@@ -279,20 +238,16 @@
       .section {
         padding: 100px 20px 60px;
       }
-      .curso-destacado h3 {
-        font-size: 1.5rem;
-      }
     }
   </style>
 </head>
 <body>
-  <!-- NAVBAR -->
   <nav class="navbar">
     <div class="logo">
-      <a href="index.html">&lt;JAH&gt;</a>
+      <a href="index.html">&lt;JAH&gt;</a>   <!-- Enlace al portafolio -->
     </div>
     <div class="nav-links">
-      <a href="index.html">Portafolio</a>
+      <a href="index.html">Portafolio</a>   <!-- Enlace al portafolio -->
       <a href="#negocios">Negocios</a>
       <a href="#ia">Aprende con IA</a>
     </div>
@@ -303,28 +258,25 @@
     <div class="container">
       <h1>Impulsa tu Negocio con IA</h1>
       <div class="description">
-        Herramientas especializadas para potenciar la captación de clientes, analizar competencia y definir estrategias ganadoras. Todo potenciado por inteligencia artificial.
+        Herramientas especializadas para potenciar la captación de clientes, analizar competencia y definir estrategias ganadoras.
       </div>
       <div class="cards-grid">
-        <!-- Captación de Cliente -->
         <div class="card">
           <div class="card-icon"><i class="fas fa-user-plus"></i></div>
           <h3>Captación de Cliente</h3>
-          <p>Atrae y convierte más clientes con estrategias automatizadas basadas en IA. Ideal para equipos de ventas y marketing.</p>
+          <p>Atrae y convierte más clientes con estrategias automatizadas basadas en IA.</p>
           <a href="https://chatgpt.com/g/g-69d86d5392248191b88ef3742d52dd3c-captacion-de-cliente" target="_blank" class="btn btn-primary">Ir a la herramienta →</a>
         </div>
-        <!-- Competencia -->
         <div class="card">
           <div class="card-icon"><i class="fas fa-chart-line"></i></div>
           <h3>Competencia</h3>
-          <p>Analiza a tus rivales, detecta oportunidades y mantente a la vanguardia con informes automáticos.</p>
+          <p>Analiza a tus rivales, detecta oportunidades y mantente a la vanguardia.</p>
           <a href="https://chatgpt.com/g/g-69d86e35eb04819183b9c83d74d8ce8d-competencia" target="_blank" class="btn btn-primary">Ir a la herramienta →</a>
         </div>
-        <!-- Especialista en Estrategia -->
         <div class="card">
           <div class="card-icon"><i class="fas fa-brain"></i></div>
           <h3>Especialista en Estrategia</h3>
-          <p>Diseña hojas de ruta, define KPIs y optimiza la toma de decisiones con asesoramiento inteligente.</p>
+          <p>Diseña hojas de ruta, define KPIs y optimiza decisiones con asesoramiento inteligente.</p>
           <a href="https://chatgpt.com/g/g-69d860c19fd88191bf11cda443263da3-especialista-de-estrategia" target="_blank" class="btn btn-primary">Ir a la herramienta →</a>
         </div>
       </div>
@@ -336,37 +288,25 @@
     <div class="container">
       <h1>Aprende con IA</h1>
       <div class="description">
-        Descubre cómo la inteligencia artificial puede acelerar tu aprendizaje en ciberseguridad y desarrollo de software. Agentes especializados a tu disposición.
+        Agentes especializados para acelerar tu aprendizaje en ciberseguridad y desarrollo de software.
       </div>
       <div class="cards-grid">
-        <!-- Agente de Seguridad -->
         <div class="card">
           <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
           <h3>Agente de Seguridad</h3>
-          <p>Entrena en ciberseguridad con un asistente experto en detección de vulnerabilidades, hardening y buenas prácticas.</p>
+          <p>Entrena en ciberseguridad con un asistente experto en vulnerabilidades y buenas prácticas.</p>
           <a href="https://chatgpt.com/g/g-p-69d863b1b8b88191a08f40a475f36848-agente-de-ciberseguridad/project" target="_blank" class="btn btn-outline">Explorar →</a>
         </div>
-        <!-- Agente de Desarrollo -->
         <div class="card">
           <div class="card-icon"><i class="fas fa-code"></i></div>
           <h3>Agente de Desarrollo</h3>
-          <p>Mejora tus habilidades de programación, resuelve dudas técnicas y aprende buenas prácticas con un mentor IA.</p>
+          <p>Mejora tus habilidades de programación con un mentor IA, resuelve dudas técnicas.</p>
           <a href="https://chatgpt.com/g/g-p-69d865f022ec81919b7d7a8000ed3755-agende-de-desarrollo/project" target="_blank" class="btn btn-outline">Explorar →</a>
         </div>
-      </div>
-
-      <!-- Curso destacado (como en la captura) -->
-      <div class="curso-destacado">
-        <i class="fas fa-graduation-cap" style="font-size: 3rem; color: var(--accent); margin-bottom: 20px; display: inline-block;"></i>
-        <h3>Desarrollo con IA</h3>
-        <p>Curso de 3 horas de desarrollo con inteligencia artificial<br>¡Incluye certificado gratuito!</p>
-        <a href="#" class="btn btn-primary">Inscribirme ahora →</a>
-        <!-- Nota: el enlace # debe reemplazarse por la URL real del curso cuando esté disponible -->
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <div class="footer-logo">&lt;JAH&gt;</div>
     <p>© 2025 Abraham Hernández - Herramientas potenciadas por IA</p>
