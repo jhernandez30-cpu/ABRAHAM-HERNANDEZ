@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactúa | Abraham Hernández - Herramientas IA</title>
+  
+  <!-- Meta etiquetas -->
+  <meta name="description" content="Herramientas de inteligencia artificial para negocios y aprendizaje. Potencia tu estrategia, captación, competencia y desarrollo con IA.">
+  <meta name="author" content="Abraham Hernández">
+  
+  <!-- Fuentes e iconos -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <!-- Estilos internos (coherentes con el portafolio) -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #111111;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b0b0;
+      --accent: #00ff9d;
+      --accent-glow: rgba(0, 255, 157, 0.4);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --neon-shadow: 0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Fondo de código estático (igual al portafolio) */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: 
+        repeating-linear-gradient(
+          0deg,
+          rgba(0, 255, 157, 0.03) 0px,
+          rgba(0, 255, 157, 0.03) 1px,
+          transparent 1px,
+          transparent 2px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          rgba(0, 255, 157, 0.02) 0px,
+          rgba(0, 255, 157, 0.02) 1px,
+          transparent 1px,
+          transparent 40px
+        );
+      background-size: 100% 24px, 100% 100%;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--glass-border);
+      z-index: 1000;
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo a {
+      font-family: 'Courier New', monospace;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 2px;
+      transition: text-shadow 0.3s ease;
+    }
+
+    .logo a:hover {
+      text-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    /* Secciones */
+    .section {
+      padding: 120px 20px 80px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .section:nth-child(even) {
+      background: rgba(17, 17, 17, 0.3);
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      background: linear-gradient(135deg, #fff, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+
+    .description {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-bottom: 50px;
+      max-width: 800px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      border-color: var(--accent);
+      box-shadow: var(--neon-shadow);
+    }
+
+    .card-icon {
+      font-size: 3rem;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .card h3 {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+    }
+
+    .card p {
+      color: var(--text-secondary);
+      margin-bottom: 25px;
+      font-size: 0.95rem;
+    }
+
+    /* Curso destacado */
+    .curso-destacado {
+      background: linear-gradient(135deg, rgba(0,255,157,0.1), rgba(0,0,0,0.3));
+      border: 1px solid var(--accent);
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    .curso-destacado h3 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      color: var(--accent);
+    }
+
+    .curso-destacado p {
+      font-size: 1.2rem;
+      margin-bottom: 25px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 30px var(--accent-glow);
+    }
+
+    .btn-outline {
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      background: transparent;
+    }
+
+    .btn-outline:hover {
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .footer-logo {
+      font-family: 'Courier New', monospace;
+      font-size: 1.2rem;
+      color: var(--accent);
+      margin-bottom: 15px;
+      letter-spacing: 2px;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+      }
+      .nav-links {
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      h1 {
+        font-size: 2.5rem;
+      }
+      .section {
+        padding: 100px 20px 60px;
+      }
+      .curso-destacado h3 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">
+      <a href="index.html">&lt;JAH&gt;</a>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Portafolio</a>
+      <a href="#negocios">Negocios</a>
+      <a href="#ia">Aprende con IA</a>
+    </div>
+  </nav>
+
+  <!-- SECCIÓN NEGOCIOS -->
+  <section id="negocios" class="section">
+    <div class="container">
+      <h1>Impulsa tu Negocio con IA</h1>
+      <div class="description">
+        Herramientas especializadas para potenciar la captación de clientes, analizar competencia y definir estrategias ganadoras. Todo potenciado por inteligencia artificial.
+      </div>
+      <div class="cards-grid">
+        <!-- Captación de Cliente -->
+        <div class="card">
+          <div class="card-icon"><i class="fas fa-user-plus"></i></div>
+          <h3>Captación de Cliente</h3>
+          <p>Atrae y convierte más clientes con estrategias automatizadas basadas en IA. Ideal para equipos de ventas y marketing.</p>
+          <a href="https://chatgpt.com/g/g-69d86d5392248191b88ef3742d52dd3c-captacion-de-cliente" target="_blank" class="btn btn-primary">Ir a la herramienta →</a>
+        </div>
+        <!-- Competencia -->
+        <div class="card">
+          <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+          <h3>Competencia</h3>
+          <p>Analiza a tus rivales, detecta oportunidades y mantente a la vanguardia con informes automáticos.</p>
+          <a href="https://chatgpt.com/g/g-69d86e35eb04819183b9c83d74d8ce8d-competencia" target="_blank" class="btn btn-primary">Ir a la herramienta →</a>
+        </div>
+        <!-- Especialista en Estrategia -->
+        <div class="card">
+          <div class="card-icon"><i class="fas fa-brain"></i></div>
+          <h3>Especialista en Estrategia</h3>
+          <p>Diseña hojas de ruta, define KPIs y optimiza la toma de decisiones con asesoramiento inteligente.</p>
+          <a href="https://chatgpt.com/g/g-69d860c19fd88191bf11cda443263da3-especialista-de-estrategia" target="_blank" class="btn btn-primary">Ir a la herramienta →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN APRENDE CON IA -->
+  <section id="ia" class="section">
+    <div class="container">
+      <h1>Aprende con IA</h1>
+      <div class="description">
+        Descubre cómo la inteligencia artificial puede acelerar tu aprendizaje en ciberseguridad y desarrollo de software. Agentes especializados a tu disposición.
+      </div>
+      <div class="cards-grid">
+        <!-- Agente de Seguridad -->
+        <div class="card">
+          <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+          <h3>Agente de Seguridad</h3>
+          <p>Entrena en ciberseguridad con un asistente experto en detección de vulnerabilidades, hardening y buenas prácticas.</p>
+          <a href="https://chatgpt.com/g/g-p-69d863b1b8b88191a08f40a475f36848-agente-de-ciberseguridad/project" target="_blank" class="btn btn-outline">Explorar →</a>
+        </div>
+        <!-- Agente de Desarrollo -->
+        <div class="card">
+          <div class="card-icon"><i class="fas fa-code"></i></div>
+          <h3>Agente de Desarrollo</h3>
+          <p>Mejora tus habilidades de programación, resuelve dudas técnicas y aprende buenas prácticas con un mentor IA.</p>
+          <a href="https://chatgpt.com/g/g-p-69d865f022ec81919b7d7a8000ed3755-agende-de-desarrollo/project" target="_blank" class="btn btn-outline">Explorar →</a>
+        </div>
+      </div>
+
+      <!-- Curso destacado (como en la captura) -->
+      <div class="curso-destacado">
+        <i class="fas fa-graduation-cap" style="font-size: 3rem; color: var(--accent); margin-bottom: 20px; display: inline-block;"></i>
+        <h3>Desarrollo con IA</h3>
+        <p>Curso de 3 horas de desarrollo con inteligencia artificial<br>¡Incluye certificado gratuito!</p>
+        <a href="#" class="btn btn-primary">Inscribirme ahora →</a>
+        <!-- Nota: el enlace # debe reemplazarse por la URL real del curso cuando esté disponible -->
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">&lt;JAH&gt;</div>
+    <p>© 2025 Abraham Hernández - Herramientas potenciadas por IA</p>
+    <p style="margin-top: 10px; color: var(--text-secondary);">Explora, aprende y transforma tu negocio con inteligencia artificial.</p>
+  </footer>
+</body>
+</html>
