@@ -379,47 +379,118 @@
       </div>
     </section>
 
-    <!-- CONTACTO CON FORMSPREE AJAX -->
-    <section id="contact">
-      <div class="container">
-        <h2>Contacto</h2>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px;">
-          <div>
-            <div data-fs-success class="glass-card" style="display: none; padding: 20px; text-align: center; margin-bottom: 20px; color: var(--accent);">
-              ✅ ¡Mensaje enviado con éxito! Te responderé pronto.
-            </div>
-            <div data-fs-error class="glass-card" style="display: none; padding: 20px; text-align: center; margin-bottom: 20px; color: #ff4444;">
-              ❌ Hubo un error. Por favor, inténtalo de nuevo.
-            </div>
-            <form id="contactForm" class="glass-card" style="padding: 40px;">
-              <div style="margin-bottom: 20px;">
-                <input type="text" placeholder="Nombre" id="name" name="name" data-fs-field style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required>
-                <span data-fs-error="name" class="error-message" style="color: #ff4444; display: none;"></span>
-              </div>
-              <div style="margin-bottom: 20px;">
-                <input type="email" placeholder="Email" id="email" name="email" data-fs-field style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required>
-                <span data-fs-error="email" class="error-message" style="color: #ff4444; display: none;"></span>
-              </div>
-              <div style="margin-bottom: 20px;">
-                <textarea placeholder="Mensaje" rows="5" id="message" name="message" data-fs-field style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required></textarea>
-                <span data-fs-error="message" class="error-message" style="color: #ff4444; display: none;"></span>
-              </div>
-              <button type="submit" data-fs-submit-btn class="btn btn-primary" style="width: 100%;">Enviar mensaje</button>
-            </form>
+    <!-- CONTACTO PROFESIONAL -->
+<section id="contact">
+  <div class="container">
+    <div class="section-header">
+      <h2>Contacto</h2>
+      <p class="section-subtitle">Cuéntame sobre tu proyecto y empecemos a construir algo increíble.</p>
+    </div>
+
+    <div class="contact-grid">
+      <!-- Columna izquierda: Formulario -->
+      <div class="contact-form-wrapper">
+        <!-- Mensajes de estado Formspree -->
+        <div data-fs-success class="form-message success-message" style="display: none;">
+          <i class="fas fa-check-circle"></i> ¡Mensaje enviado! Te responderé en menos de 24 horas.
+        </div>
+        <div data-fs-error class="form-message error-message" style="display: none;">
+          <i class="fas fa-exclamation-circle"></i> Hubo un error. Por favor intenta nuevamente.
+        </div>
+
+        <form id="contactForm" class="professional-form glass-card">
+          <div class="form-group floating-label">
+            <input type="text" id="name" name="name" data-fs-field placeholder=" " required>
+            <label for="name">Nombre completo</label>
+            <span class="focus-border"></span>
+            <span data-fs-error="name" class="field-error"></span>
           </div>
-          <div>
-            <div class="glass-card" style="padding: 30px;">
-              <h3 style="margin-bottom: 20px;">Redes y contacto directo</h3>
-              <p><i class="fab fa-whatsapp" style="color: var(--accent);"></i> <a href="https://wa.me/50589871374" target="_blank" aria-label="WhatsApp">+505 8987 1374</a></p>
-              <p><i class="fab fa-github" style="color: var(--accent);"></i> <a href="https://github.com/jhernandez30-cpu" target="_blank" aria-label="GitHub">@jhernandez30-cpu</a></p>
-              <p><i class="fab fa-linkedin" style="color: var(--accent);"></i> <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" aria-label="LinkedIn">LinkedIn: Abraham Hernández</a></p>
-            </div>
+
+          <div class="form-group floating-label">
+            <input type="email" id="email" name="email" data-fs-field placeholder=" " required>
+            <label for="email">Correo electrónico</label>
+            <span class="focus-border"></span>
+            <span data-fs-error="email" class="field-error"></span>
+          </div>
+
+          <div class="form-group floating-label">
+            <textarea id="message" name="message" rows="4" data-fs-field placeholder=" " required></textarea>
+            <label for="message">¿En qué puedo ayudarte?</label>
+            <span class="focus-border"></span>
+            <span data-fs-error="message" class="field-error"></span>
+          </div>
+
+          <button type="submit" data-fs-submit-btn class="btn btn-primary btn-block">
+            <i class="fas fa-paper-plane"></i> Enviar mensaje
+          </button>
+          <p class="form-note">
+            <i class="fas fa-lock"></i> Tus datos están seguros. Respuesta en <strong>menos de 24h</strong>.
+          </p>
+        </form>
+      </div>
+
+      <!-- Columna derecha: Información de contacto y disponibilidad -->
+      <div class="contact-info-wrapper">
+        <div class="glass-card contact-card">
+          <div class="contact-header">
+            <i class="fas fa-handshake"></i>
+            <h3>Hablemos directamente</h3>
+          </div>
+          
+          <ul class="contact-list">
+            <li>
+              <a href="https://wa.me/50589871374" target="_blank" class="contact-link">
+                <span class="contact-icon"><i class="fab fa-whatsapp"></i></span>
+                <div>
+                  <strong>WhatsApp</strong>
+                  <span>+505 8987 1374</span>
+                  <small>Respuesta rápida</small>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="mailto:abraham.h@example.com" class="contact-link">
+                <span class="contact-icon"><i class="far fa-envelope"></i></span>
+                <div>
+                  <strong>Email</strong>
+                  <span>abraham.h@example.com</span>
+                  <small>Para propuestas formales</small>
+                </div>
+              </a>
+            </li>
+            <li>
+              <div class="contact-link">
+                <span class="contact-icon"><i class="far fa-clock"></i></span>
+                <div>
+                  <strong>Horario de atención</strong>
+                  <span>Lun – Vie · 9:00 – 18:00 (GMT-6)</span>
+                  <small>Disponible para reuniones virtuales</small>
+                </div>
+              </div>
+            </li>
+          </ul>
+
+          <div class="social-links-professional">
+            <a href="https://github.com/jhernandez30-cpu" target="_blank" class="social-btn" aria-label="GitHub">
+              <i class="fab fa-github"></i>
+            </a>
+            <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" class="social-btn" aria-label="LinkedIn">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="cv.pdf" download class="social-btn" aria-label="Descargar CV">
+              <i class="fas fa-file-pdf"></i>
+            </a>
+          </div>
+
+          <div class="availability-badge">
+            <span class="pulse"></span> Disponible para proyectos freelance
           </div>
         </div>
       </div>
-    </section>
-  </main>
-
+    </div>
+  </div>
+</section>
+    
   <!-- FOOTER con logo -->
   <footer>
     <div class="footer-logo">&lt;JAH&gt;</div>
