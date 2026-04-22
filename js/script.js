@@ -2,45 +2,49 @@
 document.addEventListener('DOMContentLoaded', function() {
   // ===== CURSOR PERSONALIZADO =====
   const cursor = document.querySelector('.custom-cursor');
-  document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-  });
+  if (cursor) {
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
 
-  document.querySelectorAll('a, button').forEach(el => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-  });
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
+  }
 
   // ===== EFECTO DE ESCRITURA DINÁMICA (TYPING) =====
   const typedElement = document.querySelector('.typed');
-  const roles = ['Web Developer', 'Software Engineer', 'Freelancer', 'AI Enthusiast'];
-  let roleIndex = 0;
-  let charIndex = 0;
-  let isDeleting = false;
+  if (typedElement) {
+    const roles = ['Web Developer', 'Software Engineer', 'Freelancer', 'AI Enthusiast'];
+    let roleIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
 
-  function typeEffect() {
-    const currentRole = roles[roleIndex];
-    if (isDeleting) {
-      typedElement.textContent = currentRole.substring(0, charIndex - 1);
-      charIndex--;
-    } else {
-      typedElement.textContent = currentRole.substring(0, charIndex + 1);
-      charIndex++;
-    }
+    function typeEffect() {
+      const currentRole = roles[roleIndex];
+      if (isDeleting) {
+        typedElement.textContent = currentRole.substring(0, charIndex - 1);
+        charIndex--;
+      } else {
+        typedElement.textContent = currentRole.substring(0, charIndex + 1);
+        charIndex++;
+      }
 
-    if (!isDeleting && charIndex === currentRole.length) {
-      isDeleting = true;
-      setTimeout(typeEffect, 2000);
-    } else if (isDeleting && charIndex === 0) {
-      isDeleting = false;
-      roleIndex = (roleIndex + 1) % roles.length;
-      setTimeout(typeEffect, 500);
-    } else {
-      setTimeout(typeEffect, isDeleting ? 50 : 100);
+      if (!isDeleting && charIndex === currentRole.length) {
+        isDeleting = true;
+        setTimeout(typeEffect, 2000);
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        roleIndex = (roleIndex + 1) % roles.length;
+        setTimeout(typeEffect, 500);
+      } else {
+        setTimeout(typeEffect, isDeleting ? 50 : 100);
+      }
     }
+    typeEffect();
   }
-  typeEffect();
 
   // ===== LOADER (ocultar inmediatamente) =====
   const loader = document.getElementById('loader');
@@ -58,75 +62,83 @@ document.addEventListener('DOMContentLoaded', function() {
   const sections = document.querySelectorAll('section');
   let lastScroll = 0;
 
-  window.addEventListener('scroll', function() {
-    const currentScroll = window.pageYOffset;
+  if (navbar) {
+    window.addEventListener('scroll', function() {
+      const currentScroll = window.pageYOffset;
 
-    if (currentScroll > lastScroll && currentScroll > 100) {
-      navbar.classList.add('hidden');
-    } else {
-      navbar.classList.remove('hidden');
-    }
-    lastScroll = currentScroll;
+      if (currentScroll > lastScroll && currentScroll > 100) {
+        navbar.classList.add('hidden');
+      } else {
+        navbar.classList.remove('hidden');
+      }
+      lastScroll = currentScroll;
 
-    let current = '';
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop - 100;
-      const sectionHeight = section.clientHeight;
-      if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
-        current = section.getAttribute('id');
+      // Resaltar sección activa solo si hay secciones y enlaces
+      if (sections.length && navLinks.length) {
+        let current = '';
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop - 100;
+          const sectionHeight = section.clientHeight;
+          if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
+            current = section.getAttribute('id');
+          }
+        });
+
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          const href = link.getAttribute('href');
+          if (href === `#${current}` || href === `index.html#${current}`) {
+            link.classList.add('active');
+          }
+        });
+      }
+
+      const backToTop = document.getElementById('backToTop');
+      if (backToTop) {
+        if (window.pageYOffset > 500) {
+          backToTop.classList.add('visible');
+        } else {
+          backToTop.classList.remove('visible');
+        }
       }
     });
-
-    navLinks.forEach(link => {
-      link.classList.remove('active');
-      const href = link.getAttribute('href');
-      // Para enlaces internos (tipo "#hero" o "index.html#hero")
-      if (href === `#${current}` || href === `index.html#${current}`) {
-        link.classList.add('active');
-      }
-    });
-
-    const backToTop = document.getElementById('backToTop');
-    if (window.pageYOffset > 500) {
-      backToTop.classList.add('visible');
-    } else {
-      backToTop.classList.remove('visible');
-    }
-  });
+  }
 
   // ===== SCROLL SUAVE SOLO PARA ENLACES INTERNOS =====
-  navLinks.forEach(link => {
-    link.addEventListener('click', function(e) {
-      const href = this.getAttribute('href');
-      
-      // Verificar si es un enlace interno (apunta a una sección dentro de la misma página)
-      const isInternal = href === '#hero' || href === '#about' || href === '#skills' || 
-                         href === '#projects' || href === '#value' || href === '#contact' ||
-                         href.startsWith('index.html#');
-      
-      if (isInternal) {
-        e.preventDefault(); // Solo prevenimos el comportamiento por defecto para enlaces internos
-        let targetId = href;
-        if (href.startsWith('index.html#')) {
-          targetId = href.split('#')[1];
-        } else {
-          targetId = href.substring(1);
+  if (navLinks.length) {
+    navLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        
+        const isInternal = href === '#hero' || href === '#about' || href === '#skills' || 
+                           href === '#projects' || href === '#value' || href === '#contact' ||
+                           href.startsWith('index.html#');
+        
+        if (isInternal) {
+          e.preventDefault();
+          let targetId = href;
+          if (href.startsWith('index.html#')) {
+            targetId = href.split('#')[1];
+          } else {
+            targetId = href.substring(1);
+          }
+          const targetElement = document.getElementById(targetId);
+          if (targetElement) {
+            targetElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
         }
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) {
-          targetElement.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      }
-      // Si el enlace es a otra página (como "interactua.html"), NO hacemos nada,
-      // dejamos que el navegador navegue normalmente.
+      });
     });
-  });
+  }
 
   // Botón volver arriba
-  document.getElementById('backToTop').addEventListener('click', function() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  const backToTopBtn = document.getElementById('backToTop');
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
 });
