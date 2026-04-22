@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Títulos y Certificaciones | Abraham Hernández</title>
+  
+  <!-- Meta etiquetas SEO -->
+  <meta name="description" content="Títulos académicos, maestrías y certificaciones de Abraham Hernández. Ingeniero en Sistemas, Máster en Desarrollo con IA, Ciberseguridad, Power BI, y más.">
+  <meta name="author" content="Abraham Hernández">
+  
+  <!-- Fuentes e iconos -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <!-- CSS principales (misma línea gráfica que el portafolio) -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/hero.css">
+  
+  <style>
+    /* Ajustes adicionales para esta página */
+    .content-section {
+      padding: 100px 20px 80px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .grid-certificaciones {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .cert-item {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .cert-item:hover {
+      transform: translateY(-10px);
+      border-color: var(--accent);
+      box-shadow: var(--neon-shadow);
+    }
+
+    .cert-icon {
+      font-size: 3rem;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .cert-item h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .cert-item .institucion {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    .badge-year {
+      display: inline-block;
+      background: rgba(0, 255, 157, 0.1);
+      color: var(--accent);
+      padding: 5px 12px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      margin-top: 10px;
+    }
+
+    .cita-biblica {
+      background: linear-gradient(135deg, rgba(0,255,157,0.05), rgba(0,0,0,0.3));
+      border-left: 4px solid var(--accent);
+      border-radius: 20px;
+      padding: 40px;
+      margin-top: 60px;
+      text-align: center;
+    }
+
+    .cita-biblica p {
+      font-size: 1.3rem;
+      font-style: italic;
+      color: var(--text-secondary);
+      margin-bottom: 15px;
+    }
+
+    .cita-biblica .referencia {
+      font-size: 1rem;
+      color: var(--accent);
+      letter-spacing: 1px;
+    }
+
+    /* Ajuste para que el navbar tenga el mismo estilo */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 5%;
+    }
+    .logo a {
+      font-family: 'Courier New', monospace;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--accent, #00ff9d);
+      text-decoration: none;
+      letter-spacing: 2px;
+      transition: text-shadow 0.3s ease;
+    }
+    .logo a:hover {
+      text-shadow: 0 0 8px var(--accent-glow, rgba(0,255,157,0.4));
+    }
+    .footer-logo {
+      font-family: 'Courier New', monospace;
+      font-size: 1.2rem;
+      color: var(--accent, #00ff9d);
+      margin-bottom: 15px;
+      letter-spacing: 2px;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+    .footer-logo:hover {
+      opacity: 1;
+    }
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        padding: 10px 0;
+      }
+      .logo {
+        margin-bottom: 10px;
+      }
+      .logo a {
+        font-size: 1.5rem;
+      }
+      .nav-links {
+        gap: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- LOADER (opcional, se oculta rápido) -->
+  <div class="loader-wrapper" id="loader" style="transition: none;">
+    <div class="loader"></div>
+  </div>
+
+  <!-- HEADER con navbar y logo -->
+  <header>
+    <nav class="navbar" id="navbar">
+      <div class="logo">
+        <a href="index.html">&lt;JAH&gt;</a>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Inicio</a>
+        <a href="index.html#about">Sobre mí</a>
+        <a href="index.html#skills">Habilidades</a>
+        <a href="index.html#projects">Proyectos</a>
+        <a href="index.html#value">Por qué elegirme</a>
+        <a href="interactua.html">Interactúa</a>
+        <a href="titulos.html" class="nav-link active">Títulos</a>
+        <a href="index.html#contact">Contacto</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- BOTÓN VOLVER ARRIBA -->
+  <div class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
+  </div>
+
+  <!-- Cursor personalizado -->
+  <div class="custom-cursor"></div>
+
+  <main>
+    <div class="container content-section">
+      <h2>📜 Títulos Académicos</h2>
+      <div class="skills-grid" style="margin-bottom: 60px;">
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fas fa-university"></i></div>
+          <h3>Ingeniero en Sistema de Informática</h3>
+          <p>Universidad Nacional Héroes de San José de las Mulas</p>
+          <span class="badge-year">Título de grado</span>
+        </div>
+      </div>
+
+      <h2>🎓 Maestrías</h2>
+      <div class="skills-grid" style="margin-bottom: 60px;">
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fas fa-graduation-cap"></i></div>
+          <h3>Máster en Desarrollo con IA</h3>
+          <p>Big School</p>
+          <span class="badge-year">En curso / Finalizado</span>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon"><i class="fas fa-shield-alt"></i></div>
+          <h3>Máster en Ciberseguridad</h3>
+          <p>UNIR / UNAN MANAGUA</p>
+          <span class="badge-year">Especialización</span>
+        </div>
+      </div>
+
+      <h2>🏅 Certificaciones</h2>
+      <div class="grid-certificaciones">
+        <div class="cert-item">
+          <div class="cert-icon"><i class="fas fa-robot"></i></div>
+          <h3>Desarrollo con IA</h3>
+          <div class="institucion">Big School</div>
+          <span class="badge-year">Certificación</span>
+        </div>
+        <div class="cert-item">
+          <div class="cert-icon"><i class="fas fa-chart-pie"></i></div>
+          <h3>Power BI</h3>
+          <div class="institucion">DATLY Educación</div>
+          <span class="badge-year">Certificación</span>
+        </div>
+        <div class="cert-item">
+          <div class="cert-icon"><i class="fas fa-lock"></i></div>
+          <h3>Ciberseguridad y Hacking Ético</h3>
+          <div class="institucion">Big School</div>
+          <span class="badge-year">Certificación</span>
+        </div>
+        <div class="cert-item">
+          <div class="cert-icon"><i class="fas fa-chart-line"></i></div>
+          <h3>Marketing Digital con IA</h3>
+          <div class="institucion">Big School</div>
+          <span class="badge-year">Certificación</span>
+        </div>
+        <div class="cert-item">
+          <div class="cert-icon"><i class="fas fa-search"></i></div>
+          <h3>SEO para IA y Google</h3>
+          <div class="institucion">Big School</div>
+          <span class="badge-year">Certificación</span>
+        </div>
+        <div class="cert-item">
+          <div class="cert-icon"><i class="fas fa-database"></i></div>
+          <h3>Data Science</h3>
+          <div class="institucion">Big School</div>
+          <span class="badge-year">Certificación</span>
+        </div>
+      </div>
+
+      <!-- Cita bíblica -->
+      <div class="cita-biblica">
+        <p>“Mira que te mando que te esfuerces y seas valiente; no temas ni desmayes, porque Jehová tu Dios estará contigo en dondequiera que vayas”</p>
+        <div class="referencia">— Josué 1:9</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER con logo -->
+  <footer>
+    <div class="footer-logo">&lt;JAH&gt;</div>
+    <p>© 2025 Abraham Hernández - Todos los derechos reservados</p>
+    <p style="margin-top: 10px; color: var(--text-secondary);">Diseñado con <i class="fas fa-heart" style="color: var(--accent);"></i> y tecnología de vanguardia</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/animation.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>
