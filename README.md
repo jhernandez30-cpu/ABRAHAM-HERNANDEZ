@@ -1,4 +1,4 @@
-# 🌐 Abraham Hernández | Portafolio Web
+# 🌐 Abraham Hernández | Pagina Web
 
 ![Portfolio](https://img.shields.io/badge/Portfolio-Abraham%20Hern%C3%A1ndez-0078D4?style=for-the-badge&logo=googlechrome&logoColor=white)
 ![Frontend](https://img.shields.io/badge/Frontend-Developer-61DAFB?style=for-the-badge&logo=react&logoColor=black)
