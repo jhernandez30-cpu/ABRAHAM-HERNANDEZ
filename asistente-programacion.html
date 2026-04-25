@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asistente de Programación | Abraham Hernández</title>
+  <meta name="description" content="Aplicación interactiva para aprender programación con rutas, ejercicios, quiz y libros NotebookLM como motor de aprendizaje.">
+  <meta name="keywords" content="asistente de programación, aprender programación, ejercicios, Python, C#, bases de datos, NotebookLM">
+  <meta name="author" content="Abraham Hernández">
+  <meta name="robots" content="index, follow">
+
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1061/1061315.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/programming-assistant.css">
+</head>
+<body class="programming-app-page">
+  <header>
+    <nav class="navbar" id="navbar">
+      <div class="logo">
+        <a href="index.html">&lt;JAH&gt;</a>
+      </div>
+      <div class="nav-links">
+        <a href="index.html#hero" class="nav-link">Inicio</a>
+        <a href="index.html#projects" class="nav-link">Proyectos</a>
+        <a href="asistente-programacion.html" class="nav-link active">Asistente de Programación</a>
+        <a href="interactua.html" class="nav-link">Interactúa</a>
+        <a href="contacto.html" class="nav-link">Contacto</a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
+  </div>
+  <div class="custom-cursor"></div>
+
+  <main class="programming-shell">
+    <section class="programming-hero">
+      <div class="container programming-hero-grid">
+        <div>
+          <span class="app-kicker">Aprendizaje guiado por libros</span>
+          <h1>Asistente de Programación</h1>
+          <p>
+            Aprende desde cero con una ruta clara, práctica diaria y una biblioteca basada en los libros
+            de programación, Python, C#, bases de datos, Power BI, ciberseguridad y automatización N8N.
+          </p>
+          <div class="hero-actions">
+            <a href="#learning-app" class="btn btn-primary"><i class="fas fa-play"></i> Empezar ruta</a>
+            <a href="#book-engine" class="btn btn-outline"><i class="fas fa-book-open"></i> Ver libros base</a>
+          </div>
+        </div>
+        <div class="hero-console glass-card" aria-label="Panel de estado del asistente">
+          <div class="console-line"><span>motor</span> NotebookLM + práctica guiada</div>
+          <div class="console-line"><span>modo</span> aprender haciendo</div>
+          <div class="console-line"><span>rutas</span> fundamentos, web, Python, SQL, C#</div>
+          <div class="console-line"><span>salida</span> ejercicios + quiz + recursos</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="learning-app" class="learning-app-section">
+      <div class="container learning-app-grid">
+        <aside class="learning-sidebar glass-card">
+          <h2>Tu Ruta</h2>
+          <p>Elige qué quieres aprender y el asistente te muestra lecciones, ejercicios y libros recomendados.</p>
+          <label for="trackSelect">Ruta de aprendizaje</label>
+          <select id="trackSelect" class="app-select">
+            <option value="fundamentos">Fundamentos de programación</option>
+            <option value="web">Desarrollo web</option>
+            <option value="python">Python y automatización</option>
+            <option value="database">Bases de datos SQL</option>
+            <option value="csharp">C# y .NET</option>
+          </select>
+
+          <div class="progress-card">
+            <span>Progreso de sesión</span>
+            <strong id="progressValue">0%</strong>
+            <div class="progress-track"><div id="progressBar"></div></div>
+          </div>
+
+          <div class="daily-challenge">
+            <span>Reto diario</span>
+            <p id="dailyChallenge">Selecciona una ruta para recibir un reto.</p>
+          </div>
+        </aside>
+
+        <section class="lesson-panel glass-card">
+          <div class="panel-header">
+            <div>
+              <span class="app-kicker">Lección actual</span>
+              <h2 id="lessonTitle">Fundamentos de programación</h2>
+            </div>
+            <button id="completeLessonBtn" class="icon-text-btn" type="button"><i class="fas fa-check"></i> Marcar avance</button>
+          </div>
+
+          <div class="lesson-body">
+            <p id="lessonDescription"></p>
+            <div class="concept-list" id="conceptList"></div>
+          </div>
+
+          <div class="exercise-box">
+            <div>
+              <span class="app-kicker">Ejercicio práctico</span>
+              <h3 id="exerciseTitle"></h3>
+            </div>
+            <p id="exercisePrompt"></p>
+            <textarea id="exerciseAnswer" placeholder="Escribe tu solución o pseudocódigo aquí..."></textarea>
+            <div class="exercise-actions">
+              <button id="checkExerciseBtn" class="btn btn-primary" type="button"><i class="fas fa-code"></i> Revisar respuesta</button>
+              <button id="hintBtn" class="btn btn-outline" type="button"><i class="fas fa-lightbulb"></i> Pista</button>
+            </div>
+            <p id="exerciseFeedback" class="feedback-text"></p>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="assistant-workbench">
+      <div class="container workbench-grid">
+        <div class="chat-coach glass-card">
+          <div class="panel-header">
+            <div>
+              <span class="app-kicker">Mentor IA local</span>
+              <h2>Pregunta qué aprender</h2>
+            </div>
+          </div>
+          <div id="coachMessages" class="coach-messages" aria-live="polite"></div>
+          <form id="coachForm" class="coach-form">
+            <input id="coachInput" type="text" placeholder="Ej: quiero aprender variables en Python" autocomplete="off">
+            <button type="submit" aria-label="Enviar"><i class="fas fa-paper-plane"></i></button>
+          </form>
+        </div>
+
+        <div class="quiz-panel glass-card">
+          <span class="app-kicker">Quiz rápido</span>
+          <h2>Comprueba lo aprendido</h2>
+          <p id="quizQuestion"></p>
+          <div id="quizOptions" class="quiz-options"></div>
+          <p id="quizResult" class="feedback-text"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="book-engine" class="book-engine-section">
+      <div class="container">
+        <div class="section-heading">
+          <span class="app-kicker">Motor de aprendizaje</span>
+          <h2>Libros base del asistente</h2>
+          <p>Estos NotebookLM son la biblioteca que alimenta las rutas y recomendaciones de la aplicación.</p>
+        </div>
+        <div id="bookGrid" class="book-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-logo">&lt;JAH&gt;</div>
+    <p>© 2025 Abraham Hernández - Asistente de Programación</p>
+    <p style="margin-top: 10px; color: var(--text-secondary);">Aprende, practica y construye proyectos reales.</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script src="js/programming-assistant.js"></script>
+</body>
+</html>
