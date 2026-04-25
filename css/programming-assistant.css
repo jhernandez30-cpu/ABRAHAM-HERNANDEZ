@@ -4,6 +4,35 @@
     var(--bg-primary);
 }
 
+.programming-app-page .navbar {
+  justify-content: space-between;
+  padding: 0 5%;
+}
+
+.programming-app-page .logo {
+  flex: 0 0 auto;
+  margin-right: 36px;
+}
+
+.programming-app-page .nav-links {
+  justify-content: flex-end;
+  gap: 30px;
+}
+
+.programming-app-page .logo a {
+  font-family: 'Courier New', monospace;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: 2px;
+  transition: text-shadow 0.3s ease;
+}
+
+.programming-app-page .logo a:hover {
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+
 .programming-shell {
   padding-top: var(--navbar-height);
 }
