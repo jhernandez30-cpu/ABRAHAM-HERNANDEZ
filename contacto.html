@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/hero.css">
 
-    <!-- Estilos críticos en línea (logo y contacto) -->
+    <!-- Estilos adicionales para contacto -->
     <style>
         /* Texto oculto para lectores de pantalla */
         .sr-only {
@@ -87,23 +87,25 @@
             }
         }
 
-        /* Ajustes para la página de contacto */
+        /* Página de contacto */
         #contact-page {
             min-height: 80vh;
             padding-top: 100px;
             padding-bottom: 60px;
         }
-        #contact-page h2 {
+        #contact-page .section-title {
             text-align: center;
-            margin-bottom: 20px;
             font-size: 2.8rem;
             color: var(--accent, #00ff9d);
+            margin-bottom: 10px;
+            font-weight: 700;
         }
-        .subtitle {
+        #contact-page .section-subtitle {
             text-align: center;
             color: var(--text-secondary);
             margin-bottom: 50px;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
+            letter-spacing: 0.3px;
         }
         .contact-grid {
             display: grid;
@@ -117,77 +119,177 @@
                 grid-template-columns: 1fr;
                 gap: 30px;
             }
-            #contact-page h2 {
+            #contact-page .section-title {
                 font-size: 2rem;
             }
         }
-        /* Estilos para la tarjeta de información de contacto */
-        .contact-info {
+
+        /* Tarjeta de información */
+        .info-card {
             background: var(--glass-bg);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 30px;
+            border-radius: 24px;
+            padding: 35px 30px;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
-        .contact-info h3 {
+        .info-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 25px rgba(0, 255, 157, 0.25);
+        }
+        .info-card h3 {
             font-size: 1.8rem;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             color: var(--accent);
-        }
-        .contact-detail {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 10px;
         }
-        .contact-detail i {
-            font-size: 1.5rem;
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 22px;
+            padding: 8px 0;
+            transition: transform 0.2s;
+        }
+        .contact-item:hover {
+            transform: translateX(5px);
+        }
+        .contact-item i {
+            font-size: 1.4rem;
             color: var(--accent);
-            width: 30px;
+            width: 32px;
             text-align: center;
         }
-        .contact-detail a, .contact-detail p {
+        .contact-item a,
+        .contact-item span {
             color: var(--text-primary);
             text-decoration: none;
+            font-weight: 500;
             transition: color 0.3s;
+            word-break: break-word;
         }
-        .contact-detail a:hover {
+        .contact-item a:hover {
             color: var(--accent);
         }
-        .social-links {
+
+        /* Redes sociales */
+        .social-row {
             display: flex;
-            gap: 20px;
+            gap: 18px;
             margin-top: 30px;
             justify-content: center;
         }
-        .social-links a {
+        .social-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 45px;
-            height: 45px;
-            background: var(--glass-bg);
+            width: 46px;
+            height: 46px;
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
             border-radius: 50%;
             color: var(--accent);
-            font-size: 1.5rem;
-            transition: all 0.3s;
+            font-size: 1.4rem;
+            transition: 0.25s ease;
         }
-        .social-links a:hover {
-            transform: translateY(-5px);
+        .social-btn:hover {
+            transform: translateY(-6px);
             border-color: var(--accent);
-            box-shadow: var(--neon-shadow);
-            background: rgba(0, 255, 157, 0.1);
+            box-shadow: 0 0 18px rgba(0, 255, 157, 0.5);
+            background: rgba(0, 255, 157, 0.08);
         }
-        .availability {
+
+        .availability-note {
             margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid var(--glass-border);
             text-align: center;
-        }
-        .availability p {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+        }
+        .availability-note i {
+            color: var(--accent);
+            margin-right: 8px;
+        }
+
+        /* Formulario */
+        .form-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            transition: border-color 0.3s;
+        }
+        .form-card:hover {
+            border-color: var(--accent);
+        }
+        .form-group {
+            margin-bottom: 22px;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 16px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            color: #fff;
+            font-size: 1rem;
+            transition: 0.25s ease;
+            outline: none;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(0, 255, 157, 0.25);
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            border: none;
+            border-radius: 14px;
+            color: #0a0a0a;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+        .btn-submit:hover {
+            box-shadow: 0 0 25px rgba(0, 255, 157, 0.7);
+            transform: translateY(-2px);
+        }
+        .btn-submit i {
+            margin-right: 8px;
+        }
+
+        /* Mensajes de estado */
+        .form-feedback {
+            border-radius: 14px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+        }
+        .form-success {
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+        .form-error {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+        }
+        .error-message {
+            color: #ff4444;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
         }
     </style>
 
@@ -218,68 +320,84 @@
         </nav>
     </header>
 
-    <!-- CONTENIDO PRINCIPAL: CONTACTO -->
+    <!-- BOTÓN VOLVER ARRIBA -->
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- Cursor personalizado (soluciona la desaparición) -->
+    <div class="custom-cursor"></div>
+
+    <!-- CONTENIDO PRINCIPAL -->
     <main>
         <section id="contact-page">
             <div class="container">
-                <h2>Contacto</h2>
-                <div class="subtitle">¿Tienes un proyecto en mente? Hablemos.</div>
+                <h2 class="section-title">Pongámonos en contacto</h2>
+                <p class="section-subtitle">Cuéntame tu proyecto y lo llevaremos al siguiente nivel.</p>
+
                 <div class="contact-grid">
-                    <!-- Formulario -->
+                    <!-- FORMULARIO -->
                     <div>
-                        <div data-fs-success class="glass-card" style="display: none; padding: 20px; text-align: center; margin-bottom: 20px; color: var(--accent);">
-                            ✅ ¡Mensaje enviado con éxito! Te responderé pronto.
+                        <!-- Mensajes de éxito / error -->
+                        <div data-fs-success class="form-feedback form-success">
+                            <i class="fas fa-check-circle"></i> ¡Mensaje enviado con éxito! Te responderé en menos de 24 horas.
                         </div>
-                        <div data-fs-error class="glass-card" style="display: none; padding: 20px; text-align: center; margin-bottom: 20px; color: #ff4444;">
-                            ❌ Hubo un error. Por favor, inténtalo de nuevo.
+                        <div data-fs-error class="form-feedback form-error">
+                            <i class="fas fa-exclamation-circle"></i> Hubo un error. Intenta nuevamente o escríbeme directamente por WhatsApp.
                         </div>
-                        <form id="contactForm" class="glass-card" style="padding: 40px;">
-                            <div style="margin-bottom: 20px;">
-                                <input type="text" placeholder="Nombre" id="name" name="name" data-fs-field style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required>
-                                <span data-fs-error="name" class="error-message" style="color: #ff4444; display: none;"></span>
+
+                        <form id="contactForm" class="form-card">
+                            <div class="form-group">
+                                <input type="text" placeholder="Tu nombre completo" id="name" name="name" data-fs-field required>
+                                <span data-fs-error="name" class="error-message"></span>
                             </div>
-                            <div style="margin-bottom: 20px;">
-                                <input type="email" placeholder="Email" id="email" name="email" data-fs-field style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required>
-                                <span data-fs-error="email" class="error-message" style="color: #ff4444; display: none;"></span>
+                            <div class="form-group">
+                                <input type="email" placeholder="Tu correo electrónico" id="email" name="email" data-fs-field required>
+                                <span data-fs-error="email" class="error-message"></span>
                             </div>
-                            <div style="margin-bottom: 20px;">
-                                <textarea placeholder="Mensaje" rows="5" id="message" name="message" data-fs-field style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required></textarea>
-                                <span data-fs-error="message" class="error-message" style="color: #ff4444; display: none;"></span>
+                            <div class="form-group">
+                                <textarea placeholder="Describe tu proyecto, ideas o necesidades..." rows="5" id="message" name="message" data-fs-field required></textarea>
+                                <span data-fs-error="message" class="error-message"></span>
                             </div>
-                            <button type="submit" data-fs-submit-btn class="btn btn-primary" style="width: 100%;">Enviar mensaje</button>
+                            <button type="submit" data-fs-submit-btn class="btn-submit">
+                                <i class="fas fa-paper-plane"></i> Enviar mensaje
+                            </button>
                         </form>
                     </div>
 
-                    <!-- Información de contacto y redes -->
-                    <div class="contact-info">
-                        <h3>Información de contacto</h3>
-                        <div class="contact-detail">
+                    <!-- INFORMACIÓN DE CONTACTO -->
+                    <div class="info-card">
+                        <h3>
+                            <i class="fas fa-address-card"></i> Información directa
+                        </h3>
+                        <div class="contact-item">
                             <i class="fab fa-whatsapp"></i>
                             <a href="https://wa.me/50589871374" target="_blank">+505 8987 1374</a>
                         </div>
-                        <div class="contact-detail">
+                        <div class="contact-item">
                             <i class="fab fa-github"></i>
                             <a href="https://github.com/jhernandez30-cpu" target="_blank">github.com/jhernandez30-cpu</a>
                         </div>
-                        <div class="contact-detail">
+                        <div class="contact-item">
                             <i class="fab fa-linkedin"></i>
                             <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank">Abraham Hernández</a>
                         </div>
-                        <div class="contact-detail">
+                        <div class="contact-item">
                             <i class="fab fa-instagram"></i>
                             <a href="https://www.instagram.com/abrhamdev" target="_blank">@abrhamdev</a>
                         </div>
 
-                        <div class="social-links">
-                            <a href="https://wa.me/50589871374" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                            <a href="https://github.com/jhernandez30-cpu" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                            <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="https://www.instagram.com/abrhamdev" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <!-- Redes sociales visuales -->
+                        <div class="social-row">
+                            <a href="https://wa.me/50589871374" target="_blank" class="social-btn" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                            <a href="https://github.com/jhernandez30-cpu" target="_blank" class="social-btn" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                            <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" class="social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="https://www.instagram.com/abrhamdev" target="_blank" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                         </div>
 
-                        <div class="availability">
-                            <p><i class="fas fa-clock" style="margin-right: 8px;"></i> Disponible para proyectos freelance</p>
-                            <p>Respuesta en menos de 24 horas</p>
+                        <div class="availability-note">
+                            <i class="fas fa-clock"></i> Disponible para proyectos freelance<br>
+                            <small style="opacity: 0.7;">Respuesta garantizada en menos de 24 horas</small>
                         </div>
                     </div>
                 </div>
@@ -298,7 +416,7 @@
     <script src="js/animation.js"></script>
     <script src="js/script.js"></script>
 
-    <!-- Formspree Ajax (inicialización) -->
+    <!-- Formspree Ajax -->
     <script>
         window.formspree = window.formspree || function() { (formspree.q = formspree.q || []).push(arguments); };
         formspree('initForm', { formElement: '#contactForm', formId: 'xaqlpvko' });
