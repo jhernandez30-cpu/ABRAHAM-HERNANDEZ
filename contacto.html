@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto | Abraham Hernández · Frontend Developer</title>
+
+    <!-- Meta etiquetas SEO -->
+    <meta name="description" content="Contacta a Abraham Hernández, desarrollador frontend especializado en Vue, React, aplicaciones en tiempo real y automatización con Python.">
+    <meta name="keywords" content="contacto, desarrollador frontend, Abraham Hernández, Vue, React, WhatsApp, GitHub, LinkedIn">
+    <meta name="author" content="Abraham Hernández">
+    <meta name="robots" content="index, follow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1061/1061315.png">
+
+    <!-- Fuentes e iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- CSS principales -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/hero.css">
+    <link rel="stylesheet" href="css/cookies.css">
+
+    <!-- Estilos críticos en línea (logo y contacto) -->
+    <style>
+        /* Texto oculto para lectores de pantalla */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* Logo en navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+        }
+        .logo a {
+            font-family: 'Courier New', monospace;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent, #00ff9d);
+            text-decoration: none;
+            letter-spacing: 2px;
+            transition: text-shadow 0.3s ease;
+        }
+        .logo a:hover {
+            text-shadow: 0 0 8px var(--accent-glow, rgba(0, 255, 157, 0.4));
+        }
+
+        /* Footer logo */
+        .footer-logo {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            color: var(--accent, #00ff9d);
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .footer-logo:hover {
+            opacity: 1;
+        }
+
+        /* Responsive navbar */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 10px 0;
+            }
+            .logo {
+                margin-bottom: 10px;
+            }
+            .logo a {
+                font-size: 1.5rem;
+            }
+            .nav-links {
+                gap: 15px;
+            }
+        }
+
+        /* Ajustes para la página de contacto */
+        #contact-page {
+            min-height: 80vh;
+            padding-top: 100px;
+            padding-bottom: 60px;
+        }
+        #contact-page h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            color: var(--accent, #00ff9d);
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            #contact-page h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+
+    <!-- GSAP y ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- Política de seguridad CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://formspree.io;">
+</head>
+<body>
+    <!-- HEADER con navbar y logo -->
+    <header>
+        <nav class="navbar" id="navbar">
+            <div class="logo">
+                <a href="index.html">&lt;JAH&gt;</a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html#hero" class="nav-link">Inicio</a>
+                <a href="index.html#about" class="nav-link">Sobre mí</a>
+                <a href="index.html#skills" class="nav-link">Habilidades</a>
+                <a href="index.html#projects" class="nav-link">Proyectos</a>
+                <a href="index.html#value" class="nav-link">Por qué elegirme</a>
+                <a href="interactua.html" class="nav-link">Interactúa</a>
+                <a href="titulos.html" class="nav-link">Títulos</a>
+                <a href="contacto.html" class="nav-link" style="color: var(--accent, #00ff9d); font-weight: 700;">Contacto</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL: CONTACTO -->
+    <main>
+        <section id="contact-page">
+            <div class="container">
+                <h2>Contacto</h2>
+                <div class="contact-grid">
+                    <!-- Formulario -->
+                    <div>
+                        <div data-fs-success class="glass-card" style="display: none; padding: 20px; text-align: center; margin-bottom: 20px; color: var(--accent);">
+                            ✅ ¡Mensaje enviado con éxito! Te responderé pronto.
+                        </div>
+                        <div data-fs-error class="glass-card" style="display: none; padding: 20px; text-align: center; margin-bottom: 20px; color: #ff4444;">
+                            ❌ Hubo un error. Por favor, inténtalo de nuevo.
+                        </div>
+                        <form id="contactForm" class="glass-card" style="padding: 40px;">
+                            <div style="margin-bottom: 20px;">
+                                <input type="text" placeholder="Nombre" id="name" name="name" data-fs-field style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required>
+                                <span data-fs-error="name" class="error-message" style="color: #ff4444; display: none;"></span>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <input type="email" placeholder="Email" id="email" name="email" data-fs-field style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required>
+                                <span data-fs-error="email" class="error-message" style="color: #ff4444; display: none;"></span>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <textarea placeholder="Mensaje" rows="5" id="message" name="message" data-fs-field style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: white;" required></textarea>
+                                <span data-fs-error="message" class="error-message" style="color: #ff4444; display: none;"></span>
+                            </div>
+                            <button type="submit" data-fs-submit-btn class="btn btn-primary" style="width: 100%;">Enviar mensaje</button>
+                        </form>
+                    </div>
+
+                    <!-- Redes y contacto directo -->
+                    <div>
+                        <div class="glass-card" style="padding: 30px;">
+                            <h3 style="margin-bottom: 20px;">Redes y contacto directo</h3>
+                            <p><i class="fab fa-whatsapp" style="color: var(--accent);"></i> <a href="https://wa.me/50589871374" target="_blank" aria-label="WhatsApp">+505 8987 1374</a></p>
+                            <p><i class="fab fa-github" style="color: var(--accent);"></i> <a href="https://github.com/jhernandez30-cpu" target="_blank" aria-label="GitHub">@jhernandez30-cpu</a></p>
+                            <p><i class="fab fa-linkedin" style="color: var(--accent);"></i> <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" aria-label="LinkedIn">LinkedIn: Abraham Hernández</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER con logo -->
+    <footer>
+        <div class="footer-logo">&lt;JAH&gt;</div>
+        <p>© 2025 Abraham Hernández - Todos los derechos reservados</p>
+        <p style="margin-top: 10px; color: var(--text-secondary);">Diseñado con <i class="fas fa-heart" style="color: var(--accent);"></i> y tecnología de vanguardia</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/animation.js"></script>
+    <script src="js/script.js"></script>
+
+    <!-- Formspree Ajax (inicialización) -->
+    <script>
+        window.formspree = window.formspree || function() { (formspree.q = formspree.q || []).push(arguments); };
+        formspree('initForm', { formElement: '#contactForm', formId: 'xaqlpvko' });
+    </script>
+    <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+    <script src="js/cookies.js"></script>
+</body>
+</html>
