@@ -1,381 +1,488 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactúa | Abraham Hernández - Herramientas IA</title>
-  
-  <meta name="description" content="Herramientas de inteligencia artificial para negocios y aprendizaje. Potencia tu estrategia, captación, competencia y desarrollo con IA.">
-  <meta name="author" content="Abraham Hernández">
-  
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactúa | Abraham Hernández · Herramientas IA</title>
 
-    :root {
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #111111;
-      --text-primary: #ffffff;
-      --text-secondary: #b0b0b0;
-      --accent: #00ff9d;
-      --accent-glow: rgba(0, 255, 157, 0.4);
-      --glass-bg: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.1);
-      --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      --neon-shadow: 0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow);
-    }
+    <!-- Meta etiquetas SEO -->
+    <meta name="description" content="Herramientas de inteligencia artificial para negocios y aprendizaje. Potencia tu estrategia, captación, competencia y desarrollo con IA.">
+    <meta name="keywords" content="IA, herramientas, negocios, aprendizaje, ciberseguridad, desarrollo, libros, NotebookLM, Abraham Hernández">
+    <meta name="author" content="Abraham Hernández">
+    <meta name="robots" content="index, follow">
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1061/1061315.png">
 
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      pointer-events: none;
-      background-image: 
-        repeating-linear-gradient(0deg, rgba(0,255,157,0.03) 0px, rgba(0,255,157,0.03) 1px, transparent 1px, transparent 2px),
-        repeating-linear-gradient(90deg, rgba(0,255,157,0.02) 0px, rgba(0,255,157,0.02) 1px, transparent 1px, transparent 40px);
-      background-size: 100% 24px, 100% 100%;
-    }
+    <!-- Fuentes e iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
+    <!-- CSS principales (para heredar estilos base, cursor, etc.) -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/hero.css">
 
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(10, 10, 10, 0.8);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--glass-border);
-      z-index: 1000;
-      padding: 15px 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    <!-- GSAP y ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
-    .logo a {
-      font-family: 'Courier New', monospace;
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: var(--accent);
-      text-decoration: none;
-      letter-spacing: 2px;
-      transition: text-shadow 0.3s ease;
-    }
+    <style>
+        /* ========== ESTILOS CRÍTICOS Y ESPECÍFICOS DE INTERACTÚA ========== */
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent: #00ff9d;
+            --accent-glow: rgba(0, 255, 157, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --neon-shadow: 0 0 15px rgba(0, 255, 157, 0.5);
+        }
 
-    .logo a:hover {
-      text-shadow: 0 0 8px var(--accent-glow);
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            cursor: none; /* Ocultamos el cursor por defecto (el personalizado lo maneja JS) */
+        }
 
-    .nav-links {
-      display: flex;
-      gap: 30px;
-    }
+        /* Cursor personalizado (reforzado por si acaso) */
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
 
-    .nav-links a {
-      color: var(--text-primary);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
+        /* Texto oculto accesible */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
 
-    .nav-links a:hover {
-      color: var(--accent);
-    }
+        /* Navbar (coherente con index/contacto) */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .section {
-      padding: 120px 20px 80px;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-    }
+        .logo a {
+            font-family: 'Courier New', monospace;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent);
+            text-decoration: none;
+            letter-spacing: 2px;
+            transition: text-shadow 0.3s ease;
+        }
 
-    .section:nth-child(even) {
-      background: rgba(17, 17, 17, 0.3);
-    }
+        .logo a:hover {
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
 
-    h1 {
-      font-size: 3.5rem;
-      background: linear-gradient(135deg, #fff, var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 20px;
-    }
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
 
-    .description {
-      font-size: 1.2rem;
-      color: var(--text-secondary);
-      margin-bottom: 50px;
-      max-width: 800px;
-    }
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
 
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
-      margin-top: 40px;
-    }
+        .nav-links a:hover {
+            color: var(--accent);
+        }
 
-    .card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      padding: 30px;
-      text-align: center;
-      transition: all 0.3s ease;
-    }
+        /* Botón volver arriba */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 45px;
+            height: 45px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+        }
 
-    .card:hover {
-      transform: translateY(-10px);
-      border-color: var(--accent);
-      box-shadow: var(--neon-shadow);
-    }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
 
-    .card-icon {
-      font-size: 3rem;
-      color: var(--accent);
-      margin-bottom: 20px;
-    }
+        .back-to-top:hover {
+            background: var(--accent);
+            color: #0a0a0a;
+            border-color: var(--accent);
+            box-shadow: var(--neon-shadow);
+        }
 
-    .card h3 {
-      font-size: 1.8rem;
-      margin-bottom: 15px;
-    }
+        /* Secciones */
+        .section {
+            padding: 140px 20px 80px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
 
-    .card p {
-      color: var(--text-secondary);
-      margin-bottom: 25px;
-      font-size: 0.95rem;
-    }
+        .section:nth-child(even) {
+            background: rgba(17, 17, 17, 0.3);
+        }
 
-    .btn {
-      display: inline-block;
-      padding: 12px 28px;
-      border-radius: 50px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      font-size: 1rem;
-    }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
 
-    .btn-primary {
-      background: var(--accent);
-      color: #000;
-      box-shadow: 0 0 20px var(--accent-glow);
-    }
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
 
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 0 30px var(--accent-glow);
-    }
+        .section-description {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 50px;
+            max-width: 800px;
+            line-height: 1.7;
+        }
 
-    .btn-outline {
-      border: 2px solid var(--accent);
-      color: var(--accent);
-      background: transparent;
-    }
+        /* Grid de tarjetas */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
 
-    .btn-outline:hover {
-      background: var(--accent);
-      color: #000;
-      box-shadow: 0 0 20px var(--accent-glow);
-    }
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 35px 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    footer {
-      text-align: center;
-      padding: 40px;
-      background: var(--bg-secondary);
-      border-top: 1px solid var(--glass-border);
-    }
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+            box-shadow: var(--neon-shadow);
+        }
 
-    .footer-logo {
-      font-family: 'Courier New', monospace;
-      font-size: 1.2rem;
-      color: var(--accent);
-      margin-bottom: 15px;
-      letter-spacing: 2px;
-      opacity: 0.7;
-    }
+        .card-icon {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
 
-    @media (max-width: 768px) {
-      .navbar {
-        flex-direction: column;
-        gap: 10px;
-        padding: 10px;
-      }
-      .nav-links {
-        gap: 20px;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-      h1 {
-        font-size: 2.5rem;
-      }
-      .section {
-        padding: 100px 20px 60px;
-      }
-    }
-  </style>
+        .card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            flex: 1;
+        }
+
+        /* Botones */
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
+            margin-top: auto;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #0a0a0a;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .btn-outline {
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: #0a0a0a;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+        }
+
+        .footer-logo {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .footer-logo:hover {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+            }
+            .nav-links {
+                gap: 15px;
+            }
+            h1 {
+                font-size: 2.5rem;
+            }
+            .section {
+                padding: 100px 20px 60px;
+            }
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="logo">
-      <a href="index.html">&lt;JAH&gt;</a>
-    </div>
-    <div class="nav-links">
-      <a href="index.html#hero">Inicio</a>
-      <a href="index.html#about">Sobre mí</a>
-      <a href="index.html#skills">Habilidades</a>
-      <a href="index.html#projects">Proyectos</a>
-      <a href="index.html#value">Por qué elegirme</a>
-      <a href="interactua.html">Interactúa</a>
-      <a href="titulos.html">Títulos</a>
-      <a href="index.html#contact">Contacto</a>
-    </div>
-  </nav>
+    <!-- HEADER CON NAVBAR -->
+    <header>
+        <nav class="navbar" id="navbar">
+            <div class="logo">
+                <a href="index.html">&lt;JAH&gt;</a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html#hero">Inicio</a>
+                <a href="index.html#about">Sobre mí</a>
+                <a href="index.html#skills">Habilidades</a>
+                <a href="index.html#projects">Proyectos</a>
+                <a href="index.html#value">Por qué elegirme</a>
+                <a href="interactua.html" class="active">Interactúa</a>
+                <a href="titulos.html">Títulos</a>
+                <a href="contacto.html">Contacto</a>
+            </div>
+        </nav>
+    </header>
 
-  <!-- SECCIÓN NEGOCIOS -->
-  <section id="negocios" class="section">
-    <div class="container">
-      <h1>Impulsa tu Negocio con IA</h1>
-      <div class="description">
-        Herramientas especializadas para potenciar la captación de clientes, analizar competencia y definir estrategias ganadoras.
-      </div>
-      <div class="cards-grid">
-        <div class="card">
-          <div class="card-icon"><i class="fas fa-user-plus"></i></div>
-          <h3>Captación de Cliente</h3>
-          <p>Atrae y convierte más clientes con estrategias automatizadas basadas en IA.</p>
-          <a href="https://chatgpt.com/g/g-69d86d5392248191b88ef3742d52dd3c-captacion-de-cliente" target="_blank" class="btn btn-primary">Ir a la herramienta →</a>
-        </div>
-        <div class="card">
-          <div class="card-icon"><i class="fas fa-chart-line"></i></div>
-          <h3>Competencia</h3>
-          <p>Analiza a tus rivales, detecta oportunidades y mantente a la vanguardia.</p>
-          <a href="https://chatgpt.com/g/g-69d86e35eb04819183b9c83d74d8ce8d-competencia" target="_blank" class="btn btn-primary">Ir a la herramienta →</a>
-        </div>
-        <div class="card">
-          <div class="card-icon"><i class="fas fa-brain"></i></div>
-          <h3>Especialista en Estrategia</h3>
-          <p>Diseña hojas de ruta, define KPIs y optimiza decisiones con asesoramiento inteligente.</p>
-          <a href="https://chatgpt.com/g/g-69d860c19fd88191bf11cda443263da3-especialista-de-estrategia" target="_blank" class="btn btn-primary">Ir a la herramienta →</a>
-        </div>
-      </div>
+    <!-- BOTÓN VOLVER ARRIBA -->
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
     </div>
-  </section>
 
-  <!-- SECCIÓN APRENDE CON IA -->
-  <section id="ia" class="section">
-    <div class="container">
-      <h1>Aprende con IA</h1>
-      <div class="description">
-        Agentes especializados para acelerar tu aprendizaje en ciberseguridad, desarrollo de software, bases de datos y C#.
-      </div>
-      <div class="cards-grid">
-        <div class="card">
-          <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
-          <h3>Agente de Seguridad</h3>
-          <p>Entrena en ciberseguridad con un asistente experto en vulnerabilidades y buenas prácticas.</p>
-          <a href="https://chatgpt.com/g/g-p-69d863b1b8b88191a08f40a475f36848-agente-de-ciberseguridad/project" target="_blank" class="btn btn-outline">Explorar →</a>
-        </div>
-        <div class="card">
-          <div class="card-icon"><i class="fas fa-code"></i></div>
-          <h3>Agente de Desarrollo</h3>
-          <p>Mejora tus habilidades de programación con un mentor IA, resuelve dudas técnicas.</p>
-          <a href="https://chatgpt.com/g/g-p-69d865f022ec81919b7d7a8000ed3755-agende-de-desarrollo/project" target="_blank" class="btn btn-outline">Explorar →</a>
-        </div>
-        <div class="card">
-          <div class="card-icon"><i class="fas fa-database"></i></div>
-          <h3>Agente de Base de Datos</h3>
-          <p>Optimiza consultas SQL, diseña esquemas y resuelve problemas de rendimiento con ayuda de IA.</p>
-          <a href="https://chatgpt.com/g/g-p-69d9cffc543481918d92e4e51d7d4324-agente-de-base-de-datos/project" target="_blank" class="btn btn-outline">Explorar →</a>
-        </div>
-        <div class="card">
-          <div class="card-icon"><i class="fab fa-microsoft"></i></div>
-          <h3>Agente de C#</h3>
-          <p>Domina C# y .NET con un asistente experto en programación orientada a objetos, LINQ y desarrollo de aplicaciones.</p>
-          <a href="https://chatgpt.com/g/g-p-69dc48b291d08191be96d9b85969fe8b-agente-de-c/project" target="_blank" class="btn btn-outline">Explorar →</a>
-        </div>
-      </div>
-    </div>
-  </section>
+    <!-- CURSOR PERSONALIZADO -->
+    <div class="custom-cursor"></div>
 
-  <!-- SECCIÓN LIBROS NOTEBOOKLM -->
-  <section id="libros" class="section">
-    <div class="container">
-      <h1>Libros NotebookLM</h1>
-      <div class="description">
-        Recursos educativos interactivos para profundizar en diversos temas de tecnología y desarrollo.
-      </div>
-      <div class="cards-grid">
-        <div class="card">
-          <div class="card-icon"><i class="fas fa-book"></i></div>
-          <h3>Libro Programación</h3>
-          <p>Notebook interactivo para aprendizaje y práctica.</p>
-          <a href="https://notebooklm.google.com/notebook/f3754505-88f8-41eb-81d4-16f9a155d004" target="_blank" class="btn btn-outline">Abrir Libro →</a>
-        </div>
-        <div class="card">
-          <div class="card-icon"><i class="fas fa-book"></i></div>
-          <h3>Libro Python</h3>
-          <p>Notebook interactivo para aprendizaje y práctica.</p>
-          <a href="https://notebooklm.google.com/notebook/9246f385-75de-45a9-b534-d004a8e0077e" target="_blank" class="btn btn-outline">Abrir Libro →</a>
-        </div>
-        <div class="card">
-          <div class="card-icon"><i class="fas fa-book"></i></div>
-          <h3>Libro C#</h3>
-          <p>Notebook interactivo para aprendizaje y práctica.</p>
-          <a href="https://notebooklm.google.com/notebook/e51149dd-27bb-4c93-bf26-005d1c4451c6" target="_blank" class="btn btn-outline">Abrir Libro →</a>
-        </div>
-        <div class="card">
-          <div class="card-icon"><i class="fas fa-book"></i></div>
-          <h3>Libro Base de Datos</h3>
-          <p>Notebook interactivo para aprendizaje y práctica.</p>
-          <a href="https://notebooklm.google.com/notebook/06b7e20f-444a-4c27-a110-4af367550ed0" target="_blank" class="btn btn-outline">Abrir Libro →</a>
-        </div>
-        <div class="card">
-          <div class="card-icon"><i class="fas fa-book"></i></div>
-          <h3>Libro Power BI</h3>
-          <p>Notebook interactivo para aprendizaje y práctica.</p>
-          <a href="https://notebooklm.google.com/notebook/5947016f-b96e-4d82-b48c-9d8bce6f87f6" target="_blank" class="btn btn-outline">Abrir Libro →</a>
-        </div>
-        <div class="card">
-          <div class="card-icon"><i class="fas fa-book"></i></div>
-          <h3>Libro Ciberseguridad</h3>
-          <p>Notebook interactivo para aprendizaje y práctica.</p>
-          <a href="https://notebooklm.google.com/notebook/f3754505-88f8-41eb-81d4-16f9a155d004" target="_blank" class="btn btn-outline">Abrir Libro →</a>
-        </div>
-      </div>
-    </div>
-  </section>
+    <main>
+        <!-- SECCIÓN NEGOCIOS -->
+        <section id="negocios" class="section">
+            <div class="container">
+                <h1>Impulsa tu Negocio con IA</h1>
+                <p class="section-description">
+                    Herramientas especializadas para potenciar la captación de clientes, analizar a tu competencia y definir estrategias ganadoras.
+                </p>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-user-plus"></i></div>
+                        <h3>Captación de Cliente</h3>
+                        <p>Atrae y convierte más clientes con estrategias automatizadas basadas en inteligencia artificial.</p>
+                        <a href="https://chatgpt.com/g/g-69d86d5392248191b88ef3742d52dd3c-captacion-de-cliente" target="_blank" class="btn btn-primary">Ir a la herramienta →</a>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                        <h3>Competencia</h3>
+                        <p>Analiza a tus rivales, detecta oportunidades y mantente siempre a la vanguardia.</p>
+                        <a href="https://chatgpt.com/g/g-69d86e35eb04819183b9c83d74d8ce8d-competencia" target="_blank" class="btn btn-primary">Ir a la herramienta →</a>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-brain"></i></div>
+                        <h3>Especialista en Estrategia</h3>
+                        <p>Diseña hojas de ruta, define KPIs y optimiza decisiones con asesoramiento inteligente.</p>
+                        <a href="https://chatgpt.com/g/g-69d860c19fd88191bf11cda443263da3-especialista-de-estrategia" target="_blank" class="btn btn-primary">Ir a la herramienta →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-  <footer>
-    <div class="footer-logo">&lt;JAH&gt;</div>
-    <p>© 2025 Abraham Hernández - Herramientas potenciadas por IA</p>
-    <p style="margin-top: 10px; color: var(--text-secondary);">Explora, aprende y transforma tu negocio con inteligencia artificial.</p>
-  </footer>
+        <!-- SECCIÓN APRENDE CON IA -->
+        <section id="ia" class="section">
+            <div class="container">
+                <h1>Aprende con IA</h1>
+                <p class="section-description">
+                    Agentes especializados para acelerar tu aprendizaje en ciberseguridad, desarrollo de software, bases de datos y C#.
+                </p>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+                        <h3>Agente de Seguridad</h3>
+                        <p>Entrena en ciberseguridad con un asistente experto en vulnerabilidades y buenas prácticas.</p>
+                        <a href="https://chatgpt.com/g/g-p-69d863b1b8b88191a08f40a475f36848-agente-de-ciberseguridad/project" target="_blank" class="btn btn-outline">Explorar →</a>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-code"></i></div>
+                        <h3>Agente de Desarrollo</h3>
+                        <p>Mejora tus habilidades de programación con un mentor IA, resuelve dudas técnicas.</p>
+                        <a href="https://chatgpt.com/g/g-p-69d865f022ec81919b7d7a8000ed3755-agende-de-desarrollo/project" target="_blank" class="btn btn-outline">Explorar →</a>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-database"></i></div>
+                        <h3>Agente de Base de Datos</h3>
+                        <p>Optimiza consultas SQL, diseña esquemas y resuelve problemas de rendimiento con ayuda de IA.</p>
+                        <a href="https://chatgpt.com/g/g-p-69d9cffc543481918d92e4e51d7d4324-agente-de-base-de-datos/project" target="_blank" class="btn btn-outline">Explorar →</a>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fab fa-microsoft"></i></div>
+                        <h3>Agente de C#</h3>
+                        <p>Domina C# y .NET con un asistente experto en programación orientada a objetos, LINQ y desarrollo de aplicaciones.</p>
+                        <a href="https://chatgpt.com/g/g-p-69dc48b291d08191be96d9b85969fe8b-agente-de-c/project" target="_blank" class="btn btn-outline">Explorar →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN LIBROS NOTEBOOKLM -->
+        <section id="libros" class="section">
+            <div class="container">
+                <h1>Libros NotebookLM</h1>
+                <p class="section-description">
+                    Recursos educativos interactivos para profundizar en diversos temas de tecnología y desarrollo.
+                </p>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-book"></i></div>
+                        <h3>Libro Programación</h3>
+                        <p>Notebook interactivo para aprendizaje y práctica.</p>
+                        <a href="https://notebooklm.google.com/notebook/f3754505-88f8-41eb-81d4-16f9a155d004" target="_blank" class="btn btn-outline">Abrir Libro →</a>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-book"></i></div>
+                        <h3>Libro Python</h3>
+                        <p>Notebook interactivo para aprendizaje y práctica.</p>
+                        <a href="https://notebooklm.google.com/notebook/9246f385-75de-45a9-b534-d004a8e0077e" target="_blank" class="btn btn-outline">Abrir Libro →</a>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-book"></i></div>
+                        <h3>Libro C#</h3>
+                        <p>Notebook interactivo para aprendizaje y práctica.</p>
+                        <a href="https://notebooklm.google.com/notebook/e51149dd-27bb-4c93-bf26-005d1c4451c6" target="_blank" class="btn btn-outline">Abrir Libro →</a>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-book"></i></div>
+                        <h3>Libro Base de Datos</h3>
+                        <p>Notebook interactivo para aprendizaje y práctica.</p>
+                        <a href="https://notebooklm.google.com/notebook/06b7e20f-444a-4c27-a110-4af367550ed0" target="_blank" class="btn btn-outline">Abrir Libro →</a>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-book"></i></div>
+                        <h3>Libro Power BI</h3>
+                        <p>Notebook interactivo para aprendizaje y práctica.</p>
+                        <a href="https://notebooklm.google.com/notebook/5947016f-b96e-4d82-b48c-9d8bce6f87f6" target="_blank" class="btn btn-outline">Abrir Libro →</a>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-book"></i></div>
+                        <h3>Libro Ciberseguridad</h3>
+                        <p>Notebook interactivo para aprendizaje y práctica.</p>
+                        <a href="https://notebooklm.google.com/notebook/f3754505-88f8-41eb-81d4-16f9a155d004" target="_blank" class="btn btn-outline">Abrir Libro →</a>
+                    </div>
+                    <!-- NUEVO LIBRO: Agente N8N -->
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-robot"></i></div>
+                        <h3>Libro Agente N8N</h3>
+                        <p>Automatización de flujos de trabajo con N8N y asistentes inteligentes.</p>
+                        <a href="https://notebooklm.google.com/notebook/c8749429-c45f-4d68-972e-a2266f74964f" target="_blank" class="btn btn-outline">Abrir Libro →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-logo">&lt;JAH&gt;</div>
+        <p>© 2025 Abraham Hernández - Herramientas potenciadas por IA</p>
+        <p style="margin-top: 10px;">Explora, aprende y transforma tu negocio con inteligencia artificial.</p>
+    </footer>
+
+    <!-- Scripts comunes (animaciones, cursor, back-to-top) -->
+    <script src="js/animation.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
