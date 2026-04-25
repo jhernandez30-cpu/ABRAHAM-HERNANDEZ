@@ -8,8 +8,15 @@
   <meta name="keywords" content="asistente de programación, aprender programación, ejercicios, Python, C#, bases de datos, NotebookLM">
   <meta name="author" content="Abraham Hernández">
   <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#00ff9d">
+  <meta name="application-name" content="Asistente de Programación">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Asistente Dev">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1061/1061315.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="css/styles.css">
@@ -22,7 +29,7 @@
         <a href="index.html">&lt;JAH&gt;</a>
       </div>
       <div class="nav-links">
-        <a href="index.html#hero" class="nav-link">Inicio</a>
+        <a href="index.html" class="nav-link">Inicio</a>
         <a href="index.html#projects" class="nav-link">Proyectos</a>
         <a href="asistente-programacion.html" class="nav-link active">Asistente de Programación</a>
         <a href="interactua.html" class="nav-link">Interactúa</a>
@@ -48,6 +55,7 @@
           </p>
           <div class="hero-actions">
             <a href="#learning-app" class="btn btn-primary"><i class="fas fa-play"></i> Empezar ruta</a>
+            <button id="installPwaBtn" class="btn btn-outline install-btn" type="button" hidden><i class="fas fa-download"></i> Instalar app</button>
             <a href="#book-engine" class="btn btn-outline"><i class="fas fa-book-open"></i> Ver libros base</a>
           </div>
         </div>
@@ -163,5 +171,12 @@
 
   <script src="js/script.js"></script>
   <script src="js/programming-assistant.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js');
+      });
+    }
+  </script>
 </body>
 </html>
