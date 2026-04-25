@@ -1,4 +1,4 @@
-// === script.js (funcionalidades adicionales) ===
+// === script.js (versión ajustada para scroll al hash y loader) ===
 document.addEventListener('DOMContentLoaded', function() {
   // ===== CURSOR PERSONALIZADO =====
   const cursor = document.querySelector('.custom-cursor');
@@ -46,14 +46,28 @@ document.addEventListener('DOMContentLoaded', function() {
     typeEffect();
   }
 
-  // ===== LOADER (ocultar inmediatamente) =====
+  // ===== LOADER (ocultar y luego forzar scroll al hash) =====
   const loader = document.getElementById('loader');
   if (loader) {
+    // Ocultar inmediatamente con transición
+    loader.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
     loader.style.opacity = '0';
     loader.style.visibility = 'hidden';
     setTimeout(() => {
       loader.style.display = 'none';
-    }, 100);
+      
+      // Después de quitar el loader, hacer scroll al hash si existe
+      if (window.location.hash) {
+        const targetId = window.location.hash.substring(1);
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          // Pequeño retraso para asegurar que el DOM está listo
+          setTimeout(() => {
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+        }
+      }
+    }, 300); // Tiempo suficiente para la transición de opacidad
   }
 
   // ===== NAVBAR =====
@@ -73,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       lastScroll = currentScroll;
 
-      // Resaltar sección activa solo si hay secciones y enlaces
+      // Resaltar sección activa
       if (sections.length && navLinks.length) {
         let current = '';
         sections.forEach(section => {
@@ -93,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       }
 
+      // Botón volver arriba
       const backToTop = document.getElementById('backToTop');
       if (backToTop) {
         if (window.pageYOffset > 500) {
@@ -104,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // ===== SCROLL SUAVE SOLO PARA ENLACES INTERNOS =====
+  // ===== SCROLL SUAVE PARA ENLACES INTERNOS =====
   if (navLinks.length) {
     navLinks.forEach(link => {
       link.addEventListener('click', function(e) {
@@ -128,6 +143,8 @@ document.addEventListener('DOMContentLoaded', function() {
               behavior: 'smooth',
               block: 'start'
             });
+            // Actualizar hash sin scroll adicional
+            history.pushState(null, null, '#' + targetId);
           }
         }
       });
