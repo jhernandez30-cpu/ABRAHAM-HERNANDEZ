@@ -127,12 +127,13 @@
     }
   </style>
 
-  <!-- GSAP y ScrollTrigger -->
+  <!-- Anime.js, GSAP y ScrollTrigger -->
+  <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
   <!-- Política de seguridad CSP (actualizada) -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://cdn-icons-png.flaticon.com;">
 </head>
 <body>
   <!-- LOADER -->
@@ -170,33 +171,51 @@
       <div class="container hero-content">
         <div class="hero-text">
           <h1 class="hero-title">
-            Abraham Hernández<br>
+            Abraham<br>
+            Hernández<br>
             <span class="typed"></span>
           </h1>
           <div class="dynamic-text">
             <span class="typed-text"></span><span class="cursor">&nbsp;</span>
           </div>
-          <p style="margin-bottom: 30px; color: var(--text-secondary); font-size: 1.2rem;">
+          <p class="hero-copy" style="margin-bottom: 30px; color: var(--text-secondary); font-size: 1.2rem;">
             Construyo dashboards y sistemas en tiempo real que automatizan procesos y reducen trabajo manual.
           </p>
           <!-- Redes sociales con accesibilidad -->
           <div style="margin-top: 30px; display: flex; gap: 20px; justify-content: center;">
-            <a href="https://wa.me/50589871374" target="_blank" aria-label="WhatsApp" data-tooltip="WhatsApp" style="color: var(--accent); font-size: 1.8rem;">
+            <a href="https://wa.me/50589871374" target="_blank" aria-label="WhatsApp" data-tooltip="WhatsApp" class="hero-social-link" style="color: var(--accent); font-size: 1.8rem;">
               <i class="fab fa-whatsapp"></i>
               <span class="sr-only">WhatsApp</span>
             </a>
-            <a href="https://github.com/jhernandez30-cpu" target="_blank" aria-label="GitHub" data-tooltip="GitHub" style="color: var(--accent); font-size: 1.8rem;">
+            <a href="https://github.com/jhernandez30-cpu" target="_blank" aria-label="GitHub" data-tooltip="GitHub" class="hero-social-link" style="color: var(--accent); font-size: 1.8rem;">
               <i class="fab fa-github"></i>
               <span class="sr-only">GitHub</span>
             </a>
-            <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" aria-label="LinkedIn" data-tooltip="LinkedIn" style="color: var(--accent); font-size: 1.8rem;">
+            <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" aria-label="LinkedIn" data-tooltip="LinkedIn" class="hero-social-link" style="color: var(--accent); font-size: 1.8rem;">
               <i class="fab fa-linkedin"></i>
               <span class="sr-only">LinkedIn</span>
             </a>
           </div>
         </div>
         <div class="hero-image">
-          <img src="profile.jpg" alt="Abraham Hernández - Desarrollador Frontend" class="profile-img" data-tooltip="¡Hola, soy Abraham!">
+          <div class="portrait-stage" aria-label="Retratos profesionales de Abraham Hernández">
+            <span class="portrait-scanline" aria-hidden="true"></span>
+            <figure class="hero-portrait hero-portrait--secondary" data-depth="0.12">
+              <span class="hero-portrait-inner">
+                <img src="assets/abraham-portrait-02.png" alt="Abraham Hernández ajustando el reloj en retrato profesional" width="1023" height="1537" loading="eager">
+              </span>
+            </figure>
+            <figure class="hero-portrait hero-portrait--primary" data-depth="0.06">
+              <span class="hero-portrait-inner">
+                <img src="assets/abraham-portrait-01.png" alt="Abraham Hernández con saco en retrato de portada" width="1122" height="1402" loading="eager">
+              </span>
+            </figure>
+            <figure class="hero-portrait hero-portrait--tertiary" data-depth="0.16">
+              <span class="hero-portrait-inner">
+                <img src="assets/abraham-portrait-03.png" alt="Abraham Hernández con camiseta negra en retrato profesional" width="1122" height="1402" loading="lazy">
+              </span>
+            </figure>
+          </div>
         </div>
       </div>
     </section>
