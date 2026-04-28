@@ -175,6 +175,20 @@ footer {
   border-top: 1px solid var(--glass-border);
 }
 
+.footer-logo {
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem;
+  color: var(--accent);
+  margin-bottom: 15px;
+  letter-spacing: 2px;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.footer-logo:hover {
+  opacity: 1;
+}
+
 /* Navbar */
 .navbar {
   position: fixed;
@@ -188,7 +202,9 @@ footer {
   z-index: 1000;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 0 5%;
   transition: transform 0.3s ease;
 }
 
@@ -196,9 +212,32 @@ footer {
   transform: translateY(-100%);
 }
 
+.logo {
+  flex: 0 0 auto;
+}
+
+.logo a {
+  font-family: 'Courier New', monospace;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: 2px;
+  transition: text-shadow 0.3s ease;
+  white-space: nowrap;
+}
+
+.logo a:hover {
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+
 .nav-links {
   display: flex;
-  gap: 40px;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  align-items: center;
+  gap: clamp(18px, 3vw, 40px);
+  min-width: 0;
 }
 
 .nav-links a {
@@ -954,58 +993,23 @@ footer {
   body::after {
     display: none;
   }
-
-  /* Logo en navbar */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 5%;
-}
-
-.logo a {
-  font-family: 'Courier New', monospace;
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: var(--accent);
-  text-decoration: none;
-  letter-spacing: 2px;
-  transition: text-shadow 0.3s ease;
-}
-
-.logo a:hover {
-  text-shadow: 0 0 8px var(--accent-glow);
-}
-
-/* Ajuste responsive para el navbar */
-@media (max-width: 768px) {
   .navbar {
     flex-direction: column;
-    padding: 10px 0;
+    height: auto;
+    min-height: var(--navbar-height);
+    gap: 8px;
+    padding: 10px 16px;
   }
   .logo {
-    margin-bottom: 10px;
+    margin-bottom: 0;
   }
   .logo a {
     font-size: 1.5rem;
   }
   .nav-links {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 15px;
   }
-}
-
-/* Logo en footer */
-.footer-logo {
-  font-family: 'Courier New', monospace;
-  font-size: 1.2rem;
-  color: var(--accent);
-  margin-bottom: 15px;
-  letter-spacing: 2px;
-  opacity: 0.7;
-  transition: opacity 0.3s;
-}
-
-.footer-logo:hover {
-  opacity: 1;
-}
 }
