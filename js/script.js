@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // ===== EFECTO DE ESCRITURA DINÁMICA (TYPING) =====
   const typedElement = document.querySelector('.typed');
   if (typedElement) {
-    const roles = ['Web Developer', 'Software Engineer', 'Freelancer', 'AI Enthusiast'];
+    const roles = ['Dashboards en tiempo real', 'Automatización con Python', 'Frontend React/Vue', 'Integración de APIs'];
     let roleIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
@@ -125,12 +125,11 @@ document.addEventListener('DOMContentLoaded', function() {
       link.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
         
-        const isInternal = href === '#hero' || href === '#about' || href === '#skills' || 
+        const isInternal = href === '#hero' || href === '#about' || href === '#services' || href === '#skills' || 
                            href === '#projects' || href === '#value' || href === '#contact' ||
                            href.startsWith('index.html#');
         
         if (isInternal) {
-          e.preventDefault();
           let targetId = href;
           if (href.startsWith('index.html#')) {
             targetId = href.split('#')[1];
@@ -139,6 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
           }
           const targetElement = document.getElementById(targetId);
           if (targetElement) {
+            e.preventDefault();
             targetElement.scrollIntoView({
               behavior: 'smooth',
               block: 'start'
@@ -167,24 +167,26 @@ function initPortfolioChatbot() {
   if (document.querySelector('.chatbot-widget')) return;
 
   const storageKey = 'jah-chatbot-history';
+  const relativeBase = document.querySelector('meta[name="relative-base"]')?.getAttribute('content') || '';
+  const pageUrl = (path) => `${relativeBase}${path}`;
   const fallbackAnswer = {
-    text: 'Puedo ayudarte con servicios, proyectos, tecnologias, titulos, disponibilidad o contacto. Si necesitas una respuesta humana, escribe por <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20hablar%20sobre%20un%20proyecto" target="_blank" rel="noopener">WhatsApp</a>.',
+    text: `Puedo ayudarte con servicios, proyectos, tecnologías, títulos, disponibilidad o contacto. Si necesitas una respuesta humana, escribe por <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20hablar%20sobre%20un%20proyecto" target="_blank" rel="noopener">WhatsApp</a>.`,
     suggestions: ['Servicios', 'Cotizar', 'Contacto']
   };
   const answers = [
     {
       keys: ['hola', 'buenas', 'hey', 'saludos', 'inicio'],
-      text: 'Hola, soy el asistente virtual de Abraham. Puedo orientarte sobre servicios, proyectos, tecnologias, disponibilidad y formas de contacto.',
+      text: 'Hola, soy el asistente virtual de Abraham. Puedo orientarte sobre servicios, proyectos, tecnologías, disponibilidad y formas de contacto.',
       suggestions: ['Servicios', 'Proyectos', 'Cotizar']
     },
     {
       keys: ['servicio', 'servicios', 'haces', 'ofreces', 'desarrollo', 'web', 'pagina', 'sitio', 'sistema'],
-      text: 'Abraham puede ayudarte con sitios web profesionales, dashboards, paneles administrativos, automatizaciones con Python, integraciones API y experiencias en tiempo real con WebSockets o Socket.IO.',
-      suggestions: ['Cotizar', 'Tecnologias', 'Proyectos']
+      text: `Abraham puede ayudarte con <a href="${pageUrl('dashboards-tiempo-real/')}">dashboards en tiempo real</a>, <a href="${pageUrl('automatizacion-procesos-python/')}">automatización con Python</a>, <a href="${pageUrl('desarrollo-frontend-react-vue/')}">frontend React/Vue</a>, <a href="${pageUrl('integracion-apis/')}">integración de APIs</a> y <a href="${pageUrl('chatbots-para-web/')}">chatbots para web</a>.`,
+      suggestions: ['Cotizar', 'Tecnologías', 'Proyectos']
     },
     {
       keys: ['proyecto', 'proyectos', 'portfolio', 'portafolio', 'demo'],
-      text: 'En el portafolio destacan ITSA Segurity, dashboards analytics y soluciones con IA. Puedes revisar la seccion de <a href="index.html#projects">Proyectos</a> para ver casos y resultados.',
+      text: `En el portafolio destacan ITSA Segurity, Dashboard Analytics y AI Chatbot. Puedes revisar <a href="${pageUrl('proyectos/')}">Proyectos</a> para ver casos y resultados.`,
       suggestions: ['Servicios', 'IA', 'Contacto']
     },
     {
@@ -194,7 +196,7 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['contacto', 'whatsapp', 'correo', 'email', 'cotizar', 'contratar', 'precio', 'costo', 'presupuesto'],
-      text: 'Para cotizar, escribe por <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20cotizar%20un%20proyecto" target="_blank" rel="noopener">WhatsApp</a> o completa el formulario en <a href="contacto.html">Contacto</a>. Incluye objetivo, fecha ideal, presupuesto aproximado y ejemplos de referencia.',
+      text: `Para cotizar, escribe por <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20cotizar%20un%20proyecto" target="_blank" rel="noopener">WhatsApp</a> o completa el formulario en <a href="${pageUrl('contacto.html')}">Contacto</a>. Incluye objetivo, fecha ideal, presupuesto aproximado y ejemplos de referencia.`,
       suggestions: ['Servicios', 'Disponibilidad', 'Proyectos']
     },
     {
@@ -204,17 +206,17 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['titulo', 'certificacion', 'certificaciones', 'estudios', 'maestria'],
-      text: 'Puedes ver formacion, titulos y certificaciones en la pagina de <a href="titulos.html">Titulos</a>.',
-      suggestions: ['Tecnologias', 'Proyectos', 'Contacto']
+      text: `Puedes ver formación, títulos y certificaciones en la página de <a href="${pageUrl('titulos.html')}">Títulos</a>.`,
+      suggestions: ['Tecnologías', 'Proyectos', 'Contacto']
     },
     {
       keys: ['ia', 'ai', 'chatbot', 'automatizacion', 'agente'],
-      text: 'Abraham trabaja con automatizacion, agentes y herramientas de IA. Tambien hay recursos interactivos en <a href="interactua.html">Interactua</a> y puede crear asistentes para responder preguntas frecuentes o captar prospectos.',
-      suggestions: ['Cotizar', 'Servicios', 'Tecnologias']
+      text: `Abraham trabaja con automatización, agentes y herramientas de IA. También hay recursos interactivos en <a href="${pageUrl('interactua.html')}">Interactúa</a> y puede crear asistentes para responder preguntas frecuentes o captar prospectos.`,
+      suggestions: ['Cotizar', 'Servicios', 'Tecnologías']
     }
   ];
 
-  const quickReplies = ['Servicios', 'Proyectos', 'Tecnologias', 'Cotizar'];
+  const quickReplies = ['Servicios', 'Proyectos', 'Tecnologías', 'Cotizar'];
   const widget = document.createElement('div');
   widget.className = 'chatbot-widget';
   widget.innerHTML = `
@@ -231,7 +233,7 @@ function initPortfolioChatbot() {
       </div>
       <div class="chatbot-messages" aria-live="polite"></div>
       <div class="chatbot-actions">
-        <a href="contacto.html" class="chatbot-action">Contacto</a>
+        <a href="${pageUrl('contacto.html')}" class="chatbot-action">Contacto</a>
         <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20cotizar%20un%20proyecto" target="_blank" rel="noopener" class="chatbot-action">WhatsApp</a>
       </div>
       <div class="chatbot-quick-replies" aria-label="Preguntas rapidas"></div>
@@ -389,6 +391,6 @@ function initPortfolioChatbot() {
   if (chatHistory.length) {
     chatHistory.forEach(item => addMessage(item.content, item.type, false));
   } else {
-    addMessage('Hola, soy el asistente virtual de Abraham. Preguntame por servicios, proyectos, tecnologias o como cotizar.', 'bot');
+    addMessage('Hola, soy el asistente virtual de Abraham. Pregúntame por servicios, proyectos, tecnologías o cómo cotizar.', 'bot');
   }
 }

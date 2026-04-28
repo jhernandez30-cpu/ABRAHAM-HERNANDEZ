@@ -3,13 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Abraham Hernández | Frontend Developer · Vue · React · Tiempo Real</title>
+  <title>Abraham Hernández | Dashboards en tiempo real, automatización Python y frontend</title>
   
   <!-- Meta etiquetas SEO -->
-  <meta name="description" content="Portafolio de Abraham Hernández, desarrollador frontend especializado en Vue, React, aplicaciones en tiempo real y automatización con Python. +5 años de experiencia.">
-  <meta name="keywords" content="desarrollador frontend, Vue, React, WebSockets, Python, portafolio, Abraham Hernández">
+  <meta name="description" content="Desarrollo dashboards en tiempo real, automatizaciones con Python, frontends con React/Vue e integraciones API para empresas que quieren reducir trabajo manual.">
+  <meta name="keywords" content="dashboards en tiempo real, automatización con Python, desarrollo frontend React Vue, integración de APIs, chatbots para web, Abraham Hernández">
   <meta name="author" content="Abraham Hernández">
   <meta name="robots" content="index, follow">
+  <meta name="relative-base" content="">
+  <link rel="canonical" href="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Abraham Hernández | Dashboards, automatización y frontend">
+  <meta property="og:description" content="Servicios de desarrollo web enfocados en dashboards en tiempo real, automatización de procesos, APIs y chatbots para captar oportunidades.">
+  <meta property="og:url" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/">
+  <meta property="og:image" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/abraham-portrait-01.png">
+  <meta name="twitter:card" content="summary_large_image">
   
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1061/1061315.png">
@@ -21,6 +29,7 @@
   <!-- CSS principales -->
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/seo-pages.css">
   <link rel="stylesheet" href="css/cookies.css">
   
   <!-- Estilos críticos en línea (incluye logo) -->
@@ -132,6 +141,51 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#person",
+        "name": "Abraham Hernández",
+        "jobTitle": "Frontend Developer",
+        "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/",
+        "image": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/abraham-portrait-01.png",
+        "sameAs": [
+          "https://github.com/jhernandez30-cpu",
+          "https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1"
+        ],
+        "knowsAbout": [
+          "Dashboards en tiempo real",
+          "Automatización con Python",
+          "React",
+          "Vue",
+          "APIs REST",
+          "WebSockets"
+        ]
+      },
+      {
+        "@type": "ProfessionalService",
+        "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#service",
+        "name": "Servicios de desarrollo web de Abraham Hernández",
+        "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/",
+        "provider": {
+          "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#person"
+        },
+        "areaServed": "Latinoamérica",
+        "serviceType": [
+          "Desarrollo de dashboards en tiempo real",
+          "Automatización de procesos con Python",
+          "Desarrollo frontend con React y Vue",
+          "Integración de APIs",
+          "Chatbots para web"
+        ]
+      }
+    ]
+  }
+  </script>
+
   <!-- Política de seguridad CSP (actualizada) -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://cdn-icons-png.flaticon.com;">
 </head>
@@ -149,8 +203,10 @@
       </div>
       <div class="nav-links">
         <a href="index.html" class="nav-link">Inicio</a>
+        <a href="index.html#services" class="nav-link">Servicios</a>
+        <a href="proyectos/" class="nav-link">Proyectos</a>
+        <a href="sobre-mi/" class="nav-link">Sobre mí</a>
         <a href="interactua.html" class="nav-link">Interactúa</a>
-        <a href="titulos.html" class="nav-link">Títulos</a>
         <a href="contacto.html" class="nav-link">Contacto</a>
       </div>
     </nav>
@@ -173,14 +229,18 @@
           <h1 class="hero-title">
             Abraham<br>
             Hernández<br>
-            <span class="typed"></span>
+            <span class="typed">Dashboards en tiempo real</span>
           </h1>
           <div class="dynamic-text">
-            <span class="typed-text"></span><span class="cursor">&nbsp;</span>
+            <span>Frontend React/Vue · Python · APIs REST · WebSockets</span>
           </div>
           <p class="hero-copy" style="margin-bottom: 30px; color: var(--text-secondary); font-size: 1.2rem;">
-            Construyo dashboards y sistemas en tiempo real que automatizan procesos y reducen trabajo manual.
+            Desarrollo sistemas web que convierten datos, tareas repetitivas y consultas de clientes en flujos más claros, rápidos y medibles.
           </p>
+          <div class="hero-actions">
+            <a href="dashboards-tiempo-real/" class="btn btn-primary"><i class="fas fa-chart-line"></i> Ver servicios</a>
+            <a href="contacto.html" class="btn btn-outline"><i class="fas fa-paper-plane"></i> Solicitar presupuesto</a>
+          </div>
           <!-- Redes sociales con accesibilidad -->
           <div style="margin-top: 30px; display: flex; gap: 20px; justify-content: center;">
             <a href="https://wa.me/50589871374" target="_blank" aria-label="WhatsApp" data-tooltip="WhatsApp" class="hero-social-link" style="color: var(--accent); font-size: 1.8rem;">
@@ -247,6 +307,9 @@
       <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-primary" data-tooltip="Visita mi empresa" aria-label="Visitar ITSA Segurity">
         <i class="fas fa-shield-alt"></i> ITSA SEGURITY
       </a>
+      <a href="https://jhernandez30-cpu.github.io/Variedades-Nora/" target="_blank" rel="noopener" class="btn btn-primary" data-tooltip="Visita mi tienda" aria-label="Visitar tienda Variedades Nora">
+        <i class="fas fa-store"></i> TIENDA
+      </a>
       <a href="cv.pdf" download class="btn btn-outline" data-tooltip="Descarga mi CV" aria-label="Descargar currículum en PDF">
         <i class="fas fa-download"></i> Descargar CV
       </a>
@@ -272,6 +335,52 @@
         </div>
       </div>
     </div>
+
+    <!-- SERVICIOS -->
+    <section id="services" class="page-section alt">
+      <div class="container">
+        <div class="section-heading center">
+          <span class="section-kicker">Servicios</span>
+          <h2>Soluciones web para operar mejor</h2>
+          <p class="section-lede">
+            Servicios enfocados en convertir datos, procesos y canales de atención en herramientas claras para vender,
+            decidir y trabajar con menos fricción.
+          </p>
+        </div>
+        <div class="service-grid">
+          <article class="service-card">
+            <i class="fas fa-chart-line"></i>
+            <h3>Dashboards en tiempo real</h3>
+            <p>Paneles con datos vivos, alertas y actualizaciones por WebSockets para equipos que necesitan reaccionar rápido.</p>
+            <a href="dashboards-tiempo-real/">Ver servicio <i class="fas fa-arrow-right"></i></a>
+          </article>
+          <article class="service-card">
+            <i class="fab fa-python"></i>
+            <h3>Automatización con Python</h3>
+            <p>Scripts e integraciones que reducen tareas manuales, ordenan datos y conectan procesos internos.</p>
+            <a href="automatizacion-procesos-python/">Ver servicio <i class="fas fa-arrow-right"></i></a>
+          </article>
+          <article class="service-card">
+            <i class="fas fa-laptop-code"></i>
+            <h3>Frontend React y Vue</h3>
+            <p>Interfaces, paneles administrativos y aplicaciones web a medida para productos digitales y equipos internos.</p>
+            <a href="desarrollo-frontend-react-vue/">Ver servicio <i class="fas fa-arrow-right"></i></a>
+          </article>
+          <article class="service-card">
+            <i class="fas fa-plug"></i>
+            <h3>Integración de APIs</h3>
+            <p>Conexión entre herramientas, consumo de APIs REST y documentación para mantener sistemas comunicados.</p>
+            <a href="integracion-apis/">Ver servicio <i class="fas fa-arrow-right"></i></a>
+          </article>
+          <article class="service-card">
+            <i class="fas fa-robot"></i>
+            <h3>Chatbots para web</h3>
+            <p>Asistentes para preguntas frecuentes, cotizaciones iniciales, captación de leads y derivación a WhatsApp.</p>
+            <a href="chatbots-para-web/">Ver servicio <i class="fas fa-arrow-right"></i></a>
+          </article>
+        </div>
+      </div>
+    </section>
 
     <!-- HABILIDADES TÉCNICAS -->
     <section id="skills">
@@ -327,6 +436,7 @@
               <p><strong>Stack:</strong> React, Socket.IO, Node.js, MongoDB.</p>
               <p><strong>Resultado:</strong> Reducción del 30% en tiempo de respuesta ante incidentes.</p>
               <div class="project-links">
+                <a href="proyectos/itsa-segurity/" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Ver caso ITSA Segurity">Ver caso</a>
                 <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Ver demo de ITSA Segurity">Live demo →</a>
                 <a href="https://github.com/jhernandez30-cpu/ITSA-Segurity" target="_blank" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Ver código en GitHub">Código</a>
               </div>
@@ -342,8 +452,8 @@
               <p><strong>Stack:</strong> Vue, D3.js, Express, PostgreSQL.</p>
               <p><strong>Resultado:</strong> Toma de decisiones 50% más rápida para el equipo de marketing.</p>
               <div class="project-links">
-                <a href="#" class="btn btn-outline" style="padding: 8px 20px; opacity: 0.6; cursor: not-allowed;" aria-label="Demo no disponible aún">Próximamente</a>
-                <a href="#" class="btn btn-outline" style="padding: 8px 20px; opacity: 0.6; cursor: not-allowed;" aria-label="Código no disponible aún">Código</a>
+                <a href="proyectos/dashboard-analytics/" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Ver caso Dashboard Analytics">Ver caso</a>
+                <a href="dashboards-tiempo-real/" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Servicio de dashboards en tiempo real">Servicio</a>
               </div>
             </div>
           </div>
@@ -357,8 +467,8 @@
               <p><strong>Stack:</strong> React, Python (Flask), Rasa, MongoDB.</p>
               <p><strong>Resultado:</strong> 40% de consultas resueltas sin intervención humana, ahorro de 20h/semana.</p>
               <div class="project-links">
-                <a href="#" class="btn btn-outline" style="padding: 8px 20px; opacity: 0.6; cursor: not-allowed;" aria-label="Demo no disponible aún">Próximamente</a>
-                <a href="#" class="btn btn-outline" style="padding: 8px 20px; opacity: 0.6; cursor: not-allowed;" aria-label="Código no disponible aún">Código</a>
+                <a href="proyectos/ai-chatbot/" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Ver caso AI Chatbot">Ver caso</a>
+                <a href="chatbots-para-web/" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Servicio de chatbots para web">Servicio</a>
               </div>
             </div>
           </div>
@@ -391,7 +501,7 @@
             </div>
           </div>
           <div class="assistant-cta">
-            <a href="contacto.html" class="btn btn-primary"><i class="fas fa-envelope"></i> Cotizar chatbot</a>
+            <a href="chatbots-para-web/" class="btn btn-primary"><i class="fas fa-robot"></i> Ver servicio de chatbot</a>
             <a href="asistente-programacion.html" class="btn btn-outline"><i class="fas fa-graduation-cap"></i> Aprender programación</a>
             <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20un%20chatbot%20para%20mi%20sitio%20web" target="_blank" rel="noopener" class="btn btn-outline"><i class="fab fa-whatsapp"></i> WhatsApp</a>
           </div>
@@ -460,7 +570,16 @@
   <!-- FOOTER con logo -->
   <footer>
     <div class="footer-logo">&lt;JAH&gt;</div>
-    <p>© 2025 Abraham Hernández - Todos los derechos reservados</p>
+    <div class="site-footer-links">
+      <a href="dashboards-tiempo-real/">Dashboards</a>
+      <a href="automatizacion-procesos-python/">Automatización</a>
+      <a href="desarrollo-frontend-react-vue/">Frontend</a>
+      <a href="integracion-apis/">APIs</a>
+      <a href="chatbots-para-web/">Chatbots</a>
+      <a href="proyectos/">Proyectos</a>
+      <a href="contacto.html">Contacto</a>
+    </div>
+    <p>© 2026 Abraham Hernández - Todos los derechos reservados</p>
     <p style="margin-top: 10px; color: var(--text-secondary);">Diseñado con <i class="fas fa-heart" style="color: var(--accent);"></i> y tecnología de vanguardia</p>
   </footer>
 

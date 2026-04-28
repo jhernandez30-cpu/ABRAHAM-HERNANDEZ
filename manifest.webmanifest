@@ -1,0 +1,16 @@
+{
+  "name": "Asistente de Programacion | Abraham Hernandez",
+  "short_name": "Asistente Dev",
+  "description": "Aplicacion interactiva para aprender programacion con rutas, ejercicios y quiz.",
+  "start_url": "asistente-programacion.html",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#00ff9d",
+  "icons": [
+    {
+      "src": "assets/abraham-portrait-01.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

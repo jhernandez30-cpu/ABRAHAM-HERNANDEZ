@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Analytics | Caso de visualización de datos</title>
+  <meta name="description" content="Caso Dashboard Analytics: panel interactivo con Vue, D3.js, Express y PostgreSQL para visualizar datos dispersos y acelerar decisiones de marketing.">
+  <meta name="author" content="Abraham Hernández">
+  <meta name="robots" content="index, follow">
+  <meta name="relative-base" content="../../">
+  <link rel="canonical" href="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/proyectos/dashboard-analytics/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Dashboard Analytics | Caso de visualización de datos">
+  <meta property="og:description" content="Panel interactivo con filtros y KPIs para decisiones de marketing más rápidas.">
+  <meta property="og:url" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/proyectos/dashboard-analytics/">
+  <meta property="og:image" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/abraham-portrait-01.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1061/1061315.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/hero.css">
+  <link rel="stylesheet" href="../../css/seo-pages.css">
+  <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CreativeWork",
+        "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/proyectos/dashboard-analytics/#case",
+        "name": "Dashboard Analytics",
+        "creator": {"@type": "Person", "name": "Abraham Hernández"},
+        "about": "Dashboard interactivo para análisis de marketing",
+        "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/proyectos/dashboard-analytics/"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/"},
+          {"@type": "ListItem", "position": 2, "name": "Proyectos", "item": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/proyectos/"},
+          {"@type": "ListItem", "position": 3, "name": "Dashboard Analytics", "item": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/proyectos/dashboard-analytics/"}
+        ]
+      }
+    ]
+  }
+  </script>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://cdn-icons-png.flaticon.com;">
+</head>
+<body class="page-shell">
+  <header>
+    <nav class="navbar" id="navbar">
+      <div class="logo"><a href="../../index.html">&lt;JAH&gt;</a></div>
+      <div class="nav-links">
+        <a href="../../index.html" class="nav-link">Inicio</a>
+        <a href="../../index.html#services" class="nav-link">Servicios</a>
+        <a href="../../proyectos/" class="nav-link active">Proyectos</a>
+        <a href="../../sobre-mi/" class="nav-link">Sobre mí</a>
+        <a href="../../interactua.html" class="nav-link">Interactúa</a>
+        <a href="../../contacto.html" class="nav-link">Contacto</a>
+      </div>
+    </nav>
+  </header>
+  <div class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></div>
+  <div class="custom-cursor"></div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container page-hero-grid">
+        <div>
+          <nav class="breadcrumbs" aria-label="Migas de pan">
+            <a href="../../index.html">Inicio</a><span>/</span><a href="../">Proyectos</a><span>/</span><span>Dashboard Analytics</span>
+          </nav>
+          <span class="hero-kicker">Caso de visualización</span>
+          <h1>Dashboard Analytics: datos dispersos convertidos en decisiones de marketing</h1>
+          <p class="hero-lede">
+            Panel interactivo con filtros y visualizaciones para que un equipo de marketing pueda leer tendencias, comparar resultados y actuar con más rapidez.
+          </p>
+          <div class="hero-actions">
+            <a href="../../dashboards-tiempo-real/" class="btn btn-primary"><i class="fas fa-chart-line"></i> Servicio de dashboards</a>
+            <a href="../../desarrollo-frontend-react-vue/" class="btn btn-outline"><i class="fas fa-laptop-code"></i> Servicio frontend</a>
+          </div>
+        </div>
+        <aside class="hero-panel">
+          <h2>Resumen</h2>
+          <ul>
+            <li><strong>Problema:</strong> datos dispersos y lectura lenta de resultados.</li>
+            <li><strong>Solución:</strong> dashboard interactivo con filtros en tiempo real.</li>
+            <li><strong>Stack:</strong> Vue, D3.js, Express, PostgreSQL.</li>
+            <li><strong>Resultado:</strong> decisiones 50% más rápidas para marketing.</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container split-layout">
+        <div>
+          <span class="section-kicker">Contexto</span>
+          <h2>El problema</h2>
+          <p class="section-lede">
+            La información estaba repartida en varias fuentes, lo que complicaba comparar campañas, detectar cambios y preparar reportes para reuniones.
+          </p>
+        </div>
+        <div class="seo-grid">
+          <article class="seo-card">
+            <h3>Datos fragmentados</h3>
+            <p>Métricas útiles repartidas en herramientas y formatos distintos.</p>
+          </article>
+          <article class="seo-card">
+            <h3>Lectura lenta</h3>
+            <p>El equipo tardaba demasiado en encontrar señales accionables.</p>
+          </article>
+          <article class="seo-card">
+            <h3>Poca exploración</h3>
+            <p>Sin filtros claros, era difícil comparar segmentos y periodos.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section alt">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-kicker">Solución</span>
+          <h2>Un panel para explorar, filtrar y comparar resultados</h2>
+          <p class="section-lede">El dashboard agrupó métricas clave en una interfaz con filtros y visualizaciones para responder preguntas recurrentes del equipo.</p>
+        </div>
+        <div class="metric-grid">
+          <article class="metric-card">
+            <i class="fas fa-filter"></i>
+            <h3>Filtros útiles</h3>
+            <p>Segmentos, periodos y vistas para comparar resultados.</p>
+          </article>
+          <article class="metric-card">
+            <i class="fas fa-chart-pie"></i>
+            <h3>Visualización clara</h3>
+            <p>Gráficos orientados a lectura ejecutiva y operativa.</p>
+          </article>
+          <article class="metric-card">
+            <i class="fas fa-database"></i>
+            <h3>Datos estructurados</h3>
+            <p>PostgreSQL como base para consultas consistentes.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container">
+        <div class="cta-band">
+          <h2>¿Tus datos ya existen, pero nadie los lee a tiempo?</h2>
+          <p class="section-lede">Puedo ayudarte a convertirlos en un panel que el equipo realmente use para decidir.</p>
+          <div class="section-actions">
+            <a href="../../contacto.html" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Solicitar presupuesto</a>
+            <a href="../../dashboards-tiempo-real/" class="btn btn-outline"><i class="fas fa-arrow-right"></i> Ver servicio</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-logo">&lt;JAH&gt;</div>
+    <div class="site-footer-links">
+      <a href="../../dashboards-tiempo-real/">Dashboards</a>
+      <a href="../../automatizacion-procesos-python/">Automatización</a>
+      <a href="../../desarrollo-frontend-react-vue/">Frontend</a>
+      <a href="../../integracion-apis/">APIs</a>
+      <a href="../../chatbots-para-web/">Chatbots</a>
+      <a href="../../proyectos/">Proyectos</a>
+      <a href="../../contacto.html">Contacto</a>
+    </div>
+    <p>© 2026 Abraham Hernández - Todos los derechos reservados</p>
+  </footer>
+  <script src="../../js/animation.js"></script>
+  <script src="../../js/script.js"></script>
+</body>
+</html>

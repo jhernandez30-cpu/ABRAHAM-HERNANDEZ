@@ -3,13 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacto · Abraham Hernández | Frontend Developer</title>
+    <title>Contacto y solicitud de presupuesto | Abraham Hernández</title>
 
     <!-- Meta etiquetas SEO -->
-    <meta name="description" content="Contacta con Abraham Hernández, desarrollador frontend especializado en Vue, React, aplicaciones en tiempo real y automatización con Python. Disponible para proyectos freelance y colaboraciones.">
-    <meta name="keywords" content="contacto, desarrollador frontend, Abraham Hernández, Vue, React, WhatsApp, GitHub, LinkedIn, Instagram, freelance">
+    <meta name="description" content="Solicita presupuesto para dashboards en tiempo real, automatización con Python, desarrollo frontend, integración de APIs o chatbots para web.">
+    <meta name="keywords" content="contacto, presupuesto desarrollo web, dashboard en tiempo real, automatización Python, chatbots para web, Abraham Hernández">
     <meta name="author" content="Abraham Hernández">
     <meta name="robots" content="index, follow">
+    <meta name="relative-base" content="">
+    <link rel="canonical" href="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/contacto.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Contacto y solicitud de presupuesto | Abraham Hernández">
+    <meta property="og:description" content="Cuéntame qué necesitas construir, automatizar o integrar y recibe una primera orientación de alcance.">
+    <meta property="og:url" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/contacto.html">
+    <meta property="og:image" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/abraham-portrait-01.png">
+    <meta name="twitter:card" content="summary_large_image">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1061/1061315.png">
@@ -21,6 +29,7 @@
     <!-- CSS principales -->
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/hero.css">
+    <link rel="stylesheet" href="css/seo-pages.css">
 
     <!-- Estilos adicionales para contacto -->
     <style>
@@ -230,6 +239,7 @@
             margin-bottom: 22px;
         }
         .form-group input,
+        .form-group select,
         .form-group textarea {
             width: 100%;
             padding: 16px 18px;
@@ -241,7 +251,16 @@
             transition: 0.25s ease;
             outline: none;
         }
+        .form-group select {
+            color: var(--text-secondary);
+            appearance: none;
+        }
+        .form-group select option {
+            background: #111;
+            color: #fff;
+        }
         .form-group input:focus,
+        .form-group select:focus,
         .form-group textarea:focus {
             border-color: var(--accent);
             box-shadow: 0 0 12px rgba(0, 255, 157, 0.25);
@@ -310,8 +329,10 @@
             </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Inicio</a>
+                <a href="index.html#services" class="nav-link">Servicios</a>
+                <a href="proyectos/" class="nav-link">Proyectos</a>
+                <a href="sobre-mi/" class="nav-link">Sobre mí</a>
                 <a href="interactua.html" class="nav-link">Interactúa</a>
-                <a href="titulos.html" class="nav-link">Títulos</a>
                 <a href="contacto.html" class="nav-link">Contacto</a>
             </div>
         </nav>
@@ -329,8 +350,8 @@
     <main>
         <section id="contact-page">
             <div class="container">
-                <h2 class="section-title">Pongámonos en contacto</h2>
-                <p class="section-subtitle">Cuéntame tu proyecto y lo llevaremos al siguiente nivel.</p>
+                <h1 class="section-title">Solicita presupuesto o consulta inicial</h1>
+                <p class="section-subtitle">Cuéntame qué necesitas construir, automatizar o integrar para responderte con una ruta clara.</p>
 
                 <div class="contact-grid">
                     <!-- FORMULARIO -->
@@ -353,7 +374,27 @@
                                 <span data-fs-error="email" class="error-message"></span>
                             </div>
                             <div class="form-group">
-                                <textarea placeholder="Describe tu proyecto, ideas o necesidades..." rows="5" id="message" name="message" data-fs-field required></textarea>
+                                <select id="project_type" name="project_type" data-fs-field required>
+                                    <option value="">Tipo de proyecto</option>
+                                    <option value="Dashboard en tiempo real">Dashboard en tiempo real</option>
+                                    <option value="Automatización con Python">Automatización con Python</option>
+                                    <option value="Frontend React/Vue">Frontend React/Vue</option>
+                                    <option value="Integración de APIs">Integración de APIs</option>
+                                    <option value="Chatbot para web">Chatbot para web</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                                <span data-fs-error="project_type" class="error-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" placeholder="Rango de presupuesto aproximado" id="budget" name="budget" data-fs-field>
+                                <span data-fs-error="budget" class="error-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" placeholder="Plazo ideal o fecha objetivo" id="deadline" name="deadline" data-fs-field>
+                                <span data-fs-error="deadline" class="error-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <textarea placeholder="Describe el problema, proceso actual, herramientas existentes y resultado esperado..." rows="5" id="message" name="message" data-fs-field required></textarea>
                                 <span data-fs-error="message" class="error-message"></span>
                             </div>
                             <button type="submit" data-fs-submit-btn class="btn-submit">
@@ -405,7 +446,16 @@
     <!-- FOOTER con logo -->
     <footer>
         <div class="footer-logo">&lt;JAH&gt;</div>
-        <p>© 2025 Abraham Hernández - Todos los derechos reservados</p>
+        <div class="site-footer-links">
+            <a href="dashboards-tiempo-real/">Dashboards</a>
+            <a href="automatizacion-procesos-python/">Automatización</a>
+            <a href="desarrollo-frontend-react-vue/">Frontend</a>
+            <a href="integracion-apis/">APIs</a>
+            <a href="chatbots-para-web/">Chatbots</a>
+            <a href="proyectos/">Proyectos</a>
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <p>© 2026 Abraham Hernández - Todos los derechos reservados</p>
         <p style="margin-top: 10px; color: var(--text-secondary);">Diseñado con <i class="fas fa-heart" style="color: var(--accent);"></i> y tecnología de vanguardia</p>
     </footer>
 

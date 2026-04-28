@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desarrollo de dashboards en tiempo real | Abraham Hernández</title>
+  <meta name="description" content="Desarrollo dashboards en tiempo real con WebSockets, Socket.IO y APIs para monitorear datos, alertas y procesos empresariales desde una interfaz clara.">
+  <meta name="author" content="Abraham Hernández">
+  <meta name="robots" content="index, follow">
+  <meta name="relative-base" content="../">
+  <link rel="canonical" href="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/dashboards-tiempo-real/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Desarrollo de dashboards en tiempo real">
+  <meta property="og:description" content="Paneles con datos vivos, alertas y automatización para equipos que necesitan reaccionar más rápido.">
+  <meta property="og:url" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/dashboards-tiempo-real/">
+  <meta property="og:image" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/abraham-portrait-01.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1061/1061315.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/hero.css">
+  <link rel="stylesheet" href="../css/seo-pages.css">
+  <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/dashboards-tiempo-real/#service",
+        "name": "Desarrollo de dashboards en tiempo real",
+        "serviceType": "Dashboards en tiempo real",
+        "provider": {
+          "@type": "Person",
+          "name": "Abraham Hernández",
+          "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/"
+        },
+        "areaServed": "Latinoamérica",
+        "description": "Diseño y desarrollo de dashboards con WebSockets, Socket.IO, APIs y visualización de datos para operaciones en vivo."
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/"},
+          {"@type": "ListItem", "position": 2, "name": "Dashboards en tiempo real", "item": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/dashboards-tiempo-real/"}
+        ]
+      }
+    ]
+  }
+  </script>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://cdn-icons-png.flaticon.com;">
+</head>
+<body class="page-shell">
+  <header>
+    <nav class="navbar" id="navbar">
+      <div class="logo"><a href="../index.html">&lt;JAH&gt;</a></div>
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link">Inicio</a>
+        <a href="../index.html#services" class="nav-link">Servicios</a>
+        <a href="../proyectos/" class="nav-link">Proyectos</a>
+        <a href="../sobre-mi/" class="nav-link">Sobre mí</a>
+        <a href="../interactua.html" class="nav-link">Interactúa</a>
+        <a href="../contacto.html" class="nav-link">Contacto</a>
+      </div>
+    </nav>
+  </header>
+  <div class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></div>
+  <div class="custom-cursor"></div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container page-hero-grid">
+        <div>
+          <nav class="breadcrumbs" aria-label="Migas de pan">
+            <a href="../index.html">Inicio</a><span>/</span><span>Dashboards en tiempo real</span>
+          </nav>
+          <span class="hero-kicker">Dashboards en vivo</span>
+          <h1>Desarrollo de dashboards en tiempo real para tomar decisiones sin esperar reportes</h1>
+          <p class="hero-lede">
+            Diseño paneles web conectados a APIs, bases de datos y eventos en vivo para que tu equipo vea métricas,
+            alertas y estados operativos cuando ocurren, no al final del día.
+          </p>
+          <div class="hero-actions">
+            <a href="../contacto.html" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Solicitar presupuesto</a>
+            <a href="../proyectos/itsa-segurity/" class="btn btn-outline"><i class="fas fa-lock"></i> Ver caso relacionado</a>
+          </div>
+          <div class="intent-tags">
+            <span>WebSockets</span>
+            <span>Socket.IO</span>
+            <span>APIs REST</span>
+            <span>Alertas en vivo</span>
+          </div>
+        </div>
+        <aside class="hero-panel">
+          <h2>Ideal si necesitas</h2>
+          <ul>
+            <li>Monitorear operaciones, ventas, seguridad o soporte en tiempo real.</li>
+            <li>Unificar datos dispersos en una interfaz clara para el equipo.</li>
+            <li>Detectar eventos críticos y responder con menos demora.</li>
+            <li>Reemplazar hojas manuales por paneles automatizados.</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-kicker">Problemas que resuelve</span>
+          <h2>Cuando los datos llegan tarde, el equipo decide a ciegas</h2>
+          <p class="section-lede">Un dashboard en tiempo real ayuda a reducir llamadas, capturas manuales y revisiones repetidas de archivos.</p>
+        </div>
+        <div class="seo-grid">
+          <article class="seo-card">
+            <i class="fas fa-bell"></i>
+            <h3>Alertas inmediatas</h3>
+            <p>Eventos críticos, cambios de estado o anomalías visibles al momento para acelerar la respuesta.</p>
+          </article>
+          <article class="seo-card">
+            <i class="fas fa-database"></i>
+            <h3>Datos conectados</h3>
+            <p>Integración con APIs, bases de datos y servicios internos para mostrar una vista confiable.</p>
+          </article>
+          <article class="seo-card">
+            <i class="fas fa-users-cog"></i>
+            <h3>Operación coordinada</h3>
+            <p>Roles, filtros y estados compartidos para que cada área vea lo que necesita sin ruido.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section alt">
+      <div class="container split-layout">
+        <div class="section-heading">
+          <span class="section-kicker">Alcance</span>
+          <h2>Qué puede incluir el dashboard</h2>
+          <p class="section-lede">La solución se define alrededor del proceso real, no solo alrededor de gráficos bonitos.</p>
+        </div>
+        <div class="seo-grid">
+          <article class="seo-card">
+            <h3>KPIs y visualizaciones</h3>
+            <p>Tarjetas, tablas, filtros, líneas de tiempo, estados, mapas de calor o gráficos por área.</p>
+          </article>
+          <article class="seo-card">
+            <h3>Actualización en vivo</h3>
+            <p>WebSockets o Socket.IO para eventos, notificaciones y datos que cambian constantemente.</p>
+          </article>
+          <article class="seo-card">
+            <h3>Usuarios y permisos</h3>
+            <p>Vistas por rol para dirección, operación, soporte, marketing o equipos técnicos.</p>
+          </article>
+          <article class="seo-card">
+            <h3>Exportes y reportes</h3>
+            <p>Descargas, resúmenes y vistas para reuniones cuando el equipo necesita documentación.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container">
+        <div class="section-heading center">
+          <span class="section-kicker">Proceso</span>
+          <h2>Cómo trabajo un dashboard en tiempo real</h2>
+        </div>
+        <div class="steps-grid">
+          <article class="step-card">
+            <h3>Definición de métricas</h3>
+            <p>Identifico qué decisiones debe apoyar el panel y qué datos son realmente necesarios.</p>
+          </article>
+          <article class="step-card">
+            <h3>Mapa de fuentes</h3>
+            <p>Reviso APIs, bases de datos, archivos o servicios que alimentarán el sistema.</p>
+          </article>
+          <article class="step-card">
+            <h3>Interfaz y eventos</h3>
+            <p>Diseño la experiencia, los estados en vivo y los flujos de actualización.</p>
+          </article>
+          <article class="step-card">
+            <h3>Entrega y mejora</h3>
+            <p>Pruebo rendimiento, accesos, datos reales y preparo ajustes según el uso del equipo.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section alt">
+      <div class="container">
+        <div class="cta-band">
+          <span class="section-kicker">Caso relacionado</span>
+          <h2>ITSA Segurity: alertas y visibilidad operativa</h2>
+          <p class="section-lede">
+            Un caso enfocado en monitoreo, seguridad y respuesta rápida: dashboard con WebSockets, alertas y datos visibles para equipos que no pueden depender de reportes manuales.
+          </p>
+          <div class="case-meta">
+            <div><strong>Stack</strong><span>React, Socket.IO, Node.js, MongoDB</span></div>
+            <div><strong>Resultado</strong><span>30% menos tiempo de respuesta ante incidentes</span></div>
+            <div><strong>Servicio</strong><span>Dashboard en tiempo real</span></div>
+          </div>
+          <div class="section-actions">
+            <a href="../proyectos/itsa-segurity/" class="btn btn-primary"><i class="fas fa-arrow-right"></i> Ver caso completo</a>
+            <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" rel="noopener" class="btn btn-outline"><i class="fas fa-external-link-alt"></i> Ver demo</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-kicker">Preguntas frecuentes</span>
+          <h2>Dudas comunes antes de crear un dashboard</h2>
+        </div>
+        <div class="faq-grid">
+          <article class="faq-card">
+            <h3>¿Siempre se necesitan WebSockets?</h3>
+            <p>No. Si los datos cambian pocas veces al día, puede bastar con actualizaciones programadas. Si hay eventos constantes, WebSockets suele ser mejor.</p>
+          </article>
+          <article class="faq-card">
+            <h3>¿Puedo conectar herramientas existentes?</h3>
+            <p>Sí. El dashboard puede consumir APIs, bases de datos, archivos o servicios intermedios según lo que ya use la empresa.</p>
+          </article>
+          <article class="faq-card">
+            <h3>¿También haces la parte visual?</h3>
+            <p>Sí. Trabajo la interfaz, la jerarquía de métricas y los estados para que el panel sea útil en operación real.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section alt">
+      <div class="container">
+        <div class="cta-band">
+          <h2>Cuéntame qué datos necesitas ver en vivo</h2>
+          <p class="section-lede">Con el contexto del proceso, puedo ayudarte a definir el alcance del dashboard y una primera ruta de implementación.</p>
+          <div class="section-actions">
+            <a href="../contacto.html" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Solicitar presupuesto</a>
+            <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20cotizar%20un%20dashboard%20en%20tiempo%20real" target="_blank" rel="noopener" class="btn btn-outline"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-logo">&lt;JAH&gt;</div>
+    <div class="site-footer-links">
+      <a href="../dashboards-tiempo-real/">Dashboards</a>
+      <a href="../automatizacion-procesos-python/">Automatización</a>
+      <a href="../desarrollo-frontend-react-vue/">Frontend</a>
+      <a href="../integracion-apis/">APIs</a>
+      <a href="../chatbots-para-web/">Chatbots</a>
+      <a href="../proyectos/">Proyectos</a>
+      <a href="../contacto.html">Contacto</a>
+    </div>
+    <p>© 2026 Abraham Hernández - Todos los derechos reservados</p>
+  </footer>
+  <script src="../js/animation.js"></script>
+  <script src="../js/script.js"></script>
+</body>
+</html>
