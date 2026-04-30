@@ -2,37 +2,49 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/</loc>
-    <lastmod>2026-04-28</lastmod>
+    <lastmod>2026-04-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/servicios/</loc>
+    <lastmod>2026-04-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.96</priority>
+  </url>
+  <url>
     <loc>https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/dashboards-tiempo-real/</loc>
-    <lastmod>2026-04-28</lastmod>
+    <lastmod>2026-04-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
     <loc>https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/automatizacion-procesos-python/</loc>
-    <lastmod>2026-04-28</lastmod>
+    <lastmod>2026-04-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
+    <loc>https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/desarrollo-web-a-medida/</loc>
+    <lastmod>2026-04-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/desarrollo-frontend-react-vue/</loc>
-    <lastmod>2026-04-28</lastmod>
+    <lastmod>2026-04-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/integracion-apis/</loc>
-    <lastmod>2026-04-28</lastmod>
+    <lastmod>2026-04-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/chatbots-para-web/</loc>
-    <lastmod>2026-04-28</lastmod>
+    <lastmod>2026-04-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -68,9 +80,33 @@
   </url>
   <url>
     <loc>https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/contacto.html</loc>
-    <lastmod>2026-04-28</lastmod>
+    <lastmod>2026-04-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/recursos/</loc>
+    <lastmod>2026-04-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.78</priority>
+  </url>
+  <url>
+    <loc>https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/recursos/que-procesos-automatizar-python/</loc>
+    <lastmod>2026-04-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
+    <loc>https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/recursos/dashboard-tiempo-real-vs-reporte-automatico/</loc>
+    <lastmod>2026-04-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
+    <loc>https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/recursos/api-rest-vs-webhook/</loc>
+    <lastmod>2026-04-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.72</priority>
   </url>
   <url>
     <loc>https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/interactua.html</loc>
