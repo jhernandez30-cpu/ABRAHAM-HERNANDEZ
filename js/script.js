@@ -1,5 +1,7 @@
 // === script.js (versión ajustada para scroll al hash y loader) ===
 document.addEventListener('DOMContentLoaded', function() {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   // ===== CURSOR PERSONALIZADO =====
   const cursor = document.querySelector('.custom-cursor');
   if (cursor) {
@@ -17,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // ===== EFECTO DE ESCRITURA DINÁMICA (TYPING) =====
   const typedElement = document.querySelector('.typed');
   if (typedElement) {
-    const roles = ['Dashboards en tiempo real', 'Automatización con Python', 'Desarrollo web a medida', 'Integración de APIs', 'Chatbots para web'];
+    const roles = ['Desarrollo web profesional', 'Dashboards en tiempo real', 'Automatización con Python', 'Integración de APIs', 'Frontend React y Vue', 'Chatbot para empresas'];
     let roleIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
@@ -43,7 +45,11 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(typeEffect, isDeleting ? 50 : 100);
       }
     }
-    typeEffect();
+    if (reduceMotion) {
+      typedElement.textContent = roles[0];
+    } else {
+      typeEffect();
+    }
   }
 
   // ===== LOADER (ocultar y luego forzar scroll al hash) =====
@@ -116,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
           backToTop.classList.remove('visible');
         }
       }
-    });
+    }, { passive: true });
   }
 
   // ===== SCROLL SUAVE PARA ENLACES INTERNOS =====

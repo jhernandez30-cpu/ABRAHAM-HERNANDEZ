@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacto y solicitud de presupuesto | Abraham Hernández</title>
+    <title>Contacto | Desarrollador web en Nicaragua</title>
 
     <!-- Meta etiquetas SEO -->
-    <meta name="description" content="Solicita presupuesto para dashboards en tiempo real, automatización con Python, desarrollo frontend, integración de APIs o chatbots para web.">
-    <meta name="keywords" content="contacto, presupuesto desarrollo web, dashboard en tiempo real, automatización Python, chatbots para web, Abraham Hernández">
+    <meta name="description" content="Contacta a Abraham Hernández, desarrollador web en Nicaragua, para cotizar desarrollo web profesional, dashboards, automatización con Python, APIs, chatbots o frontend React/Vue.">
+    <meta name="keywords" content="contacto desarrollador web en Nicaragua, presupuesto desarrollo web profesional, dashboards en tiempo real, automatización con Python, integración de APIs, chatbot para empresas">
     <meta name="author" content="Abraham Hernández">
     <meta name="robots" content="index, follow">
     <meta name="relative-base" content="">
     <link rel="canonical" href="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/contacto.html">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Contacto y solicitud de presupuesto | Abraham Hernández">
+    <meta property="og:title" content="Contacto | Desarrollador web en Nicaragua">
     <meta property="og:description" content="Cuéntame qué necesitas construir, automatizar o integrar y recibe una primera orientación de alcance.">
     <meta property="og:url" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/contacto.html">
     <meta property="og:image" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/abraham-portrait-01.png">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Contacto | Desarrollador web en Nicaragua">
+    <meta name="twitter:description" content="Cotiza desarrollo web, dashboards, automatización con Python, APIs, chatbots o frontend React/Vue.">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1061/1061315.png">
+    <link rel="manifest" href="manifest.webmanifest">
 
     <!-- Fuentes e iconos -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -321,6 +324,7 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://cdn-icons-png.flaticon.com; connect-src 'self' https://formspree.io;">
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Saltar al contenido</a>
     <!-- HEADER con navbar y logo -->
     <header>
         <nav class="navbar" id="navbar">
@@ -347,11 +351,12 @@
     <div class="custom-cursor"></div>
 
     <!-- CONTENIDO PRINCIPAL -->
-    <main>
+    <main id="main-content">
         <section id="contact-page">
             <div class="container">
                 <h1 class="section-title">Solicita presupuesto o consulta inicial</h1>
                 <p class="section-subtitle">Cuéntame qué necesitas construir, automatizar o integrar para responderte con una ruta clara.</p>
+                <h2 class="sr-only">Formulario e información de contacto para desarrollo web profesional</h2>
 
                 <div class="contact-grid">
                     <!-- FORMULARIO -->
@@ -364,7 +369,7 @@
                             <i class="fas fa-exclamation-circle"></i> Hubo un error. Intenta nuevamente o escríbeme directamente por WhatsApp.
                         </div>
 
-                        <form id="contactForm" class="form-card">
+                        <form id="contactForm" class="form-card" aria-label="Formulario de solicitud de presupuesto">
                             <div class="form-group">
                                 <input type="text" placeholder="Tu nombre completo" id="name" name="name" data-fs-field required>
                                 <span data-fs-error="name" class="error-message"></span>
@@ -411,27 +416,40 @@
                         </h3>
                         <div class="contact-item">
                             <i class="fab fa-whatsapp"></i>
-                            <a href="https://wa.me/50589871374" target="_blank">+505 8987 1374</a>
+                            <a href="https://wa.me/50589871374" target="_blank" rel="noopener">+505 8987 1374</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <a href="#contactForm">Enviar correo por formulario</a>
                         </div>
                         <div class="contact-item">
                             <i class="fab fa-github"></i>
-                            <a href="https://github.com/jhernandez30-cpu" target="_blank">github.com/jhernandez30-cpu</a>
+                            <a href="https://github.com/jhernandez30-cpu" target="_blank" rel="noopener">github.com/jhernandez30-cpu</a>
                         </div>
                         <div class="contact-item">
                             <i class="fab fa-linkedin"></i>
-                            <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank">Abraham Hernández</a>
+                            <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" rel="noopener">Abraham Hernández</a>
                         </div>
                         <div class="contact-item">
                             <i class="fab fa-instagram"></i>
-                            <a href="https://www.instagram.com/abrhamdev" target="_blank">@abrhamdev</a>
+                            <a href="https://www.instagram.com/abrhamdev/" target="_blank" rel="noopener">@abrhamdev</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fab fa-youtube"></i>
+                            <a href="https://www.youtube.com/@abrhamdev" target="_blank" rel="noopener">@abrhamdev</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-file-download"></i>
+                            <a href="cv.pdf" download>Descargar CV</a>
                         </div>
 
                         <!-- Redes sociales visuales -->
                         <div class="social-row">
-                            <a href="https://wa.me/50589871374" target="_blank" class="social-btn" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                            <a href="https://github.com/jhernandez30-cpu" target="_blank" class="social-btn" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                            <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" class="social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="https://www.instagram.com/abrhamdev" target="_blank" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="https://wa.me/50589871374" target="_blank" rel="noopener" class="social-btn" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                            <a href="https://github.com/jhernandez30-cpu" target="_blank" rel="noopener" class="social-btn" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                            <a href="https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1" target="_blank" rel="noopener" class="social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="https://www.instagram.com/abrhamdev/" target="_blank" rel="noopener" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="https://www.youtube.com/@abrhamdev" target="_blank" rel="noopener" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                         </div>
 
                         <div class="availability-note">
@@ -451,6 +469,7 @@
             <a href="dashboards-tiempo-real/">Dashboards</a>
             <a href="automatizacion-procesos-python/">Automatización</a>
             <a href="desarrollo-web-a-medida/">Web a medida</a>
+            <a href="desarrollador-web-nicaragua/">Desarrollador web Nicaragua</a>
             <a href="desarrollo-frontend-react-vue/">Frontend</a>
             <a href="integracion-apis/">APIs</a>
             <a href="chatbots-para-web/">Chatbots</a>

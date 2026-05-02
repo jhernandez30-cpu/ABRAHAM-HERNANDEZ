@@ -140,6 +140,12 @@ function runGsapScrollReveals() {
     '.skill-card',
     '.cert-item',
     '.card',
+    '.seo-card',
+    '.service-card',
+    '.case-card',
+    '.step-card',
+    '.faq-card',
+    '.conversion-card',
     '.project-card',
     '.assistant-copy > *',
     '.assistant-preview',
@@ -182,11 +188,11 @@ function initAnimeMicroInteractions(animate) {
   if (!animate) return;
 
   const icons = document.querySelectorAll(
-    '.card-icon, .skill-icon, .cert-icon, .contact-item i, .social-btn i'
+    '.card-icon, .skill-icon, .cert-icon, .contact-item i, .social-btn i, .seo-card i, .service-card i, .case-card i, .conversion-card i'
   );
 
   icons.forEach((icon) => {
-    const trigger = icon.closest('a, .card, .skill-card, .cert-item, .contact-item, .social-btn');
+    const trigger = icon.closest('a, .card, .skill-card, .cert-item, .contact-item, .social-btn, .seo-card, .service-card, .case-card, .conversion-card');
     if (!trigger) return;
 
     trigger.addEventListener('mouseenter', () => {

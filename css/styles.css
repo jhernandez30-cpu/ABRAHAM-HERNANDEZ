@@ -10,14 +10,16 @@
   --bg-secondary: #111111;
   --text-primary: #ffffff;
   --text-secondary: #b0b0b0;
-  --accent: #00ff9d;
-  --accent-glow: rgba(0, 255, 157, 0.4);
+  --accent: #4dd8ff;
+  --accent-2: #00ff9d;
+  --accent-glow: rgba(77, 216, 255, 0.42);
+  --accent-2-glow: rgba(0, 255, 157, 0.35);
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
   --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   --neon-shadow: 0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow);
   --navbar-height: 70px;
-  --tooltip-bg: rgba(0, 255, 157, 0.9);
+  --tooltip-bg: rgba(77, 216, 255, 0.92);
 }
 
 body {
@@ -28,6 +30,33 @@ body {
   overflow-x: hidden;
   cursor: none;
   position: relative;
+}
+
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 10000;
+  transform: translateY(-140%);
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #001018;
+  font-weight: 800;
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
 }
 
 /* Fondo de código estático (editor de programación) */
@@ -43,8 +72,8 @@ body::before {
   background-image: 
     repeating-linear-gradient(
       0deg,
-      rgba(0, 255, 157, 0.03) 0px,
-      rgba(0, 255, 157, 0.03) 1px,
+      rgba(77, 216, 255, 0.03) 0px,
+      rgba(77, 216, 255, 0.03) 1px,
       transparent 1px,
       transparent 2px
     ),
@@ -67,7 +96,7 @@ body::after {
   font-family: "Courier New", monospace;
   font-size: 14px;
   line-height: 24px;
-  color: rgba(0, 255, 157, 0.15);
+  color: rgba(77, 216, 255, 0.15);
   white-space: pre;
   z-index: -1;
   pointer-events: none;
@@ -108,6 +137,11 @@ section {
   z-index: 2;
 }
 
+section:not(#hero) {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 760px;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -118,7 +152,7 @@ h2 {
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, #fff, var(--accent));
+  background: linear-gradient(135deg, #fff, var(--accent), var(--accent-2));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -139,7 +173,7 @@ h2 {
 
 .btn-primary {
   background: var(--accent);
-  color: #000;
+  color: #001018;
   box-shadow: 0 0 20px var(--accent-glow);
 }
 
@@ -156,7 +190,7 @@ h2 {
 
 .btn-outline:hover {
   background: var(--accent);
-  color: #000;
+  color: #001018;
   box-shadow: 0 0 20px var(--accent-glow);
 }
 
@@ -938,10 +972,93 @@ footer {
   font-size: 0.9rem;
 }
 
+/* Bloques SEO/IA y conversión */
+.ai-answer-section .seo-card {
+  min-height: 100%;
+}
+
+.conversion-section {
+  padding-top: 70px;
+}
+
+.conversion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 18px;
+  margin-top: 34px;
+}
+
+.conversion-card {
+  min-height: 190px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: flex-start;
+  border: 1px solid rgba(77, 216, 255, 0.24);
+  border-radius: 16px;
+  padding: 24px;
+  background:
+    linear-gradient(145deg, rgba(77, 216, 255, 0.08), rgba(0, 255, 157, 0.035)),
+    rgba(255, 255, 255, 0.04);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.conversion-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+  box-shadow: 0 0 24px rgba(77, 216, 255, 0.18);
+}
+
+.conversion-card i {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #001018;
+  background: var(--accent);
+  box-shadow: 0 0 18px var(--accent-glow);
+  font-size: 1.25rem;
+}
+
+.conversion-card strong {
+  font-size: 1.08rem;
+  color: var(--text-primary);
+}
+
+.conversion-card span {
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
 /* Ajuste lista sobre mí */
 #about ul li {
   margin-bottom: 12px;
   font-size: 1.1rem;
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  body {
+    cursor: auto;
+  }
+
+  .custom-cursor {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Responsive */
@@ -988,6 +1105,9 @@ footer {
   .assistant-cta .btn {
     width: 100%;
     text-align: center;
+  }
+  .conversion-card {
+    min-height: auto;
   }
   /* Ajustar números de línea en móvil */
   body::after {

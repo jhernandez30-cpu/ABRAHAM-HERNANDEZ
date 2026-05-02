@@ -86,11 +86,11 @@
   content: "";
   position: absolute;
   inset: 9% 9% 5% 11%;
-  border: 1px solid rgba(0, 255, 157, 0.32);
+  border: 1px solid rgba(77, 216, 255, 0.34);
   background:
-    linear-gradient(135deg, rgba(0, 255, 157, 0.12), transparent 40%),
+    linear-gradient(135deg, rgba(77, 216, 255, 0.14), rgba(0, 255, 157, 0.05) 42%, transparent 72%),
     rgba(255, 255, 255, 0.03);
-  box-shadow: 0 0 42px rgba(0, 255, 157, 0.18);
+  box-shadow: 0 0 42px rgba(77, 216, 255, 0.2);
   transform: skewY(-3deg);
   z-index: -1;
 }
@@ -100,7 +100,7 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(0, 255, 157, 0.08) 1px, transparent 1px),
+    linear-gradient(rgba(77, 216, 255, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 255, 157, 0.06) 1px, transparent 1px);
   background-size: 42px 42px;
   mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
@@ -116,7 +116,7 @@
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 8px;
   background: #050505;
-  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.55), 0 0 28px rgba(0, 255, 157, 0.16);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.55), 0 0 28px rgba(77, 216, 255, 0.18);
   transform: rotate(var(--angle));
   transform-origin: center;
   will-change: transform, opacity;

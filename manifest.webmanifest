@@ -1,11 +1,11 @@
 {
-  "name": "Asistente de Programacion | Abraham Hernandez",
-  "short_name": "Asistente Dev",
-  "description": "Aplicacion interactiva para aprender programacion con rutas, ejercicios y quiz.",
-  "start_url": "asistente-programacion.html",
+  "name": "Abraham Hernandez | Desarrollador web en Nicaragua",
+  "short_name": "AbrhamDev",
+  "description": "Desarrollo web profesional, dashboards en tiempo real, automatizacion con Python, APIs, chatbots y frontend React/Vue para empresas.",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#0a0a0a",
-  "theme_color": "#00ff9d",
+  "theme_color": "#4dd8ff",
   "icons": [
     {
       "src": "assets/abraham-portrait-01.png",

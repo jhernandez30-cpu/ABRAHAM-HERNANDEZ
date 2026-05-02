@@ -1,0 +1,53 @@
+# Abraham Hernández
+
+> Desarrollador web en Nicaragua especializado en desarrollo web profesional, dashboards en tiempo real, automatización con Python, integración de APIs, chatbots para empresas y frontend React/Vue.
+
+Sitio oficial: https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/
+
+## Perfil
+
+Abraham Hernández desarrolla soluciones digitales para empresas, pymes y equipos B2B que necesitan reducir trabajo manual, conectar herramientas, visualizar datos y captar oportunidades desde la web.
+
+Ubicación principal: Nicaragua.
+
+Áreas principales:
+
+- Desarrollo web profesional.
+- Dashboards en tiempo real.
+- Automatización con Python.
+- Integración de APIs REST y webhooks.
+- Chatbots para empresas.
+- Frontend con React y Vue.
+- Sistemas web internos y herramientas a medida.
+
+## Páginas principales
+
+- Home: https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/
+- Desarrollador web en Nicaragua: https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/desarrollador-web-nicaragua/
+- Servicios: https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/servicios/
+- Proyectos y casos: https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/proyectos/
+- Recursos / blog SEO: https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/recursos/
+- Contacto: https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/contacto.html
+
+## Servicios
+
+- Dashboards en tiempo real: /dashboards-tiempo-real/
+- Automatización con Python: /automatizacion-procesos-python/
+- Desarrollo web a medida: /desarrollo-web-a-medida/
+- Frontend React y Vue: /desarrollo-frontend-react-vue/
+- Integración de APIs: /integracion-apis/
+- Chatbots para web: /chatbots-para-web/
+
+## Casos de estudio
+
+- ITSA Segurity: dashboard con alertas en tiempo real.
+- Dashboard Analytics: visualización de datos para decisiones de marketing.
+- AI Chatbot: asistente virtual para responder consultas frecuentes y escalar a humano.
+
+## Contacto
+
+- WhatsApp: https://wa.me/50589871374
+- GitHub: https://github.com/jhernandez30-cpu
+- LinkedIn: https://ni.linkedin.com/in/josue-abraham-hernandez-gonzalez-224a9a2a1
+- Instagram: https://www.instagram.com/abrhamdev/
+- YouTube: https://www.youtube.com/@abrhamdev
