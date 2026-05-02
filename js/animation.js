@@ -175,7 +175,8 @@ function runGsapScrollReveals() {
         animation.scrollTrigger = {
           trigger: element,
           start: 'top 88%',
-          toggleActions: 'play none none reverse'
+          once: true,
+          toggleActions: 'play none none none'
         };
       }
 
