@@ -174,54 +174,149 @@ function initPortfolioChatbot() {
 
   const relativeBase = document.querySelector('meta[name="relative-base"]')?.getAttribute('content') || '';
   const pageUrl = (path) => `${relativeBase}${path}`;
+  const whatsappBudget = 'https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20un%20presupuesto%20para%20un%20proyecto';
+  const linkedinUrl = 'https://www.linkedin.com/in/abrhamdev/';
+  const githubUrl = 'https://github.com/jhernandez30-cpu';
+  const instagramUrl = 'https://www.instagram.com/abrhamdev/';
+  const youtubeUrl = 'https://www.youtube.com/@abrhamdev';
   const fallbackAnswer = {
-    text: `Puedo ayudarte con servicios, proyectos, tecnologías, títulos, disponibilidad o contacto. Si necesitas una respuesta humana, escribe por <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20hablar%20sobre%20un%20proyecto" target="_blank" rel="noopener">WhatsApp</a>.`,
-    suggestions: ['Servicios', 'Presupuesto', 'Contacto']
+    text: `Puedo guiarte por el sitio. Elige una ruta: <a href="${pageUrl('servicios/')}">servicios</a>, <a href="${pageUrl('proyectos/')}">casos de estudio</a>, <a href="${pageUrl('recursos/')}">blog/recursos</a>, <a href="${pageUrl('sobre-mi/')}">perfil profesional</a> o <a href="${pageUrl('contacto.html')}">contacto</a>. Si me dices tu problema, te recomiendo la página correcta.`,
+    suggestions: ['Guíame', 'Servicios', 'Proyectos', 'Contacto']
   };
   const answers = [
     {
-      keys: ['hola', 'buenas', 'hey', 'saludos', 'inicio'],
-      text: 'Hola, soy el asistente virtual de Abraham. Puedo orientarte sobre servicios, proyectos, tecnologías, disponibilidad y formas de contacto.',
-      suggestions: ['Servicios', 'Proyectos', 'Presupuesto']
+      keys: ['hola', 'buenas', 'hey', 'saludos', 'inicio', 'empezar', 'ayuda'],
+      text: `Hola, soy el asistente virtual de Abraham. Puedo ayudarte a navegar el sitio, elegir un servicio, revisar proyectos, leer recursos o pedir presupuesto. Si no sabes por dónde empezar, dime qué quieres mejorar: ventas, datos, reportes, procesos manuales, APIs, atención al cliente o tu sitio web.`,
+      suggestions: ['Guíame', 'Servicios', 'Proyectos', 'Contacto']
     },
     {
-      keys: ['servicio', 'servicios', 'haces', 'ofreces', 'desarrollo', 'web', 'pagina', 'sitio', 'sistema'],
-      text: `Abraham puede ayudarte con <a href="${pageUrl('servicios/')}">servicios digitales B2B</a>: <a href="${pageUrl('dashboards-tiempo-real/')}">dashboards en tiempo real</a>, <a href="${pageUrl('automatizacion-procesos-python/')}">automatización con Python</a>, <a href="${pageUrl('desarrollo-web-a-medida/')}">desarrollo web a medida</a>, <a href="${pageUrl('integracion-apis/')}">integración de APIs</a> y <a href="${pageUrl('chatbots-para-web/')}">chatbots para web</a>.`,
-      suggestions: ['Presupuesto', 'Tecnologías', 'Proyectos']
+      keys: ['guia', 'guiame', 'orientame', 'recomienda', 'recomendacion', 'no se', 'no sé', 'que necesito', 'necesito ayuda', 'ruta'],
+      text: `Te guío rápido: si necesitas visibilidad de datos, ve a <a href="${pageUrl('dashboards-tiempo-real/')}">dashboards</a>. Si repites tareas o reportes, ve a <a href="${pageUrl('automatizacion-procesos-python/')}">automatización con Python</a>. Si quieres una web o sistema interno, ve a <a href="${pageUrl('desarrollo-web-a-medida/')}">desarrollo web a medida</a>. Si quieres conectar herramientas, ve a <a href="${pageUrl('integracion-apis/')}">APIs</a>. Si quieres responder leads, ve a <a href="${pageUrl('chatbots-para-web/')}">chatbots</a>.`,
+      suggestions: ['Dashboards', 'Automatización', 'Web a medida', 'Contacto']
     },
     {
-      keys: ['proyecto', 'proyectos', 'portfolio', 'portafolio', 'demo'],
-      text: `En el portafolio destacan ITSA Segurity, Dashboard Analytics y AI Chatbot. Puedes revisar <a href="${pageUrl('proyectos/')}">Proyectos</a> para ver casos y resultados.`,
-      suggestions: ['Servicios', 'IA', 'Contacto']
+      keys: ['mapa', 'navegar', 'sitio', 'secciones', 'paginas', 'páginas', 'menu', 'todo el sitio'],
+      text: `Mapa del sitio: <a href="${pageUrl('index.html')}">Inicio</a>, <a href="${pageUrl('desarrollador-web-nicaragua/')}">desarrollador web en Nicaragua</a>, <a href="${pageUrl('servicios/')}">servicios</a>, <a href="${pageUrl('proyectos/')}">proyectos</a>, <a href="${pageUrl('recursos/')}">blog/recursos</a>, <a href="${pageUrl('sobre-mi/')}">sobre mí</a>, <a href="${pageUrl('titulos.html')}">títulos</a>, <a href="${pageUrl('interactua.html')}">herramientas IA</a>, <a href="${pageUrl('asistente-programacion.html')}">asistente de programación</a> y <a href="${pageUrl('contacto.html')}">contacto</a>.`,
+      suggestions: ['Servicios', 'Proyectos', 'Recursos', 'Contacto']
     },
     {
-      keys: ['tecnologia', 'tecnologias', 'stack', 'vue', 'react', 'python', 'api', 'socket', 'javascript', 'typescript'],
-      text: 'Su stack principal incluye Vue, React, JavaScript, TypeScript, Python, APIs REST, SQL, WebSockets, Socket.IO, Git y GitHub Actions.',
-      suggestions: ['Proyectos', 'Servicios', 'Presupuesto']
+      keys: ['servicio', 'servicios', 'haces', 'ofreces', 'oferta', 'desarrollo', 'web profesional'],
+      text: `Abraham ofrece <a href="${pageUrl('servicios/')}">servicios digitales B2B</a>: <a href="${pageUrl('dashboards-tiempo-real/')}">dashboards en tiempo real</a>, <a href="${pageUrl('automatizacion-procesos-python/')}">automatización con Python</a>, <a href="${pageUrl('desarrollo-web-a-medida/')}">desarrollo web a medida</a>, <a href="${pageUrl('desarrollo-frontend-react-vue/')}">frontend React/Vue</a>, <a href="${pageUrl('integracion-apis/')}">integración de APIs</a> y <a href="${pageUrl('chatbots-para-web/')}">chatbots para web</a>.`,
+      suggestions: ['Dashboards', 'Automatización', 'APIs', 'Chatbot']
     },
     {
-      keys: ['contacto', 'whatsapp', 'correo', 'email', 'cotizar', 'contratar', 'precio', 'costo', 'presupuesto'],
-      text: `Para solicitar presupuesto, escribe por <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20un%20presupuesto%20para%20un%20proyecto" target="_blank" rel="noopener">WhatsApp</a> o completa el formulario en <a href="${pageUrl('contacto.html')}">Contacto</a>. Incluye objetivo, fecha ideal, presupuesto aproximado y ejemplos de referencia.`,
-      suggestions: ['Servicios', 'Disponibilidad', 'Proyectos']
+      keys: ['desarrollador web nicaragua', 'nicaragua', 'local', 'perfil local', 'desarrollador web en nicaragua'],
+      text: `La página principal para búsqueda local es <a href="${pageUrl('desarrollador-web-nicaragua/')}">Desarrollador web en Nicaragua</a>. Ahí se explica qué puede construir Abraham, cuándo contratarlo, proceso de trabajo, casos de estudio y formas de contacto.`,
+      suggestions: ['Servicios', 'Sobre mí', 'CV', 'Contacto']
     },
     {
-      keys: ['disponible', 'disponibilidad', 'freelance', 'trabajo'],
-      text: 'Actualmente el portafolio indica disponibilidad para proyectos freelance y colaboraciones. Lo ideal es enviar un resumen del proyecto para recibir una respuesta clara en menos de 24 horas.',
-      suggestions: ['Presupuesto', 'Contacto', 'Servicios']
+      keys: ['dashboard', 'dashboards', 'datos', 'metricas', 'métricas', 'kpi', 'reporte', 'reportes', 'tiempo real', 'alertas', 'websocket', 'socket'],
+      text: `Si necesitas ver datos, KPIs o alertas en vivo, revisa <a href="${pageUrl('dashboards-tiempo-real/')}">dashboards en tiempo real</a>. Es ideal para operaciones, ventas, seguridad o soporte cuando el equipo no puede esperar reportes manuales.`,
+      suggestions: ['Caso ITSA', 'Dashboard vs reporte', 'APIs', 'Contacto']
     },
     {
-      keys: ['titulo', 'certificacion', 'certificaciones', 'estudios', 'maestria'],
-      text: `Puedes ver formación, títulos y certificaciones en la página de <a href="${pageUrl('titulos.html')}">Títulos</a>.`,
-      suggestions: ['Tecnologías', 'Proyectos', 'Contacto']
+      keys: ['automatizacion', 'automatización', 'python', 'excel', 'manual', 'tarea repetitiva', 'tareas repetitivas', 'ahorrar tiempo', 'procesos', 'validacion', 'validación'],
+      text: `Si tu equipo repite tareas, copia datos o arma reportes a mano, revisa <a href="${pageUrl('automatizacion-procesos-python/')}">automatización con Python</a>. También te conviene leer <a href="${pageUrl('recursos/que-procesos-automatizar-python/')}">qué procesos puede automatizar una empresa con Python</a>.`,
+      suggestions: ['APIs', 'Reportes', 'Presupuesto', 'Recursos']
     },
     {
-      keys: ['ia', 'ai', 'chatbot', 'automatizacion', 'agente'],
-      text: `Abraham trabaja con automatización, agentes y herramientas de IA. También hay guías y recursos en <a href="${pageUrl('recursos/')}">Recursos</a>, además de herramientas interactivas en <a href="${pageUrl('interactua.html')}">Interactúa</a>.`,
-      suggestions: ['Presupuesto', 'Servicios', 'Tecnologías']
+      keys: ['pagina web', 'página web', 'sitio web', 'sistema web', 'web a medida', 'landing', 'formulario', 'herramienta interna', 'panel interno'],
+      text: `Si necesitas una página profesional, sistema interno, formulario o herramienta web propia, revisa <a href="${pageUrl('desarrollo-web-a-medida/')}">desarrollo web a medida</a>. Para enfoque local también puedes visitar <a href="${pageUrl('desarrollador-web-nicaragua/')}">desarrollador web en Nicaragua</a>.`,
+      suggestions: ['Frontend', 'Servicios', 'Presupuesto', 'Proyectos']
+    },
+    {
+      keys: ['frontend', 'react', 'vue', 'interfaz', 'interfaces', 'ui', 'producto digital', 'saas', 'panel administrativo'],
+      text: `Para interfaces modernas, paneles administrativos, productos digitales o frontend conectado a APIs, revisa <a href="${pageUrl('desarrollo-frontend-react-vue/')}">frontend React y Vue</a>. Abraham trabaja con componentes, responsive, accesibilidad e integración con datos reales.`,
+      suggestions: ['APIs', 'Proyectos', 'Tecnologías', 'Contacto']
+    },
+    {
+      keys: ['api', 'apis', 'integracion', 'integración', 'webhook', 'conectar', 'sincronizar', 'crm', 'formularios', 'sistemas'],
+      text: `Si necesitas conectar herramientas, formularios, CRM, bases de datos o servicios externos, revisa <a href="${pageUrl('integracion-apis/')}">integración de APIs</a>. También puedes leer <a href="${pageUrl('recursos/api-rest-vs-webhook/')}">API REST vs webhook</a>.`,
+      suggestions: ['Automatización', 'APIs', 'Webhook', 'Contacto']
+    },
+    {
+      keys: ['chatbot', 'bot', 'whatsapp', 'leads', 'cliente', 'clientes', 'atencion', 'atención', 'preguntas frecuentes', 'soporte'],
+      text: `Si quieres atender consultas, captar leads o derivar usuarios a WhatsApp, revisa <a href="${pageUrl('chatbots-para-web/')}">chatbots para web</a>. Puedes ver el caso <a href="${pageUrl('proyectos/ai-chatbot/')}">AI Chatbot</a> para entender el enfoque.`,
+      suggestions: ['AI Chatbot', 'Contacto', 'Servicios', 'IA']
+    },
+    {
+      keys: ['proyecto', 'proyectos', 'portfolio', 'portafolio', 'demo', 'caso', 'casos', 'trabajos'],
+      text: `En <a href="${pageUrl('proyectos/')}">Proyectos</a> encuentras casos de estudio: <a href="${pageUrl('proyectos/itsa-segurity/')}">ITSA Segurity</a>, <a href="${pageUrl('proyectos/dashboard-analytics/')}">Dashboard Analytics</a> y <a href="${pageUrl('proyectos/ai-chatbot/')}">AI Chatbot</a>. Cada caso muestra problema, solución, stack y resultado.`,
+      suggestions: ['Caso ITSA', 'Dashboard Analytics', 'AI Chatbot', 'Servicios']
+    },
+    {
+      keys: ['itsa', 'segurity', 'seguridad', 'monitoreo', 'incidentes'],
+      text: `<a href="${pageUrl('proyectos/itsa-segurity/')}">ITSA Segurity</a> es un caso de dashboard con alertas en tiempo real para seguridad operativa. El stack incluye React, Socket.IO, Node.js y MongoDB, con foco en visibilidad y respuesta rápida.`,
+      suggestions: ['Dashboards', 'Proyectos', 'Demo', 'Contacto']
+    },
+    {
+      keys: ['analytics', 'marketing', 'dashboard analytics', 'analitica', 'analítica', 'visualizacion', 'visualización'],
+      text: `<a href="${pageUrl('proyectos/dashboard-analytics/')}">Dashboard Analytics</a> muestra cómo convertir datos dispersos en un panel con filtros y KPIs para tomar decisiones de marketing más rápido.`,
+      suggestions: ['Dashboards', 'Proyectos', 'Recursos', 'Contacto']
+    },
+    {
+      keys: ['ai chatbot', 'asistente virtual', 'nlp', 'rasa'],
+      text: `<a href="${pageUrl('proyectos/ai-chatbot/')}">AI Chatbot</a> es un caso de asistente virtual para responder consultas frecuentes, clasificar solicitudes y escalar a atención humana cuando hace falta.`,
+      suggestions: ['Chatbot', 'IA', 'Contacto', 'Proyectos']
+    },
+    {
+      keys: ['recurso', 'recursos', 'blog', 'guia', 'guía', 'articulo', 'artículo', 'leer', 'aprender'],
+      text: `En <a href="${pageUrl('recursos/')}">Recursos</a> hay guías sobre automatización con Python, dashboards en tiempo real vs informes automáticos y API REST vs webhook. Es la mejor ruta si todavía estás evaluando qué solución necesitas.`,
+      suggestions: ['Python guía', 'Dashboard vs reporte', 'API vs webhook', 'Servicios']
+    },
+    {
+      keys: ['dashboard vs reporte', 'informe automatico', 'informe automático', 'reporte automatico', 'reporte automático'],
+      text: `Si dudas entre datos en vivo o reportes programados, lee <a href="${pageUrl('recursos/dashboard-tiempo-real-vs-reporte-automatico/')}">dashboard en tiempo real vs informe automático</a>. Te ayuda a elegir según frecuencia de datos, urgencia y uso del equipo.`,
+      suggestions: ['Dashboards', 'Recursos', 'Presupuesto', 'APIs']
+    },
+    {
+      keys: ['api vs webhook', 'rest vs webhook', 'webhooks'],
+      text: `La guía <a href="${pageUrl('recursos/api-rest-vs-webhook/')}">API REST vs webhook</a> explica cuándo consultar datos, cuándo recibir eventos y cómo conectar herramientas sin copiar y pegar.`,
+      suggestions: ['APIs', 'Automatización', 'Recursos', 'Contacto']
+    },
+    {
+      keys: ['tecnologia', 'tecnologias', 'tecnología', 'tecnologías', 'stack', 'javascript', 'typescript', 'sql', 'node', 'mongodb', 'postgresql', 'git'],
+      text: `Stack principal: React, Vue, JavaScript, TypeScript, Python, APIs REST, SQL, WebSockets, Socket.IO, Node.js, bases de datos y Git/GitHub Actions. Para ver cómo se aplica, revisa <a href="${pageUrl('proyectos/')}">proyectos</a> o <a href="${pageUrl('sobre-mi/')}">sobre mí</a>.`,
+      suggestions: ['Proyectos', 'Sobre mí', 'Frontend', 'APIs']
+    },
+    {
+      keys: ['sobre mi', 'sobre mí', 'perfil', 'abraham', 'quien eres', 'quién eres', 'experiencia', 'forma de trabajo'],
+      text: `En <a href="${pageUrl('sobre-mi/')}">Sobre mí</a> está el perfil profesional de Abraham: especialización, forma de trabajo, tecnologías, áreas donde aporta criterio y CTA para revisar un proyecto.`,
+      suggestions: ['CV', 'Títulos', 'Tecnologías', 'Contacto']
+    },
+    {
+      keys: ['titulo', 'titulos', 'título', 'títulos', 'certificacion', 'certificaciones', 'estudios', 'maestria', 'maestría', 'cv', 'curriculum', 'currículum'],
+      text: `Puedes ver formación, títulos y certificaciones en <a href="${pageUrl('titulos.html')}">Títulos</a>. También puedes descargar el <a href="${pageUrl('cv.pdf')}">CV en PDF</a> para evaluar el perfil profesional.`,
+      suggestions: ['Sobre mí', 'CV', 'Contacto', 'Tecnologías']
+    },
+    {
+      keys: ['ia', 'ai', 'inteligencia artificial', 'agente', 'agentes', 'herramientas ia', 'notebooklm', 'interactua'],
+      text: `En <a href="${pageUrl('interactua.html')}">Interactúa</a> hay herramientas IA y recursos para negocio/aprendizaje. También puedes visitar <a href="${pageUrl('asistente-programacion.html')}">Asistente de Programación</a> si quieres aprender o practicar conceptos técnicos.`,
+      suggestions: ['Asistente programación', 'Chatbot', 'Recursos', 'Contacto']
+    },
+    {
+      keys: ['asistente programacion', 'asistente programación', 'aprender programacion', 'aprender programación', 'programar', 'curso', 'ejercicios'],
+      text: `El <a href="${pageUrl('asistente-programacion.html')}">Asistente de Programación</a> tiene rutas, preguntas, ejercicios, quiz y libros base para aprender programación de forma guiada.`,
+      suggestions: ['Interactúa', 'Títulos', 'Recursos', 'Inicio']
+    },
+    {
+      keys: ['contacto', 'correo', 'email', 'cotizar', 'contratar', 'precio', 'costo', 'presupuesto', 'disponible', 'disponibilidad', 'freelance', 'trabajo'],
+      text: `Para solicitar presupuesto, escribe por <a href="${whatsappBudget}" target="_blank" rel="noopener">WhatsApp</a> o completa el formulario en <a href="${pageUrl('contacto.html')}">Contacto</a>. Incluye objetivo, proceso actual, herramientas existentes, fecha ideal, presupuesto aproximado y ejemplos de referencia.`,
+      suggestions: ['WhatsApp', 'Servicios', 'Proyectos', 'CV']
+    },
+    {
+      keys: ['linkedin', 'github', 'instagram', 'youtube', 'redes', 'social', 'whatsapp'],
+      text: `Redes y contacto: <a href="${whatsappBudget}" target="_blank" rel="noopener">WhatsApp</a>, <a href="${linkedinUrl}" target="_blank" rel="noopener">LinkedIn</a>, <a href="${githubUrl}" target="_blank" rel="noopener">GitHub</a>, <a href="${instagramUrl}" target="_blank" rel="noopener">Instagram</a> y <a href="${youtubeUrl}" target="_blank" rel="noopener">YouTube</a>.`,
+      suggestions: ['Contacto', 'GitHub', 'LinkedIn', 'CV']
+    },
+    {
+      keys: ['faq', 'preguntas frecuentes', 'google', 'chatgpt', 'seo'],
+      text: `La home incluye una sección FAQ para Google y ChatGPT con respuestas sobre servicios, dashboards, automatización, chatbots y presupuesto. También está el archivo <a href="${pageUrl('llms.txt')}">llms.txt</a> para resumir el sitio a sistemas de IA.`,
+      suggestions: ['Recursos', 'Servicios', 'Mapa del sitio', 'Contacto']
     }
   ];
 
-  const quickReplies = ['Servicios', 'Proyectos', 'Tecnologías', 'Presupuesto'];
+  const quickReplies = ['Guíame', 'Servicios', 'Proyectos', 'Recursos', 'Contacto'];
   const widget = document.createElement('div');
   widget.className = 'chatbot-widget';
   widget.innerHTML = `
@@ -370,5 +465,5 @@ function initPortfolioChatbot() {
     sendQuestion(input.value);
   });
 
-  addMessage('Hola, soy el asistente virtual de Abraham. Pregúntame por servicios, proyectos, tecnologías o cómo pedir presupuesto.', 'bot');
+  addMessage('Hola, soy el asistente virtual de Abraham. Puedo guiarte por todo el sitio: servicios, proyectos, recursos, perfil, CV, redes o presupuesto. Escribe tu necesidad o toca una opción.', 'bot');
 }
