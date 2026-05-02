@@ -1,0 +1,635 @@
+/* === JAH premium commerce and strategy page === */
+:root {
+  --jah-black: #050608;
+  --jah-carbon: #0b0f14;
+  --jah-panel: rgba(11, 16, 23, 0.82);
+  --jah-line: rgba(124, 219, 255, 0.2);
+  --jah-blue: #12b7ff;
+  --jah-blue-strong: #006dff;
+  --jah-ice: #eef9ff;
+  --jah-silver: #b7c1cc;
+  --jah-muted: #7d8794;
+  --jah-green: #18ffbd;
+  --jah-shadow: 0 0 28px rgba(18, 183, 255, 0.24);
+}
+
+body.jah-page {
+  background: var(--jah-black);
+  color: var(--jah-ice);
+}
+
+body.jah-page::before {
+  background:
+    linear-gradient(90deg, rgba(18, 183, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 20% 12%, rgba(18, 183, 255, 0.18), transparent 32%),
+    radial-gradient(circle at 84% 10%, rgba(24, 255, 189, 0.1), transparent 28%),
+    linear-gradient(180deg, #050608 0%, #0a0f17 48%, #050608 100%);
+  background-size: 64px 64px, 64px 64px, auto, auto, auto;
+}
+
+body.jah-page::after {
+  display: none;
+}
+
+.jah-page .navbar {
+  background: rgba(5, 6, 8, 0.86);
+  border-bottom-color: rgba(18, 183, 255, 0.18);
+}
+
+.jah-page .nav-links a.active::after {
+  background: var(--jah-blue);
+  box-shadow: 0 0 18px rgba(18, 183, 255, 0.66);
+}
+
+.jah-page .brand-logo img {
+  filter: drop-shadow(0 0 16px rgba(18, 183, 255, 0.58));
+}
+
+.jah-hero {
+  min-height: 94vh;
+  padding: 138px 20px 76px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(18, 183, 255, 0.16);
+  overflow: hidden;
+}
+
+.jah-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.98fr) minmax(320px, 1.02fr);
+  gap: 54px;
+  align-items: center;
+}
+
+.jah-eyebrow,
+.jah-section-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--jah-blue);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.jah-eyebrow::before,
+.jah-section-kicker::before {
+  content: "";
+  width: 26px;
+  height: 2px;
+  background: var(--jah-blue);
+  box-shadow: 0 0 18px rgba(18, 183, 255, 0.78);
+}
+
+.jah-hero h1,
+.jah-section-heading h2 {
+  letter-spacing: 0;
+  background: linear-gradient(135deg, #ffffff 0%, #dff7ff 36%, #12b7ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.jah-hero h1 {
+  margin: 18px 0 20px;
+  font-size: clamp(3rem, 7vw, 6.6rem);
+  line-height: 0.96;
+  font-weight: 900;
+}
+
+.jah-hero-lede {
+  max-width: 700px;
+  color: var(--jah-silver);
+  font-size: 1.12rem;
+  line-height: 1.85;
+}
+
+.jah-hero-actions,
+.jah-inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.jah-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 13px 22px;
+  border: 1px solid rgba(18, 183, 255, 0.54);
+  border-radius: 4px;
+  color: var(--jah-ice);
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  background: rgba(18, 183, 255, 0.08);
+  box-shadow: inset 0 0 20px rgba(18, 183, 255, 0.08);
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+}
+
+.jah-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(238, 249, 255, 0.8);
+  background: rgba(18, 183, 255, 0.18);
+  box-shadow: var(--jah-shadow);
+}
+
+.jah-btn-primary {
+  background: linear-gradient(135deg, var(--jah-blue-strong), var(--jah-blue));
+  color: #02050a;
+}
+
+.jah-brand-stage {
+  position: relative;
+  min-height: 560px;
+  border: 1px solid rgba(18, 183, 255, 0.22);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 30%),
+    radial-gradient(circle at center, rgba(18, 183, 255, 0.24), transparent 50%),
+    rgba(7, 10, 14, 0.78);
+  box-shadow: var(--jah-shadow);
+  overflow: hidden;
+}
+
+.jah-brand-stage::before {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(238, 249, 255, 0.08);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.jah-hero-logo {
+  position: absolute;
+  left: 50%;
+  top: 41%;
+  width: min(92%, 780px);
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  filter: drop-shadow(0 0 34px rgba(18, 183, 255, 0.42));
+}
+
+.jah-product-rail {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.jah-mini-product {
+  min-height: 106px;
+  border: 1px solid rgba(238, 249, 255, 0.11);
+  border-radius: 6px;
+  padding: 12px;
+  background: rgba(2, 5, 10, 0.72);
+}
+
+.jah-mini-product strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.jah-mini-product span {
+  color: var(--jah-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.jah-section {
+  padding: 88px 20px;
+}
+
+.jah-section-alt {
+  background: rgba(238, 249, 255, 0.025);
+  border-top: 1px solid rgba(238, 249, 255, 0.06);
+  border-bottom: 1px solid rgba(238, 249, 255, 0.06);
+}
+
+.jah-section-heading {
+  max-width: 920px;
+  margin-bottom: 36px;
+}
+
+.jah-section-heading.center {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.jah-section-heading.center .jah-section-kicker {
+  justify-content: center;
+}
+
+.jah-section-heading.center .jah-section-kicker::before {
+  display: none;
+}
+
+.jah-section-heading h2 {
+  margin: 10px 0 14px;
+  font-size: clamp(2rem, 4vw, 3.7rem);
+  line-height: 1.05;
+}
+
+.jah-section-heading p,
+.jah-copy {
+  color: var(--jah-silver);
+  line-height: 1.8;
+}
+
+.jah-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+.jah-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.jah-card,
+.jah-product-card,
+.jah-campaign-card,
+.jah-prompt-card {
+  border: 1px solid rgba(238, 249, 255, 0.1);
+  border-radius: 8px;
+  padding: 24px;
+  background: var(--jah-panel);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.26);
+}
+
+.jah-card:hover,
+.jah-product-card:hover,
+.jah-campaign-card:hover {
+  border-color: rgba(18, 183, 255, 0.46);
+  box-shadow: var(--jah-shadow);
+}
+
+.jah-card i,
+.jah-product-card i,
+.jah-campaign-card i {
+  color: var(--jah-blue);
+  font-size: 1.75rem;
+  margin-bottom: 16px;
+}
+
+.jah-card h3,
+.jah-product-card h3,
+.jah-campaign-card h3,
+.jah-prompt-card h3 {
+  margin-bottom: 10px;
+  color: var(--jah-ice);
+  font-size: 1.18rem;
+}
+
+.jah-card p,
+.jah-product-card p,
+.jah-campaign-card p,
+.jah-card li,
+.jah-product-card li,
+.jah-campaign-card li {
+  color: var(--jah-silver);
+}
+
+.jah-card ul,
+.jah-product-card ul,
+.jah-campaign-card ul {
+  margin: 14px 0 0;
+  padding-left: 18px;
+}
+
+.jah-product-visual {
+  position: relative;
+  height: 168px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(18, 183, 255, 0.16);
+  border-radius: 6px;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(18, 183, 255, 0.16), transparent),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 22px),
+    #070a10;
+}
+
+.jah-product-visual::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 76px;
+  height: 112px;
+  transform: translate(-50%, -50%);
+  border-radius: 28px 28px 12px 12px;
+  background:
+    linear-gradient(160deg, rgba(238, 249, 255, 0.88), rgba(18, 183, 255, 0.18)),
+    #101823;
+  clip-path: polygon(23% 0, 77% 0, 100% 18%, 84% 42%, 84% 100%, 16% 100%, 16% 42%, 0 18%);
+  box-shadow: 0 0 30px rgba(18, 183, 255, 0.26);
+}
+
+.jah-product-visual.pants::before {
+  width: 90px;
+  height: 128px;
+  border-radius: 22px 22px 8px 8px;
+  clip-path: polygon(16% 0, 84% 0, 92% 100%, 58% 100%, 50% 36%, 42% 100%, 8% 100%);
+}
+
+.jah-tag-row,
+.jah-colorways,
+.jah-metric-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.jah-tag,
+.jah-metric {
+  border: 1px solid rgba(18, 183, 255, 0.32);
+  border-radius: 999px;
+  padding: 7px 12px;
+  color: var(--jah-blue);
+  background: rgba(18, 183, 255, 0.08);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.jah-marquee {
+  overflow: hidden;
+  border-top: 1px solid rgba(18, 183, 255, 0.18);
+  border-bottom: 1px solid rgba(18, 183, 255, 0.18);
+  background: rgba(18, 183, 255, 0.08);
+}
+
+.jah-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: jahMarquee 24s linear infinite;
+}
+
+.jah-marquee span {
+  padding: 16px 24px;
+  color: var(--jah-ice);
+  font-weight: 900;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+@keyframes jahMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.jah-table-wrap {
+  overflow-x: auto;
+  border: 1px solid rgba(238, 249, 255, 0.1);
+  border-radius: 8px;
+}
+
+.jah-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  background: rgba(7, 10, 16, 0.76);
+}
+
+.jah-table th,
+.jah-table td {
+  padding: 15px 16px;
+  border-bottom: 1px solid rgba(238, 249, 255, 0.08);
+  text-align: left;
+  vertical-align: top;
+}
+
+.jah-table th {
+  color: var(--jah-ice);
+  background: rgba(18, 183, 255, 0.12);
+  font-size: 0.84rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.jah-table td {
+  color: var(--jah-silver);
+}
+
+.jah-split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.88fr) minmax(320px, 1.12fr);
+  gap: 34px;
+  align-items: start;
+}
+
+.jah-logo-lockup {
+  display: grid;
+  place-items: center;
+  min-height: 340px;
+  border: 1px solid rgba(18, 183, 255, 0.2);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at center, rgba(18, 183, 255, 0.2), transparent 58%),
+    rgba(2, 5, 10, 0.82);
+}
+
+.jah-logo-lockup img {
+  width: min(92%, 560px);
+  border-radius: 8px;
+  filter: drop-shadow(0 0 32px rgba(18, 183, 255, 0.46));
+}
+
+.jah-color {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--jah-silver);
+  font-weight: 700;
+}
+
+.jah-swatch {
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+}
+
+.jah-testimonial {
+  display: flex;
+  flex-direction: column;
+  min-height: 210px;
+}
+
+.jah-testimonial blockquote {
+  color: var(--jah-ice);
+  font-size: 1.04rem;
+  line-height: 1.7;
+}
+
+.jah-testimonial cite {
+  margin-top: auto;
+  padding-top: 18px;
+  color: var(--jah-blue);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.jah-prompt-card pre {
+  margin-top: 12px;
+  padding: 16px;
+  overflow-x: auto;
+  border: 1px solid rgba(18, 183, 255, 0.16);
+  border-radius: 6px;
+  color: var(--jah-ice);
+  background: rgba(2, 5, 10, 0.9);
+  white-space: pre-wrap;
+}
+
+.jah-final-cta {
+  text-align: center;
+  padding: 96px 20px;
+  background:
+    linear-gradient(135deg, rgba(0, 109, 255, 0.18), rgba(18, 183, 255, 0.08)),
+    rgba(2, 5, 10, 0.86);
+}
+
+.jah-final-cta h2 {
+  max-width: 940px;
+  margin: 0 auto 18px;
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.jah-footer {
+  padding: 46px 20px;
+  border-top: 1px solid rgba(18, 183, 255, 0.18);
+  background: #030507;
+}
+
+.jah-footer-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: center;
+}
+
+.jah-footer img {
+  width: 150px;
+  border-radius: 6px;
+}
+
+.jah-footer p {
+  color: var(--jah-muted);
+}
+
+.jah-logo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 146px;
+  height: 50px;
+  padding: 0;
+  border: 1px solid rgba(77, 216, 255, 0.5);
+  border-radius: 50px;
+  background: rgba(0, 0, 0, 0.52);
+  box-shadow: 0 0 20px rgba(77, 216, 255, 0.2);
+  overflow: hidden;
+}
+
+.jah-logo-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 28px rgba(77, 216, 255, 0.48);
+}
+
+.jah-logo-btn img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.jah-logo-btn .sr-only {
+  position: absolute;
+}
+
+@media (max-width: 980px) {
+  .jah-hero-grid,
+  .jah-split,
+  .jah-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .jah-brand-stage {
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .jah-hero {
+    min-height: auto;
+    padding-top: 166px;
+  }
+
+  .jah-brand-stage {
+    min-height: 460px;
+  }
+
+  .jah-product-rail {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .jah-section {
+    padding: 68px 20px;
+  }
+
+  .jah-footer-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .jah-hero h1 {
+    font-size: 2.7rem;
+  }
+
+  .jah-brand-stage {
+    min-height: 420px;
+  }
+
+  .jah-product-rail {
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    gap: 8px;
+  }
+
+  .jah-mini-product {
+    min-height: 96px;
+    padding: 10px;
+  }
+
+  .jah-logo-btn {
+    width: 132px;
+    height: 48px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jah-marquee-track {
+    animation: none;
+  }
+}

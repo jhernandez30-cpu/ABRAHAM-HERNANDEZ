@@ -189,6 +189,34 @@ h2 {
   box-shadow: 0 0 20px var(--accent-glow);
 }
 
+.jah-logo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 146px;
+  height: 50px;
+  padding: 0;
+  border: 1px solid rgba(77, 216, 255, 0.5);
+  border-radius: 50px;
+  background: rgba(0, 0, 0, 0.52);
+  box-shadow: 0 0 20px rgba(77, 216, 255, 0.2);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.jah-logo-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 28px rgba(77, 216, 255, 0.48);
+}
+
+.jah-logo-btn img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
 .glass-card {
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
