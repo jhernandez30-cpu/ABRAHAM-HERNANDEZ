@@ -18,7 +18,7 @@
   --glass-border: rgba(255, 255, 255, 0.1);
   --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   --neon-shadow: 0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow);
-  --navbar-height: 70px;
+  --navbar-height: 88px;
   --tooltip-bg: rgba(77, 216, 255, 0.92);
 }
 
@@ -273,8 +273,8 @@ footer {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 132px;
-  height: 58px;
+  width: 168px;
+  height: 78px;
   padding: 0;
   letter-spacing: 0;
   line-height: 1;
@@ -286,9 +286,9 @@ footer {
 
 .logo a.brand-logo img {
   display: block;
-  width: 132px;
+  width: 168px;
   height: auto;
-  max-height: 58px;
+  max-height: 78px;
   object-fit: contain;
   border-radius: 6px;
   filter: drop-shadow(0 0 14px rgba(77, 216, 255, 0.42));
@@ -1156,12 +1156,12 @@ footer {
     font-size: 1.5rem;
   }
   .logo a.brand-logo {
-    width: 112px;
-    height: 48px;
+    width: 132px;
+    height: 58px;
   }
   .logo a.brand-logo img {
-    width: 112px;
-    max-height: 48px;
+    width: 132px;
+    max-height: 58px;
   }
   .nav-links {
     width: 100%;

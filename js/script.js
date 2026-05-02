@@ -172,7 +172,6 @@ document.addEventListener('DOMContentLoaded', function() {
 function initPortfolioChatbot() {
   if (document.querySelector('.chatbot-widget')) return;
 
-  const storageKey = 'jah-chatbot-history';
   const relativeBase = document.querySelector('meta[name="relative-base"]')?.getAttribute('content') || '';
   const pageUrl = (path) => `${relativeBase}${path}`;
   const fallbackAnswer = {
@@ -260,36 +259,13 @@ function initPortfolioChatbot() {
   const form = widget.querySelector('.chatbot-form');
   const input = widget.querySelector('.chatbot-input');
   const chips = widget.querySelector('.chatbot-quick-replies');
-  let chatHistory = loadHistory();
 
-  function saveHistory() {
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(chatHistory.slice(-16)));
-    } catch (error) {
-      chatHistory = chatHistory.slice(-16);
-    }
-  }
-
-  function addMessage(content, type, shouldSave = true) {
+  function addMessage(content, type) {
     const message = document.createElement('div');
     message.className = `chatbot-message ${type}`;
     message.innerHTML = content;
     messages.appendChild(message);
     messages.scrollTop = messages.scrollHeight;
-
-    if (shouldSave) {
-      chatHistory.push({ content, type });
-      saveHistory();
-    }
-  }
-
-  function loadHistory() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
-      return Array.isArray(saved) ? saved : [];
-    } catch (error) {
-      return [];
-    }
   }
 
   function showTyping() {
@@ -394,9 +370,5 @@ function initPortfolioChatbot() {
     sendQuestion(input.value);
   });
 
-  if (chatHistory.length) {
-    chatHistory.forEach(item => addMessage(item.content, item.type, false));
-  } else {
-    addMessage('Hola, soy el asistente virtual de Abraham. Pregúntame por servicios, proyectos, tecnologías o cómo pedir presupuesto.', 'bot');
-  }
+  addMessage('Hola, soy el asistente virtual de Abraham. Pregúntame por servicios, proyectos, tecnologías o cómo pedir presupuesto.', 'bot');
 }
