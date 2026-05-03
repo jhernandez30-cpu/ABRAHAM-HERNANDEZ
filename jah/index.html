@@ -253,7 +253,7 @@
     }
 
     .nav {
-      min-height: 78px;
+      min-height: 92px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -264,14 +264,16 @@
       display: inline-flex;
       align-items: center;
       gap: 12px;
-      min-width: 126px;
+      min-width: 224px;
     }
 
     .brand-mark {
-      width: 116px;
-      height: 42px;
-      object-fit: contain;
-      filter: drop-shadow(0 0 18px rgba(0, 174, 255, 0.5));
+      width: 220px;
+      height: 72px;
+      border-radius: 8px;
+      object-fit: cover;
+      object-position: center;
+      filter: drop-shadow(0 0 22px rgba(0, 174, 255, 0.62));
     }
 
     .logo-text {
@@ -340,7 +342,7 @@
       min-height: 100vh;
       display: grid;
       align-items: center;
-      padding: 166px 0 70px;
+      padding: 136px 0 54px;
       overflow: hidden;
       position: relative;
       isolation: isolate;
@@ -372,9 +374,9 @@
 
     .hero-grid {
       display: grid;
-      grid-template-columns: minmax(0, 0.86fr) minmax(420px, 1.14fr);
+      grid-template-columns: minmax(0, 0.72fr) minmax(560px, 1.28fr);
       align-items: center;
-      gap: clamp(34px, 6vw, 76px);
+      gap: clamp(22px, 4vw, 54px);
     }
 
     .hero-copy {
@@ -383,9 +385,9 @@
     }
 
     .hero h1 {
-      max-width: 660px;
-      font-size: clamp(4rem, 9vw, 8.7rem);
-      line-height: 0.9;
+      max-width: 560px;
+      font-size: clamp(3.35rem, 6.45vw, 6.65rem);
+      line-height: 0.88;
     }
 
     .hero h1 .line {
@@ -450,99 +452,165 @@
     }
 
     .hero-showcase {
-      min-height: 630px;
-      display: grid;
-      place-items: center;
+      width: min(500px, 100%);
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      justify-self: end;
       position: relative;
+      perspective: 1200px;
+      transform: translateY(-110px);
     }
 
     .light-beam {
       position: absolute;
-      top: 4%;
-      right: 22%;
-      width: 120px;
-      height: 88%;
-      background: linear-gradient(90deg, transparent, rgba(0, 174, 255, 0.18), transparent);
-      filter: blur(8px);
-      transform: skewX(-8deg);
+      left: 11%;
+      top: 9%;
+      z-index: 1;
+      width: 76%;
+      height: 52%;
+      border-top: 2px solid rgba(77, 216, 255, 0.82);
+      border-radius: 50% 50% 0 0;
+      background: transparent;
+      filter: drop-shadow(0 0 12px rgba(77, 216, 255, 0.82)) drop-shadow(0 0 28px rgba(0, 255, 157, 0.24));
+      transform: rotate(-7deg);
+      transform-origin: left center;
     }
 
     .hero-ring {
       position: absolute;
-      width: min(560px, 84vw);
-      aspect-ratio: 1;
-      border: 1px solid rgba(0, 174, 255, 0.32);
+      inset: 8% 6% 8%;
+      z-index: 0;
+      border: 1px solid rgba(77, 216, 255, 0.22);
       border-radius: 999px;
-      box-shadow: inset 0 0 70px rgba(0, 174, 255, 0.08), 0 0 80px rgba(0, 174, 255, 0.22);
-      animation: spin 18s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+      background:
+        radial-gradient(circle at 45% 45%, rgba(77, 216, 255, 0.16), transparent 58%),
+        radial-gradient(circle at 74% 64%, rgba(0, 255, 157, 0.08), transparent 42%);
+      box-shadow: inset 0 0 80px rgba(77, 216, 255, 0.08), 0 0 80px rgba(77, 216, 255, 0.16);
+      transform: rotate(-8deg);
     }
 
     .hero-product {
-      width: min(680px, 100%);
+      width: 100%;
+      aspect-ratio: 4 / 5;
       position: relative;
       z-index: 2;
+      isolation: isolate;
+      transform-style: preserve-3d;
+    }
+
+    .hero-product::before {
+      content: "";
+      position: absolute;
+      inset: 8% 8% 5% 10%;
+      z-index: -1;
+      border: 1px solid rgba(77, 216, 255, 0.34);
+      background:
+        linear-gradient(135deg, rgba(77, 216, 255, 0.14), rgba(0, 255, 157, 0.05) 42%, transparent 72%),
+        rgba(255, 255, 255, 0.03);
+      box-shadow: 0 0 42px rgba(77, 216, 255, 0.2);
+      transform: skewY(-3deg);
+    }
+
+    .hero-product::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background-image:
+        linear-gradient(rgba(77, 216, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 157, 0.06) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+      opacity: 0.35;
+    }
+
+    .product-scanline {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 42%;
+      z-index: 8;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      mix-blend-mode: screen;
+      pointer-events: none;
+      animation: scanProduct 4.8s ease-in-out infinite;
+    }
+
+    @keyframes scanProduct {
+      0%, 18% { opacity: 0; transform: translateX(-130%); }
+      34%, 46% { opacity: 0.55; }
+      72%, 100% { opacity: 0; transform: translateX(250%); }
+    }
+
+    .hero-visual-card {
+      --angle: 0deg;
+      margin: 0;
+      position: absolute;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 50% 48%, rgba(77, 216, 255, 0.22), transparent 62%),
+        #070a0d;
+      box-shadow: 0 22px 70px rgba(0, 0, 0, 0.55), 0 0 28px rgba(77, 216, 255, 0.18);
+      transform: rotate(var(--angle));
+      transform-origin: center;
+    }
+
+    .hero-visual-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 30%, rgba(0, 0, 0, 0.18));
+      pointer-events: none;
+    }
+
+    .hero-visual-card img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 10px;
+      filter: contrast(1.04) saturate(1.08);
+    }
+
+    .hero-shirt {
+      --angle: -7deg;
+      top: 18%;
+      left: 0;
+      z-index: 2;
+      width: 40%;
+      height: 54%;
+    }
+
+    .hero-jogger {
+      --angle: 8deg;
+      right: 0;
+      bottom: 20%;
+      z-index: 1;
+      width: 38%;
+      height: 50%;
     }
 
     .hero-shoe {
-      width: min(650px, 100%);
-      margin-inline: auto;
-      filter: drop-shadow(0 34px 60px rgba(0, 0, 0, 0.72)) drop-shadow(0 0 38px rgba(0, 174, 255, 0.28));
-      transform: rotate(-5deg);
-      animation: floatProduct 3.8s ease-in-out infinite;
+      --angle: 2deg;
+      top: 3%;
+      left: 16%;
+      z-index: 4;
+      width: 68%;
+      height: 43%;
     }
 
-    @keyframes floatProduct {
-      0%, 100% { transform: translateY(0) rotate(-5deg); }
-      50% { transform: translateY(-18px) rotate(-5deg); }
-    }
-
-    .floating-card {
-      position: absolute;
-      z-index: 3;
-      width: 154px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgba(7, 9, 13, 0.82);
-      box-shadow: var(--shadow);
-      padding: 10px;
-      backdrop-filter: blur(16px);
-    }
-
-    .floating-card img {
-      width: 100%;
-      aspect-ratio: 1;
-      object-fit: contain;
-      border-radius: 5px;
-      background: radial-gradient(circle, rgba(0, 174, 255, 0.22), transparent 64%);
-    }
-
-    .floating-card span {
-      display: block;
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 0.72rem;
-      font-weight: 900;
-      letter-spacing: 0.7px;
-      text-transform: uppercase;
-    }
-
-    .float-shirt {
-      top: 38px;
-      right: 10px;
-    }
-
-    .float-jogger {
-      left: 10px;
-      bottom: 48px;
-    }
-
-    .float-short {
-      right: 68px;
-      bottom: 14px;
+    .hero-short {
+      --angle: -3deg;
+      left: 27%;
+      bottom: 20%;
+      z-index: 5;
+      width: 42%;
+      height: 36%;
     }
 
     .scroll-cue {
@@ -656,7 +724,8 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background:
-        linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.82)),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.86)),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 46px),
         var(--panel);
       transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
     }
@@ -677,12 +746,12 @@
 
     .category-card img {
       position: absolute;
-      inset: 18px 10px auto;
-      width: calc(100% - 20px);
-      height: 260px;
+      inset: 2px 4px auto;
+      width: calc(100% - 8px);
+      height: 292px;
       object-fit: contain;
       filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.74));
-      transform: scale(1.04);
+      transform: scale(1.02);
       transition: transform 0.35s ease;
     }
 
@@ -863,11 +932,13 @@
 
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(238px, 1fr));
       gap: 20px;
     }
 
     .product-card {
+      --product-accent: var(--blue);
+      --product-glow: rgba(0, 174, 255, 0.18);
       display: flex;
       min-height: 100%;
       flex-direction: column;
@@ -876,14 +947,24 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background:
-        radial-gradient(circle at 50% 12%, rgba(0, 174, 255, 0.14), transparent 40%),
+        radial-gradient(circle at 50% 0%, var(--product-glow), transparent 46%),
         linear-gradient(145deg, #10141d, #050608);
       padding: 16px;
+      isolation: isolate;
       transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
     }
 
+    .product-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--product-accent), transparent);
+      opacity: 0.82;
+    }
+
     .product-card:hover {
-      border-color: var(--blue);
+      border-color: var(--product-accent);
       box-shadow: var(--shadow);
       transform: translateY(-8px);
     }
@@ -894,7 +975,7 @@
       left: 14px;
       z-index: 2;
       border-radius: 999px;
-      background: var(--blue);
+      background: var(--product-accent);
       color: white;
       padding: 6px 10px;
       font-size: 0.68rem;
@@ -905,22 +986,37 @@
     }
 
     .product-img {
-      min-height: 250px;
+      aspect-ratio: 1;
       display: grid;
       place-items: center;
       border-radius: 6px;
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent),
-        radial-gradient(circle, rgba(0, 174, 255, 0.18), transparent 60%),
+        radial-gradient(circle, var(--product-glow), transparent 62%),
         #05070a;
       margin-bottom: 18px;
       overflow: hidden;
+      position: relative;
+    }
+
+    .product-img::after {
+      content: "";
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      bottom: 8%;
+      height: 10px;
+      border-radius: 999px;
+      background: radial-gradient(ellipse, var(--product-glow), transparent 72%);
+      filter: blur(10px);
     }
 
     .product-img img {
       width: 100%;
-      height: 230px;
+      height: 100%;
       object-fit: contain;
+      position: relative;
+      z-index: 1;
       transition: transform 0.35s ease;
     }
 
@@ -935,7 +1031,7 @@
     }
 
     .category-label {
-      color: var(--blue);
+      color: var(--product-accent);
       font-size: 0.72rem;
       font-weight: 900;
       letter-spacing: 1px;
@@ -986,12 +1082,13 @@
     }
 
     .price {
+      color: white;
       font-size: 1.35rem;
       font-weight: 900;
     }
 
     .stars {
-      color: var(--blue);
+      color: var(--product-accent);
       font-size: 0.84rem;
       letter-spacing: 1px;
     }
@@ -1019,7 +1116,7 @@
     }
 
     .add-btn:hover {
-      background: var(--blue);
+      background: var(--product-accent);
       color: white;
       box-shadow: 0 0 28px rgba(0, 174, 255, 0.28);
     }
@@ -1469,6 +1566,11 @@
         min-height: 540px;
       }
 
+      .hero-product {
+        width: min(100%, 540px);
+        min-height: 0;
+      }
+
       .product-grid,
       .category-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1545,7 +1647,12 @@
       }
 
       .brand-mark {
-        width: 96px;
+        width: 150px;
+        height: 52px;
+      }
+
+      .brand {
+        min-width: 150px;
       }
 
       .hero {
@@ -1606,19 +1713,53 @@
       }
 
       .hero-showcase {
-        min-height: 390px;
+        min-height: 470px;
+      }
+
+      .hero-product {
+        width: min(100%, 390px);
+        min-height: 0;
+        aspect-ratio: 1 / 1.15;
+      }
+
+      .light-beam {
+        left: 7%;
+        top: 12%;
+        width: 82%;
+        height: 46%;
       }
 
       .hero-ring {
-        width: min(360px, 88vw);
+        inset: 10% 2% 12%;
+        width: auto;
+      }
+
+      .hero-shirt {
+        top: 24%;
+        left: 0;
+        width: 40%;
+        height: 54%;
+      }
+
+      .hero-jogger {
+        right: 0;
+        bottom: 3%;
+        width: 38%;
+        height: 50%;
       }
 
       .hero-shoe {
-        width: min(380px, 100%);
+        top: 3%;
+        left: 19%;
+        width: 62%;
+        height: 42%;
       }
 
-      .floating-card {
-        display: none;
+      .hero-short {
+        left: 28%;
+        bottom: 0;
+        width: 42%;
+        height: 38%;
       }
 
       .trust-item,
@@ -1670,7 +1811,7 @@
 <body>
   <header class="site-header">
     <div class="utility-bar" aria-label="Beneficios de compra JAH">
-      <div class="utility-item"><i data-lucide="truck" aria-hidden="true"></i> Envío gratis en pedidos +$75</div>
+      <div class="utility-item"><i data-lucide="truck" aria-hidden="true"></i> Envío gratis en pedidos +C$75</div>
       <div class="utility-item"><i data-lucide="rotate-ccw" aria-hidden="true"></i> Devoluciones fáciles 30 días</div>
       <div class="utility-item"><i data-lucide="medal" aria-hidden="true"></i> Probado para rendimiento</div>
       <div class="utility-item"><i data-lucide="lock-keyhole" aria-hidden="true"></i> Pagos seguros</div>
@@ -1678,7 +1819,7 @@
 
     <div class="container nav">
       <a class="brand" href="#inicio" aria-label="Ir al inicio de JAH">
-        <img class="brand-mark" src="../assets/jah-logo-button.png" alt="Logo JAH" />
+        <img class="brand-mark" src="../assets/jah-logo.png" alt="Logo JAH" />
       </a>
 
       <nav class="nav-links" id="navLinks" aria-label="Navegación principal">
@@ -1762,19 +1903,19 @@
         <div class="light-beam" aria-hidden="true"></div>
         <div class="hero-ring" aria-hidden="true"></div>
         <div class="hero-product">
-          <img class="hero-shoe" src="../assets/jah-shoe-product.png" alt="Zapato deportivo negro JAH con detalles azul eléctrico" />
-          <div class="floating-card float-shirt" aria-hidden="true">
-            <img src="../assets/jah-shirt-product.png" alt="" />
-            <span>Camisa tech</span>
-          </div>
-          <div class="floating-card float-jogger" aria-hidden="true">
-            <img src="../assets/jah-jogger-product.png" alt="" />
-            <span>Jogger pro</span>
-          </div>
-          <div class="floating-card float-short" aria-hidden="true">
-            <img src="../assets/jah-short-product.png" alt="" />
-            <span>Short elite</span>
-          </div>
+          <span class="product-scanline" aria-hidden="true"></span>
+          <figure class="hero-visual-card hero-shirt">
+            <img src="../assets/JAH/Logo%20Presentacion/1777773592378.png" alt="Camisa deportiva negra JAH" />
+          </figure>
+          <figure class="hero-visual-card hero-shoe">
+            <img src="../assets/JAH/Logo%20Presentacion/1777773592887.png" alt="Zapato deportivo negro JAH con detalles azul eléctrico" />
+          </figure>
+          <figure class="hero-visual-card hero-jogger">
+            <img src="../assets/JAH/Logo%20Presentacion/1777773591634.png" alt="Pantalón jogger negro JAH" />
+          </figure>
+          <figure class="hero-visual-card hero-short">
+            <img src="../assets/JAH/Logo%20Presentacion/1777773593686.png" alt="Short deportivo negro JAH" />
+          </figure>
         </div>
       </section>
     </div>
@@ -1842,7 +1983,7 @@
 
       <div class="category-grid">
         <article class="category-card reveal" id="footwear">
-          <img src="../assets/jah-shoe-product.png" alt="Zapato deportivo negro JAH" />
+          <img src="../assets/JAH/Logo%20Presentacion/1777773592887.png" alt="Zapato deportivo negro JAH" />
           <div class="category-content">
             <h3>Footwear</h3>
             <p>Zapatos running/training con impacto visual y comodidad para el día completo.</p>
@@ -1851,7 +1992,7 @@
         </article>
 
         <article class="category-card reveal" id="hombre">
-          <img src="../assets/jah-shirt-product.png" alt="Camisa deportiva negra JAH" />
+          <img src="../assets/JAH/Logo%20Presentacion/1777773592378.png" alt="Camisa deportiva negra JAH" />
           <div class="category-content">
             <h3>Camisas</h3>
             <p>Ajuste atlético, tela técnica y presencia limpia para entrenar o salir.</p>
@@ -1860,7 +2001,7 @@
         </article>
 
         <article class="category-card reveal" id="mujer">
-          <img src="../assets/jah-jogger-product.png" alt="Pantalón jogger negro JAH" />
+          <img src="../assets/JAH/Logo%20Presentacion/1777773591634.png" alt="Pantalón jogger negro JAH" />
           <div class="category-content">
             <h3>Joggers</h3>
             <p>Pantalones premium con estructura cómoda, moderna y resistente.</p>
@@ -1869,7 +2010,7 @@
         </article>
 
         <article class="category-card reveal">
-          <img src="../assets/jah-short-product.png" alt="Short deportivo negro JAH" />
+          <img src="../assets/JAH/Logo%20Presentacion/1777773593686.png" alt="Short deportivo negro JAH" />
           <div class="category-content">
             <h3>Shorts</h3>
             <p>Ligereza, respirabilidad y libertad para sesiones intensas o lifestyle.</p>
@@ -1947,7 +2088,7 @@
         </div>
 
         <div class="specs-image">
-          <img src="../assets/jah-shoe-product.png" alt="Especificaciones visuales del zapato deportivo JAH Velocity Runner" />
+          <img src="../assets/JAH/Logo%20Presentacion/1777773592887.png" alt="Especificaciones visuales del zapato deportivo JAH Velocity Runner" />
         </div>
       </div>
     </div>
@@ -2113,99 +2254,99 @@
   <script>
     const products = [
       {
-        id: "velocity-runner",
-        name: "JAH Velocity Runner",
+        id: "runner-azul-rey",
+        name: "JAH Runner Azul Rey",
         category: "zapatos",
         categoryLabel: "Zapatos",
-        price: 89,
-        badge: "Nuevo",
-        image: "../assets/jah-shoe-product.png",
-        alt: "Zapato deportivo negro JAH con detalles azul eléctrico",
-        description: "Running y training con amortiguación visual premium y estética neón.",
+        price: 92,
+        badge: "Drop 01",
+        image: "../assets/JAH/Zapatos/IMG_20260502_221339.png",
+        alt: "Zapato deportivo JAH color azul rey y negro",
+        description: "Colorway atletico con presencia intensa para running, training y uso urbano.",
         sizes: ["7", "8", "9", "10", "11"]
       },
       {
-        id: "impact-runner",
-        name: "JAH Blue Impact Runner",
+        id: "runner-grafito-cian",
+        name: "JAH Runner Grafito Cian",
         category: "zapatos",
         categoryLabel: "Zapatos",
-        price: 95,
+        price: 96,
         badge: "Pro",
-        image: "../assets/jah-shoe-product.png",
-        alt: "Zapato deportivo JAH Blue Impact Runner",
-        description: "Diseñado para entrenamientos intensos, caminatas largas y estilo urbano.",
+        image: "../assets/JAH/Zapatos/IMG_20260502_221444.png",
+        alt: "Zapato deportivo JAH grafito con detalles cian",
+        description: "Diseno futurista con detalles sutiles y silueta lista para moverse.",
         sizes: ["7", "8", "9", "10", "11"]
       },
       {
-        id: "black-performance-shirt",
-        name: "JAH Black Performance Shirt",
+        id: "camisa-azul-marino",
+        name: "JAH Camisa Azul Marino",
         category: "camisas",
         categoryLabel: "Camisas",
         price: 34,
         badge: "Hot",
-        image: "../assets/jah-shirt-product.png",
-        alt: "Camisa deportiva negra JAH con logo azul eléctrico",
-        description: "Tela técnica respirable, fit atlético y logo azul eléctrico en pecho.",
+        image: "../assets/JAH/Camisas/IMG_20260502_220426.png",
+        alt: "Camisa deportiva JAH azul marino",
+        description: "Fit atletico, textura tecnica y acabado oscuro para entrenar con presencia.",
         sizes: ["S", "M", "L", "XL"]
       },
       {
-        id: "flex-fit-shirt",
-        name: "JAH Flex Fit Shirt",
+        id: "camisa-gris",
+        name: "JAH Camisa Gris",
         category: "camisas",
         categoryLabel: "Camisas",
         price: 36,
         badge: "Fit",
-        image: "../assets/jah-shirt-product.png",
-        alt: "Camisa JAH Flex Fit negra premium",
-        description: "Camisa ligera para gimnasio, running y uso diario con acabado premium.",
+        image: "../assets/JAH/Camisas/IMG_20260502_220532.png",
+        alt: "Camisa deportiva JAH gris",
+        description: "Base neutra con logo cian para combinar facil dentro y fuera del gimnasio.",
         sizes: ["S", "M", "L", "XL"]
       },
       {
-        id: "training-jogger",
-        name: "JAH Training Jogger Pants",
+        id: "jogger-azul-rey",
+        name: "JAH Jogger Azul Rey",
         category: "pantalones",
         categoryLabel: "Pantalones",
-        price: 49,
+        price: 54,
         badge: "Best",
-        image: "../assets/jah-jogger-product.png",
-        alt: "Pantalón jogger negro JAH con logo en azul eléctrico",
-        description: "Jogger técnico con cintura cómoda, puño moderno y look de alto rendimiento.",
+        image: "../assets/JAH/Pantalones/IMG_20260502_220133.png",
+        alt: "Pantalon jogger JAH azul rey",
+        description: "Jogger tecnico con caida moderna, cintura comoda y energia azul intensa.",
         sizes: ["S", "M", "L", "XL"]
       },
       {
-        id: "urban-tech-pants",
-        name: "JAH Urban Tech Pants",
+        id: "jogger-burdeos",
+        name: "JAH Jogger Burdeos",
         category: "pantalones",
         categoryLabel: "Pantalones",
         price: 54,
         badge: "Urban",
-        image: "../assets/jah-jogger-product.png",
-        alt: "Jogger urbano técnico JAH",
-        description: "Pantalón versátil para entrenar, viajar y moverte con presencia.",
+        image: "../assets/JAH/Pantalones/IMG_20260502_220047.png",
+        alt: "Pantalon jogger JAH color burdeos",
+        description: "Pieza de entrenamiento con caracter fuerte y silueta premium.",
         sizes: ["S", "M", "L", "XL"]
       },
       {
-        id: "active-training-shorts",
-        name: "JAH Active Training Shorts",
+        id: "short-azul",
+        name: "JAH Short Azul",
         category: "shorts",
         categoryLabel: "Shorts",
         price: 32,
         badge: "Nuevo",
-        image: "../assets/jah-short-product.png",
-        alt: "Short deportivo negro premium JAH",
-        description: "Short ligero con logo inferior, ideal para pierna, running y HIIT.",
+        image: "../assets/JAH/Shorts/IMG_20260502_215225.png",
+        alt: "Short deportivo JAH azul",
+        description: "Ligero, fresco y visualmente fuerte para pierna, running o HIIT.",
         sizes: ["S", "M", "L", "XL"]
       },
       {
-        id: "lightweight-shorts",
-        name: "JAH Lightweight Shorts",
+        id: "short-gris-grafito",
+        name: "JAH Short Gris Grafito",
         category: "shorts",
         categoryLabel: "Shorts",
         price: 30,
         badge: "Light",
-        image: "../assets/jah-short-product.png",
-        alt: "Short deportivo JAH Lightweight negro",
-        description: "Movimiento libre, secado rápido y estética limpia para todos los días.",
+        image: "../assets/JAH/Shorts/IMG_20260502_214057.png",
+        alt: "Short deportivo JAH gris grafito",
+        description: "Base neutra de alto uso con logo claro y sensacion de entrenamiento diario.",
         sizes: ["S", "M", "L", "XL"]
       }
     ];
@@ -2243,6 +2384,13 @@
       }).format(value);
     }
 
+    const categoryThemes = {
+      zapatos: { accent: "#0aa7ff", glow: "rgba(0, 174, 255, 0.26)" },
+      camisas: { accent: "#5be6ff", glow: "rgba(91, 230, 255, 0.22)" },
+      pantalones: { accent: "#2ec76c", glow: "rgba(46, 199, 108, 0.2)" },
+      shorts: { accent: "#f04464", glow: "rgba(240, 68, 100, 0.2)" }
+    };
+
     function renderProducts(filter = "todos") {
       activeFilter = filter;
       productGrid.innerHTML = "";
@@ -2252,8 +2400,11 @@
         : products.filter(product => product.category === filter);
 
       filteredProducts.forEach(product => {
+        const theme = categoryThemes[product.category] || categoryThemes.zapatos;
         const card = document.createElement("article");
         card.className = "product-card reveal-product";
+        card.style.setProperty("--product-accent", theme.accent);
+        card.style.setProperty("--product-glow", theme.glow);
         card.innerHTML = `
           <span class="badge">${product.badge}</span>
           <div class="product-img">
