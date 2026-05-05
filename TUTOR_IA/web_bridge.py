@@ -6,6 +6,7 @@ import math
 import os
 import re
 import subprocess
+import sys
 from functools import lru_cache
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -15,28 +16,75 @@ import chromadb
 from chromadb.config import Settings
 from langchain_ollama import OllamaLLM
 
+BASE_DIR = Path(__file__).resolve().parent
+
+
+def path_from_env(value):
+    return Path(value).expanduser() if value else None
+
+
+def tutor_root_candidates():
+    env_root = path_from_env(os.getenv("TUTOR_IA_ROOT"))
+    if env_root:
+        yield env_root
+
+    yield Path.home() / "Documents" / "tutor_ia"
+    yield BASE_DIR
+    yield BASE_DIR.parent
+
+
+def find_tutor_root():
+    for candidate in tutor_root_candidates():
+        try:
+            candidate = candidate.resolve()
+        except OSError:
+            continue
+        if (
+            (candidate / "brain_db").exists()
+            or (candidate / "Tutor_IA").exists()
+            or (candidate / "agency_brain.py").exists()
+        ):
+            return candidate
+    return BASE_DIR
+
+
+TUTOR_ROOT = find_tutor_root()
+if str(TUTOR_ROOT) not in sys.path:
+    sys.path.insert(0, str(TUTOR_ROOT))
+
 try:
-    from agency_brain import build_agency_context, retrieve_agency_agents
+    from agency_brain import build_agency_context, get_agency_status, retrieve_agency_agents
 except Exception:
     build_agency_context = None
+    get_agency_status = None
     retrieve_agency_agents = None
 
 
-BASE_DIR = Path(__file__).resolve().parent
-PERSIST_DIR = os.getenv("TUTOR_IA_PERSIST_DIR", str(BASE_DIR / "brain_db"))
+PERSIST_DIR = os.getenv("TUTOR_IA_PERSIST_DIR", str(TUTOR_ROOT / "brain_db"))
+OBSIDIAN_VAULT_DIR = os.getenv("TUTOR_IA_OBSIDIAN_DIR", str(TUTOR_ROOT / "Tutor_IA"))
 COLLECTION_NAME = os.getenv("TUTOR_IA_COLLECTION", "conocimiento_fast")
 LLM_MODEL = os.getenv("TUTOR_IA_LLM_MODEL", "llama3.2:1b")
 RECOMMENDED_OLLAMA_MODEL = os.getenv("TUTOR_IA_RECOMMENDED_MODEL", "llama3.2:1b")
 EMBED_DIM = int(os.getenv("TUTOR_IA_EMBED_DIM", "384"))
-RETRIEVE_CANDIDATES = int(os.getenv("TUTOR_IA_RETRIEVE_CANDIDATES", "10"))
-RESPONSE_TOP_K = int(os.getenv("TUTOR_IA_RESPONSE_TOP_K", "3"))
-MAX_DOC_CONTEXT_CHARS = int(os.getenv("TUTOR_IA_MAX_DOC_CONTEXT_CHARS", "900"))
-PROMPT_HISTORY_TURNS = int(os.getenv("TUTOR_IA_PROMPT_HISTORY_TURNS", "4"))
+RETRIEVE_CANDIDATES = int(os.getenv("TUTOR_IA_RETRIEVE_CANDIDATES", "8"))
+RESPONSE_TOP_K = int(os.getenv("TUTOR_IA_RESPONSE_TOP_K", "2"))
+MAX_DOC_CONTEXT_CHARS = int(os.getenv("TUTOR_IA_MAX_DOC_CONTEXT_CHARS", "700"))
+PROMPT_HISTORY_TURNS = int(os.getenv("TUTOR_IA_PROMPT_HISTORY_TURNS", "3"))
 AGENCY_MATCH_LIMIT = int(os.getenv("TUTOR_IA_AGENCY_MATCH_LIMIT", "2"))
 AGENCY_CONTEXT_CHARS = int(os.getenv("TUTOR_IA_AGENCY_CONTEXT_CHARS", "3000"))
+OBSIDIAN_TOP_K = int(os.getenv("TUTOR_IA_OBSIDIAN_TOP_K", "2"))
+OBSIDIAN_MAX_NOTE_CHARS = int(os.getenv("TUTOR_IA_OBSIDIAN_MAX_NOTE_CHARS", "2200"))
+OBSIDIAN_ENABLED = os.getenv("TUTOR_IA_OBSIDIAN_ENABLED", "1").lower() not in {"0", "false", "no", "off"}
 LOW_MEMORY_MODEL_PRIORITY = ["llama3.2:1b", "qwen2.5:1.5b", "gemma3:1b", "llama3.2:3b"]
 ALLOWED_GROUP_RE = re.compile(r"^[a-zA-Z0-9_-]{1,32}$")
 TOKEN_RE = re.compile(r"\w+", re.UNICODE)
+FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n?", re.DOTALL)
+CODE_BLOCK_RE = re.compile(r"```.*?```", re.DOTALL)
+WIKI_LINK_RE = re.compile(r"\[\[([^\]]+)\]\]")
+SOURCE_REQUEST_RE = re.compile(
+    r"\b(fuente|fuentes|cita|citas|bibliografia|documento|documentos|de donde|origen)\b",
+    re.IGNORECASE,
+)
 DEFAULT_ALLOWED_ORIGINS = "null,http://localhost,http://127.0.0.1,https://jhernandez30-cpu.github.io"
 ALLOWED_ORIGINS = {
     origin.strip().rstrip("/")
@@ -54,7 +102,7 @@ Modo Potencia tu estudio:
 - Explica conceptos complejos en terminos simples sin perder precision.
 - Usa ejemplos del mundo real cuando el contexto lo permita.
 - Refuerza la comprension con pasos, analogias, mini-resumenes o preguntas de practica.
-- Si falta informacion en las fuentes, dilo con claridad.
+- Si falta informacion en el contexto interno, dilo con claridad.
 """,
     },
     "organize": {
@@ -72,8 +120,8 @@ Modo Organiza tu pensamiento:
         "instructions": """
 Modo Elabora nuevas ideas:
 - Identifica patrones, tendencias, tensiones, oportunidades y huecos en el material.
-- Genera ideas nuevas conectadas con las fuentes, no ocurrencias desconectadas.
-- Distingue entre evidencia de las fuentes, inferencia razonable e hipotesis.
+- Genera ideas nuevas conectadas con el contexto, no ocurrencias desconectadas.
+- Distingue entre evidencia del contexto, inferencia razonable e hipotesis.
 - Propone proximos pasos accionables cuando sea util.
 """,
     },
@@ -83,8 +131,8 @@ Modo Elabora nuevas ideas:
 Modo Cerebro Agency:
 - Actua como orquestador de especialistas.
 - Selecciona el enfoque de los agentes relevantes de Agency segun la pregunta.
-- Integra metodologia de expertos con la evidencia recuperada de las fuentes privadas.
-- Distingue entre hechos de las fuentes, criterio experto e inferencias.
+- Integra metodologia de expertos con la evidencia recuperada del contexto privado.
+- Distingue entre hechos del contexto, criterio experto e inferencias.
 - Entrega pasos concretos, criterios de validacion y siguientes acciones cuando sea util.
 """,
     },
@@ -153,6 +201,15 @@ def normalize_groups(groups):
     return clean_groups or ["public"]
 
 
+def payload_bool(payload, key, default=False):
+    if key not in payload:
+        return default
+    value = payload.get(key)
+    if isinstance(value, bool):
+        return value
+    return str(value).strip().lower() not in {"0", "false", "no", "off", ""}
+
+
 def get_interaction_mode(mode_key):
     return INTERACTION_MODES.get(mode_key, INTERACTION_MODES["study"])
 
@@ -162,6 +219,217 @@ def trim_prompt_text(text, max_chars):
     if len(text) <= max_chars:
         return text
     return text[: max_chars - 3].rstrip() + "..."
+
+
+def clean_answer_text(text):
+    text = str(text or "").replace("**", "")
+    text = re.sub(r"(?im)^\s*fuentes?\s*:\s*(?:\n\s*[-*].*)+", "", text)
+    text = re.sub(r"(?im)^\s*sources?\s*:\s*(?:\n\s*[-*].*)+", "", text)
+    text = re.sub(r"(?im)^\s*fuentes?\s*:\s*.*$", "", text)
+    text = re.sub(r"(?im)^\s*sources?\s*:\s*.*$", "", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
+
+
+def source_requested(question):
+    return bool(SOURCE_REQUEST_RE.search(str(question or "")))
+
+
+def dot_score(left, right):
+    return sum(a * b for a, b in zip(left, right))
+
+
+def parse_frontmatter(raw):
+    match = FRONTMATTER_RE.match(str(raw or "").lstrip("\ufeff"))
+    if not match:
+        return {}, raw
+
+    metadata = {}
+    current_key = ""
+    for line in match.group(1).splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.startswith("- ") and current_key:
+            metadata[current_key] = f"{metadata.get(current_key, '')} {stripped[2:].strip()}".strip()
+            continue
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        current_key = key.strip().lower()
+        metadata[current_key] = value.strip().strip('"').strip("'")
+    return metadata, raw[match.end() :]
+
+
+def clean_obsidian_text(text):
+    text = CODE_BLOCK_RE.sub("", str(text or ""))
+    text = WIKI_LINK_RE.sub(lambda match: match.group(1).split("|")[-1], text)
+    text = re.sub(r"(?m)^#{1,6}\s*", "", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
+
+
+def iter_obsidian_files():
+    if not OBSIDIAN_ENABLED:
+        return []
+
+    root = Path(OBSIDIAN_VAULT_DIR).expanduser()
+    if not root.exists() or not root.is_dir():
+        return []
+
+    files = []
+    for current_root, dirs, names in os.walk(root):
+        dirs[:] = [
+            name
+            for name in dirs
+            if name not in {".obsidian", ".git", "__pycache__"} and not name.startswith(".")
+        ]
+        for name in names:
+            path = Path(current_root) / name
+            if path.suffix.lower() in {".md", ".canvas"}:
+                files.append(path)
+    return sorted(files)
+
+
+def read_canvas_text(raw):
+    try:
+        data = json.loads(raw)
+    except Exception:
+        return raw
+
+    parts = []
+    for node in data.get("nodes", []):
+        text = node.get("text") or node.get("file") or node.get("label")
+        if text:
+            parts.append(str(text))
+    for edge in data.get("edges", []):
+        label = edge.get("label")
+        if label:
+            parts.append(str(label))
+    return "\n".join(parts)
+
+
+def build_obsidian_note(path, root):
+    raw = path.read_text(encoding="utf-8", errors="replace")
+    if path.suffix.lower() == ".canvas":
+        raw = read_canvas_text(raw)
+    metadata, body = parse_frontmatter(raw)
+    title = metadata.get("title") or path.stem
+    rel_path = path.relative_to(root).as_posix()
+    summary = metadata.get("resumen", "")
+    tags = metadata.get("tags", "")
+    note_type = metadata.get("tipo", "obsidian")
+    area = metadata.get("area", "")
+    status = metadata.get("estado", "")
+    cleaned_body = clean_obsidian_text(body)
+    context_text = "\n".join(
+        part
+        for part in [
+            f"Titulo: {title}",
+            f"Ruta Obsidian: {rel_path}",
+            f"Resumen: {summary}" if summary else "",
+            f"Tags: {tags}" if tags else "",
+            f"Tipo: {note_type}" if note_type else "",
+            f"Area: {area}" if area else "",
+            f"Estado: {status}" if status else "",
+            trim_prompt_text(cleaned_body, OBSIDIAN_MAX_NOTE_CHARS),
+        ]
+        if part
+    )
+    search_text = " ".join([title, rel_path, summary, tags, note_type, area, cleaned_body])
+    return {
+        "text": context_text,
+        "metadata": {
+            "source": f"obsidian:{rel_path}",
+            "type": "obsidian",
+            "title": title,
+            "path": rel_path,
+            "access_group": "admin",
+            "area": area,
+            "estado": status,
+        },
+        "tokens": set(TOKEN_RE.findall(search_text.lower())),
+        "vector": embed_text(search_text),
+    }
+
+
+def obsidian_signature():
+    files = iter_obsidian_files()
+    signature = []
+    for path in files:
+        try:
+            stat = path.stat()
+        except OSError:
+            continue
+        signature.append((str(path), stat.st_mtime_ns, stat.st_size))
+    return tuple(signature)
+
+
+@lru_cache(maxsize=4)
+def load_obsidian_notes(signature):
+    root = Path(OBSIDIAN_VAULT_DIR).expanduser()
+    notes = []
+    for raw_path, _, _ in signature:
+        path = Path(raw_path)
+        try:
+            notes.append(build_obsidian_note(path, root))
+        except OSError:
+            continue
+    return notes
+
+
+def get_obsidian_notes():
+    signature = obsidian_signature()
+    if not signature:
+        return []
+    return load_obsidian_notes(signature)
+
+
+def retrieve_obsidian(question, top_k=None):
+    top_k = top_k if top_k is not None else OBSIDIAN_TOP_K
+    if top_k <= 0:
+        return []
+
+    notes = get_obsidian_notes()
+    if not notes:
+        return []
+
+    query_text = str(question or "")
+    query_vector = embed_text(query_text)
+    query_tokens = set(TOKEN_RE.findall(query_text.lower()))
+    scored = []
+    for note in notes:
+        vector_score = dot_score(query_vector, note["vector"])
+        overlap = len(query_tokens & note["tokens"]) / max(len(query_tokens), 1)
+        path = note["metadata"].get("path", "").lower()
+        title = note["metadata"].get("title", "").lower()
+        boost = 0.08 if any(token in path or token in title for token in query_tokens) else 0.0
+        score = (0.78 * vector_score) + (0.22 * overlap) + boost
+        scored.append((score, note))
+
+    scored.sort(key=lambda item: item[0], reverse=True)
+    results = []
+    for score, note in scored[: max(top_k, 0)]:
+        if score <= 0:
+            continue
+        results.append(
+            {
+                "text": note["text"],
+                "metadata": note["metadata"],
+            }
+        )
+    return results
+
+
+def get_obsidian_status():
+    root = Path(OBSIDIAN_VAULT_DIR).expanduser()
+    notes = get_obsidian_notes()
+    return {
+        "enabled": OBSIDIAN_ENABLED,
+        "available": root.exists() and root.is_dir(),
+        "path": str(root),
+        "notes": len(notes),
+    }
 
 
 def embed_text(text):
@@ -237,7 +505,16 @@ def add_memory_turn(memory, question, answer, max_turns=12):
         del memory[:-max_messages]
 
 
-def generate_answer(question, docs, memory=None, interaction_mode="study", model_name=None, agency_context=""):
+def generate_answer(
+    question,
+    docs,
+    memory=None,
+    interaction_mode="study",
+    model_name=None,
+    agency_context="",
+    show_sources=False,
+    assistant_profile="",
+):
     mode = get_interaction_mode(interaction_mode)
     model_name = choose_llm_model(model_name)
     if not model_name:
@@ -246,12 +523,13 @@ def generate_answer(question, docs, memory=None, interaction_mode="study", model
             f"Descarga uno con: `ollama pull {RECOMMENDED_OLLAMA_MODEL}`. "
             "Despues vuelve a intentarlo."
         )
+        response = clean_answer_text(response)
         if memory is not None:
             add_memory_turn(memory, question, response)
         return response
 
     if not docs and not agency_context:
-        response = "No encontre informacion relevante en la base de conocimiento para responder esa pregunta."
+        response = clean_answer_text("No encontre informacion relevante en la base de conocimiento para responder esa pregunta.")
         if memory is not None:
             add_memory_turn(memory, question, response)
         return response
@@ -274,7 +552,7 @@ Base Agency:
 
 Reglas para usar Agency:
 - Usa Agency como metodologia interna y como apoyo experto.
-- Prioriza las fuentes privadas cuando existan.
+- Prioriza el contexto privado cuando exista.
 - Si solo Agency respalda una recomendacion, dilo como criterio experto o inferencia.
 - No inventes que un especialista ejecuto acciones reales; solo usa su enfoque.
 """
@@ -290,16 +568,33 @@ Reglas para usar Agency:
         if history_text:
             history_text = "Historial de la conversacion:\n" + history_text + "\n"
 
+    source_rule = (
+        "- Si el usuario pidio fuentes, menciona solo los titulos estrictamente necesarios al final.\n"
+        if show_sources
+        else "- No cites fuentes, no agregues secciones de fuentes y no digas 'segun el documento'; usa el contexto en silencio para construir una respuesta inteligente.\n"
+    )
+    assistant_profile_text = (
+        "Perfil conectado: Asistente de Programacion de ABRAHAM-HERNANDEZ-MAIN.\n"
+        "Contexto conectado: ChromaDB brain_db y vault Obsidian Tutor_IA.\n"
+        if assistant_profile
+        else ""
+    )
+
     prompt = f"""
 Eres el cerebro de una aplicacion y pagina web tipo NotebookLM, conectado a una base de conocimiento privada.
+{assistant_profile_text}
 Tu modo actual es: {mode["label"]}.
 
 Reglas generales:
-- Usa principalmente la informacion proporcionada en el contexto.
-- Si una respuesta no esta respaldada por el contexto, dilo con claridad.
-- Puedes hacer inferencias utiles, pero marcalas como inferencias cuando no esten explicitas en las fuentes.
-- Responde en espanol, con estructura clara y util para el usuario final.
-- Cita o menciona fuentes cuando ayude a confiar en la respuesta.
+- Lee y sintetiza el contexto como material interno; no copies fragmentos largos.
+- Responde como tutor tecnico inteligente: directo, claro, practico y con criterio.
+- Usa principalmente la informacion proporcionada en el contexto, pero integrala con razonamiento tecnico.
+- Si falta informacion para una respuesta segura, dilo en una frase y da el mejor siguiente paso.
+- Puedes hacer inferencias utiles, pero marcalas como inferencias cuando no esten explicitas en el contexto.
+- Responde en espanol claro.
+- No uses negritas Markdown, no escribas ** y evita adornos innecesarios.
+- Prioriza velocidad: respuesta breve, ejemplos minimos y solo los pasos necesarios.
+{source_rule}
 
 {mode["instructions"]}
 
@@ -328,6 +623,7 @@ Respuesta del tutor:
                 f"`ollama pull {model_name}`. Detalle: {exc}"
             )
 
+    response = clean_answer_text(response)
     if memory is not None:
         add_memory_turn(memory, question, response)
     return response
@@ -344,12 +640,36 @@ def answer_from_brain(payload):
     user_groups = normalize_groups(WEB_ACCESS_GROUPS)
     selected_sources = payload.get("selected_sources")
     agency_enabled = bool(payload.get("agency_enabled") or interaction_mode == "agency")
+    client_name = str(payload.get("client") or "")
+    fast_profile = str(payload.get("response_profile") or "").lower() in {"fast", "fast_smart", "web_fast"}
+    show_sources = payload_bool(payload, "show_sources", False) or source_requested(question)
+    k = int(payload.get("k") or (6 if fast_profile else RETRIEVE_CANDIDATES))
+    top_k = int(payload.get("top_k") or (2 if fast_profile else RESPONSE_TOP_K))
+    include_obsidian = payload_bool(payload, "include_obsidian", True)
+    obsidian_top_k = int(payload.get("obsidian_top_k") or OBSIDIAN_TOP_K)
 
-    docs = retrieve(
-        question,
-        user_groups=user_groups,
-        selected_sources=selected_sources,
-    )
+    brain_error = ""
+    try:
+        docs = retrieve(
+            question,
+            user_groups=user_groups,
+            k=k,
+            top_k=top_k,
+            selected_sources=selected_sources,
+        )
+    except Exception as exc:
+        docs = []
+        brain_error = str(exc)
+
+    obsidian_docs = retrieve_obsidian(question, top_k=obsidian_top_k) if include_obsidian else []
+    if selected_sources is not None:
+        selected_source_set = set(selected_sources)
+        obsidian_docs = [
+            doc
+            for doc in obsidian_docs
+            if doc.get("metadata", {}).get("source") in selected_source_set
+        ]
+    docs = docs + obsidian_docs
 
     agency_matches = []
     agency_context = ""
@@ -364,19 +684,25 @@ def answer_from_brain(payload):
         interaction_mode=interaction_mode,
         model_name=payload.get("model"),
         agency_context=agency_context,
+        show_sources=show_sources,
+        assistant_profile=client_name,
     )
 
     return {
         "ok": True,
         "answer": answer,
         "mode": get_interaction_mode(interaction_mode)["label"],
+        "show_sources": show_sources,
+        "used_sources_count": len(docs),
+        "brain_error": brain_error,
+        "obsidian_used_count": len(obsidian_docs),
         "sources": [
             {
                 "metadata": doc.get("metadata", {}),
                 "snippet": trim_prompt_text(doc.get("text", ""), 260),
             }
             for doc in docs
-        ],
+        ] if show_sources else [],
         "agency_agents": agency_matches,
     }
 
@@ -428,11 +754,15 @@ class TutorBridgeHandler(BaseHTTPRequestHandler):
             json_response(self, 404, {"ok": False, "error": "Ruta no encontrada."})
             return
 
+        brain_error = ""
         try:
             fragments = get_collection().count()
         except Exception as exc:
-            json_response(self, 500, {"ok": False, "error": str(exc)})
-            return
+            fragments = 0
+            brain_error = str(exc)
+
+        obsidian_status = get_obsidian_status()
+        agency_status = get_agency_status() if get_agency_status else {"available": False, "count": 0}
 
         json_response(
             self,
@@ -440,9 +770,14 @@ class TutorBridgeHandler(BaseHTTPRequestHandler):
             {
                 "ok": True,
                 "name": "TUTOR_IA",
+                "profile": "abraham-programming-assistant-ready",
                 "fragments": fragments,
                 "model": choose_llm_model(),
+                "root_dir": str(TUTOR_ROOT),
                 "persist_dir": PERSIST_DIR,
+                "brain_error": brain_error,
+                "obsidian": obsidian_status,
+                "agency": agency_status,
             },
         )
 
@@ -466,6 +801,9 @@ def main():
     port = int(os.getenv("TUTOR_IA_WEB_PORT", "8787"))
     server = ThreadingHTTPServer((host, port), TutorBridgeHandler)
     print(f"TUTOR_IA web bridge listening on http://{host}:{port}")
+    print(f"TUTOR_IA root: {TUTOR_ROOT}")
+    print(f"Chroma brain: {PERSIST_DIR}")
+    print(f"Obsidian vault: {OBSIDIAN_VAULT_DIR}")
     print("Endpoints: GET /api/health, POST /api/chat")
     try:
         server.serve_forever()
