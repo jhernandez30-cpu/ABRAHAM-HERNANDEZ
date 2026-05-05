@@ -133,6 +133,11 @@ const tracks = {
   }
 };
 
+const DEFAULT_ENDPOINTS = [
+  'http://127.0.0.1:8787/api/chat',
+  'http://localhost:8787/api/chat'
+];
+
 document.addEventListener('DOMContentLoaded', () => {
   const trackSelect = document.getElementById('trackSelect');
   const lessonTitle = document.getElementById('lessonTitle');
@@ -151,72 +156,183 @@ document.addEventListener('DOMContentLoaded', () => {
   const coachMessages = document.getElementById('coachMessages');
   const coachForm = document.getElementById('coachForm');
   const coachInput = document.getElementById('coachInput');
+  const assistantMode = document.getElementById('assistantMode');
   const bookGrid = document.getElementById('bookGrid');
-  let progress = Number(localStorage.getItem('programmingAssistantProgress') || 0);
+  const brainStatus = document.getElementById('brainStatus');
+  const brainStatusText = document.getElementById('brainStatusText');
+  const promptMenuBtn = document.getElementById('promptMenuBtn');
+  const assistantSuggestions = document.getElementById('assistantSuggestions');
+  const micBtn = document.getElementById('micBtn');
+  const sendButton = coachForm ? coachForm.querySelector('.send-orb') : null;
+  const endpointCandidates = normalizeEndpoints(window.TUTOR_IA_ENDPOINTS || DEFAULT_ENDPOINTS);
+  let activeTutorEndpoint = '';
+  let progress = readStoredNumber('programmingAssistantProgress', 0);
+  let sessionId = getSessionId();
 
   function normalize(text) {
-    return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return String(text || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
 
-  function renderTrack(trackKey) {
-    const track = tracks[trackKey];
-    lessonTitle.textContent = track.title;
-    lessonDescription.textContent = track.description;
-    exerciseTitle.textContent = track.exerciseTitle;
-    exercisePrompt.textContent = track.exercisePrompt;
-    dailyChallenge.textContent = track.challenge;
-    exerciseAnswer.value = '';
-    exerciseFeedback.textContent = '';
-    quizResult.textContent = '';
-
-    conceptList.innerHTML = track.concepts.map(concept => `<span>${concept}</span>`).join('');
-    renderQuiz(track);
-    renderBooks(track.books);
+  function readStoredNumber(key, fallback) {
+    try {
+      return Number(localStorage.getItem(key) || fallback);
+    } catch (error) {
+      return fallback;
+    }
   }
 
-  function renderQuiz(track) {
-    quizQuestion.textContent = track.quiz.question;
-    quizOptions.innerHTML = '';
-    track.quiz.options.forEach(option => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.textContent = option;
-      button.addEventListener('click', () => {
-        const isCorrect = option === track.quiz.answer;
-        quizResult.textContent = isCorrect ? 'Correcto. Vas construyendo una buena base.' : `Casi. La respuesta correcta es: ${track.quiz.answer}.`;
-        if (isCorrect) updateProgress(10);
-      });
-      quizOptions.appendChild(button);
-    });
+  function writeStoredValue(key, value) {
+    try {
+      localStorage.setItem(key, String(value));
+    } catch (error) {
+      return false;
+    }
+    return true;
   }
 
-  function renderBooks(recommendedIds = []) {
-    bookGrid.innerHTML = books.map(book => {
-      const recommended = recommendedIds.includes(book.id) ? '<span class="book-badge">Recomendado</span>' : '';
-      return `
-        <article class="book-card glass-card">
-          ${recommended}
-          <i class="${book.icon}"></i>
-          <h3>${book.title}</h3>
-          <p>${book.topics.join(' · ')}</p>
-          <a href="${book.url}" target="_blank" rel="noopener" class="btn btn-outline">Abrir libro</a>
-        </article>
-      `;
-    }).join('');
+  function getSessionId() {
+    try {
+      const stored = sessionStorage.getItem('tutorIaSessionId');
+      if (stored) return stored;
+      const next = `web-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      sessionStorage.setItem('tutorIaSessionId', next);
+      return next;
+    } catch (error) {
+      return `web-${Date.now()}`;
+    }
   }
 
-  function updateProgress(points) {
-    progress = Math.min(100, progress + points);
-    localStorage.setItem('programmingAssistantProgress', String(progress));
-    progressValue.textContent = `${progress}%`;
-    progressBar.style.width = `${progress}%`;
+  function normalizeEndpoints(endpoints) {
+    return [...new Set(endpoints.filter(Boolean).map(endpoint => endpoint.replace(/\/$/, '')))];
   }
 
-  function addCoachMessage(text, type = 'bot') {
+  function endpointHealthUrl(endpoint) {
+    return endpoint.replace(/\/api\/chat$/, '/api/health');
+  }
+
+  function setBrainStatus(state, text) {
+    if (!brainStatus || !brainStatusText) return;
+    brainStatus.dataset.state = state;
+    brainStatusText.textContent = text;
+  }
+
+  async function fetchWithTimeout(url, options = {}, timeoutMs = 12000) {
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+      window.clearTimeout(timeout);
+    }
+  }
+
+  async function detectTutorBrain() {
+    if (!endpointCandidates.length) {
+      setBrainStatus('offline', 'TUTOR_IA sin endpoint');
+      return;
+    }
+
+    for (const endpoint of endpointCandidates) {
+      try {
+        const response = await fetchWithTimeout(endpointHealthUrl(endpoint), { method: 'GET' }, 3500);
+        if (!response.ok) continue;
+        const data = await response.json();
+        activeTutorEndpoint = endpoint;
+        const fragments = Number(data.fragments || 0);
+        const modelText = data.model ? ` · ${data.model}` : '';
+        setBrainStatus('ready', `TUTOR_IA conectado · ${fragments} fuentes${modelText}`);
+        return;
+      } catch (error) {
+        continue;
+      }
+    }
+
+    setBrainStatus('offline', 'TUTOR_IA sin conexión local');
+  }
+
+  async function askTutorBrain(question) {
+    const endpoints = activeTutorEndpoint
+      ? [activeTutorEndpoint, ...endpointCandidates.filter(endpoint => endpoint !== activeTutorEndpoint)]
+      : endpointCandidates;
+    let lastError = null;
+
+    for (const endpoint of endpoints) {
+      try {
+        const response = await fetchWithTimeout(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question,
+            mode: assistantMode ? assistantMode.value : 'study',
+            session_id: sessionId,
+            agency_enabled: assistantMode ? assistantMode.value === 'agency' : false
+          })
+        }, 180000);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        activeTutorEndpoint = endpoint;
+        setBrainStatus('ready', 'TUTOR_IA conectado');
+        return data;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+
+    setBrainStatus('offline', 'TUTOR_IA sin conexión local');
+    throw lastError || new Error('No se pudo conectar con TUTOR_IA.');
+  }
+
+  function escapeHtml(text) {
+    return String(text || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function formatAssistantText(text) {
+    const escaped = escapeHtml(text);
+    const withLinks = escaped.replace(
+      /(https?:\/\/[^\s<]+)/g,
+      '<a href="$1" target="_blank" rel="noopener">$1</a>'
+    );
+    return withLinks.replace(/\n/g, '<br>');
+  }
+
+  function sourceTitle(source) {
+    const metadata = source && source.metadata ? source.metadata : {};
+    return metadata.title || metadata.source || '';
+  }
+
+  function renderSourceSummary(sources) {
+    const titles = (sources || [])
+      .map(sourceTitle)
+      .filter(Boolean)
+      .slice(0, 3);
+
+    if (!titles.length) return '';
+
+    return `<br><br><strong>Fuentes:</strong> ${titles.map(escapeHtml).join(' · ')}`;
+  }
+
+  function addCoachMessage(text, type = 'bot', options = {}) {
     const message = document.createElement('div');
-    message.className = `coach-message ${type}`;
-    message.innerHTML = text;
+    message.className = `assistant-message ${type}${options.loading ? ' loading' : ''}`;
+    message.innerHTML = options.raw ? text : formatAssistantText(text);
     coachMessages.appendChild(message);
+    coachMessages.scrollTop = coachMessages.scrollHeight;
+    return message;
+  }
+
+  function updateCoachMessage(message, text, options = {}) {
+    if (!message) return;
+    message.classList.remove('loading');
+    message.innerHTML = options.raw ? text : formatAssistantText(text);
     coachMessages.scrollTop = coachMessages.scrollHeight;
   }
 
@@ -232,45 +348,201 @@ document.addEventListener('DOMContentLoaded', () => {
     return scored[0].score > 0 ? scored[0] : books[0];
   }
 
-  trackSelect.addEventListener('change', () => renderTrack(trackSelect.value));
-
-  document.getElementById('hintBtn').addEventListener('click', () => {
-    exerciseFeedback.textContent = tracks[trackSelect.value].hint;
-  });
-
-  document.getElementById('checkExerciseBtn').addEventListener('click', () => {
-    const track = tracks[trackSelect.value];
-    const answer = normalize(exerciseAnswer.value);
-    const hits = track.keywords.filter(keyword => answer.includes(normalize(keyword))).length;
-
-    if (answer.length < 25) {
-      exerciseFeedback.textContent = 'Escribe un poco más: intenta mostrar entradas, proceso y salida.';
-      return;
-    }
-
-    if (hits >= 2) {
-      exerciseFeedback.textContent = 'Buen trabajo. Tu respuesta incluye elementos clave del ejercicio.';
-      updateProgress(15);
-    } else {
-      exerciseFeedback.textContent = 'La idea va tomando forma. Agrega más palabras clave del problema y explica la lógica paso a paso.';
-    }
-  });
-
-  document.getElementById('completeLessonBtn').addEventListener('click', () => updateProgress(20));
-
-  coachForm.addEventListener('submit', event => {
-    event.preventDefault();
-    const question = coachInput.value.trim();
-    if (!question) return;
-
-    addCoachMessage(question, 'user');
-    coachInput.value = '';
-
+  function localFallbackAnswer(question) {
     const book = recommendBook(question);
-    addCoachMessage(`Para esa duda te recomiendo empezar con <strong>${book.title}</strong>. Abre el libro, estudia el tema relacionado y vuelve aquí para practicar con un ejercicio. <a href="${book.url}" target="_blank" rel="noopener">Abrir recurso</a>.`);
-  });
+    return `
+      No logré conectar con TUTOR_IA en este momento. Mientras levantas el puente local, te recomiendo empezar con
+      <strong>${escapeHtml(book.title)}</strong> y practicar con una pregunta concreta sobre ${escapeHtml(book.topics.slice(0, 3).join(', '))}.
+      <br><br>
+      <a href="${book.url}" target="_blank" rel="noopener">Abrir recurso</a>
+    `;
+  }
+
+  function renderTrack(trackKey) {
+    const track = tracks[trackKey];
+    if (!track) return;
+
+    lessonTitle.textContent = track.title;
+    lessonDescription.textContent = track.description;
+    exerciseTitle.textContent = track.exerciseTitle;
+    exercisePrompt.textContent = track.exercisePrompt;
+    dailyChallenge.textContent = track.challenge;
+    exerciseAnswer.value = '';
+    exerciseFeedback.textContent = '';
+    quizResult.textContent = '';
+
+    conceptList.innerHTML = track.concepts.map(concept => `<span>${escapeHtml(concept)}</span>`).join('');
+    renderQuiz(track);
+    renderBooks(track.books);
+  }
+
+  function renderQuiz(track) {
+    quizQuestion.textContent = track.quiz.question;
+    quizOptions.innerHTML = '';
+    track.quiz.options.forEach(option => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = option;
+      button.addEventListener('click', () => {
+        const isCorrect = option === track.quiz.answer;
+        quizResult.textContent = isCorrect
+          ? 'Correcto. Vas construyendo una buena base.'
+          : `Casi. La respuesta correcta es: ${track.quiz.answer}.`;
+        if (isCorrect) updateProgress(10);
+      });
+      quizOptions.appendChild(button);
+    });
+  }
+
+  function renderBooks(recommendedIds = []) {
+    bookGrid.innerHTML = books.map(book => {
+      const recommended = recommendedIds.includes(book.id) ? '<span class="book-badge">Recomendado</span>' : '';
+      return `
+        <article class="book-card">
+          ${recommended}
+          <i class="${book.icon}" aria-hidden="true"></i>
+          <h3>${escapeHtml(book.title)}</h3>
+          <p>${book.topics.map(escapeHtml).join(' · ')}</p>
+          <a href="${book.url}" target="_blank" rel="noopener" class="btn btn-outline">Abrir libro</a>
+        </article>
+      `;
+    }).join('');
+  }
+
+  function updateProgress(points) {
+    progress = Math.min(100, progress + points);
+    writeStoredValue('programmingAssistantProgress', progress);
+    progressValue.textContent = `${progress}%`;
+    progressBar.style.width = `${progress}%`;
+  }
+
+  function setComposerLoading(isLoading) {
+    if (sendButton) sendButton.disabled = isLoading;
+    if (coachInput) coachInput.disabled = isLoading;
+  }
+
+  function inferTrackFromQuestion(question) {
+    const cleanQuestion = normalize(question);
+    const entries = [
+      ['python', ['python', 'automatizacion', 'script', 'lista', 'diccionario']],
+      ['database', ['sql', 'base de datos', 'tabla', 'select', 'join']],
+      ['csharp', ['c#', 'csharp', 'dotnet', 'clase', 'objeto']],
+      ['web', ['html', 'css', 'javascript', 'web', 'formulario']],
+      ['fundamentos', ['variable', 'bucle', 'condicional', 'algoritmo', 'funcion']]
+    ];
+    const match = entries.find(([, keywords]) => keywords.some(keyword => cleanQuestion.includes(keyword)));
+    return match ? match[0] : '';
+  }
+
+  if (trackSelect) {
+    trackSelect.addEventListener('change', () => renderTrack(trackSelect.value));
+  }
+
+  const hintBtn = document.getElementById('hintBtn');
+  if (hintBtn) {
+    hintBtn.addEventListener('click', () => {
+      exerciseFeedback.textContent = tracks[trackSelect.value].hint;
+    });
+  }
+
+  const checkExerciseBtn = document.getElementById('checkExerciseBtn');
+  if (checkExerciseBtn) {
+    checkExerciseBtn.addEventListener('click', () => {
+      const track = tracks[trackSelect.value];
+      const answer = normalize(exerciseAnswer.value);
+      const hits = track.keywords.filter(keyword => answer.includes(normalize(keyword))).length;
+
+      if (answer.length < 25) {
+        exerciseFeedback.textContent = 'Escribe un poco más: intenta mostrar entradas, proceso y salida.';
+        return;
+      }
+
+      if (hits >= 2) {
+        exerciseFeedback.textContent = 'Buen trabajo. Tu respuesta incluye elementos clave del ejercicio.';
+        updateProgress(15);
+      } else {
+        exerciseFeedback.textContent = 'La idea va tomando forma. Agrega más palabras clave del problema y explica la lógica paso a paso.';
+      }
+    });
+  }
+
+  const completeLessonBtn = document.getElementById('completeLessonBtn');
+  if (completeLessonBtn) {
+    completeLessonBtn.addEventListener('click', () => updateProgress(20));
+  }
+
+  if (promptMenuBtn && assistantSuggestions) {
+    promptMenuBtn.addEventListener('click', () => {
+      assistantSuggestions.hidden = !assistantSuggestions.hidden;
+    });
+
+    assistantSuggestions.addEventListener('click', event => {
+      const button = event.target.closest('button[data-prompt]');
+      if (!button) return;
+      coachInput.value = button.dataset.prompt;
+      assistantSuggestions.hidden = true;
+      coachInput.focus();
+    });
+  }
+
+  if (micBtn) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      micBtn.disabled = true;
+      micBtn.title = 'Dictado no disponible en este navegador';
+    } else {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'es-ES';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      micBtn.addEventListener('click', () => {
+        recognition.start();
+      });
+
+      recognition.addEventListener('result', event => {
+        const transcript = event.results[0][0].transcript;
+        coachInput.value = transcript;
+        coachInput.focus();
+      });
+    }
+  }
+
+  if (coachForm) {
+    coachForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      const question = coachInput.value.trim();
+      if (!question) return;
+
+      addCoachMessage(question, 'user');
+      coachInput.value = '';
+      setComposerLoading(true);
+
+      const inferredTrack = inferTrackFromQuestion(question);
+      if (inferredTrack && trackSelect && trackSelect.value !== inferredTrack) {
+        trackSelect.value = inferredTrack;
+        renderTrack(inferredTrack);
+      }
+
+      const loadingMessage = addCoachMessage('Consultando TUTOR_IA...', 'bot', { loading: true });
+      try {
+        const result = await askTutorBrain(question);
+        const answer = result.answer || result.response || 'TUTOR_IA respondió sin texto.';
+        updateCoachMessage(
+          loadingMessage,
+          `${formatAssistantText(answer)}${renderSourceSummary(result.sources)}`,
+          { raw: true }
+        );
+      } catch (error) {
+        updateCoachMessage(loadingMessage, localFallbackAnswer(question), { raw: true });
+      } finally {
+        setComposerLoading(false);
+        coachInput.focus();
+      }
+    });
+  }
 
   updateProgress(0);
-  renderTrack(trackSelect.value);
-  addCoachMessage('Hola. Dime qué quieres aprender: variables, Python, SQL, C#, web, automatización o seguridad. Te recomendaré el libro base y una forma de practicar.');
+  if (trackSelect) renderTrack(trackSelect.value);
+  detectTutorBrain();
 });
