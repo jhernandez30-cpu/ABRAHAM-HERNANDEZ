@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Asistente de Programación | Abraham Hernández</title>
-  <meta name="description" content="Asistente interactivo para aprender programación con rutas, ejercicios, quiz y conexión local al cerebro TUTOR_IA.">
-  <meta name="keywords" content="asistente de programación, aprender programación, ejercicios, Python, C#, bases de datos, TUTOR_IA">
+  <meta name="description" content="Chat de programación conectado al cerebro local TUTOR_IA para resolver dudas, guardar historial y buscar conversaciones.">
+  <meta name="keywords" content="asistente de programación, chat IA, TUTOR_IA, tutor de programación, Abraham Hernández">
   <meta name="relative-base" content="">
   <link rel="canonical" href="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/asistente-programacion.html">
   <meta name="author" content="Abraham Hernández">
@@ -46,160 +46,77 @@
     </nav>
   </header>
 
-  <div class="back-to-top" id="backToTop" aria-label="Volver arriba">
-    <i class="fas fa-arrow-up" aria-hidden="true"></i>
-  </div>
   <div class="custom-cursor" aria-hidden="true"></div>
 
   <main class="programming-shell">
-    <section class="assistant-stage" aria-labelledby="assistantTitle">
-      <div class="assistant-stage-inner">
+    <section class="chat-app" aria-label="Chat de programación con TUTOR_IA">
+      <aside class="chat-sidebar" id="chatSidebar" aria-label="Historial de conversaciones">
+        <div class="sidebar-top">
+          <button id="newChatBtn" class="sidebar-action primary" type="button">
+            <i class="fas fa-edit" aria-hidden="true"></i>
+            <span>Nuevo chat</span>
+          </button>
+          <button id="closeSidebarBtn" class="sidebar-icon" type="button" aria-label="Cerrar historial">
+            <i class="fas fa-times" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <label class="chat-search" for="chatSearchInput">
+          <i class="fas fa-search" aria-hidden="true"></i>
+          <input id="chatSearchInput" type="search" placeholder="Buscar chat" autocomplete="off">
+        </label>
+
         <div class="brain-status" id="brainStatus" data-state="checking">
           <span class="brain-status-dot" aria-hidden="true"></span>
           <strong id="brainStatusText">Conectando con TUTOR_IA</strong>
         </div>
 
-        <h1 id="assistantTitle">¿En qué puedo ayudar, Abraham?</h1>
+        <div class="history-heading">
+          <span>Historial de chat</span>
+          <button id="clearHistoryBtn" type="button">Limpiar</button>
+        </div>
 
-        <div id="coachMessages" class="assistant-thread" aria-live="polite"></div>
+        <div id="chatHistoryList" class="chat-history-list" aria-live="polite"></div>
+      </aside>
 
-        <form id="coachForm" class="prompt-composer" autocomplete="off">
-          <button id="promptMenuBtn" class="composer-icon-btn" type="button" aria-label="Mostrar sugerencias">
-            <i class="fas fa-plus" aria-hidden="true"></i>
+      <div id="sidebarBackdrop" class="sidebar-backdrop" hidden></div>
+
+      <section class="chat-main" aria-labelledby="assistantTitle">
+        <div class="chat-topbar">
+          <button id="openSidebarBtn" class="topbar-icon" type="button" aria-label="Abrir historial">
+            <i class="fas fa-bars" aria-hidden="true"></i>
           </button>
-          <input id="coachInput" type="text" placeholder="Pregunta lo que quieras" aria-label="Pregunta para el asistente" autocomplete="off">
+          <div class="chat-title">
+            <strong>Asistente de Programación</strong>
+            <span id="activeChatLabel">Nuevo chat</span>
+          </div>
           <select id="assistantMode" class="mode-select" aria-label="Modo del asistente">
             <option value="study">Pensando</option>
             <option value="organize">Organizar</option>
             <option value="create">Crear</option>
             <option value="agency">Agency</option>
           </select>
+        </div>
+
+        <div id="coachMessages" class="chat-messages" aria-live="polite">
+          <div id="emptyChatState" class="empty-chat-state">
+            <h1 id="assistantTitle">¿En qué puedo ayudar?</h1>
+          </div>
+        </div>
+
+        <form id="coachForm" class="chat-composer" autocomplete="off">
           <button id="micBtn" class="composer-icon-btn" type="button" aria-label="Dictar pregunta">
             <i class="fas fa-microphone" aria-hidden="true"></i>
           </button>
-          <button class="send-orb" type="submit" aria-label="Enviar pregunta">
-            <i class="fas fa-wave-square" aria-hidden="true"></i>
+          <textarea id="coachInput" rows="1" placeholder="Escribe un mensaje" aria-label="Mensaje para el asistente"></textarea>
+          <button class="send-orb" type="submit" aria-label="Enviar mensaje">
+            <i class="fas fa-paper-plane" aria-hidden="true"></i>
           </button>
         </form>
-
-        <div id="assistantSuggestions" class="assistant-suggestions" hidden>
-          <button type="button" data-prompt="Explícame variables y tipos de datos con ejemplos sencillos.">Variables</button>
-          <button type="button" data-prompt="Crea una ruta para aprender Python desde cero.">Python</button>
-          <button type="button" data-prompt="Ayúdame a practicar consultas SQL con ejercicios.">SQL</button>
-          <button type="button" data-prompt="Quiero entender clases y objetos en C#.">C#</button>
-          <button type="button" data-prompt="Dame un plan para crear mi primer sitio web.">Web</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="learning-app" class="learning-lab" aria-labelledby="learningTitle">
-      <div class="container learning-lab-grid">
-        <aside class="route-panel">
-          <span class="app-kicker">Ruta activa</span>
-          <h2 id="learningTitle">Práctica guiada</h2>
-          <p>Elige un tema y el asistente ajusta la lección, el ejercicio y los recursos recomendados.</p>
-
-          <label for="trackSelect">Tema</label>
-          <select id="trackSelect" class="app-select">
-            <option value="fundamentos">Fundamentos de programación</option>
-            <option value="web">Desarrollo web</option>
-            <option value="python">Python y automatización</option>
-            <option value="database">Bases de datos SQL</option>
-            <option value="csharp">C# y .NET</option>
-          </select>
-
-          <div class="progress-card">
-            <span>Progreso</span>
-            <strong id="progressValue">0%</strong>
-            <div class="progress-track"><div id="progressBar"></div></div>
-          </div>
-
-          <div class="daily-challenge">
-            <span>Reto diario</span>
-            <p id="dailyChallenge">Selecciona una ruta para recibir un reto.</p>
-          </div>
-        </aside>
-
-        <section class="lesson-panel">
-          <div class="panel-header">
-            <div>
-              <span class="app-kicker">Lección actual</span>
-              <h2 id="lessonTitle">Fundamentos de programación</h2>
-            </div>
-            <button id="completeLessonBtn" class="icon-text-btn" type="button">
-              <i class="fas fa-check" aria-hidden="true"></i>
-              <span>Avance</span>
-            </button>
-          </div>
-
-          <div class="lesson-body">
-            <p id="lessonDescription"></p>
-            <div class="concept-list" id="conceptList"></div>
-          </div>
-
-          <div class="exercise-box">
-            <div>
-              <span class="app-kicker">Ejercicio práctico</span>
-              <h3 id="exerciseTitle"></h3>
-            </div>
-            <p id="exercisePrompt"></p>
-            <textarea id="exerciseAnswer" placeholder="Escribe tu solución o pseudocódigo aquí..."></textarea>
-            <div class="exercise-actions">
-              <button id="checkExerciseBtn" class="btn btn-primary" type="button">
-                <i class="fas fa-code" aria-hidden="true"></i>
-                Revisar
-              </button>
-              <button id="hintBtn" class="btn btn-outline" type="button">
-                <i class="fas fa-lightbulb" aria-hidden="true"></i>
-                Pista
-              </button>
-            </div>
-            <p id="exerciseFeedback" class="feedback-text"></p>
-          </div>
-        </section>
-
-        <section class="quiz-panel">
-          <span class="app-kicker">Quiz rápido</span>
-          <h2>Comprueba lo aprendido</h2>
-          <p id="quizQuestion"></p>
-          <div id="quizOptions" class="quiz-options"></div>
-          <p id="quizResult" class="feedback-text"></p>
-        </section>
-      </div>
-    </section>
-
-    <section id="book-engine" class="book-engine-section" aria-labelledby="bookEngineTitle">
-      <div class="container">
-        <div class="section-heading">
-          <span class="app-kicker">Base de conocimiento</span>
-          <h2 id="bookEngineTitle">Libros y fuentes de apoyo</h2>
-          <p>Cuando TUTOR_IA está activo, el chat consulta el cerebro local. Estos recursos quedan como apoyo rápido para practicar.</p>
-        </div>
-        <div id="bookGrid" class="book-grid"></div>
-      </div>
+      </section>
     </section>
   </main>
 
-  <footer>
-    <div class="footer-logo">
-      <img src="assets/jah-logo.png" alt="Logo JAH de Abraham Hernández" width="180" height="120" loading="lazy" decoding="async">
-    </div>
-    <div class="site-footer-links">
-      <a href="dashboards-tiempo-real/">Dashboards</a>
-      <a href="automatizacion-procesos-python/">Automatización</a>
-      <a href="desarrollo-web-a-medida/">Web a medida</a>
-      <a href="desarrollo-frontend-react-vue/">Frontend</a>
-      <a href="integracion-apis/">APIs</a>
-      <a href="chatbots-para-web/">Chatbots</a>
-      <a href="proyectos/">Proyectos</a>
-      <a href="recursos/">Recursos</a>
-      <a href="contacto.html">Contacto</a>
-    </div>
-    <p>© 2026 Abraham Hernández - Asistente de Programación</p>
-    <p style="margin-top: 10px; color: var(--text-secondary);">Aprende, practica y construye proyectos reales.</p>
-  </footer>
-
-  <script src="js/script.js"></script>
   <script>
     window.TUTOR_IA_ENDPOINTS = [
       'http://127.0.0.1:8787/api/chat',
