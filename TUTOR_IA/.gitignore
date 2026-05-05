@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+*.log
+brain_db/
+users.db
+streamlit.err.log
+streamlit.out.log
+web_bridge.err.log
+web_bridge.out.log
