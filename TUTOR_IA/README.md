@@ -25,15 +25,36 @@ Si usas el entorno virtual de tu TUTOR_IA local:
 .\start_bridge.ps1 -Python "C:\Users\herna\Documents\tutor_ia\.venv\Scripts\python.exe" -BrainDb "C:\Users\herna\Documents\tutor_ia\brain_db"
 ```
 
+El puente tambien autodetecta `C:\Users\herna\Documents\tutor_ia`: usa su `brain_db`, importa `agency_brain.py` desde esa carpeta y lee el vault Obsidian `Tutor_IA` como contexto vivo.
+
 ## Variables utiles
 
+`TUTOR_IA_ROOT`: raiz de la instalacion local. Por defecto intenta `C:\Users\herna\Documents\tutor_ia`.
+
 `TUTOR_IA_PERSIST_DIR`: ruta de `brain_db`.
+
+`TUTOR_IA_OBSIDIAN_DIR`: ruta del vault Obsidian. Por defecto `C:\Users\herna\Documents\tutor_ia\Tutor_IA`.
+
+`TUTOR_IA_OBSIDIAN_ENABLED`: activa o desactiva el contexto Obsidian. Por defecto `1`.
 
 `TUTOR_IA_WEB_PORT`: puerto del puente. Por defecto `8787`.
 
 `TUTOR_IA_WEB_GROUPS`: grupos permitidos para responder desde la web. Por defecto `admin,public` porque la base local actual esta indexada en `admin`.
 
 `TUTOR_IA_WEB_ALLOWED_ORIGINS`: origenes permitidos por CORS.
+
+## Perfil del Asistente de Programacion
+
+`asistente-programacion.html` envia estas opciones al puente:
+
+- `client: "abraham-programming-assistant"` para activar el perfil del sitio.
+- `response_profile: "fast_smart"` para recuperar menos fragmentos y responder mas rapido.
+- `include_obsidian: true` para sumar notas `.md` y `.canvas` del vault.
+- `show_sources: false` para usar las fuentes como contexto interno sin mostrar la lista al usuario.
+
+El puente solo devuelve fuentes visibles si el usuario las pide explicitamente, por ejemplo con "cita las fuentes" o "de donde sale esto".
+
+Las respuestas se limpian antes de enviarse: se eliminan `**` de negritas Markdown y cualquier linea tipo `Fuentes:`.
 
 ## Prueba rapida
 

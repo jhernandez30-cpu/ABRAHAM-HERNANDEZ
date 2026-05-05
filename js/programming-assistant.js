@@ -137,8 +137,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
         activeTutorEndpoint = endpoint;
         const fragments = Number(data.fragments || 0);
-        const modelText = data.model ? ` · ${data.model}` : '';
-        setBrainStatus('ready', `TUTOR_IA conectado · ${fragments} fuentes${modelText}`);
+        const obsidianNotes = Number(data.obsidian && data.obsidian.notes ? data.obsidian.notes : 0);
+        const contextParts = [`${fragments} fragmentos`];
+        if (obsidianNotes) contextParts.push(`${obsidianNotes} notas Obsidian`);
+        const modelText = data.model ? ` - ${data.model}` : '';
+        setBrainStatus('ready', `TUTOR_IA conectado - ${contextParts.join(' + ')}${modelText}`);
         return;
       } catch (error) {
         continue;
@@ -163,7 +166,12 @@ document.addEventListener('DOMContentLoaded', () => {
             question,
             mode: assistantMode ? assistantMode.value : 'study',
             session_id: chatId,
-            agency_enabled: assistantMode ? assistantMode.value === 'agency' : false
+            agency_enabled: assistantMode ? assistantMode.value === 'agency' : false,
+            client: 'abraham-programming-assistant',
+            response_profile: 'fast_smart',
+            include_obsidian: true,
+            obsidian_top_k: 2,
+            show_sources: false
           })
         }, 180000);
 
@@ -207,7 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return metadata.title || metadata.source || '';
   }
 
-  function renderSourceSummary(sources) {
+  function renderSourceSummary(sources, showSources = false) {
+    if (!showSources) return '';
     const titles = (sources || [])
       .map(sourceTitle)
       .filter(Boolean)
@@ -215,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!titles.length) return '';
 
-    return `<div class="message-sources"><strong>Fuentes:</strong> ${titles.map(escapeHtml).join(' · ')}</div>`;
+    return `<div class="message-sources"><strong>Contexto:</strong> ${titles.map(escapeHtml).join(' - ')}</div>`;
   }
 
   function titleFromQuestion(question) {
@@ -292,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const bubble = document.createElement('div');
     bubble.className = `message-bubble${message.loading ? ' loading' : ''}`;
-    bubble.innerHTML = `${formatAssistantText(message.content)}${renderSourceSummary(message.sources)}`;
+    bubble.innerHTML = `${formatAssistantText(message.content)}${renderSourceSummary(message.sources, message.showSources)}`;
     row.appendChild(bubble);
     return row;
   }
@@ -303,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const bubble = row.querySelector('.message-bubble');
     if (!bubble) return;
     bubble.classList.toggle('loading', Boolean(options.loading));
-    bubble.innerHTML = `${formatAssistantText(content)}${renderSourceSummary(options.sources)}`;
+    bubble.innerHTML = `${formatAssistantText(content)}${renderSourceSummary(options.sources, options.showSources)}`;
     coachMessages.scrollTop = coachMessages.scrollHeight;
   }
 
@@ -480,12 +489,14 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const result = await askTutorBrain(question, chatId);
       const answer = result.answer || result.response || 'TUTOR_IA respondió sin texto.';
+      const showSources = Boolean(result.show_sources);
       updateMessageInChat(chatId, loadingMessage.id, {
         content: answer,
-        sources: result.sources || [],
+        sources: showSources ? result.sources || [] : [],
+        showSources,
         loading: false
       });
-      updateRenderedMessage(loadingMessage.id, answer, { sources: result.sources || [] });
+      updateRenderedMessage(loadingMessage.id, answer, { sources: showSources ? result.sources || [] : [], showSources });
     } catch (error) {
       const answer = fallbackAnswer();
       updateMessageInChat(chatId, loadingMessage.id, {
