@@ -14,6 +14,8 @@
   background: var(--chat-bg);
   color: var(--chat-ink);
   cursor: auto;
+  height: 100svh;
+  overflow: hidden;
 }
 
 .programming-app-page::before,
@@ -68,14 +70,20 @@
 }
 
 .programming-shell {
-  height: 100svh;
-  min-height: 720px;
-  padding-top: var(--navbar-height);
+  position: fixed;
+  top: var(--navbar-height);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: auto;
+  min-height: 0;
+  padding-top: 0;
+  overflow: hidden;
 }
 
 .chat-app {
-  height: calc(100svh - var(--navbar-height));
-  min-height: 632px;
+  height: 100%;
+  min-height: 0;
   display: grid;
   grid-template-columns: 310px minmax(0, 1fr);
   background: var(--chat-bg);
@@ -88,9 +96,12 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  height: 100%;
+  min-height: 0;
   padding: 18px;
   border-right: 1px solid var(--chat-line);
   background: var(--chat-sidebar);
+  overflow: hidden;
 }
 
 .sidebar-top {
@@ -323,12 +334,17 @@
 
 .chat-main {
   min-width: 0;
+  min-height: 0;
+  height: 100%;
   display: grid;
   grid-template-rows: 66px minmax(0, 1fr) auto;
   background: #fff;
+  overflow: hidden;
 }
 
 .chat-topbar {
+  position: relative;
+  z-index: 4;
   display: grid;
   grid-template-columns: 44px minmax(0, 1fr) auto;
   align-items: center;
@@ -375,7 +391,9 @@
 
 .chat-messages {
   min-height: 0;
+  height: 100%;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 26px clamp(14px, 4vw, 56px);
   background:
     linear-gradient(180deg, rgba(245, 246, 248, 0.72), rgba(255, 255, 255, 0.98) 24%),
@@ -457,6 +475,8 @@
 }
 
 .chat-composer {
+  position: relative;
+  z-index: 4;
   display: grid;
   grid-template-columns: 44px minmax(0, 1fr) 48px;
   align-items: end;
@@ -523,7 +543,7 @@
 
 @media (max-width: 900px) {
   .programming-shell {
-    min-height: 680px;
+    min-height: 0;
   }
 
   .chat-app {
