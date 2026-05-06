@@ -12,6 +12,7 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 if ($TutorRoot -and (Test-Path -LiteralPath $TutorRoot)) {
   $env:TUTOR_IA_ROOT = $TutorRoot
+  $env:PYTHONPATH = if ($env:PYTHONPATH) { "$TutorRoot;$env:PYTHONPATH" } else { $TutorRoot }
 }
 
 if (-not $BrainDb -and $TutorRoot) {
