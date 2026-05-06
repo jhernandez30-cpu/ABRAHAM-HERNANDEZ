@@ -5,7 +5,8 @@ const DEFAULT_ENDPOINTS = [
 
 const STORAGE_KEY = 'tutorIaChatHistory';
 const ACTIVE_CHAT_KEY = 'tutorIaActiveChatId';
-const DEFAULT_MODE = 'Pensando';
+const DEFAULT_MODE = 'Cerebro Unificado';
+const PROJECT_PATH = window.TUTOR_IA_PROJECT_PATH || '';
 const ALLOWED_FILE_EXTENSIONS = new Set([
   'png', 'jpg', 'jpeg', 'webp', 'pdf', 'docx', 'txt', 'py', 'js', 'html', 'css', 'json', 'md', 'sql', 'cs'
 ]);
@@ -155,8 +156,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const fragments = Number(data.fragments || 0);
         const obsidianNotes = Number(data.obsidian && data.obsidian.notes ? data.obsidian.notes : 0);
+        const agencyAgents = Number(data.agency && data.agency.count ? data.agency.count : 0);
+        const jarvisProfiles = Number(data.jarvis && data.jarvis.detected_profiles ? data.jarvis.detected_profiles : 0);
         const contextParts = [`${fragments} fragmentos`];
         if (obsidianNotes) contextParts.push(`${obsidianNotes} notas Obsidian`);
+        if (agencyAgents) contextParts.push(`${agencyAgents} agentes`);
+        if (jarvisProfiles) contextParts.push(`${jarvisProfiles} perfiles Jarvis`);
         const modelText = data.model ? ` - ${data.model}` : '';
 
         setBrainStatus('ready', `TUTOR_IA conectado - ${contextParts.join(' + ')}${modelText}`);
@@ -180,8 +185,14 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('client', 'abraham-programming-assistant');
     formData.append('response_profile', 'fast_smart');
     formData.append('include_obsidian', String(tutorIAEnabled));
+    formData.append('agency_enabled', String(tutorIAEnabled));
+    formData.append('jarvis_profile', 'unified');
     formData.append('obsidian_top_k', '2');
     formData.append('show_sources', 'false');
+    if (PROJECT_PATH) {
+      formData.append('project_path', PROJECT_PATH);
+      formData.append('workspace_path', PROJECT_PATH);
+    }
     selectedFiles.forEach(file => formData.append('files', file, file.name));
     return formData;
   }
@@ -205,7 +216,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const data = await response.json();
         activeTutorEndpoint = endpoint;
-        setBrainStatus('ready', 'TUTOR_IA conectado');
+        const brainParts = Array.isArray(data.brain_parts) && data.brain_parts.length
+          ? ` - ${data.brain_parts.slice(0, 4).join(' + ')}`
+          : '';
+        setBrainStatus('ready', `TUTOR_IA conectado${brainParts}`);
         return data;
       } catch (error) {
         lastError = error;

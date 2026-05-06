@@ -61,6 +61,39 @@ except Exception:
     get_agency_status = None
     retrieve_agency_agents = None
 
+try:
+    from jarvis_brain import build_profile_context, build_unified_brain_context, get_jarvis_stack_summary
+except Exception:
+    build_profile_context = None
+    build_unified_brain_context = None
+    get_jarvis_stack_summary = None
+
+try:
+    from programming_skills import build_programming_skills_context
+    from project_workspace import build_workspace_brain_context, retrieve_workspace_context
+except Exception:
+    build_programming_skills_context = None
+    build_workspace_brain_context = None
+    retrieve_workspace_context = None
+
+try:
+    from connected_brain import (
+        build_connected_brain_context,
+        build_quick_code_docs,
+        retrieve_connected_workspace_docs,
+    )
+except Exception:
+    build_connected_brain_context = None
+    build_quick_code_docs = None
+    retrieve_connected_workspace_docs = None
+
+try:
+    from local_model_router import AUTO_MODEL_OPTION, choose_local_model, get_model_plan
+except Exception:
+    AUTO_MODEL_OPTION = "Auto (Cerebro Unificado)"
+    choose_local_model = None
+    get_model_plan = None
+
 
 PERSIST_DIR = os.getenv("TUTOR_IA_PERSIST_DIR", str(TUTOR_ROOT / "brain_db"))
 OBSIDIAN_VAULT_DIR = os.getenv("TUTOR_IA_OBSIDIAN_DIR", str(TUTOR_ROOT / "Tutor_IA"))
@@ -119,6 +152,18 @@ MAX_UPLOAD_BYTES = int(os.getenv("TUTOR_IA_MAX_UPLOAD_BYTES", str(8 * 1024 * 102
 MAX_UPLOAD_TEXT_CHARS = int(os.getenv("TUTOR_IA_MAX_UPLOAD_TEXT_CHARS", "6000"))
 
 INTERACTION_MODES = {
+    "unified": {
+        "label": "Cerebro Unificado",
+        "instructions": """
+Modo Cerebro Unificado:
+- Eres un solo cerebro conectado, no una lista de modos separados.
+- Decide internamente si conviene ensenar, organizar, crear, programar, auditar o coordinar especialistas.
+- Integra fuentes privadas, Obsidian, Agency, OpenJarvis, Ollama y el workspace de ABRAHAM-HERNANDEZ-MAIN como capas del mismo razonamiento.
+- Prioriza claridad, accion concreta y validacion.
+- Si falta informacion, dilo en una frase y pide el dato minimo necesario.
+- No inventes ejecuciones, fuentes ni resultados que no esten en el contexto.
+""",
+    },
     "study": {
         "label": "Potencia tu estudio",
         "instructions": """
@@ -150,6 +195,19 @@ Modo Elabora nuevas ideas:
 - Propone proximos pasos accionables cuando sea util.
 """,
     },
+    "programming": {
+        "label": "Cerebro Programador",
+        "instructions": """
+Modo Cerebro Programador:
+- Actua como asistente senior de programacion local-first.
+- Usa el perfil Jarvis/OpenJarvis como disciplina de razonamiento.
+- Para debugging, sigue observar, formular hipotesis, probar y corregir.
+- Para arquitectura, respeta el sistema existente, limites claros y cambios pequenos.
+- Para review, prioriza correctitud, seguridad, rendimiento y mantenibilidad.
+- Si no hay codigo o traceback concreto, no inventes una implementacion completa; entrega checklist y pide el fragmento necesario.
+- Entrega acciones concretas, comandos o pruebas solo cuando sean utiles y verificables.
+""",
+    },
     "agency": {
         "label": "Cerebro Agency",
         "instructions": """
@@ -164,21 +222,29 @@ Modo Cerebro Agency:
 }
 
 MODE_ALIASES = {
-    "pensando": "study",
-    "thinking": "study",
-    "auto": "study",
-    "el mas reciente - 5.5": "study",
-    "el mas reciente • 5.5": "study",
-    "el más reciente • 5.5": "study",
-    "configurar": "study",
-    "configurar...": "study",
-    "study": "study",
-    "organizar": "organize",
-    "organize": "organize",
-    "crear": "create",
-    "create": "create",
-    "agency": "agency",
-    "cerebro agency": "agency",
+    "pensando": "unified",
+    "thinking": "unified",
+    "auto": "unified",
+    "unified": "unified",
+    "cerebro": "unified",
+    "cerebro unificado": "unified",
+    "el mas reciente - 5.5": "unified",
+    "el mas reciente • 5.5": "unified",
+    "el más reciente • 5.5": "unified",
+    "configurar": "unified",
+    "configurar...": "unified",
+    "study": "unified",
+    "organizar": "unified",
+    "organize": "unified",
+    "crear": "unified",
+    "create": "unified",
+    "programacion": "unified",
+    "programming": "unified",
+    "cerebro programador": "unified",
+    "code": "unified",
+    "debug": "unified",
+    "agency": "unified",
+    "cerebro agency": "unified",
 }
 
 memory_store = {}
@@ -217,8 +283,17 @@ def get_installed_ollama_models():
     return models
 
 
-def choose_llm_model(preferred_model=None):
+def choose_llm_model(preferred_model=None, question="", docs=None, brain_context=""):
     models = get_installed_ollama_models()
+    if choose_local_model:
+        return choose_local_model(
+            models,
+            preferred_model=preferred_model,
+            question=question,
+            docs=docs,
+            brain_context=brain_context,
+            fallback_model=LLM_MODEL,
+        )
     preferred_model = preferred_model or LLM_MODEL
     for model in LOW_MEMORY_MODEL_PRIORITY:
         if model in models:
@@ -266,15 +341,15 @@ def normalize_mode_text(value):
 
 
 def normalize_interaction_mode(mode_key):
-    raw_mode = str(mode_key or "study").strip()
+    raw_mode = str(mode_key or "unified").strip()
     if raw_mode in INTERACTION_MODES:
-        return raw_mode
+        return "unified" if raw_mode != "unified" else raw_mode
     normalized = normalize_mode_text(raw_mode)
-    return MODE_ALIASES.get(normalized, "study")
+    return MODE_ALIASES.get(normalized, "unified")
 
 
 def get_interaction_mode(mode_key):
-    return INTERACTION_MODES.get(normalize_interaction_mode(mode_key), INTERACTION_MODES["study"])
+    return INTERACTION_MODES.get(normalize_interaction_mode(mode_key), INTERACTION_MODES["unified"])
 
 
 def trim_prompt_text(text, max_chars):
@@ -676,14 +751,20 @@ def generate_answer(
     question,
     docs,
     memory=None,
-    interaction_mode="study",
+    interaction_mode="unified",
     model_name=None,
     agency_context="",
+    brain_context="",
     show_sources=False,
     assistant_profile="",
 ):
     mode = get_interaction_mode(interaction_mode)
-    model_name = choose_llm_model(model_name)
+    model_name = choose_llm_model(
+        model_name,
+        question=question,
+        docs=docs,
+        brain_context=brain_context,
+    )
     if not model_name:
         response = (
             "No hay modelos de Ollama instalados todavia. "
@@ -695,7 +776,7 @@ def generate_answer(
             add_memory_turn(memory, question, response)
         return response
 
-    if not docs and not agency_context:
+    if not docs and not agency_context and not brain_context:
         response = clean_answer_text("No encontre informacion relevante en la base de conocimiento para responder esa pregunta.")
         if memory is not None:
             add_memory_turn(memory, question, response)
@@ -722,6 +803,13 @@ Reglas para usar Agency:
 - Prioriza el contexto privado cuando exista.
 - Si solo Agency respalda una recomendacion, dilo como criterio experto o inferencia.
 - No inventes que un especialista ejecuto acciones reales; solo usa su enfoque.
+"""
+
+    brain_section = ""
+    if brain_context:
+        brain_section = f"""
+Capa Jarvis/OpenJarvis:
+{brain_context}
 """
 
     history_text = ""
@@ -766,6 +854,7 @@ Reglas generales:
 {mode["instructions"]}
 
 {agency_section}
+{brain_section}
 
 {history_text}
 Contexto:
@@ -800,7 +889,7 @@ def generate_general_answer(
     question,
     file_docs=None,
     memory=None,
-    interaction_mode="study",
+    interaction_mode="unified",
     model_name=None,
 ):
     mode = get_interaction_mode(interaction_mode)
@@ -873,11 +962,11 @@ def answer_from_brain(payload, uploaded_files=None):
 
     session_id = str(payload.get("session_id") or "default")[:120]
     memory = memory_store.setdefault(session_id, [])
-    raw_mode = payload.get("mode") or payload.get("interaction_mode") or "study"
+    raw_mode = payload.get("mode") or payload.get("interaction_mode") or "unified"
     interaction_mode = normalize_interaction_mode(raw_mode)
     user_groups = normalize_groups(WEB_ACCESS_GROUPS)
     selected_sources = payload.get("selected_sources")
-    agency_enabled = bool(payload.get("agency_enabled") or interaction_mode == "agency")
+    agency_enabled = payload_bool(payload, "agency_enabled", True)
     client_name = str(payload.get("client") or "")
     fast_profile = str(payload.get("response_profile") or "").lower() in {"fast", "fast_smart", "web_fast"}
     show_sources = payload_bool(payload, "show_sources", False) or source_requested(question)
@@ -887,6 +976,8 @@ def answer_from_brain(payload, uploaded_files=None):
     top_k = int(payload.get("top_k") or (2 if fast_profile else RESPONSE_TOP_K))
     include_obsidian = tutor_ia_enabled and payload_bool(payload, "include_obsidian", True)
     obsidian_top_k = int(payload.get("obsidian_top_k") or OBSIDIAN_TOP_K)
+    project_path = str(payload.get("project_path") or payload.get("workspace_path") or "").strip()
+    quick_code_context = str(payload.get("quick_code_context") or payload.get("code_context") or "")[:6000].strip()
     uploaded_files = uploaded_files or []
     file_docs = build_uploaded_file_docs(uploaded_files)
 
@@ -913,13 +1004,63 @@ def answer_from_brain(payload, uploaded_files=None):
             for doc in obsidian_docs
             if doc.get("metadata", {}).get("source") in selected_source_set
         ]
-    docs = docs + obsidian_docs + file_docs
+    if tutor_ia_enabled and project_path and retrieve_connected_workspace_docs:
+        workspace_docs = retrieve_connected_workspace_docs(question, project_path)
+    elif tutor_ia_enabled and project_path and retrieve_workspace_context:
+        workspace_docs = retrieve_workspace_context(question, project_path)
+    else:
+        workspace_docs = []
+
+    if build_quick_code_docs:
+        quick_code_docs = build_quick_code_docs(quick_code_context, source="payload:quick-code")
+    else:
+        quick_code_docs = []
+        if quick_code_context:
+            quick_code_docs.append(
+                {
+                    "text": quick_code_context,
+                    "metadata": {
+                        "source": "payload:quick-code",
+                        "title": "Codigo o requerimiento rapido",
+                        "type": "code",
+                    },
+                }
+            )
+
+    docs = docs + obsidian_docs + file_docs + workspace_docs + quick_code_docs
 
     agency_matches = []
     agency_context = ""
     if tutor_ia_enabled and agency_enabled and retrieve_agency_agents and build_agency_context:
         agency_matches = retrieve_agency_agents(question, limit=AGENCY_MATCH_LIMIT)
         agency_context = build_agency_context(agency_matches, max_chars=AGENCY_CONTEXT_CHARS)
+
+    brain_profile = str(payload.get("jarvis_profile") or payload.get("brain_profile") or "unified")
+    brain_context = ""
+    brain_parts = []
+    if tutor_ia_enabled and build_connected_brain_context:
+        brain_bundle = build_connected_brain_context(
+            question,
+            interaction_mode=interaction_mode,
+            brain_profile=brain_profile,
+            workspace_path=project_path,
+            quick_code_context=quick_code_context,
+        )
+        brain_context = brain_bundle["context"]
+        brain_profile = brain_bundle["profile"]
+        brain_parts = brain_bundle["parts"]
+    elif tutor_ia_enabled and build_unified_brain_context:
+        brain_context_parts = [build_unified_brain_context()]
+        if build_programming_skills_context:
+            brain_context_parts.append(build_programming_skills_context(f"{question}\n{quick_code_context}"))
+        if project_path and build_workspace_brain_context:
+            brain_context_parts.append(build_workspace_brain_context(project_path))
+        brain_context = "\n\n".join(part for part in brain_context_parts if part)
+        brain_profile = "unified"
+        brain_parts = ["unified_brain", "programming_skills", "workspace"]
+    elif tutor_ia_enabled and build_profile_context:
+        brain_context = build_profile_context(brain_profile)
+        brain_parts = ["jarvis_profile"]
 
     if tutor_ia_enabled:
         answer = generate_answer(
@@ -929,6 +1070,7 @@ def answer_from_brain(payload, uploaded_files=None):
             interaction_mode=interaction_mode,
             model_name=payload.get("model"),
             agency_context=agency_context,
+            brain_context=brain_context,
             show_sources=show_sources,
             assistant_profile=client_name,
         )
@@ -960,8 +1102,18 @@ def answer_from_brain(payload, uploaded_files=None):
         "smart_search": smart_search,
         "show_sources": show_sources,
         "used_sources_count": len(docs),
+        "model": choose_llm_model(
+            payload.get("model"),
+            question=question,
+            docs=docs,
+            brain_context=brain_context,
+        ),
         "brain_error": brain_error,
         "obsidian_used_count": len(obsidian_docs),
+        "workspace_used_count": len(workspace_docs),
+        "quick_code_used": bool(quick_code_docs),
+        "jarvis_profile": brain_profile if brain_context else "",
+        "brain_parts": brain_parts,
         "sources": [
             {
                 "metadata": doc.get("metadata", {}),
@@ -1030,6 +1182,26 @@ class TutorBridgeHandler(BaseHTTPRequestHandler):
 
         obsidian_status = get_obsidian_status()
         agency_status = get_agency_status() if get_agency_status else {"available": False, "count": 0}
+        installed_models = get_installed_ollama_models()
+        model_plan = get_model_plan(installed_models) if get_model_plan else {}
+        if get_jarvis_stack_summary:
+            jarvis_summary = get_jarvis_stack_summary()
+            jarvis_status = {
+                "openjarvis": jarvis_summary.get("openjarvis", {}),
+                "jarvis_mlx": jarvis_summary.get("jarvis_mlx", {}),
+                "detected_profiles": jarvis_summary.get("detected_profiles", 0),
+                "tools": jarvis_summary.get("tools", []),
+                "profiles": [
+                    {
+                        "key": profile.get("key"),
+                        "label": profile.get("label"),
+                        "available": profile.get("available"),
+                    }
+                    for profile in jarvis_summary.get("profiles", [])
+                ],
+            }
+        else:
+            jarvis_status = {"available": False}
 
         json_response(
             self,
@@ -1039,12 +1211,17 @@ class TutorBridgeHandler(BaseHTTPRequestHandler):
                 "name": "TUTOR_IA",
                 "profile": "abraham-programming-assistant-ready",
                 "fragments": fragments,
-                "model": choose_llm_model(),
+                "model": choose_llm_model(AUTO_MODEL_OPTION, brain_context="Cerebro Unificado"),
+                "models": {
+                    "installed": installed_models,
+                    "routing": model_plan,
+                },
                 "root_dir": str(TUTOR_ROOT),
                 "persist_dir": PERSIST_DIR,
                 "brain_error": brain_error,
                 "obsidian": obsidian_status,
                 "agency": agency_status,
+                "jarvis": jarvis_status,
             },
         )
 
