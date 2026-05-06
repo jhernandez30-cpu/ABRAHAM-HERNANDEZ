@@ -7,6 +7,8 @@ import os
 import re
 import subprocess
 import sys
+from email import policy
+from email.parser import BytesParser
 from functools import lru_cache
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -92,6 +94,29 @@ ALLOWED_ORIGINS = {
     if origin.strip()
 }
 WEB_ACCESS_GROUPS = os.getenv("TUTOR_IA_WEB_GROUPS", "admin,public")
+SMART_SEARCH_UNCONFIGURED_MESSAGE = (
+    "La Búsqueda inteligente está activada, pero todavía no hay una API de búsqueda web configurada."
+)
+ALLOWED_UPLOAD_EXTENSIONS = {
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".webp",
+    ".pdf",
+    ".docx",
+    ".txt",
+    ".py",
+    ".js",
+    ".html",
+    ".css",
+    ".json",
+    ".md",
+    ".sql",
+    ".cs",
+}
+TEXT_UPLOAD_EXTENSIONS = {".txt", ".py", ".js", ".html", ".css", ".json", ".md", ".sql", ".cs"}
+MAX_UPLOAD_BYTES = int(os.getenv("TUTOR_IA_MAX_UPLOAD_BYTES", str(8 * 1024 * 1024)))
+MAX_UPLOAD_TEXT_CHARS = int(os.getenv("TUTOR_IA_MAX_UPLOAD_TEXT_CHARS", "6000"))
 
 INTERACTION_MODES = {
     "study": {
@@ -136,6 +161,24 @@ Modo Cerebro Agency:
 - Entrega pasos concretos, criterios de validacion y siguientes acciones cuando sea util.
 """,
     },
+}
+
+MODE_ALIASES = {
+    "pensando": "study",
+    "thinking": "study",
+    "auto": "study",
+    "el mas reciente - 5.5": "study",
+    "el mas reciente • 5.5": "study",
+    "el más reciente • 5.5": "study",
+    "configurar": "study",
+    "configurar...": "study",
+    "study": "study",
+    "organizar": "organize",
+    "organize": "organize",
+    "crear": "create",
+    "create": "create",
+    "agency": "agency",
+    "cerebro agency": "agency",
 }
 
 memory_store = {}
@@ -210,8 +253,28 @@ def payload_bool(payload, key, default=False):
     return str(value).strip().lower() not in {"0", "false", "no", "off", ""}
 
 
+def normalize_mode_text(value):
+    text = str(value or "").strip().lower()
+    return (
+        text.replace("á", "a")
+        .replace("é", "e")
+        .replace("í", "i")
+        .replace("ó", "o")
+        .replace("ú", "u")
+        .replace("  ", " ")
+    )
+
+
+def normalize_interaction_mode(mode_key):
+    raw_mode = str(mode_key or "study").strip()
+    if raw_mode in INTERACTION_MODES:
+        return raw_mode
+    normalized = normalize_mode_text(raw_mode)
+    return MODE_ALIASES.get(normalized, "study")
+
+
 def get_interaction_mode(mode_key):
-    return INTERACTION_MODES.get(mode_key, INTERACTION_MODES["study"])
+    return INTERACTION_MODES.get(normalize_interaction_mode(mode_key), INTERACTION_MODES["study"])
 
 
 def trim_prompt_text(text, max_chars):
@@ -233,6 +296,110 @@ def clean_answer_text(text):
 
 def source_requested(question):
     return bool(SOURCE_REQUEST_RE.search(str(question or "")))
+
+
+def smart_web_search(query):
+    """
+    Función preparada para búsqueda inteligente en la web.
+    Aquí se podrá conectar una API real de búsqueda web como Tavily, SerpAPI,
+    Brave Search API, Google Custom Search o similar.
+    """
+    return {
+        "enabled": False,
+        "message": SMART_SEARCH_UNCONFIGURED_MESSAGE,
+        "results": [],
+    }
+
+
+def file_extension(filename):
+    return Path(str(filename or "")).suffix.lower()
+
+
+def public_uploaded_file(file_info):
+    return {
+        "name": file_info.get("name", ""),
+        "extension": file_info.get("extension", ""),
+        "type": file_info.get("content_type", ""),
+        "size": file_info.get("size", 0),
+        "accepted": file_info.get("accepted", False),
+    }
+
+
+def normalize_uploaded_file(filename, content_type, content):
+    content = content or b""
+    extension = file_extension(filename)
+    accepted = extension in ALLOWED_UPLOAD_EXTENSIONS and len(content) <= MAX_UPLOAD_BYTES
+    text_preview = ""
+    if accepted and extension in TEXT_UPLOAD_EXTENSIONS:
+        text_preview = content[:MAX_UPLOAD_BYTES].decode("utf-8", errors="replace")
+        text_preview = trim_prompt_text(text_preview, MAX_UPLOAD_TEXT_CHARS)
+
+    return {
+        "name": Path(str(filename or "archivo")).name,
+        "extension": extension,
+        "content_type": content_type or "application/octet-stream",
+        "size": len(content),
+        "accepted": accepted,
+        "text_preview": text_preview,
+    }
+
+
+def build_uploaded_file_docs(uploaded_files):
+    docs = []
+    for file_info in uploaded_files or []:
+        if not file_info.get("accepted"):
+            continue
+
+        name = file_info.get("name", "archivo")
+        extension = file_info.get("extension", "")
+        if file_info.get("text_preview"):
+            text = f"Archivo adjunto: {name}\nContenido:\n{file_info['text_preview']}"
+        else:
+            text = (
+                f"Archivo adjunto recibido: {name}. "
+                f"Tipo: {file_info.get('content_type', 'archivo')}. "
+                "El backend actual registra el archivo, pero no extrae contenido de este formato todavía."
+            )
+
+        docs.append(
+            {
+                "text": text,
+                "metadata": {
+                    "source": f"upload:{name}",
+                    "type": "archivo",
+                    "title": name,
+                    "extension": extension,
+                    "access_group": "admin",
+                },
+            }
+        )
+    return docs
+
+
+def parse_multipart_form(content_type, body):
+    message = BytesParser(policy=policy.default).parsebytes(
+        f"Content-Type: {content_type}\r\nMIME-Version: 1.0\r\n\r\n".encode("utf-8") + body
+    )
+    payload = {}
+    uploaded_files = []
+
+    for part in message.iter_parts():
+        if part.get_content_disposition() != "form-data":
+            continue
+
+        name = part.get_param("name", header="content-disposition")
+        filename = part.get_filename()
+        content = part.get_payload(decode=True) or b""
+
+        if filename:
+            uploaded_files.append(
+                normalize_uploaded_file(filename, part.get_content_type(), content)
+            )
+            continue
+
+        payload[name] = content.decode(part.get_content_charset() or "utf-8", errors="replace")
+
+    return payload, uploaded_files
 
 
 def dot_score(left, right):
@@ -629,37 +796,114 @@ Respuesta del tutor:
     return response
 
 
-def answer_from_brain(payload):
-    question = str(payload.get("question", "")).strip()
+def generate_general_answer(
+    question,
+    file_docs=None,
+    memory=None,
+    interaction_mode="study",
+    model_name=None,
+):
+    mode = get_interaction_mode(interaction_mode)
+    model_name = choose_llm_model(model_name)
+    if not model_name:
+        response = (
+            "No hay modelos de Ollama instalados todavia. "
+            f"Descarga uno con: `ollama pull {RECOMMENDED_OLLAMA_MODEL}`. "
+            "Despues vuelve a intentarlo."
+        )
+        response = clean_answer_text(response)
+        if memory is not None:
+            add_memory_turn(memory, question, response)
+        return response
+
+    file_context = ""
+    for doc in file_docs or []:
+        metadata = doc.get("metadata", {})
+        title = metadata.get("title", "archivo")
+        file_context += f"[archivo {title}]\n{trim_prompt_text(doc.get('text', ''), MAX_DOC_CONTEXT_CHARS)}\n\n"
+
+    history_text = ""
+    if memory:
+        recent_memory = memory[-(PROMPT_HISTORY_TURNS * 2):]
+        for message in recent_memory:
+            if message.get("role") == "human":
+                history_text += f"Usuario: {trim_prompt_text(message.get('content', ''), 500)}\n"
+            elif message.get("role") == "ai":
+                history_text += f"Asistente: {trim_prompt_text(message.get('content', ''), 900)}\n"
+        if history_text:
+            history_text = "Historial de la conversacion:\n" + history_text + "\n"
+
+    prompt = f"""
+Eres un asistente de programacion senior dentro de ABRAHAM-HERNANDEZ-MAIN.
+El chip Cerebro tutor_ia esta desactivado, asi que no uses ni afirmes usar fuentes privadas.
+Tu modo actual es: {mode["label"]}.
+
+Reglas:
+- Responde en espanol claro.
+- Ayuda con HTML, CSS, JavaScript, Python, Flask, bases de datos, APIs y depuracion.
+- Si faltan datos, dilo y da el siguiente paso mas util.
+- No inventes fuentes privadas ni resultados web.
+- Si hay archivos adjuntos, usalos como contexto de trabajo.
+
+{history_text}
+Archivos adjuntos:
+{file_context or "No hay archivos adjuntos con texto extraible."}
+
+Pregunta del usuario: {question}
+Respuesta:
+"""
+    try:
+        response = get_llm(model_name).invoke(prompt)
+    except Exception as exc:
+        response = (
+            f"No pude usar el modelo `{model_name}` en Ollama. "
+            f"Verifica que este instalado con `ollama list`. Detalle: {exc}"
+        )
+
+    response = clean_answer_text(response)
+    if memory is not None:
+        add_memory_turn(memory, question, response)
+    return response
+
+
+def answer_from_brain(payload, uploaded_files=None):
+    question = str(payload.get("message") or payload.get("question") or "").strip()
     if not question:
         raise ValueError("La pregunta esta vacia.")
 
     session_id = str(payload.get("session_id") or "default")[:120]
     memory = memory_store.setdefault(session_id, [])
-    interaction_mode = payload.get("mode") or payload.get("interaction_mode") or "study"
+    raw_mode = payload.get("mode") or payload.get("interaction_mode") or "study"
+    interaction_mode = normalize_interaction_mode(raw_mode)
     user_groups = normalize_groups(WEB_ACCESS_GROUPS)
     selected_sources = payload.get("selected_sources")
     agency_enabled = bool(payload.get("agency_enabled") or interaction_mode == "agency")
     client_name = str(payload.get("client") or "")
     fast_profile = str(payload.get("response_profile") or "").lower() in {"fast", "fast_smart", "web_fast"}
     show_sources = payload_bool(payload, "show_sources", False) or source_requested(question)
+    tutor_ia_enabled = payload_bool(payload, "tutorIA", payload_bool(payload, "tutor_ia", True))
+    smart_search_enabled = payload_bool(payload, "smartSearch", payload_bool(payload, "smart_search", False))
     k = int(payload.get("k") or (6 if fast_profile else RETRIEVE_CANDIDATES))
     top_k = int(payload.get("top_k") or (2 if fast_profile else RESPONSE_TOP_K))
-    include_obsidian = payload_bool(payload, "include_obsidian", True)
+    include_obsidian = tutor_ia_enabled and payload_bool(payload, "include_obsidian", True)
     obsidian_top_k = int(payload.get("obsidian_top_k") or OBSIDIAN_TOP_K)
+    uploaded_files = uploaded_files or []
+    file_docs = build_uploaded_file_docs(uploaded_files)
 
     brain_error = ""
-    try:
-        docs = retrieve(
-            question,
-            user_groups=user_groups,
-            k=k,
-            top_k=top_k,
-            selected_sources=selected_sources,
-        )
-    except Exception as exc:
-        docs = []
-        brain_error = str(exc)
+    docs = []
+    if tutor_ia_enabled:
+        try:
+            docs = retrieve(
+                question,
+                user_groups=user_groups,
+                k=k,
+                top_k=top_k,
+                selected_sources=selected_sources,
+            )
+        except Exception as exc:
+            docs = []
+            brain_error = str(exc)
 
     obsidian_docs = retrieve_obsidian(question, top_k=obsidian_top_k) if include_obsidian else []
     if selected_sources is not None:
@@ -669,29 +913,51 @@ def answer_from_brain(payload):
             for doc in obsidian_docs
             if doc.get("metadata", {}).get("source") in selected_source_set
         ]
-    docs = docs + obsidian_docs
+    docs = docs + obsidian_docs + file_docs
 
     agency_matches = []
     agency_context = ""
-    if agency_enabled and retrieve_agency_agents and build_agency_context:
+    if tutor_ia_enabled and agency_enabled and retrieve_agency_agents and build_agency_context:
         agency_matches = retrieve_agency_agents(question, limit=AGENCY_MATCH_LIMIT)
         agency_context = build_agency_context(agency_matches, max_chars=AGENCY_CONTEXT_CHARS)
 
-    answer = generate_answer(
-        question,
-        docs,
-        memory,
-        interaction_mode=interaction_mode,
-        model_name=payload.get("model"),
-        agency_context=agency_context,
-        show_sources=show_sources,
-        assistant_profile=client_name,
-    )
+    if tutor_ia_enabled:
+        answer = generate_answer(
+            question,
+            docs,
+            memory,
+            interaction_mode=interaction_mode,
+            model_name=payload.get("model"),
+            agency_context=agency_context,
+            show_sources=show_sources,
+            assistant_profile=client_name,
+        )
+    else:
+        answer = generate_general_answer(
+            question,
+            file_docs=file_docs,
+            memory=memory,
+            interaction_mode=interaction_mode,
+            model_name=payload.get("model"),
+        )
+
+    smart_search = None
+    if smart_search_enabled:
+        smart_search = smart_web_search(question)
+        if not smart_search.get("enabled"):
+            notice = smart_search.get("message") or SMART_SEARCH_UNCONFIGURED_MESSAGE
+            answer = f"{answer}\n\n{notice}" if answer else notice
 
     return {
         "ok": True,
         "answer": answer,
-        "mode": get_interaction_mode(interaction_mode)["label"],
+        "mode": str(raw_mode),
+        "brain_mode": get_interaction_mode(interaction_mode)["label"],
+        "tutorIA": tutor_ia_enabled,
+        "smartSearch": smart_search_enabled,
+        "usedTutorIA": tutor_ia_enabled,
+        "usedSmartSearch": smart_search_enabled and bool(smart_search and smart_search.get("enabled")),
+        "smart_search": smart_search,
         "show_sources": show_sources,
         "used_sources_count": len(docs),
         "brain_error": brain_error,
@@ -702,7 +968,8 @@ def answer_from_brain(payload):
                 "snippet": trim_prompt_text(doc.get("text", ""), 260),
             }
             for doc in docs
-        ] if show_sources else [],
+        ],
+        "uploadedFiles": [public_uploaded_file(file_info) for file_info in uploaded_files],
         "agency_agents": agency_matches,
     }
 
@@ -788,9 +1055,16 @@ class TutorBridgeHandler(BaseHTTPRequestHandler):
 
         try:
             length = int(self.headers.get("Content-Length", "0"))
-            raw_body = self.rfile.read(min(length, 1024 * 1024))
-            payload = json.loads(raw_body.decode("utf-8") or "{}")
-            result = answer_from_brain(payload)
+            raw_body = self.rfile.read(min(length, (MAX_UPLOAD_BYTES * 4) + (1024 * 1024)))
+            content_type = self.headers.get("Content-Type", "")
+            uploaded_files = []
+
+            if "multipart/form-data" in content_type.lower():
+                payload, uploaded_files = parse_multipart_form(content_type, raw_body)
+            else:
+                payload = json.loads(raw_body.decode("utf-8") or "{}")
+
+            result = answer_from_brain(payload, uploaded_files=uploaded_files)
             json_response(self, 200, result)
         except Exception as exc:
             json_response(self, 500, {"ok": False, "error": str(exc)})
