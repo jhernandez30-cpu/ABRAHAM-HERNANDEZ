@@ -27,6 +27,8 @@ Si usas el entorno virtual de tu TUTOR_IA local:
 
 El puente tambien autodetecta `C:\Users\herna\Documents\tutor_ia`: usa su `brain_db`, importa `agency_brain.py` desde esa carpeta y lee el vault Obsidian `Tutor_IA` como contexto vivo.
 
+Tambien importa `connected_brain.py`, `programming_skills.py`, `project_workspace.py`, `jarvis_brain.py` y `local_model_router.py` desde la instalacion local cuando existen. Asi la pagina no usa un cerebro paralelo: usa el mismo contrato de contexto que TUTOR_IA.
+
 ## Variables utiles
 
 `TUTOR_IA_ROOT`: raiz de la instalacion local. Por defecto intenta `C:\Users\herna\Documents\tutor_ia`.
@@ -50,11 +52,15 @@ El puente tambien autodetecta `C:\Users\herna\Documents\tutor_ia`: usa su `brain
 - `client: "abraham-programming-assistant"` para activar el perfil del sitio.
 - `response_profile: "fast_smart"` para recuperar menos fragmentos y responder mas rapido.
 - `include_obsidian: true` para sumar notas `.md` y `.canvas` del vault.
+- `project_path: "C:\Users\herna\Documents\ABRAHAM-HERNANDEZ-main"` para conectar el codigo real del sitio.
+- `agency_enabled: true` y `jarvis_profile: "unified"` para activar Agency, OpenJarvis y habilidades de programacion dentro del mismo prompt.
 - `show_sources: false` para usar las fuentes como contexto interno sin mostrar la lista al usuario.
 
 El puente solo devuelve fuentes visibles si el usuario las pide explicitamente, por ejemplo con "cita las fuentes" o "de donde sale esto".
 
 Las respuestas se limpian antes de enviarse: se eliminan `**` de negritas Markdown y cualquier linea tipo `Fuentes:`.
+
+La respuesta de `/api/chat` incluye `brain_parts`, `workspace_used_count`, `quick_code_used`, `jarvis_profile` y `model` para verificar que las capas esten conectadas.
 
 ## Prueba rapida
 
