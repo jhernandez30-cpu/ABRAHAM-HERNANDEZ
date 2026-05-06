@@ -7,6 +7,7 @@ const STORAGE_KEY = 'tutorIaChatHistory';
 const ACTIVE_CHAT_KEY = 'tutorIaActiveChatId';
 const DEFAULT_MODE = 'Cerebro Unificado';
 const PROJECT_PATH = window.TUTOR_IA_PROJECT_PATH || '';
+const CHAT_TIMEOUT_MS = 35000;
 const ALLOWED_FILE_EXTENSIONS = new Set([
   'png', 'jpg', 'jpeg', 'webp', 'pdf', 'docx', 'txt', 'py', 'js', 'html', 'css', 'json', 'md', 'sql', 'cs'
 ]);
@@ -63,6 +64,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function endpointHealthUrl(endpoint) {
     return endpoint.replace(/\/api\/chat$/, '/api/health');
+  }
+
+  function endpointHostKey(endpoint) {
+    try {
+      const url = new URL(endpoint);
+      return `${url.protocol}//${url.port || url.hostname}`;
+    } catch (error) {
+      return endpoint;
+    }
   }
 
   function nowIso() {
@@ -158,7 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const obsidianNotes = Number(data.obsidian && data.obsidian.notes ? data.obsidian.notes : 0);
         const agencyAgents = Number(data.agency && data.agency.count ? data.agency.count : 0);
         const jarvisProfiles = Number(data.jarvis && data.jarvis.detected_profiles ? data.jarvis.detected_profiles : 0);
+        const tutorConnected = Boolean(data.tutor_ia_connected);
         const contextParts = [`${fragments} fragmentos`];
+        if (tutorConnected) contextParts.unshift('tutor_ia OK');
         if (obsidianNotes) contextParts.push(`${obsidianNotes} notas Obsidian`);
         if (agencyAgents) contextParts.push(`${agencyAgents} agentes`);
         if (jarvisProfiles) contextParts.push(`${jarvisProfiles} perfiles Jarvis`);
@@ -171,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    setBrainStatus('offline', 'TUTOR_IA sin conexión local');
+    setBrainStatus('offline', 'TUTOR_IA sin conexion local');
   }
 
   function buildChatFormData(question, chatId) {
@@ -183,11 +195,13 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('smartSearch', String(smartSearchEnabled));
     formData.append('session_id', chatId);
     formData.append('client', 'abraham-programming-assistant');
-    formData.append('response_profile', 'fast_smart');
+    formData.append('response_profile', 'web_fast');
     formData.append('include_obsidian', String(tutorIAEnabled));
     formData.append('agency_enabled', String(tutorIAEnabled));
     formData.append('jarvis_profile', 'unified');
-    formData.append('obsidian_top_k', '2');
+    formData.append('k', '4');
+    formData.append('top_k', '1');
+    formData.append('obsidian_top_k', '1');
     formData.append('show_sources', 'false');
     if (PROJECT_PATH) {
       formData.append('project_path', PROJECT_PATH);
@@ -199,22 +213,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function askTutorBrain(question, chatId) {
     const endpoints = activeTutorEndpoint
-      ? [activeTutorEndpoint, ...endpointCandidates.filter(endpoint => endpoint !== activeTutorEndpoint)]
+      ? [activeTutorEndpoint]
       : endpointCandidates;
     let lastError = null;
+    const triedHosts = new Set();
 
     for (const endpoint of endpoints) {
+      const hostKey = endpointHostKey(endpoint);
+      if (triedHosts.has(hostKey)) continue;
+      triedHosts.add(hostKey);
       try {
+        setBrainStatus('checking', `TUTOR_IA pensando (max ${Math.round(CHAT_TIMEOUT_MS / 1000)}s)`);
         const response = await fetchWithTimeout(endpoint, {
           method: 'POST',
           body: buildChatFormData(question, chatId)
-        }, 180000);
+        }, CHAT_TIMEOUT_MS);
 
         if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
+          let detail = '';
+          try {
+            const errorPayload = await response.json();
+            detail = errorPayload && errorPayload.error ? `: ${errorPayload.error}` : '';
+          } catch (error) {
+            detail = '';
+          }
+          throw new Error(`HTTP ${response.status}${detail}`);
         }
 
         const data = await response.json();
+        if (data && data.ok === false) {
+          throw new Error(data.error || 'TUTOR_IA respondio con error.');
+        }
         activeTutorEndpoint = endpoint;
         const brainParts = Array.isArray(data.brain_parts) && data.brain_parts.length
           ? ` - ${data.brain_parts.slice(0, 4).join(' + ')}`
@@ -223,10 +252,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return data;
       } catch (error) {
         lastError = error;
+        if (error && error.name === 'AbortError') break;
       }
     }
 
-    setBrainStatus('offline', 'TUTOR_IA sin conexión local');
+    const timedOut = lastError && lastError.name === 'AbortError';
+    setBrainStatus(timedOut ? 'error' : 'offline', timedOut ? 'TUTOR_IA tardo demasiado' : 'TUTOR_IA sin conexion local');
     throw lastError || new Error('No se pudo conectar con TUTOR_IA.');
   }
 
@@ -514,8 +545,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (smartSearchBtn) smartSearchBtn.disabled = isLoading;
   }
 
-  function fallbackAnswer() {
-    return 'No logré conectar con TUTOR_IA en este momento. Abre el puente local en tu PC y vuelve a intentarlo: `http://127.0.0.1:8787/api/health`.';
+  function fallbackAnswer(error) {
+    if (error && error.name === 'AbortError') {
+      return `TUTOR_IA si esta conectado, pero el modelo local tardo mas de ${Math.round(CHAT_TIMEOUT_MS / 1000)} segundos. Prueba una pregunta mas concreta o libera Ollama si tiene otra generacion en curso.`;
+    }
+    const detail = error && error.message ? ` Detalle: ${error.message}` : '';
+    return `No pude completar la consulta con TUTOR_IA.${detail} Verifica el puente local en http://127.0.0.1:8787/api/health.`;
   }
 
   function autosizeInput() {
@@ -694,7 +729,7 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedFiles = [];
       renderAttachments();
     } catch (error) {
-      const answer = fallbackAnswer();
+      const answer = fallbackAnswer(error);
       updateMessageInChat(chatId, loadingMessage.id, {
         content: answer,
         sources: [],

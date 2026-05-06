@@ -7,6 +7,8 @@ import os
 import re
 import subprocess
 import sys
+import time
+import unicodedata
 from email import policy
 from email.parser import BytesParser
 from functools import lru_cache
@@ -19,6 +21,7 @@ from chromadb.config import Settings
 from langchain_ollama import OllamaLLM
 
 BASE_DIR = Path(__file__).resolve().parent
+DEFAULT_TUTOR_ROOT = Path.home() / "Documents" / "tutor_ia"
 
 
 def path_from_env(value):
@@ -30,7 +33,7 @@ def tutor_root_candidates():
     if env_root:
         yield env_root
 
-    yield Path.home() / "Documents" / "tutor_ia"
+    yield DEFAULT_TUTOR_ROOT
     yield BASE_DIR
     yield BASE_DIR.parent
 
@@ -130,6 +133,28 @@ WEB_ACCESS_GROUPS = os.getenv("TUTOR_IA_WEB_GROUPS", "admin,public")
 SMART_SEARCH_UNCONFIGURED_MESSAGE = (
     "La Búsqueda inteligente está activada, pero todavía no hay una API de búsqueda web configurada."
 )
+LIGHT_CHAT_RE = re.compile(
+    r"\b(hola|buenas|saludos|estas conectado|est[aá]s conectado|responde ok|solo ok|ping|ok)\b",
+    re.IGNORECASE,
+)
+KNOWLEDGE_QUERY_RE = re.compile(
+    r"\b(aprender|explica|explicame|concepto|documento|fuente|fuentes|libro|clase|curso|"
+    r"sql|python|javascript|c#|csharp|base de datos|api|markdown)\b",
+    re.IGNORECASE,
+)
+WORKSPACE_QUERY_RE = re.compile(
+    r"\b(codigo|programacion|asistente|web_bridge|html|css|js|javascript|bug|error|"
+    r"mejora|mejorar|conecta|conectar|workspace|proyecto|repo|repositorio|commit)\b",
+    re.IGNORECASE,
+)
+STATUS_QUERY_RE = re.compile(
+    r"\b(cerebro|conecta|conectar|conectado|conexion|asistente|tutor_ia|bridge|puente)\b",
+    re.IGNORECASE,
+)
+AGENCY_QUERY_RE = re.compile(
+    r"\b(agente|agency|especialista|estrategia|plan|arquitectura|auditoria|review|revision)\b",
+    re.IGNORECASE,
+)
 ALLOWED_UPLOAD_EXTENSIONS = {
     ".png",
     ".jpg",
@@ -150,6 +175,17 @@ ALLOWED_UPLOAD_EXTENSIONS = {
 TEXT_UPLOAD_EXTENSIONS = {".txt", ".py", ".js", ".html", ".css", ".json", ".md", ".sql", ".cs"}
 MAX_UPLOAD_BYTES = int(os.getenv("TUTOR_IA_MAX_UPLOAD_BYTES", str(8 * 1024 * 1024)))
 MAX_UPLOAD_TEXT_CHARS = int(os.getenv("TUTOR_IA_MAX_UPLOAD_TEXT_CHARS", "6000"))
+WEB_FAST_MODEL = os.getenv("TUTOR_IA_WEB_FAST_MODEL", "llama3.2:1b")
+WEB_FAST_K = int(os.getenv("TUTOR_IA_WEB_FAST_K", "4"))
+WEB_FAST_TOP_K = int(os.getenv("TUTOR_IA_WEB_FAST_TOP_K", "1"))
+WEB_FAST_OBSIDIAN_TOP_K = int(os.getenv("TUTOR_IA_WEB_FAST_OBSIDIAN_TOP_K", "1"))
+WEB_FAST_DOC_CHARS = int(os.getenv("TUTOR_IA_WEB_FAST_DOC_CHARS", "220"))
+WEB_FAST_BRAIN_CHARS = int(os.getenv("TUTOR_IA_WEB_FAST_BRAIN_CHARS", "650"))
+WEB_FAST_AGENCY_CHARS = int(os.getenv("TUTOR_IA_WEB_FAST_AGENCY_CHARS", "350"))
+WEB_FAST_WORKSPACE_FILES = int(os.getenv("TUTOR_IA_WEB_FAST_WORKSPACE_FILES", "1"))
+WEB_FAST_WORKSPACE_CHARS = int(os.getenv("TUTOR_IA_WEB_FAST_WORKSPACE_CHARS", "350"))
+WEB_OLLAMA_NUM_CTX = int(os.getenv("TUTOR_IA_WEB_OLLAMA_NUM_CTX", "2048"))
+WEB_OLLAMA_NUM_PREDICT = int(os.getenv("TUTOR_IA_WEB_OLLAMA_NUM_PREDICT", "90"))
 
 INTERACTION_MODES = {
     "unified": {
@@ -258,7 +294,13 @@ def get_collection():
 
 @lru_cache(maxsize=8)
 def get_llm(model_name):
-    return OllamaLLM(model=model_name, temperature=0.3)
+    return OllamaLLM(
+        model=model_name,
+        temperature=0.25,
+        num_ctx=WEB_OLLAMA_NUM_CTX,
+        num_predict=WEB_OLLAMA_NUM_PREDICT,
+        keep_alive="5m",
+    )
 
 
 def get_installed_ollama_models():
@@ -330,7 +372,7 @@ def payload_bool(payload, key, default=False):
 
 def normalize_mode_text(value):
     text = str(value or "").strip().lower()
-    return (
+    text = (
         text.replace("á", "a")
         .replace("é", "e")
         .replace("í", "i")
@@ -338,6 +380,9 @@ def normalize_mode_text(value):
         .replace("ú", "u")
         .replace("  ", " ")
     )
+    normalized = unicodedata.normalize("NFKD", text)
+    text = "".join(ch for ch in normalized if not unicodedata.combining(ch))
+    return re.sub(r"\s+", " ", text)
 
 
 def normalize_interaction_mode(mode_key):
@@ -371,6 +416,10 @@ def clean_answer_text(text):
 
 def source_requested(question):
     return bool(SOURCE_REQUEST_RE.search(str(question or "")))
+
+
+def normalized_query_text(value):
+    return normalize_mode_text(value).replace("ñ", "n")
 
 
 def smart_web_search(query):
@@ -674,6 +723,33 @@ def get_obsidian_status():
     }
 
 
+def get_tutor_connection_status():
+    module_status = {
+        "connected_brain": bool(build_connected_brain_context and build_quick_code_docs and retrieve_connected_workspace_docs),
+        "programming_skills": bool(build_programming_skills_context),
+        "project_workspace": bool(build_workspace_brain_context and retrieve_workspace_context),
+        "jarvis_brain": bool(build_unified_brain_context and get_jarvis_stack_summary),
+        "local_model_router": bool(choose_local_model),
+        "agency_brain": bool(build_agency_context and retrieve_agency_agents),
+    }
+    expected_root = DEFAULT_TUTOR_ROOT.resolve()
+    return {
+        "expected_root": str(expected_root),
+        "root": str(TUTOR_ROOT),
+        "root_matches_expected": TUTOR_ROOT == expected_root,
+        "available": TUTOR_ROOT.exists(),
+        "brain_db": str(Path(PERSIST_DIR).expanduser()),
+        "brain_db_available": Path(PERSIST_DIR).expanduser().exists(),
+        "obsidian_vault": str(Path(OBSIDIAN_VAULT_DIR).expanduser()),
+        "obsidian_available": Path(OBSIDIAN_VAULT_DIR).expanduser().exists(),
+        "modules": module_status,
+        "all_core_modules": all(
+            module_status[key]
+            for key in ("connected_brain", "programming_skills", "project_workspace", "jarvis_brain", "local_model_router")
+        ),
+    }
+
+
 def embed_text(text):
     vector = [0.0] * EMBED_DIM
     tokens = TOKEN_RE.findall((text or "").lower())
@@ -757,6 +833,8 @@ def generate_answer(
     brain_context="",
     show_sources=False,
     assistant_profile="",
+    max_doc_chars=None,
+    fast_profile=False,
 ):
     mode = get_interaction_mode(interaction_mode)
     model_name = choose_llm_model(
@@ -783,11 +861,12 @@ def generate_answer(
         return response
 
     context = ""
+    max_doc_chars = max_doc_chars or MAX_DOC_CONTEXT_CHARS
     for doc in docs or []:
         metadata = doc["metadata"]
         source_type = metadata.get("type", "fuente")
         title = metadata.get("title", metadata.get("source", "fuente"))
-        context += f"[{source_type} {title}]\n{trim_prompt_text(doc['text'], MAX_DOC_CONTEXT_CHARS)}\n\n"
+        context += f"[{source_type} {title}]\n{trim_prompt_text(doc['text'], max_doc_chars)}\n\n"
 
     if not context:
         context = "No se recuperaron fuentes privadas relevantes para esta pregunta.\n"
@@ -834,6 +913,51 @@ Capa Jarvis/OpenJarvis:
         if assistant_profile
         else ""
     )
+    speed_rule = (
+        "- Modo web rapido: responde en maximo 8 lineas o 5 bullets, con solucion directa y una validacion concreta.\n"
+        if fast_profile
+        else ""
+    )
+
+    if fast_profile:
+        compact_prompt = f"""
+Eres el asistente de programacion de Abraham conectado a TUTOR_IA.
+Responde en espanol claro, maximo 5 bullets o 8 lineas.
+Da solucion directa, una recomendacion concreta y una validacion simple.
+No cites fuentes salvo que el usuario lo pida.
+Si falta informacion, pide solo el dato minimo.
+
+Capas activas:
+{trim_prompt_text(brain_context, WEB_FAST_BRAIN_CHARS) if brain_context else "TUTOR_IA local"}
+
+Agency:
+{trim_prompt_text(agency_context, WEB_FAST_AGENCY_CHARS) if agency_context else "Sin especialistas necesarios para esta respuesta."}
+
+Contexto interno:
+{context}
+
+Pregunta: {question}
+Respuesta:
+"""
+        try:
+            response = get_llm(model_name).invoke(compact_prompt)
+        except Exception as exc:
+            detail = str(exc)
+            if "requires more system memory" in detail or "more system memory" in detail:
+                response = (
+                    f"El modelo `{model_name}` es demasiado grande para la memoria disponible ahora. "
+                    f"Usa un modelo mas ligero: `ollama pull {RECOMMENDED_OLLAMA_MODEL}`."
+                )
+            else:
+                response = (
+                    f"No pude usar el modelo `{model_name}` en Ollama. "
+                    f"Verifica que este instalado con `ollama list`. Detalle: {exc}"
+                )
+
+        response = clean_answer_text(response)
+        if memory is not None:
+            add_memory_turn(memory, question, response)
+        return response
 
     prompt = f"""
 Eres el cerebro de una aplicacion y pagina web tipo NotebookLM, conectado a una base de conocimiento privada.
@@ -849,6 +973,7 @@ Reglas generales:
 - Responde en espanol claro.
 - No uses negritas Markdown, no escribas ** y evita adornos innecesarios.
 - Prioriza velocidad: respuesta breve, ejemplos minimos y solo los pasos necesarios.
+{speed_rule}
 {source_rule}
 
 {mode["instructions"]}
@@ -956,6 +1081,7 @@ Respuesta:
 
 
 def answer_from_brain(payload, uploaded_files=None):
+    started_at = time.perf_counter()
     question = str(payload.get("message") or payload.get("question") or "").strip()
     if not question:
         raise ValueError("La pregunta esta vacia.")
@@ -972,18 +1098,139 @@ def answer_from_brain(payload, uploaded_files=None):
     show_sources = payload_bool(payload, "show_sources", False) or source_requested(question)
     tutor_ia_enabled = payload_bool(payload, "tutorIA", payload_bool(payload, "tutor_ia", True))
     smart_search_enabled = payload_bool(payload, "smartSearch", payload_bool(payload, "smart_search", False))
-    k = int(payload.get("k") or (6 if fast_profile else RETRIEVE_CANDIDATES))
-    top_k = int(payload.get("top_k") or (2 if fast_profile else RESPONSE_TOP_K))
+    k = int(payload.get("k") or (WEB_FAST_K if fast_profile else RETRIEVE_CANDIDATES))
+    top_k = int(payload.get("top_k") or (WEB_FAST_TOP_K if fast_profile else RESPONSE_TOP_K))
     include_obsidian = tutor_ia_enabled and payload_bool(payload, "include_obsidian", True)
-    obsidian_top_k = int(payload.get("obsidian_top_k") or OBSIDIAN_TOP_K)
+    obsidian_top_k = int(payload.get("obsidian_top_k") or (WEB_FAST_OBSIDIAN_TOP_K if fast_profile else OBSIDIAN_TOP_K))
     project_path = str(payload.get("project_path") or payload.get("workspace_path") or "").strip()
     quick_code_context = str(payload.get("quick_code_context") or payload.get("code_context") or "")[:6000].strip()
     uploaded_files = uploaded_files or []
     file_docs = build_uploaded_file_docs(uploaded_files)
+    normalized_question = normalized_query_text(question)
+    light_chat = bool(fast_profile and len(normalized_question) <= 80 and LIGHT_CHAT_RE.search(normalized_question))
+    use_private_knowledge = bool(
+        tutor_ia_enabled
+        and not light_chat
+        and (not fast_profile or source_requested(question) or KNOWLEDGE_QUERY_RE.search(normalized_question))
+    )
+    use_workspace_context = bool(
+        tutor_ia_enabled
+        and project_path
+        and not light_chat
+        and (not fast_profile or WORKSPACE_QUERY_RE.search(normalized_question))
+    )
+    use_agency_context = bool(
+        tutor_ia_enabled
+        and agency_enabled
+        and not light_chat
+        and (not fast_profile or AGENCY_QUERY_RE.search(normalized_question))
+    )
+
+    if light_chat:
+        model_name = payload.get("model") or WEB_FAST_MODEL
+        tutor_connection = get_tutor_connection_status()
+        answer = (
+            f"Si, TUTOR_IA esta conectado desde {tutor_connection['root']}. Estoy listo para ayudarte con codigo, bugs, arquitectura o el proyecto ABRAHAM-HERNANDEZ."
+            if "conect" in normalized_question or "ping" in normalized_question or "ok" in normalized_question
+            else "Hola, estoy listo. Dime que codigo, error o idea quieres revisar."
+        )
+        add_memory_turn(memory, question, answer)
+        return {
+            "ok": True,
+            "answer": answer,
+            "mode": str(raw_mode),
+            "brain_mode": get_interaction_mode(interaction_mode)["label"],
+            "tutorIA": tutor_ia_enabled,
+            "smartSearch": smart_search_enabled,
+            "usedTutorIA": tutor_ia_enabled,
+            "usedSmartSearch": False,
+            "smart_search": None,
+            "show_sources": False,
+            "used_sources_count": 0,
+            "model": choose_llm_model(model_name, question=question, docs=[], brain_context="Cerebro Unificado"),
+            "response_profile": "web_fast",
+            "latency_ms": int((time.perf_counter() - started_at) * 1000),
+            "brain_error": "",
+            "tutor_ia_connection": tutor_connection,
+            "tutor_ia_root": tutor_connection["root"],
+            "tutor_ia_connected": tutor_connection["all_core_modules"],
+            "obsidian_used_count": 0,
+            "workspace_used_count": 0,
+            "quick_code_used": False,
+            "jarvis_profile": "unified",
+            "brain_parts": ["unified_brain", "connection_contract"],
+            "sources": [],
+            "uploadedFiles": [public_uploaded_file(file_info) for file_info in uploaded_files],
+            "agency_agents": [],
+        }
+
+    status_query = bool(fast_profile and STATUS_QUERY_RE.search(normalized_question))
+    if status_query:
+        model_name = payload.get("model") or WEB_FAST_MODEL
+        tutor_connection = get_tutor_connection_status()
+        try:
+            fragment_count = get_collection().count() if tutor_ia_enabled else 0
+        except Exception:
+            fragment_count = 0
+        try:
+            obsidian_count = get_obsidian_status().get("notes", 0) if include_obsidian else 0
+        except Exception:
+            obsidian_count = 0
+        try:
+            agency_count = get_agency_status().get("count", 0) if get_agency_status and agency_enabled else 0
+        except Exception:
+            agency_count = 0
+        selected_model = choose_llm_model(model_name, question=question, docs=[], brain_context="Cerebro Unificado")
+        workspace_label = "workspace ABRAHAM-HERNANDEZ conectado" if project_path else "workspace no enviado"
+        module_labels = ", ".join(
+            name
+            for name, available in tutor_connection["modules"].items()
+            if available
+        )
+        answer = (
+            "Estado real del asistente:\n"
+            f"- TUTOR_IA: conectado desde {tutor_connection['root']}.\n"
+            f"- Base privada: {fragment_count} fragmentos disponibles.\n"
+            f"- Obsidian: {obsidian_count} notas disponibles.\n"
+            f"- Agency: {agency_count} especialistas disponibles.\n"
+            f"- Proyecto: {workspace_label}.\n"
+            f"- Modulos cargados: {module_labels or 'ninguno'}.\n"
+            f"- Modelo web rapido: {selected_model or 'sin modelo Ollama detectado'}.\n"
+            "Siguiente mejora concreta: pregunta por un archivo, bug o cambio y priorizare el workspace antes que PDFs generales."
+        )
+        add_memory_turn(memory, question, answer)
+        return {
+            "ok": True,
+            "answer": answer,
+            "mode": str(raw_mode),
+            "brain_mode": get_interaction_mode(interaction_mode)["label"],
+            "tutorIA": tutor_ia_enabled,
+            "smartSearch": smart_search_enabled,
+            "usedTutorIA": tutor_ia_enabled,
+            "usedSmartSearch": False,
+            "smart_search": None,
+            "show_sources": False,
+            "used_sources_count": 0,
+            "model": selected_model,
+            "response_profile": "web_fast",
+            "latency_ms": int((time.perf_counter() - started_at) * 1000),
+            "brain_error": "",
+            "tutor_ia_connection": tutor_connection,
+            "tutor_ia_root": tutor_connection["root"],
+            "tutor_ia_connected": tutor_connection["all_core_modules"],
+            "obsidian_used_count": 0,
+            "workspace_used_count": 0,
+            "quick_code_used": False,
+            "jarvis_profile": "unified",
+            "brain_parts": ["unified_brain", "workspace", "agency", "jarvis", "connection_contract"],
+            "sources": [],
+            "uploadedFiles": [public_uploaded_file(file_info) for file_info in uploaded_files],
+            "agency_agents": [],
+        }
 
     brain_error = ""
     docs = []
-    if tutor_ia_enabled:
+    if use_private_knowledge:
         try:
             docs = retrieve(
                 question,
@@ -996,7 +1243,7 @@ def answer_from_brain(payload, uploaded_files=None):
             docs = []
             brain_error = str(exc)
 
-    obsidian_docs = retrieve_obsidian(question, top_k=obsidian_top_k) if include_obsidian else []
+    obsidian_docs = retrieve_obsidian(question, top_k=obsidian_top_k) if include_obsidian and use_private_knowledge else []
     if selected_sources is not None:
         selected_source_set = set(selected_sources)
         obsidian_docs = [
@@ -1004,10 +1251,20 @@ def answer_from_brain(payload, uploaded_files=None):
             for doc in obsidian_docs
             if doc.get("metadata", {}).get("source") in selected_source_set
         ]
-    if tutor_ia_enabled and project_path and retrieve_connected_workspace_docs:
-        workspace_docs = retrieve_connected_workspace_docs(question, project_path)
-    elif tutor_ia_enabled and project_path and retrieve_workspace_context:
-        workspace_docs = retrieve_workspace_context(question, project_path)
+    if use_workspace_context and retrieve_connected_workspace_docs:
+        workspace_docs = retrieve_connected_workspace_docs(
+            question,
+            project_path,
+            max_files=WEB_FAST_WORKSPACE_FILES if fast_profile else 5,
+            max_chars_per_file=WEB_FAST_WORKSPACE_CHARS if fast_profile else 1800,
+        )
+    elif use_workspace_context and retrieve_workspace_context:
+        workspace_docs = retrieve_workspace_context(
+            question,
+            project_path,
+            max_files=WEB_FAST_WORKSPACE_FILES if fast_profile else 4,
+            max_chars_per_file=WEB_FAST_WORKSPACE_CHARS if fast_profile else 1400,
+        )
     else:
         workspace_docs = []
 
@@ -1031,9 +1288,13 @@ def answer_from_brain(payload, uploaded_files=None):
 
     agency_matches = []
     agency_context = ""
-    if tutor_ia_enabled and agency_enabled and retrieve_agency_agents and build_agency_context:
-        agency_matches = retrieve_agency_agents(question, limit=AGENCY_MATCH_LIMIT)
-        agency_context = build_agency_context(agency_matches, max_chars=AGENCY_CONTEXT_CHARS)
+    if use_agency_context and retrieve_agency_agents and build_agency_context:
+        agency_limit = 1 if fast_profile else AGENCY_MATCH_LIMIT
+        agency_matches = retrieve_agency_agents(question, limit=agency_limit)
+        agency_context = build_agency_context(
+            agency_matches,
+            max_chars=WEB_FAST_AGENCY_CHARS if fast_profile else AGENCY_CONTEXT_CHARS,
+        )
 
     brain_profile = str(payload.get("jarvis_profile") or payload.get("brain_profile") or "unified")
     brain_context = ""
@@ -1062,17 +1323,25 @@ def answer_from_brain(payload, uploaded_files=None):
         brain_context = build_profile_context(brain_profile)
         brain_parts = ["jarvis_profile"]
 
+    if fast_profile and brain_context:
+        brain_context = trim_prompt_text(brain_context, WEB_FAST_BRAIN_CHARS)
+
+    requested_model = payload.get("model")
+    model_name = requested_model or (WEB_FAST_MODEL if fast_profile else None)
+
     if tutor_ia_enabled:
         answer = generate_answer(
             question,
             docs,
             memory,
             interaction_mode=interaction_mode,
-            model_name=payload.get("model"),
+            model_name=model_name,
             agency_context=agency_context,
             brain_context=brain_context,
             show_sources=show_sources,
             assistant_profile=client_name,
+            max_doc_chars=WEB_FAST_DOC_CHARS if fast_profile else MAX_DOC_CONTEXT_CHARS,
+            fast_profile=fast_profile,
         )
     else:
         answer = generate_general_answer(
@@ -1080,7 +1349,7 @@ def answer_from_brain(payload, uploaded_files=None):
             file_docs=file_docs,
             memory=memory,
             interaction_mode=interaction_mode,
-            model_name=payload.get("model"),
+            model_name=model_name,
         )
 
     smart_search = None
@@ -1103,12 +1372,17 @@ def answer_from_brain(payload, uploaded_files=None):
         "show_sources": show_sources,
         "used_sources_count": len(docs),
         "model": choose_llm_model(
-            payload.get("model"),
+            model_name,
             question=question,
             docs=docs,
             brain_context=brain_context,
         ),
+        "response_profile": "web_fast" if fast_profile else "full",
+        "latency_ms": int((time.perf_counter() - started_at) * 1000),
         "brain_error": brain_error,
+        "tutor_ia_connection": get_tutor_connection_status(),
+        "tutor_ia_root": str(TUTOR_ROOT),
+        "tutor_ia_connected": bool(build_connected_brain_context),
         "obsidian_used_count": len(obsidian_docs),
         "workspace_used_count": len(workspace_docs),
         "quick_code_used": bool(quick_code_docs),
@@ -1182,6 +1456,7 @@ class TutorBridgeHandler(BaseHTTPRequestHandler):
 
         obsidian_status = get_obsidian_status()
         agency_status = get_agency_status() if get_agency_status else {"available": False, "count": 0}
+        tutor_connection = get_tutor_connection_status()
         installed_models = get_installed_ollama_models()
         model_plan = get_model_plan(installed_models) if get_model_plan else {}
         if get_jarvis_stack_summary:
@@ -1218,6 +1493,9 @@ class TutorBridgeHandler(BaseHTTPRequestHandler):
                 },
                 "root_dir": str(TUTOR_ROOT),
                 "persist_dir": PERSIST_DIR,
+                "tutor_ia_connection": tutor_connection,
+                "tutor_ia_root": tutor_connection["root"],
+                "tutor_ia_connected": tutor_connection["all_core_modules"],
                 "brain_error": brain_error,
                 "obsidian": obsidian_status,
                 "agency": agency_status,
