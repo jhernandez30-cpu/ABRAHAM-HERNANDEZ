@@ -90,28 +90,43 @@
             <strong>Asistente de Programación</strong>
             <span id="activeChatLabel">Nuevo chat</span>
           </div>
-          <select id="assistantMode" class="mode-select" aria-label="Modo del asistente">
-            <option value="study">Pensando</option>
-            <option value="organize">Organizar</option>
-            <option value="create">Crear</option>
-            <option value="agency">Agency</option>
-          </select>
         </div>
 
         <div id="coachMessages" class="chat-messages" aria-live="polite">
           <div id="emptyChatState" class="empty-chat-state">
-            <h1 id="assistantTitle">¿En qué puedo ayudar?</h1>
+            <h1 id="assistantTitle">¿En qué estás trabajando?</h1>
           </div>
         </div>
 
-        <form id="coachForm" class="chat-composer" autocomplete="off">
-          <button id="micBtn" class="composer-icon-btn" type="button" aria-label="Dictar pregunta">
-            <i class="fas fa-microphone" aria-hidden="true"></i>
-          </button>
-          <textarea id="coachInput" rows="1" placeholder="Escribe un mensaje" aria-label="Mensaje para el asistente"></textarea>
-          <button class="send-orb" type="submit" aria-label="Enviar mensaje">
-            <i class="fas fa-paper-plane" aria-hidden="true"></i>
-          </button>
+        <form id="coachForm" class="chat-composer" autocomplete="off" enctype="multipart/form-data">
+          <div class="composer-card">
+            <textarea id="coachInput" rows="1" placeholder="Mensaje a tu asistente de programación" aria-label="Mensaje para el asistente"></textarea>
+
+            <div id="attachmentPreview" class="attachment-preview" aria-live="polite" hidden></div>
+
+            <div class="composer-toolbar">
+              <div class="composer-tools" aria-label="Herramientas del asistente">
+                <button id="tutorIABtn" class="tool-chip is-active" type="button" aria-pressed="true">
+                  <i class="fas fa-brain" aria-hidden="true"></i>
+                  <span>Cerebro tutor_ia</span>
+                </button>
+
+                <button id="smartSearchBtn" class="tool-chip" type="button" aria-pressed="false">
+                  <i class="fas fa-globe-americas" aria-hidden="true"></i>
+                  <span>Búsqueda inteligente</span>
+                </button>
+
+                <label class="attach-chip" for="fileInput" aria-label="Subir archivos e imágenes">
+                  <i class="fas fa-paperclip" aria-hidden="true"></i>
+                </label>
+                <input id="fileInput" class="file-input" name="files" type="file" multiple accept=".png,.jpg,.jpeg,.webp,.pdf,.docx,.txt,.py,.js,.html,.css,.json,.md,.sql,.cs,image/png,image/jpeg,image/webp,application/pdf,text/plain">
+              </div>
+
+              <button class="send-orb" type="submit" aria-label="Enviar mensaje">
+                <i class="fas fa-arrow-up" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
         </form>
       </section>
     </section>
