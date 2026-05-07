@@ -1,0 +1,16 @@
+.env
+*.env
+__pycache__/
+*.pyc
+*.log
+.cache/
+.notebooklm/
+storage_state.json
+.venv/
+venv/
+node_modules/
+
+TUTOR_IA/brain_db/
+TUTOR_IA/users.db
+TUTOR_IA/web_bridge*.log
+TUTOR_IA/streamlit*.log
