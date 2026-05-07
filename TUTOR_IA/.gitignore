@@ -1,9 +1,11 @@
 .venv/
+.env
 __pycache__/
 *.pyc
 *.log
 brain_db/
 users.db
+tutor_ia.db
 streamlit.err.log
 streamlit.out.log
 web_bridge.err.log
