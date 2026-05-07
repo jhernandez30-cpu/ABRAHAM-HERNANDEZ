@@ -1,5 +1,6 @@
+streamlit
+python-dotenv
+requests
 chromadb
 langchain-ollama
-requests
 anthropic
-python-dotenv

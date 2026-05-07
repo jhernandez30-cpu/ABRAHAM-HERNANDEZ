@@ -12,5 +12,6 @@ node_modules/
 
 TUTOR_IA/brain_db/
 TUTOR_IA/users.db
+TUTOR_IA/tutor_ia.db
 TUTOR_IA/web_bridge*.log
 TUTOR_IA/streamlit*.log

@@ -18,16 +18,24 @@ Tambien acepta aliases compatibles con el `BrainConnector` central creado en la 
 
 GitHub Pages solo sirve archivos estaticos. No ejecuta Python. Para que el asistente responda con el cerebro real, este puente debe estar corriendo en tu PC o en un servidor propio.
 
-No subas `brain_db/`, `users.db`, `.venv/` ni logs al repositorio. La carpeta `brain_db` puede contener tus fuentes privadas y `users.db` contiene datos de acceso.
+No subas `brain_db/`, `tutor_ia.db`, `users.db`, `.venv/` ni logs al repositorio. La carpeta `brain_db` puede contener tus fuentes privadas y `tutor_ia.db` contiene usuarios e historial del Asistente de Programacion.
 
 ## Uso local
 
 Desde la carpeta `TUTOR_IA`:
 
 ```powershell
-python -m pip install -r requirements-bridge.txt
+python -m pip install -r requirements.txt
 .\start_bridge.ps1 -Python python -BrainDb "C:\Users\herna\Documents\tutor_ia\brain_db"
 ```
+
+Para usar la interfaz Streamlit con login, registro, Google OAuth e historial por usuario:
+
+```powershell
+python -m streamlit run streamlit_app.py --server.address 127.0.0.1 --server.port 8502
+```
+
+La app crea `tutor_ia.db` automaticamente con estas tablas: `users`, `chat_sessions` y `chat_messages`.
 
 Si usas el entorno virtual de tu TUTOR_IA local:
 
@@ -65,6 +73,10 @@ Cuando este bridge corre dentro de `ABRAHAM-HERNANDEZ-main`, usa `BrainConnector
 `TUTOR_IA_WEB_GROUPS`: grupos permitidos para responder desde la web. Por defecto `admin,public` porque la base local actual esta indexada en `admin`.
 
 `TUTOR_IA_WEB_ALLOWED_ORIGINS`: origenes permitidos por CORS.
+
+`TUTOR_IA_DB_PATH`: ruta de la base SQLite del Asistente de Programacion. Por defecto `TUTOR_IA\tutor_ia.db`.
+
+`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI`: credenciales para el boton "Continuar con Google" en Streamlit.
 
 ## Perfil del Asistente de Programacion
 

@@ -20,8 +20,16 @@ import chromadb
 from chromadb.config import Settings
 from langchain_ollama import OllamaLLM
 
+try:
+    from dotenv import load_dotenv
+except Exception:
+    load_dotenv = None
+
 BASE_DIR = Path(__file__).resolve().parent
 REPO_ROOT = BASE_DIR.parent
+if load_dotenv:
+    load_dotenv(BASE_DIR / ".env")
+    load_dotenv(REPO_ROOT / ".env", override=False)
 DEFAULT_TUTOR_ROOT = Path.home() / "Documents" / "tutor_ia"
 
 
