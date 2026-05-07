@@ -4,6 +4,16 @@ Este puente permite que `asistente-programacion.html` consulte el cerebro local 
 
 `http://127.0.0.1:8787/api/chat`
 
+Tambien acepta aliases compatibles con el `BrainConnector` central creado en la raiz del repo (`services/brain_connector.py`):
+
+- `GET /health`
+- `GET /status`
+- `GET /api/health`
+- `GET /api/status`
+- `POST /ask`
+- `POST /api/ask`
+- `POST /api/chat`
+
 ## Importante
 
 GitHub Pages solo sirve archivos estaticos. No ejecuta Python. Para que el asistente responda con el cerebro real, este puente debe estar corriendo en tu PC o en un servidor propio.
@@ -29,6 +39,17 @@ El puente tambien autodetecta `C:\Users\herna\Documents\tutor_ia`: usa su `brain
 
 Tambien importa `connected_brain.py`, `programming_skills.py`, `project_workspace.py`, `jarvis_brain.py` y `local_model_router.py` desde la instalacion local cuando existen. Asi la pagina no usa un cerebro paralelo: usa el mismo contrato de contexto que TUTOR_IA.
 
+La capa modular del repo vive en:
+
+```text
+services/brain_connector.py
+services/bridge_api_client.py
+services/local_brain_service.py
+services/anthropic_service.py
+```
+
+Cuando este bridge corre dentro de `ABRAHAM-HERNANDEZ-main`, usa `BrainConnector` sin llamarse a si mismo por HTTP para evitar recursion. Si `ANTHROPIC_API_KEY` esta configurado, Claude puede sintetizar la respuesta final; si no, se conserva el flujo local con Ollama/RAG.
+
 ## Variables utiles
 
 `TUTOR_IA_ROOT`: raiz de la instalacion local. Por defecto intenta `C:\Users\herna\Documents\tutor_ia`.
@@ -50,7 +71,8 @@ Tambien importa `connected_brain.py`, `programming_skills.py`, `project_workspac
 `asistente-programacion.html` envia estas opciones al puente:
 
 - `client: "abraham-programming-assistant"` para activar el perfil del sitio.
-- `response_profile: "fast_smart"` para recuperar menos fragmentos y responder mas rapido.
+- `response_profile: "web_fast"` para recuperar menos fragmentos y responder mas rapido.
+- `local_first: true`, `bridge_api: true`, `anthropic: true` y `fast_mode: true` para usar el contrato del cerebro unificado cuando el puente central lo soporte.
 - `include_obsidian: true` para sumar notas `.md` y `.canvas` del vault.
 - `project_path: "C:\Users\herna\Documents\ABRAHAM-HERNANDEZ-main"` para conectar el codigo real del sitio.
 - `agency_enabled: true` y `jarvis_profile: "unified"` para activar Agency, OpenJarvis y habilidades de programacion dentro del mismo prompt.
@@ -65,5 +87,8 @@ La respuesta de `/api/chat` incluye `brain_parts`, `workspace_used_count`, `quic
 ## Prueba rapida
 
 ```powershell
-Invoke-RestMethod http://127.0.0.1:8787/api/health
+Invoke-RestMethod http://127.0.0.1:8787/health
+
+$body = @{ message = "estas conectado?"; tutorIA = $true; response_profile = "web_fast" } | ConvertTo-Json
+Invoke-RestMethod -Uri http://127.0.0.1:8787/api/ask -Method Post -Body $body -ContentType "application/json"
 ```

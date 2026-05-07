@@ -1,2 +1,4 @@
 chromadb
 langchain-ollama
+requests
+anthropic

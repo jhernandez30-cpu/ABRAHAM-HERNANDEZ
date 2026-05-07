@@ -21,6 +21,7 @@ from chromadb.config import Settings
 from langchain_ollama import OllamaLLM
 
 BASE_DIR = Path(__file__).resolve().parent
+REPO_ROOT = BASE_DIR.parent
 DEFAULT_TUTOR_ROOT = Path.home() / "Documents" / "tutor_ia"
 
 
@@ -54,8 +55,15 @@ def find_tutor_root():
 
 
 TUTOR_ROOT = find_tutor_root()
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 if str(TUTOR_ROOT) not in sys.path:
-    sys.path.insert(0, str(TUTOR_ROOT))
+    sys.path.append(str(TUTOR_ROOT))
+
+try:
+    from services.brain_connector import BrainConnector
+except Exception:
+    BrainConnector = None
 
 try:
     from agency_brain import build_agency_context, get_agency_status, retrieve_agency_agents
@@ -284,6 +292,32 @@ MODE_ALIASES = {
 }
 
 memory_store = {}
+brain_connector_singleton = None
+
+
+def get_brain_connector():
+    global brain_connector_singleton
+    if BrainConnector is None:
+        return None
+    if brain_connector_singleton is None:
+        brain_connector_singleton = BrainConnector(
+            brain_root=TUTOR_ROOT,
+            bridge_api_url=os.getenv("BRIDGE_API_URL", "http://127.0.0.1:8787"),
+        )
+    return brain_connector_singleton
+
+
+def public_brain_connector_result(result):
+    if not isinstance(result, dict):
+        return None
+    return {
+        "success": bool(result.get("success")),
+        "sources_used": result.get("sources_used", []),
+        "mode": result.get("mode", "local-first"),
+        "intent": result.get("intent", ""),
+        "latency_ms": result.get("latency_ms", 0),
+        "errors": result.get("errors", []),
+    }
 
 
 @lru_cache(maxsize=1)
@@ -1095,9 +1129,62 @@ def answer_from_brain(payload, uploaded_files=None):
     agency_enabled = payload_bool(payload, "agency_enabled", True)
     client_name = str(payload.get("client") or "")
     fast_profile = str(payload.get("response_profile") or "").lower() in {"fast", "fast_smart", "web_fast"}
+    deep_thinking = payload_bool(payload, "deep_thinking", False)
     show_sources = payload_bool(payload, "show_sources", False) or source_requested(question)
     tutor_ia_enabled = payload_bool(payload, "tutorIA", payload_bool(payload, "tutor_ia", True))
     smart_search_enabled = payload_bool(payload, "smartSearch", payload_bool(payload, "smart_search", False))
+    connector_result = None
+    connector = get_brain_connector()
+    if connector and payload_bool(payload, "brain_connector", True):
+        connector_result = connector.answer(
+            question,
+            options={
+                "local_first": payload_bool(payload, "local_first", True),
+                "fast_mode": payload_bool(payload, "fast_mode", fast_profile),
+                "bridge_api": payload_bool(payload, "brain_connector_bridge_api", False),
+                "anthropic": payload_bool(payload, "anthropic", True),
+                "deep_thinking": deep_thinking,
+                "response_profile": payload.get("response_profile") or ("deep" if deep_thinking else "web_fast"),
+                "session_id": session_id,
+                "model": payload.get("model"),
+            },
+        )
+        if (
+            connector_result.get("answer")
+            and "anthropic" in set(connector_result.get("sources_used", []))
+        ):
+            add_memory_turn(memory, question, connector_result["answer"])
+            return {
+                "ok": True,
+                "success": True,
+                "answer": connector_result["answer"],
+                "mode": "local-first",
+                "brain_mode": get_interaction_mode(interaction_mode)["label"],
+                "tutorIA": tutor_ia_enabled,
+                "smartSearch": smart_search_enabled,
+                "usedTutorIA": tutor_ia_enabled,
+                "usedSmartSearch": False,
+                "smart_search": None,
+                "show_sources": show_sources,
+                "used_sources_count": len(connector_result.get("sources", [])),
+                "model": "anthropic",
+                "response_profile": "deep" if deep_thinking else "web_fast",
+                "latency_ms": connector_result.get("latency_ms", 0),
+                "brain_error": "",
+                "tutor_ia_connection": get_tutor_connection_status(),
+                "tutor_ia_root": str(TUTOR_ROOT),
+                "tutor_ia_connected": True,
+                "obsidian_used_count": 0,
+                "workspace_used_count": 0,
+                "quick_code_used": False,
+                "jarvis_profile": "unified",
+                "brain_parts": ["brain_connector", "local_brain", "anthropic"],
+                "sources_used": connector_result.get("sources_used", []),
+                "sources": connector_result.get("sources", []),
+                "uploadedFiles": [public_uploaded_file(file_info) for file_info in uploaded_files or []],
+                "agency_agents": [],
+                "brain_connector": public_brain_connector_result(connector_result),
+            }
     k = int(payload.get("k") or (WEB_FAST_K if fast_profile else RETRIEVE_CANDIDATES))
     top_k = int(payload.get("top_k") or (WEB_FAST_TOP_K if fast_profile else RESPONSE_TOP_K))
     include_obsidian = tutor_ia_enabled and payload_bool(payload, "include_obsidian", True)
@@ -1137,6 +1224,7 @@ def answer_from_brain(payload, uploaded_files=None):
         add_memory_turn(memory, question, answer)
         return {
             "ok": True,
+            "success": True,
             "answer": answer,
             "mode": str(raw_mode),
             "brain_mode": get_interaction_mode(interaction_mode)["label"],
@@ -1159,6 +1247,8 @@ def answer_from_brain(payload, uploaded_files=None):
             "quick_code_used": False,
             "jarvis_profile": "unified",
             "brain_parts": ["unified_brain", "connection_contract"],
+            "sources_used": (connector_result or {}).get("sources_used", ["local_brain", "bridge_api"]),
+            "brain_connector": public_brain_connector_result(connector_result),
             "sources": [],
             "uploadedFiles": [public_uploaded_file(file_info) for file_info in uploaded_files],
             "agency_agents": [],
@@ -1201,6 +1291,7 @@ def answer_from_brain(payload, uploaded_files=None):
         add_memory_turn(memory, question, answer)
         return {
             "ok": True,
+            "success": True,
             "answer": answer,
             "mode": str(raw_mode),
             "brain_mode": get_interaction_mode(interaction_mode)["label"],
@@ -1223,6 +1314,8 @@ def answer_from_brain(payload, uploaded_files=None):
             "quick_code_used": False,
             "jarvis_profile": "unified",
             "brain_parts": ["unified_brain", "workspace", "agency", "jarvis", "connection_contract"],
+            "sources_used": (connector_result or {}).get("sources_used", ["local_brain", "bridge_api"]),
+            "brain_connector": public_brain_connector_result(connector_result),
             "sources": [],
             "uploadedFiles": [public_uploaded_file(file_info) for file_info in uploaded_files],
             "agency_agents": [],
@@ -1361,6 +1454,7 @@ def answer_from_brain(payload, uploaded_files=None):
 
     return {
         "ok": True,
+        "success": True,
         "answer": answer,
         "mode": str(raw_mode),
         "brain_mode": get_interaction_mode(interaction_mode)["label"],
@@ -1388,6 +1482,8 @@ def answer_from_brain(payload, uploaded_files=None):
         "quick_code_used": bool(quick_code_docs),
         "jarvis_profile": brain_profile if brain_context else "",
         "brain_parts": brain_parts,
+        "sources_used": (connector_result or {}).get("sources_used", ["local_brain", "bridge_api"]),
+        "brain_connector": public_brain_connector_result(connector_result),
         "sources": [
             {
                 "metadata": doc.get("metadata", {}),
@@ -1443,7 +1539,8 @@ class TutorBridgeHandler(BaseHTTPRequestHandler):
         json_response(self, 200, {"ok": True})
 
     def do_GET(self):
-        if self.path.rstrip("/") != "/api/health":
+        path = self.path.rstrip("/")
+        if path not in {"/health", "/status", "/api/health", "/api/status", "/api/unified-brain/health", "/api/unified-brain/status"}:
             json_response(self, 404, {"ok": False, "error": "Ruta no encontrada."})
             return
 
@@ -1457,6 +1554,8 @@ class TutorBridgeHandler(BaseHTTPRequestHandler):
         obsidian_status = get_obsidian_status()
         agency_status = get_agency_status() if get_agency_status else {"available": False, "count": 0}
         tutor_connection = get_tutor_connection_status()
+        connector = get_brain_connector()
+        connector_status = connector.get_status() if connector else {"success": False, "error": "BrainConnector no disponible"}
         installed_models = get_installed_ollama_models()
         model_plan = get_model_plan(installed_models) if get_model_plan else {}
         if get_jarvis_stack_summary:
@@ -1483,6 +1582,7 @@ class TutorBridgeHandler(BaseHTTPRequestHandler):
             200,
             {
                 "ok": True,
+                "success": True,
                 "name": "TUTOR_IA",
                 "profile": "abraham-programming-assistant-ready",
                 "fragments": fragments,
@@ -1497,14 +1597,33 @@ class TutorBridgeHandler(BaseHTTPRequestHandler):
                 "tutor_ia_root": tutor_connection["root"],
                 "tutor_ia_connected": tutor_connection["all_core_modules"],
                 "brain_error": brain_error,
+                "brain_connector": connector_status,
                 "obsidian": obsidian_status,
                 "agency": agency_status,
                 "jarvis": jarvis_status,
+                "anthropic": {
+                    "configured": bool(os.getenv("ANTHROPIC_API_KEY", "").strip()),
+                    "model": os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-latest"),
+                },
+                "brain": {
+                    "mode": "local-first",
+                    "local_sources": fragments,
+                    "agency_specialists": agency_status.get("count", 0),
+                    "openjarvis": bool(tutor_connection.get("all_core_modules")),
+                    "active_model": choose_llm_model(AUTO_MODEL_OPTION, brain_context="Cerebro Unificado"),
+                    "root": tutor_connection["root"],
+                    "brain_connector": connector_status,
+                    "anthropic": {
+                        "configured": bool(os.getenv("ANTHROPIC_API_KEY", "").strip()),
+                        "model": os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-latest"),
+                    },
+                },
             },
         )
 
     def do_POST(self):
-        if self.path.rstrip("/") != "/api/chat":
+        path = self.path.rstrip("/")
+        if path not in {"/ask", "/chat", "/api/ask", "/api/chat", "/api/brain/ask", "/api/unified-brain/ask"}:
             json_response(self, 404, {"ok": False, "error": "Ruta no encontrada."})
             return
 
@@ -1522,7 +1641,7 @@ class TutorBridgeHandler(BaseHTTPRequestHandler):
             result = answer_from_brain(payload, uploaded_files=uploaded_files)
             json_response(self, 200, result)
         except Exception as exc:
-            json_response(self, 500, {"ok": False, "error": str(exc)})
+            json_response(self, 500, {"ok": False, "success": False, "error": str(exc)})
 
 
 def main():
@@ -1533,7 +1652,7 @@ def main():
     print(f"TUTOR_IA root: {TUTOR_ROOT}")
     print(f"Chroma brain: {PERSIST_DIR}")
     print(f"Obsidian vault: {OBSIDIAN_VAULT_DIR}")
-    print("Endpoints: GET /api/health, POST /api/chat")
+    print("Endpoints: GET /health, /api/health, /api/status; POST /ask, /api/chat, /api/ask")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

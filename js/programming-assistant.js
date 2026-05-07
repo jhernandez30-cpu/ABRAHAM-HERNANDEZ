@@ -1,5 +1,7 @@
 const DEFAULT_ENDPOINTS = [
   'http://127.0.0.1:8787/api/chat',
+  'http://127.0.0.1:8787/api/ask',
+  'http://127.0.0.1:8787/ask',
   'http://localhost:8787/api/chat'
 ];
 
@@ -7,6 +9,7 @@ const STORAGE_KEY = 'tutorIaChatHistory';
 const ACTIVE_CHAT_KEY = 'tutorIaActiveChatId';
 const DEFAULT_MODE = 'Cerebro Unificado';
 const PROJECT_PATH = window.TUTOR_IA_PROJECT_PATH || '';
+const BRIDGE_URL = (window.TUTOR_IA_BRIDGE_URL || 'http://127.0.0.1:8787').replace(/\/$/, '');
 const CHAT_TIMEOUT_MS = 35000;
 const ALLOWED_FILE_EXTENSIONS = new Set([
   'png', 'jpg', 'jpeg', 'webp', 'pdf', 'docx', 'txt', 'py', 'js', 'html', 'css', 'json', 'md', 'sql', 'cs'
@@ -62,17 +65,64 @@ document.addEventListener('DOMContentLoaded', () => {
     return [...new Set(endpoints.filter(Boolean).map(endpoint => endpoint.replace(/\/$/, '')))];
   }
 
-  function endpointHealthUrl(endpoint) {
-    return endpoint.replace(/\/api\/chat$/, '/api/health');
+  function endpointBaseUrl(endpoint) {
+    try {
+      const url = new URL(endpoint);
+      return `${url.protocol}//${url.hostname}${url.port ? `:${url.port}` : ''}`;
+    } catch (error) {
+      return BRIDGE_URL;
+    }
+  }
+
+  function endpointHealthUrls(endpoint) {
+    const base = endpointBaseUrl(endpoint);
+    return [
+      `${base}/health`,
+      `${base}/status`,
+      `${base}/api/health`,
+      `${base}/api/status`,
+      `${base}/api/unified-brain/health`,
+      `${base}/api/unified-brain/status`
+    ];
   }
 
   function endpointHostKey(endpoint) {
     try {
       const url = new URL(endpoint);
-      return `${url.protocol}//${url.port || url.hostname}`;
+      return `${url.protocol}//${url.hostname}${url.port ? `:${url.port}` : ''}`;
     } catch (error) {
       return endpoint;
     }
+  }
+
+  function normalizeHealthPayload(data) {
+    const brain = data && typeof data.brain === 'object' ? data.brain : {};
+    const models = data && typeof data.models === 'object' ? data.models : {};
+    const model = data.model || brain.active_model || models.active_model || '';
+    const fragments = Number(data.fragments || brain.local_sources || brain.fragments || 0);
+    const obsidian = data.obsidian && typeof data.obsidian === 'object' ? data.obsidian : {};
+    const agency = data.agency && typeof data.agency === 'object' ? data.agency : {};
+    const jarvis = data.jarvis && typeof data.jarvis === 'object' ? data.jarvis : {};
+    const anthropic = data.anthropic || brain.anthropic || {};
+    const anthropicConfigured = Boolean(
+      anthropic.configured ||
+      anthropic.connected ||
+      anthropic.available ||
+      data.anthropic_configured
+    );
+
+    return {
+      ok: Boolean(data.ok || data.success || Object.keys(brain).length),
+      fragments,
+      obsidianNotes: Number(obsidian.notes || brain.obsidian_notes || 0),
+      agencyAgents: Number(agency.count || brain.agency_specialists || 0),
+      jarvisProfiles: Number(jarvis.detected_profiles || brain.detected_profiles || 0),
+      tutorConnected: Boolean(data.tutor_ia_connected || brain.openjarvis || fragments),
+      model,
+      root: data.tutor_ia_root || data.root_dir || brain.root || '',
+      mode: brain.mode || data.mode || 'local-first',
+      anthropicConfigured
+    };
   }
 
   function nowIso() {
@@ -158,28 +208,28 @@ document.addEventListener('DOMContentLoaded', () => {
     setBrainStatus('checking', 'Conectando con TUTOR_IA');
 
     for (const endpoint of endpointCandidates) {
-      try {
-        const response = await fetchWithTimeout(endpointHealthUrl(endpoint), { method: 'GET' }, 3500);
-        if (!response.ok) continue;
-        const data = await response.json();
-        activeTutorEndpoint = endpoint;
+      for (const healthUrl of endpointHealthUrls(endpoint)) {
+        try {
+          const response = await fetchWithTimeout(healthUrl, { method: 'GET' }, 3500);
+          if (!response.ok) continue;
+          const data = await response.json();
+          const health = normalizeHealthPayload(data);
+          if (!health.ok) continue;
+          activeTutorEndpoint = endpoint;
 
-        const fragments = Number(data.fragments || 0);
-        const obsidianNotes = Number(data.obsidian && data.obsidian.notes ? data.obsidian.notes : 0);
-        const agencyAgents = Number(data.agency && data.agency.count ? data.agency.count : 0);
-        const jarvisProfiles = Number(data.jarvis && data.jarvis.detected_profiles ? data.jarvis.detected_profiles : 0);
-        const tutorConnected = Boolean(data.tutor_ia_connected);
-        const contextParts = [`${fragments} fragmentos`];
-        if (tutorConnected) contextParts.unshift('tutor_ia OK');
-        if (obsidianNotes) contextParts.push(`${obsidianNotes} notas Obsidian`);
-        if (agencyAgents) contextParts.push(`${agencyAgents} agentes`);
-        if (jarvisProfiles) contextParts.push(`${jarvisProfiles} perfiles Jarvis`);
-        const modelText = data.model ? ` - ${data.model}` : '';
+          const contextParts = [`${health.fragments} fragmentos`];
+          if (health.tutorConnected) contextParts.unshift('tutor_ia OK');
+          if (health.obsidianNotes) contextParts.push(`${health.obsidianNotes} notas Obsidian`);
+          if (health.agencyAgents) contextParts.push(`${health.agencyAgents} agentes`);
+          if (health.jarvisProfiles) contextParts.push(`${health.jarvisProfiles} perfiles Jarvis`);
+          if (health.anthropicConfigured) contextParts.push('Claude listo');
+          const modelText = health.model ? ` - ${health.model}` : '';
 
-        setBrainStatus('ready', `TUTOR_IA conectado - ${contextParts.join(' + ')}${modelText}`);
-        return;
-      } catch (error) {
-        continue;
+          setBrainStatus('ready', `TUTOR_IA conectado - ${contextParts.join(' + ')}${modelText}`);
+          return;
+        } catch (error) {
+          continue;
+        }
       }
     }
 
@@ -196,6 +246,13 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('session_id', chatId);
     formData.append('client', 'abraham-programming-assistant');
     formData.append('response_profile', 'web_fast');
+    formData.append('local_first', 'true');
+    formData.append('fast_mode', 'true');
+    formData.append('deep_thinking', 'false');
+    formData.append('bridge_api', 'true');
+    formData.append('bridge_api_url', BRIDGE_URL);
+    formData.append('anthropic', 'true');
+    formData.append('brain_root', 'C:\\Users\\herna\\Documents\\tutor_ia');
     formData.append('include_obsidian', String(tutorIAEnabled));
     formData.append('agency_enabled', String(tutorIAEnabled));
     formData.append('jarvis_profile', 'unified');
@@ -245,8 +302,13 @@ document.addEventListener('DOMContentLoaded', () => {
           throw new Error(data.error || 'TUTOR_IA respondio con error.');
         }
         activeTutorEndpoint = endpoint;
+        const sourceNames = Array.isArray(data.sources_used) && data.sources_used.length
+          ? data.sources_used.slice(0, 4)
+          : [];
         const brainParts = Array.isArray(data.brain_parts) && data.brain_parts.length
           ? ` - ${data.brain_parts.slice(0, 4).join(' + ')}`
+          : sourceNames.length
+            ? ` - ${sourceNames.join(' + ')}`
           : '';
         setBrainStatus('ready', `TUTOR_IA conectado${brainParts}`);
         return data;
@@ -550,7 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return `TUTOR_IA si esta conectado, pero el modelo local tardo mas de ${Math.round(CHAT_TIMEOUT_MS / 1000)} segundos. Prueba una pregunta mas concreta o libera Ollama si tiene otra generacion en curso.`;
     }
     const detail = error && error.message ? ` Detalle: ${error.message}` : '';
-    return `No pude completar la consulta con TUTOR_IA.${detail} Verifica el puente local en http://127.0.0.1:8787/api/health.`;
+    return `No pude completar la consulta con TUTOR_IA.${detail} Verifica el puente local en ${BRIDGE_URL}/health o ${BRIDGE_URL}/api/health.`;
   }
 
   function autosizeInput() {
