@@ -104,6 +104,15 @@
 
             <div id="attachmentPreview" class="attachment-preview" aria-live="polite" hidden></div>
 
+            <div id="jarvisStatus" class="jarvis-status" aria-live="polite" hidden>
+              <span class="jarvis-wave" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+              <span id="jarvisStatusText">Jarvis listo.</span>
+            </div>
+
             <div class="composer-toolbar">
               <div class="composer-tools" aria-label="Herramientas del asistente">
                 <button id="tutorIABtn" class="tool-chip is-active" type="button" aria-pressed="true">
@@ -122,9 +131,16 @@
                 <input id="fileInput" class="file-input" name="files" type="file" multiple accept=".png,.jpg,.jpeg,.webp,.pdf,.docx,.txt,.py,.js,.html,.css,.json,.md,.sql,.cs,image/png,image/jpeg,image/webp,application/pdf,text/plain">
               </div>
 
-              <button class="send-orb" type="submit" aria-label="Enviar mensaje">
-                <i class="fas fa-arrow-up" aria-hidden="true"></i>
-              </button>
+              <div class="composer-actions">
+                <button id="jarvisVoiceBtn" class="jarvis-voice-btn" type="button" aria-label="Hablar con Jarvis" aria-pressed="false" title="Hablar con Jarvis">
+                  <i class="fas fa-microphone" aria-hidden="true"></i>
+                  <span class="jarvis-voice-label">Jarvis</span>
+                </button>
+
+                <button class="send-orb" type="submit" aria-label="Enviar mensaje">
+                  <i class="fas fa-arrow-up" aria-hidden="true"></i>
+                </button>
+              </div>
             </div>
           </div>
         </form>
@@ -135,6 +151,7 @@
   <script>
     window.TUTOR_IA_PROJECT_PATH = 'C:\\Users\\herna\\Documents\\ABRAHAM-HERNANDEZ-main';
     window.TUTOR_IA_BRIDGE_URL = 'http://127.0.0.1:8787';
+    window.JARVIS_READ_RESPONSES = true;
     window.TUTOR_IA_ENDPOINTS = [
       'http://127.0.0.1:8787/api/chat',
       'http://127.0.0.1:8787/api/ask',

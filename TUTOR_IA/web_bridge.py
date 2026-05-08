@@ -190,7 +190,13 @@ ALLOWED_UPLOAD_EXTENSIONS = {
 }
 TEXT_UPLOAD_EXTENSIONS = {".txt", ".py", ".js", ".html", ".css", ".json", ".md", ".sql", ".cs"}
 MAX_UPLOAD_BYTES = int(os.getenv("TUTOR_IA_MAX_UPLOAD_BYTES", str(8 * 1024 * 1024)))
-MAX_UPLOAD_TEXT_CHARS = int(os.getenv("TUTOR_IA_MAX_UPLOAD_TEXT_CHARS", "6000"))
+MAX_UPLOAD_TEXT_CHARS = int(os.getenv("TUTOR_IA_MAX_UPLOAD_TEXT_CHARS", "80000"))
+MAX_UPLOAD_PROMPT_CHARS = int(os.getenv("TUTOR_IA_MAX_UPLOAD_PROMPT_CHARS", "12000"))
+MAX_FINAL_PROMPT_CHARS = int(os.getenv("TUTOR_IA_MAX_FINAL_PROMPT_CHARS", "26000"))
+UPLOAD_CHUNK_CHARS = int(os.getenv("TUTOR_IA_UPLOAD_CHUNK_CHARS", "1800"))
+UPLOAD_CHUNK_OVERLAP = int(os.getenv("TUTOR_IA_UPLOAD_CHUNK_OVERLAP", "220"))
+UPLOAD_RELEVANT_CHUNKS = int(os.getenv("TUTOR_IA_UPLOAD_RELEVANT_CHUNKS", "5"))
+OLLAMA_TIMEOUT_SECONDS = int(os.getenv("TUTOR_IA_OLLAMA_TIMEOUT_SECONDS", "120"))
 WEB_FAST_MODEL = os.getenv("TUTOR_IA_WEB_FAST_MODEL", "llama3.2:1b")
 WEB_FAST_K = int(os.getenv("TUTOR_IA_WEB_FAST_K", "4"))
 WEB_FAST_TOP_K = int(os.getenv("TUTOR_IA_WEB_FAST_TOP_K", "1"))
@@ -200,8 +206,8 @@ WEB_FAST_BRAIN_CHARS = int(os.getenv("TUTOR_IA_WEB_FAST_BRAIN_CHARS", "650"))
 WEB_FAST_AGENCY_CHARS = int(os.getenv("TUTOR_IA_WEB_FAST_AGENCY_CHARS", "350"))
 WEB_FAST_WORKSPACE_FILES = int(os.getenv("TUTOR_IA_WEB_FAST_WORKSPACE_FILES", "1"))
 WEB_FAST_WORKSPACE_CHARS = int(os.getenv("TUTOR_IA_WEB_FAST_WORKSPACE_CHARS", "350"))
-WEB_OLLAMA_NUM_CTX = int(os.getenv("TUTOR_IA_WEB_OLLAMA_NUM_CTX", "2048"))
-WEB_OLLAMA_NUM_PREDICT = int(os.getenv("TUTOR_IA_WEB_OLLAMA_NUM_PREDICT", "90"))
+WEB_OLLAMA_NUM_CTX = int(os.getenv("TUTOR_IA_WEB_OLLAMA_NUM_CTX", "4096"))
+WEB_OLLAMA_NUM_PREDICT = int(os.getenv("TUTOR_IA_WEB_OLLAMA_NUM_PREDICT", "1600"))
 
 INTERACTION_MODES = {
     "unified": {
@@ -342,6 +348,8 @@ def get_llm(model_name):
         num_ctx=WEB_OLLAMA_NUM_CTX,
         num_predict=WEB_OLLAMA_NUM_PREDICT,
         keep_alive="5m",
+        sync_client_kwargs={"timeout": OLLAMA_TIMEOUT_SECONDS},
+        async_client_kwargs={"timeout": OLLAMA_TIMEOUT_SECONDS},
     )
 
 
@@ -481,6 +489,10 @@ def file_extension(filename):
     return Path(str(filename or "")).suffix.lower()
 
 
+def log_bridge(message):
+    print(f"[TUTOR_IA bridge] {message}", flush=True)
+
+
 def public_uploaded_file(file_info):
     return {
         "name": file_info.get("name", ""),
@@ -488,26 +500,83 @@ def public_uploaded_file(file_info):
         "type": file_info.get("content_type", ""),
         "size": file_info.get("size", 0),
         "accepted": file_info.get("accepted", False),
+        "content_chars": len(file_info.get("content", "") or file_info.get("text_preview", "")),
+        "truncated": bool(file_info.get("truncated")),
+        "error": file_info.get("error", ""),
+        "chunk_count": int(file_info.get("chunk_count", 0) or 0),
+    }
+
+
+def _uploaded_name_and_bytes(uploaded_file):
+    if isinstance(uploaded_file, dict):
+        name = uploaded_file.get("name") or uploaded_file.get("filename") or "archivo"
+        raw = uploaded_file.get("content") or uploaded_file.get("bytes") or uploaded_file.get("data") or b""
+        if isinstance(raw, str):
+            raw = raw.encode("utf-8", errors="ignore")
+        return str(name), bytes(raw)
+    name = getattr(uploaded_file, "name", None) or getattr(uploaded_file, "filename", None) or "archivo"
+    if hasattr(uploaded_file, "getbuffer"):
+        return str(name), bytes(uploaded_file.getbuffer())
+    if hasattr(uploaded_file, "read"):
+        raw = uploaded_file.read()
+        try:
+            uploaded_file.seek(0)
+        except Exception:
+            pass
+        if isinstance(raw, str):
+            raw = raw.encode("utf-8", errors="ignore")
+        return str(name), bytes(raw or b"")
+    if isinstance(uploaded_file, (bytes, bytearray)):
+        return str(name), bytes(uploaded_file)
+    return str(name), b""
+
+
+def read_uploaded_file(uploaded_file):
+    name, raw = _uploaded_name_and_bytes(uploaded_file)
+    safe_name = Path(str(name or "archivo")).name
+    extension = file_extension(safe_name)
+    original_size = len(raw)
+    if extension not in TEXT_UPLOAD_EXTENSIONS:
+        error = (
+            f"Extension no soportada para lectura de texto: {extension or 'sin extension'}. "
+            "Usa .html, .css, .js, .py, .json, .md, .txt o .sql."
+        )
+        log_bridge(f"uploaded file rejected name={safe_name} ext={extension or 'none'} size={original_size} reason=unsupported")
+        return {
+            "name": safe_name,
+            "extension": extension,
+            "content": "",
+            "size": original_size,
+            "accepted": False,
+            "truncated": False,
+            "error": error,
+        }
+
+    truncated = original_size > MAX_UPLOAD_BYTES
+    decoded = raw[:MAX_UPLOAD_BYTES].decode("utf-8", errors="ignore")
+    if len(decoded) > MAX_UPLOAD_TEXT_CHARS:
+        decoded = decoded[:MAX_UPLOAD_TEXT_CHARS]
+        truncated = True
+    log_bridge(
+        f"uploaded file read name={safe_name} ext={extension} bytes={original_size} chars={len(decoded)} truncated={truncated}"
+    )
+    return {
+        "name": safe_name,
+        "extension": extension,
+        "content": decoded,
+        "size": original_size,
+        "accepted": True,
+        "truncated": truncated,
+        "error": "",
     }
 
 
 def normalize_uploaded_file(filename, content_type, content):
-    content = content or b""
-    extension = file_extension(filename)
-    accepted = extension in ALLOWED_UPLOAD_EXTENSIONS and len(content) <= MAX_UPLOAD_BYTES
-    text_preview = ""
-    if accepted and extension in TEXT_UPLOAD_EXTENSIONS:
-        text_preview = content[:MAX_UPLOAD_BYTES].decode("utf-8", errors="replace")
-        text_preview = trim_prompt_text(text_preview, MAX_UPLOAD_TEXT_CHARS)
-
-    return {
-        "name": Path(str(filename or "archivo")).name,
-        "extension": extension,
-        "content_type": content_type or "application/octet-stream",
-        "size": len(content),
-        "accepted": accepted,
-        "text_preview": text_preview,
-    }
+    file_info = read_uploaded_file({"name": filename, "content": content or b""})
+    file_info["content_type"] = content_type or "application/octet-stream"
+    file_info["raw_content"] = (content or b"")[:MAX_UPLOAD_BYTES]
+    file_info["text_preview"] = file_info.get("content", "")
+    return file_info
 
 
 def build_uploaded_file_docs(uploaded_files):
@@ -540,6 +609,457 @@ def build_uploaded_file_docs(uploaded_files):
             }
         )
     return docs
+
+
+def split_text_chunks(text, chunk_chars=None, overlap=None):
+    text = str(text or "").replace("\r\n", "\n")
+    chunk_chars = max(400, int(chunk_chars or UPLOAD_CHUNK_CHARS))
+    overlap = max(0, min(int(overlap if overlap is not None else UPLOAD_CHUNK_OVERLAP), chunk_chars // 3))
+    chunks = []
+    start = 0
+    while start < len(text):
+        end = min(start + chunk_chars, len(text))
+        chunk = text[start:end].strip()
+        if chunk:
+            chunks.append(chunk)
+        if end >= len(text):
+            break
+        start = max(0, end - overlap)
+    return chunks
+
+
+def is_database_request(message):
+    normalized = normalized_query_text(message)
+    return bool(re.search(r"\b(base\s+(?:de\s+)?datos|database|sql|tabla|tablas|modelo\s+er|entidad\s+relacion)\b", normalized))
+
+
+def summarize_uploaded_structure(file_info):
+    content = str(file_info.get("content") or "")
+    extension = file_info.get("extension", "")
+    name = file_info.get("name", "archivo")
+    if not content:
+        return ""
+    if extension == ".html":
+        title_match = re.search(r"<title[^>]*>(.*?)</title>", content, re.IGNORECASE | re.DOTALL)
+        meta_match = re.search(
+            r"<meta[^>]+name=[\"']description[\"'][^>]+content=[\"']([^\"']+)[\"']",
+            content,
+            re.IGNORECASE,
+        )
+        headings = [
+            re.sub(r"<[^>]+>", " ", match).strip()
+            for match in re.findall(r"<h[1-3][^>]*>(.*?)</h[1-3]>", content, re.IGNORECASE | re.DOTALL)[:20]
+        ]
+        controls = re.findall(r"<(?:form|input|textarea|select|option|button|a)\b[^>]*>", content, re.IGNORECASE)[:80]
+        scripts = re.findall(r"<script\b[^>]*>|<link\b[^>]*>|<form\b[^>]*>", content, re.IGNORECASE)[:40]
+        parts = [
+            f"Resumen estructural de {name}:",
+            f"Titulo: {re.sub(r'<[^>]+>', ' ', title_match.group(1)).strip() if title_match else 'no detectado'}",
+            f"Meta descripcion: {meta_match.group(1).strip() if meta_match else 'no detectada'}",
+            "Encabezados principales: " + "; ".join(item for item in headings if item)[:1600],
+            "Controles, formularios y enlaces detectados:\n" + "\n".join(controls),
+            "Recursos y bloques relevantes:\n" + "\n".join(scripts),
+        ]
+        return trim_prompt_text("\n".join(parts), 4500)
+    if extension in {".json", ".sql", ".py", ".js", ".css", ".md", ".txt"}:
+        lines = [line.strip() for line in content.splitlines() if line.strip()][:80]
+        return trim_prompt_text(f"Resumen de {name}:\n" + "\n".join(lines), 3500)
+    return ""
+
+
+def select_uploaded_file_chunks(file_info, query, max_chunks=None):
+    content = str(file_info.get("content") or "")
+    if not content:
+        return []
+    if len(content) <= MAX_UPLOAD_PROMPT_CHARS:
+        return [{"text": content, "index": 0, "score": 1.0, "total": 1}]
+    chunks = split_text_chunks(content)
+    file_info["chunk_count"] = len(chunks)
+    query_vector = embed_text(query)
+    query_tokens = set(TOKEN_RE.findall(normalized_query_text(query)))
+    wants_db = is_database_request(query)
+    scored = []
+    for index, chunk in enumerate(chunks):
+        chunk_tokens = set(TOKEN_RE.findall(normalized_query_text(chunk)))
+        vector_score = dot_score(query_vector, embed_text(chunk))
+        overlap = len(query_tokens & chunk_tokens) / max(len(query_tokens), 1)
+        structure_boost = 0.0
+        if wants_db and re.search(
+            r"\b(form|input|textarea|select|name=|contact|cliente|servicio|proyecto|lead|email|telefono|whatsapp|mensaje)\b",
+            chunk,
+            re.IGNORECASE,
+        ):
+            structure_boost = 0.22
+        if index == 0:
+            structure_boost += 0.06
+        scored.append(((0.62 * vector_score) + (0.28 * overlap) + structure_boost, index, chunk))
+    scored.sort(key=lambda item: item[0], reverse=True)
+    selected = sorted(scored[: max(1, int(max_chunks or UPLOAD_RELEVANT_CHUNKS))], key=lambda item: item[1])
+    return [
+        {"text": chunk, "index": index, "score": score, "total": len(chunks)}
+        for score, index, chunk in selected
+    ]
+
+
+def index_uploaded_files(uploaded_files, session_id="default"):
+    indexed = 0
+    for file_info in uploaded_files or []:
+        if not file_info.get("accepted") or not file_info.get("content"):
+            continue
+        chunks = split_text_chunks(file_info.get("content", ""))
+        file_info["chunk_count"] = len(chunks)
+        if not chunks:
+            continue
+        try:
+            ids = []
+            documents = []
+            embeddings = []
+            metadatas = []
+            fingerprint = hashlib.sha1(
+                f"{session_id}:{file_info.get('name')}:{file_info.get('size')}:{file_info.get('content')[:500]}".encode(
+                    "utf-8",
+                    errors="ignore",
+                )
+            ).hexdigest()[:24]
+            for index, chunk in enumerate(chunks):
+                ids.append(f"upload-{fingerprint}-{index}")
+                documents.append(chunk)
+                embeddings.append(embed_text(chunk))
+                metadatas.append(
+                    {
+                        "source": f"upload:{file_info.get('name', 'archivo')}",
+                        "title": file_info.get("name", "archivo"),
+                        "type": "uploaded_file",
+                        "extension": file_info.get("extension", ""),
+                        "access_group": "admin",
+                        "session_id": str(session_id)[:120],
+                        "chunk_index": index,
+                    }
+                )
+            get_collection().upsert(ids=ids, documents=documents, embeddings=embeddings, metadatas=metadatas)
+            indexed += len(chunks)
+            log_bridge(f"uploaded file indexed name={file_info.get('name')} chunks={len(chunks)} persist_dir={PERSIST_DIR}")
+        except Exception as exc:
+            file_info["error"] = f"No se pudo indexar en tutor_ia: {exc}"
+            log_bridge(f"uploaded file index error name={file_info.get('name')} error={exc}")
+    return indexed
+
+
+def build_uploaded_file_docs(uploaded_files, question=""):
+    docs = []
+    for file_info in uploaded_files or []:
+        if not file_info.get("accepted"):
+            if file_info.get("error"):
+                log_bridge(f"uploaded file not usable name={file_info.get('name')} error={file_info.get('error')}")
+            continue
+        name = file_info.get("name", "archivo")
+        extension = file_info.get("extension", "")
+        summary = summarize_uploaded_structure(file_info)
+        if summary:
+            docs.append(
+                {
+                    "text": summary,
+                    "metadata": {
+                        "source": f"upload:{name}:summary",
+                        "type": "archivo_resumen",
+                        "title": f"{name} resumen",
+                        "extension": extension,
+                        "access_group": "admin",
+                        "uploaded_file": True,
+                    },
+                }
+            )
+        for chunk in select_uploaded_file_chunks(file_info, question):
+            docs.append(
+                {
+                    "text": (
+                        f"Archivo adjunto: {name}\n"
+                        f"Extension: {extension}\n"
+                        f"Fragmento {chunk['index'] + 1} de {chunk['total']} "
+                        f"(score {chunk['score']:.3f}):\n{chunk['text']}"
+                    ),
+                    "metadata": {
+                        "source": f"upload:{name}",
+                        "type": "archivo",
+                        "title": name,
+                        "extension": extension,
+                        "access_group": "admin",
+                        "uploaded_file": True,
+                        "chunk_index": chunk["index"],
+                    },
+                }
+            )
+    return docs
+
+
+def _prompt_file_blocks(uploaded_files):
+    blocks = []
+    for item in uploaded_files or []:
+        if isinstance(item, dict) and "metadata" in item and "text" in item:
+            metadata = item.get("metadata", {})
+            name = metadata.get("title") or metadata.get("source") or "archivo"
+            extension = metadata.get("extension", "")
+            content = item.get("text", "")
+        else:
+            name = item.get("name", "archivo") if isinstance(item, dict) else "archivo"
+            extension = item.get("extension", "") if isinstance(item, dict) else ""
+            content = item.get("content", "") if isinstance(item, dict) else str(item or "")
+        blocks.append(
+            f"{name}\nExtension: {extension or 'desconocida'}\nContenido relevante:\n{trim_prompt_text(content, MAX_UPLOAD_PROMPT_CHARS)}"
+        )
+    return "\n\n".join(blocks)
+
+
+def build_prompt(user_message, uploaded_files, tutor_context):
+    file_context = _prompt_file_blocks(uploaded_files) or "No hay archivos adjuntos con texto legible."
+    if len(file_context) > MAX_UPLOAD_PROMPT_CHARS:
+        log_bridge(
+            f"uploaded context too large chars={len(file_context)} limit={MAX_UPLOAD_PROMPT_CHARS}; trimming file context"
+        )
+        file_context = trim_prompt_text(file_context, MAX_UPLOAD_PROMPT_CHARS)
+    database_instruction = ""
+    if is_database_request(user_message):
+        database_instruction = """
+Si el usuario pide crear una base de datos, responde con estas secciones:
+1. Analisis del archivo adjunto.
+2. Propuesta de tablas y relaciones.
+3. Script SQL funcional.
+4. Explicacion de conexion backend.
+5. Recomendaciones de seguridad.
+6. Proximos pasos.
+"""
+
+    def render(context_text):
+        return f"""
+CONTEXTO Y ROL:
+Eres un asistente de programacion experto en Python, C#, SQL, HTML, CSS, JavaScript, ciberseguridad, diseno de bases de datos, arquitectura de software y analisis de codigo.
+
+TAREA DEL USUARIO:
+{user_message}
+
+ARCHIVOS ADJUNTOS:
+{file_context}
+
+CONTEXTO DEL CEREBRO TUTOR_IA:
+{context_text or "No se recupero contexto adicional de tutor_ia."}
+
+INSTRUCCIONES:
+Analiza primero los archivos adjuntos. No respondas de forma generica.
+Lee la estructura del archivo, detecta que necesita el usuario, propone una solucion tecnica y genera codigo cuando sea necesario.
+Explica en que archivo o capa aplicar los cambios. No inventes archivos que no existen sin aclararlo.
+{database_instruction}
+
+CRITERIOS DE CALIDAD:
+- Respuesta logica.
+- Respuesta tecnica.
+- Codigo funcional.
+- Usar el contenido adjunto.
+- Explicar pasos.
+- Recomendar buenas practicas de seguridad.
+- Responder en espanol.
+
+RESPUESTA:
+"""
+
+    prompt = render(tutor_context)
+    if len(prompt) > MAX_FINAL_PROMPT_CHARS:
+        allowed_context = max(1200, MAX_FINAL_PROMPT_CHARS - len(prompt) + len(str(tutor_context or "")) - 300)
+        log_bridge(f"context too large for model prompt chars={len(prompt)} limit={MAX_FINAL_PROMPT_CHARS}; trimming tutor_ia context")
+        prompt = render(trim_prompt_text(tutor_context, allowed_context))
+    return prompt
+
+
+def _unique_values(values, limit=20):
+    seen = set()
+    result = []
+    for value in values:
+        clean = re.sub(r"\s+", " ", str(value or "")).strip()
+        if not clean:
+            continue
+        key = clean.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(clean)
+        if len(result) >= limit:
+            break
+    return result
+
+
+def _html_text_items(pattern, content, limit=20):
+    return _unique_values(
+        re.sub(r"<[^>]+>", " ", match).strip()
+        for match in re.findall(pattern, content, re.IGNORECASE | re.DOTALL)
+    )[:limit]
+
+
+def extract_upload_business_signals(uploaded_files):
+    signals = {
+        "files": [],
+        "titles": [],
+        "descriptions": [],
+        "headings": [],
+        "forms": [],
+        "fields": [],
+        "links": [],
+    }
+    for file_info in uploaded_files or []:
+        if not file_info.get("accepted"):
+            continue
+        name = file_info.get("name", "archivo")
+        content = str(file_info.get("content") or "")
+        signals["files"].append(name)
+        if file_info.get("extension") == ".html":
+            signals["titles"].extend(_html_text_items(r"<title[^>]*>(.*?)</title>", content, 5))
+            signals["descriptions"].extend(
+                re.findall(
+                    r"<meta[^>]+name=[\"']description[\"'][^>]+content=[\"']([^\"']+)[\"']",
+                    content,
+                    re.IGNORECASE,
+                )[:5]
+            )
+            signals["headings"].extend(_html_text_items(r"<h[1-3][^>]*>(.*?)</h[1-3]>", content, 30))
+            signals["forms"].extend(re.findall(r"<form\b[^>]*>", content, re.IGNORECASE)[:10])
+            signals["fields"].extend(
+                re.findall(r"\b(?:name|id)=[\"']([^\"']+)[\"']", content, re.IGNORECASE)[:80]
+            )
+            signals["links"].extend(
+                re.findall(r"<a\b[^>]*href=[\"']([^\"']+)[\"'][^>]*>", content, re.IGNORECASE)[:40]
+            )
+    return {key: _unique_values(value, 30) for key, value in signals.items()}
+
+
+def generate_uploaded_database_solution(user_message, uploaded_files, file_docs=None, project_path=""):
+    signals = extract_upload_business_signals(uploaded_files)
+    files = ", ".join(signals.get("files") or ["archivo adjunto"])
+    title = "; ".join(signals.get("titles") or ["sitio web adjunto"])
+    description = "; ".join(signals.get("descriptions") or ["pagina HTML con contenido de servicios/proyectos"])
+    headings = "; ".join((signals.get("headings") or [])[:12]) or "no se detectaron encabezados principales"
+    fields = ", ".join((signals.get("fields") or [])[:20]) or "sin campos de formulario visibles en el fragmento analizado"
+    forms = "si" if signals.get("forms") else "no"
+    project_note = (
+        f"Proyecto enviado por la interfaz: {project_path}."
+        if project_path
+        else "No se recibio una ruta de backend existente; propongo crear una capa backend nueva."
+    )
+    indexed = sum(int(file_info.get("chunk_count", 0) or 0) for file_info in uploaded_files or [])
+
+    return f"""
+Analisis del archivo adjunto
+- Archivo usado: {files}.
+- Titulo detectado: {title}.
+- Descripcion detectada: {description}.
+- Encabezados/areas utiles: {headings}.
+- Formularios detectados: {forms}.
+- Campos/id/name detectados: {fields}.
+- El archivo fue leido en backend, dividido en {indexed} fragmentos e indexado en tutor_ia antes de generar esta propuesta.
+- {project_note}
+
+Propuesta de tablas
+- servicios: catalogo de servicios ofrecidos en la pagina.
+- proyectos: casos/proyectos mostrados en el portafolio.
+- leads_contacto: solicitudes que llegan desde formularios, botones de WhatsApp o llamadas a la accion.
+- mensajes_asistente: historial de preguntas del asistente o chatbot web.
+- paginas_seo: metadatos SEO por pagina para administrar titulos, descripciones y slugs.
+
+Script SQL funcional (MySQL)
+```sql
+CREATE DATABASE IF NOT EXISTS abraham_hernandez_web
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE abraham_hernandez_web;
+
+CREATE TABLE IF NOT EXISTS servicios (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(160) NOT NULL UNIQUE,
+  nombre VARCHAR(180) NOT NULL,
+  descripcion TEXT NOT NULL,
+  categoria VARCHAR(120) NULL,
+  activo BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS proyectos (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(160) NOT NULL UNIQUE,
+  nombre VARCHAR(180) NOT NULL,
+  cliente VARCHAR(180) NULL,
+  descripcion TEXT NOT NULL,
+  stack_tecnico VARCHAR(255) NULL,
+  url_demo VARCHAR(500) NULL,
+  url_repositorio VARCHAR(500) NULL,
+  destacado BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS leads_contacto (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(160) NULL,
+  email VARCHAR(180) NULL,
+  telefono VARCHAR(60) NULL,
+  empresa VARCHAR(180) NULL,
+  servicio_interes VARCHAR(180) NULL,
+  presupuesto VARCHAR(80) NULL,
+  mensaje TEXT NOT NULL,
+  origen_pagina VARCHAR(220) NOT NULL DEFAULT 'index.html',
+  estado ENUM('nuevo', 'contactado', 'calificado', 'cerrado', 'descartado') NOT NULL DEFAULT 'nuevo',
+  ip_hash CHAR(64) NULL,
+  user_agent_hash CHAR(64) NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_leads_estado_created (estado, created_at),
+  INDEX idx_leads_email (email)
+);
+
+CREATE TABLE IF NOT EXISTS mensajes_asistente (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  session_id VARCHAR(120) NOT NULL,
+  lead_id BIGINT UNSIGNED NULL,
+  pregunta TEXT NOT NULL,
+  respuesta MEDIUMTEXT NULL,
+  intencion VARCHAR(120) NULL,
+  archivo_adjunto VARCHAR(255) NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_mensajes_lead
+    FOREIGN KEY (lead_id) REFERENCES leads_contacto(id)
+    ON DELETE SET NULL,
+  INDEX idx_mensajes_session_created (session_id, created_at)
+);
+
+CREATE TABLE IF NOT EXISTS paginas_seo (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  ruta VARCHAR(220) NOT NULL UNIQUE,
+  titulo VARCHAR(220) NOT NULL,
+  descripcion VARCHAR(320) NOT NULL,
+  keywords TEXT NULL,
+  canonical_url VARCHAR(500) NULL,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
+
+Explicacion de conexion backend
+- En el adjunto solo se ve el lado HTML; no asumo que ya exista backend.
+- Crea un endpoint backend, por ejemplo `POST /api/leads`, que reciba nombre, email, telefono, servicio_interes y mensaje.
+- Desde `index.html` o el JS del formulario, envia los datos con `fetch('/api/leads', {{ method: 'POST', headers: {{ 'Content-Type': 'application/json' }}, body: JSON.stringify(payload) }})`.
+- En Python puedes usar FastAPI/Flask con un pool MySQL y consultas parametrizadas; no construyas SQL concatenando texto del usuario.
+
+Recomendaciones de seguridad
+- Validar y sanear todos los campos del formulario.
+- Usar consultas preparadas para evitar SQL injection.
+- Guardar hashes de IP/user-agent si necesitas auditoria, no datos sensibles en bruto.
+- Activar HTTPS, CORS limitado, rate limit y proteccion CSRF si usas cookies.
+- No guardar secretos de base de datos en el frontend; usa variables de entorno en el backend.
+
+Proximos pasos
+1. Crear `database/schema.sql` con el script anterior.
+2. Crear un backend pequeno para `POST /api/leads`.
+3. Conectar el formulario o CTA de `index.html` al endpoint.
+4. Probar insercion con un lead falso.
+5. Agregar una vista privada para revisar leads y estados.
+""".strip()
 
 
 def parse_multipart_form(content_type, body):
@@ -903,14 +1423,18 @@ def generate_answer(
         return response
 
     context = ""
+    uploaded_prompt_docs = []
     max_doc_chars = max_doc_chars or MAX_DOC_CONTEXT_CHARS
     for doc in docs or []:
         metadata = doc["metadata"]
         source_type = metadata.get("type", "fuente")
         title = metadata.get("title", metadata.get("source", "fuente"))
+        if metadata.get("uploaded_file") or str(metadata.get("source", "")).startswith("upload:"):
+            uploaded_prompt_docs.append(doc)
+            continue
         context += f"[{source_type} {title}]\n{trim_prompt_text(doc['text'], max_doc_chars)}\n\n"
 
-    if not context:
+    if not context and not uploaded_prompt_docs:
         context = "No se recuperaron fuentes privadas relevantes para esta pregunta.\n"
 
     agency_section = ""
@@ -981,9 +1505,28 @@ Contexto interno:
 Pregunta: {question}
 Respuesta:
 """
+        if uploaded_prompt_docs:
+            tutor_context = "\n".join(
+                part
+                for part in [
+                    source_rule,
+                    mode["instructions"],
+                    agency_section,
+                    brain_section,
+                    history_text,
+                    f"Contexto recuperado de tutor_ia:\n{context}" if context else "",
+                ]
+                if part
+            )
+            compact_prompt = build_prompt(question, uploaded_prompt_docs, tutor_context)
         try:
+            llm_started = time.perf_counter()
             response = get_llm(model_name).invoke(compact_prompt)
+            log_bridge(
+                f"ollama response model={model_name} seconds={time.perf_counter() - llm_started:.2f} prompt_chars={len(compact_prompt)}"
+            )
         except Exception as exc:
+            log_bridge(f"ollama error model={model_name} error={exc}")
             detail = str(exc)
             if "requires more system memory" in detail or "more system memory" in detail:
                 response = (
@@ -1030,9 +1573,28 @@ Contexto:
 Pregunta del estudiante: {question}
 Respuesta del tutor:
 """
+    if uploaded_prompt_docs:
+        tutor_context = "\n".join(
+            part
+            for part in [
+                source_rule,
+                mode["instructions"],
+                agency_section,
+                brain_section,
+                history_text,
+                f"Contexto recuperado de tutor_ia:\n{context}" if context else "",
+            ]
+            if part
+        )
+        prompt = build_prompt(question, uploaded_prompt_docs, tutor_context)
     try:
+        llm_started = time.perf_counter()
         response = get_llm(model_name).invoke(prompt)
+        log_bridge(
+            f"ollama response model={model_name} seconds={time.perf_counter() - llm_started:.2f} prompt_chars={len(prompt)}"
+        )
     except Exception as exc:
+        log_bridge(f"ollama error model={model_name} error={exc}")
         detail = str(exc)
         if "requires more system memory" in detail or "more system memory" in detail:
             response = (
@@ -1076,7 +1638,7 @@ def generate_general_answer(
     for doc in file_docs or []:
         metadata = doc.get("metadata", {})
         title = metadata.get("title", "archivo")
-        file_context += f"[archivo {title}]\n{trim_prompt_text(doc.get('text', ''), MAX_DOC_CONTEXT_CHARS)}\n\n"
+        file_context += f"[archivo {title}]\n{trim_prompt_text(doc.get('text', ''), MAX_UPLOAD_PROMPT_CHARS)}\n\n"
 
     history_text = ""
     if memory:
@@ -1108,9 +1670,20 @@ Archivos adjuntos:
 Pregunta del usuario: {question}
 Respuesta:
 """
+    if file_docs:
+        tutor_context = (
+            "Cerebro tutor_ia desactivado para esta consulta; usa solo el archivo adjunto y conocimiento tecnico general.\n"
+            f"{history_text}"
+        )
+        prompt = build_prompt(question, file_docs, tutor_context)
     try:
+        llm_started = time.perf_counter()
         response = get_llm(model_name).invoke(prompt)
+        log_bridge(
+            f"ollama response model={model_name} seconds={time.perf_counter() - llm_started:.2f} prompt_chars={len(prompt)}"
+        )
     except Exception as exc:
+        log_bridge(f"ollama error model={model_name} error={exc}")
         response = (
             f"No pude usar el modelo `{model_name}` en Ollama. "
             f"Verifica que este instalado con `ollama list`. Detalle: {exc}"
@@ -1141,9 +1714,16 @@ def answer_from_brain(payload, uploaded_files=None):
     show_sources = payload_bool(payload, "show_sources", False) or source_requested(question)
     tutor_ia_enabled = payload_bool(payload, "tutorIA", payload_bool(payload, "tutor_ia", True))
     smart_search_enabled = payload_bool(payload, "smartSearch", payload_bool(payload, "smart_search", False))
+    uploaded_files = uploaded_files or []
+    indexed_upload_chunks = index_uploaded_files(uploaded_files, session_id=session_id) if uploaded_files else 0
+    file_docs = build_uploaded_file_docs(uploaded_files, question=question)
+    has_readable_upload = any(file_info.get("accepted") and file_info.get("content") for file_info in uploaded_files)
+    log_bridge(
+        f"flow files_read={len(uploaded_files)} readable={has_readable_upload} file_docs={len(file_docs)} indexed_chunks={indexed_upload_chunks}"
+    )
     connector_result = None
     connector = get_brain_connector()
-    if connector and payload_bool(payload, "brain_connector", True):
+    if connector and payload_bool(payload, "brain_connector", True) and not has_readable_upload:
         connector_result = connector.answer(
             question,
             options={
@@ -1199,8 +1779,6 @@ def answer_from_brain(payload, uploaded_files=None):
     obsidian_top_k = int(payload.get("obsidian_top_k") or (WEB_FAST_OBSIDIAN_TOP_K if fast_profile else OBSIDIAN_TOP_K))
     project_path = str(payload.get("project_path") or payload.get("workspace_path") or "").strip()
     quick_code_context = str(payload.get("quick_code_context") or payload.get("code_context") or "")[:6000].strip()
-    uploaded_files = uploaded_files or []
-    file_docs = build_uploaded_file_docs(uploaded_files)
     normalized_question = normalized_query_text(question)
     light_chat = bool(fast_profile and len(normalized_question) <= 80 and LIGHT_CHAT_RE.search(normalized_question))
     use_private_knowledge = bool(
@@ -1329,6 +1907,47 @@ def answer_from_brain(payload, uploaded_files=None):
             "agency_agents": [],
         }
 
+    if has_readable_upload and is_database_request(question):
+        answer = generate_uploaded_database_solution(question, uploaded_files, file_docs, project_path=project_path)
+        add_memory_turn(memory, question, answer)
+        return {
+            "ok": True,
+            "success": True,
+            "answer": answer,
+            "mode": str(raw_mode),
+            "brain_mode": get_interaction_mode(interaction_mode)["label"],
+            "tutorIA": tutor_ia_enabled,
+            "smartSearch": smart_search_enabled,
+            "usedTutorIA": tutor_ia_enabled,
+            "usedSmartSearch": False,
+            "smart_search": None,
+            "show_sources": show_sources,
+            "used_sources_count": len(file_docs),
+            "model": "local_database_generator",
+            "response_profile": "web_fast" if fast_profile else "full",
+            "latency_ms": int((time.perf_counter() - started_at) * 1000),
+            "brain_error": "",
+            "tutor_ia_connection": get_tutor_connection_status(),
+            "tutor_ia_root": str(TUTOR_ROOT),
+            "tutor_ia_connected": bool(build_connected_brain_context),
+            "obsidian_used_count": 0,
+            "workspace_used_count": 0,
+            "quick_code_used": False,
+            "jarvis_profile": "",
+            "brain_parts": ["uploaded_files", "tutor_ia_upload_index", "database_generator"],
+            "sources_used": (connector_result or {}).get("sources_used", ["uploaded_files", "database_generator"]),
+            "brain_connector": public_brain_connector_result(connector_result),
+            "sources": [
+                {
+                    "metadata": doc.get("metadata", {}),
+                    "snippet": trim_prompt_text(doc.get("text", ""), 260),
+                }
+                for doc in file_docs
+            ],
+            "uploadedFiles": [public_uploaded_file(file_info) for file_info in uploaded_files],
+            "agency_agents": [],
+        }
+
     brain_error = ""
     docs = []
     if use_private_knowledge:
@@ -1426,6 +2045,10 @@ def answer_from_brain(payload, uploaded_files=None):
 
     if fast_profile and brain_context:
         brain_context = trim_prompt_text(brain_context, WEB_FAST_BRAIN_CHARS)
+
+    log_bridge(
+        f"tutor_ia context loaded docs={len(docs)} obsidian={len(obsidian_docs)} workspace={len(workspace_docs)} brain_chars={len(brain_context)}"
+    )
 
     requested_model = payload.get("model")
     model_name = requested_model or (WEB_FAST_MODEL if fast_profile else None)

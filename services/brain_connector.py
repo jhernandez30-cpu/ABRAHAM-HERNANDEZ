@@ -40,8 +40,8 @@ class BrainConnector:
         self.bridge_api = BridgeAPIClient(base_url=bridge_api_url)
         self.anthropic = AnthropicService()
         self.max_context_chars = int(os.getenv("MAX_CONTEXT_CHARS", "12000"))
-        self.brain_timeout = int(os.getenv("BRAIN_TIMEOUT_SECONDS", "8"))
-        self.bridge_timeout = int(os.getenv("BRIDGE_TIMEOUT_SECONDS", "10"))
+        self.brain_timeout = int(os.getenv("BRAIN_TIMEOUT_SECONDS", "120"))
+        self.bridge_timeout = int(os.getenv("BRIDGE_TIMEOUT_SECONDS", "120"))
         self._answer_cache: dict[str, tuple[float, dict[str, Any]]] = {}
         self._cache_ttl = int(os.getenv("BRAIN_CACHE_SECONDS", "45"))
 
