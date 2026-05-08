@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asistente de Programación | Abraham Hernández</title>
-  <meta name="description" content="Chat de programación conectado al cerebro local TUTOR_IA para resolver dudas, guardar historial y buscar conversaciones.">
-  <meta name="keywords" content="asistente de programación, chat IA, TUTOR_IA, tutor de programación, Abraham Hernández">
+  <title>JAH AI | Abraham Hernández</title>
+  <meta name="description" content="JAH AI es el asistente de programación conectado al cerebro local TUTOR_IA para resolver dudas, analizar archivos y guardar historial.">
+  <meta name="keywords" content="JAH AI, asistente de programación, chat IA, TUTOR_IA, tutor de programación, Abraham Hernández">
   <meta name="relative-base" content="">
   <link rel="canonical" href="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/asistente-programacion.html">
   <meta name="author" content="Abraham Hernández">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#0b7cff">
-  <meta name="application-name" content="Asistente de Programación">
+  <meta name="theme-color" content="#faf8f5">
+  <meta name="application-name" content="JAH AI">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Asistente Dev">
+  <meta name="apple-mobile-web-app-title" content="JAH AI">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
   <link rel="icon" type="image/png" href="assets/jah-logo.png">
@@ -50,30 +50,57 @@
   <div class="custom-cursor" aria-hidden="true"></div>
 
   <main class="programming-shell">
-    <section class="chat-app" aria-label="Chat de programación con TUTOR_IA">
+    <section class="chat-app" aria-label="Chat de programación con JAH AI y TUTOR_IA">
       <aside class="chat-sidebar" id="chatSidebar" aria-label="Historial de conversaciones">
-        <div class="sidebar-top">
-          <button id="newChatBtn" class="sidebar-action primary" type="button">
-            <i class="fas fa-edit" aria-hidden="true"></i>
-            <span>Nuevo chat</span>
-          </button>
+        <div class="sidebar-mobile-row">
           <button id="closeSidebarBtn" class="sidebar-icon" type="button" aria-label="Cerrar historial">
             <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         </div>
 
-        <label class="chat-search" for="chatSearchInput">
+        <label class="chat-search sidebar-nav-item is-active" for="chatSearchInput">
           <i class="fas fa-search" aria-hidden="true"></i>
-          <input id="chatSearchInput" type="search" placeholder="Buscar chat" autocomplete="off">
+          <input id="chatSearchInput" type="search" placeholder="Buscar" autocomplete="off">
         </label>
 
-        <div class="brain-status" id="brainStatus" data-state="checking">
+        <div class="brain-status sidebar-nav-item" id="brainStatus" data-state="checking">
           <span class="brain-status-dot" aria-hidden="true"></span>
           <strong id="brainStatusText">Conectando con TUTOR_IA</strong>
         </div>
 
+        <nav class="sidebar-nav" aria-label="Navegación de JAH AI">
+          <button id="newChatBtn" class="sidebar-nav-item sidebar-action" type="button">
+            <i class="fas fa-plus" aria-hidden="true"></i>
+            <span>Nuevo chat</span>
+          </button>
+          <button class="sidebar-nav-item sidebar-ghost" type="button">
+            <i class="fas fa-clock-rotate-left" aria-hidden="true"></i>
+            <span>Historial</span>
+          </button>
+          <button class="sidebar-nav-item sidebar-ghost" type="button">
+            <i class="fas fa-compass" aria-hidden="true"></i>
+            <span>Descubrir</span>
+          </button>
+          <button class="sidebar-nav-item sidebar-ghost" type="button">
+            <i class="fas fa-grip" aria-hidden="true"></i>
+            <span>Espacios</span>
+          </button>
+          <button class="sidebar-nav-item sidebar-ghost" type="button">
+            <i class="fas fa-code" aria-hidden="true"></i>
+            <span>Proyectos</span>
+          </button>
+          <button class="sidebar-nav-item sidebar-ghost" type="button">
+            <i class="fas fa-shield-halved" aria-hidden="true"></i>
+            <span>Seguridad</span>
+          </button>
+          <button class="sidebar-nav-item sidebar-ghost" type="button">
+            <i class="fas fa-ellipsis" aria-hidden="true"></i>
+            <span>Más</span>
+          </button>
+        </nav>
+
         <div class="history-heading">
-          <span>Historial de chat</span>
+          <span>Historial</span>
           <button id="clearHistoryBtn" type="button">Limpiar</button>
         </div>
 
@@ -88,20 +115,20 @@
             <i class="fas fa-bars" aria-hidden="true"></i>
           </button>
           <div class="chat-title">
-            <strong>Asistente de Programación</strong>
+            <strong>JAH AI</strong>
             <span id="activeChatLabel">Nuevo chat</span>
           </div>
         </div>
 
         <div id="coachMessages" class="chat-messages" aria-live="polite">
           <div id="emptyChatState" class="empty-chat-state">
-            <h1 id="assistantTitle">¿En qué estás trabajando?</h1>
+            <h1 id="assistantTitle">JAH AI</h1>
           </div>
         </div>
 
         <form id="coachForm" class="chat-composer" autocomplete="off" enctype="multipart/form-data">
           <div class="composer-card">
-            <textarea id="coachInput" rows="1" placeholder="Mensaje a tu asistente de programación" aria-label="Mensaje para el asistente"></textarea>
+            <textarea id="coachInput" rows="1" placeholder="Mensaje a JAH AI" aria-label="Mensaje para JAH AI"></textarea>
 
             <div id="attachmentPreview" class="attachment-preview" aria-live="polite" hidden></div>
 
@@ -138,6 +165,19 @@
             </div>
           </div>
         </form>
+
+        <div class="quick-context-card" aria-hidden="true">
+          <div class="quick-context-title">
+            <i class="fas fa-computer" aria-hidden="true"></i>
+            <span>Cerebro JAH AI</span>
+          </div>
+          <div class="quick-context-lines">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
       </section>
     </section>
   </main>

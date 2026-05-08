@@ -8,27 +8,38 @@
 
 .jarvis-voice-btn {
   flex: 0 0 auto;
-  min-width: 92px;
+  min-width: 38px;
+  width: 38px;
   height: 38px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 0;
   border-radius: 999px;
   cursor: pointer;
-  border: 1px solid rgba(20, 184, 166, 0.28);
-  background: #ecfeff;
-  color: #0f766e;
+  border: 1px solid #27251e;
+  background: #27251e;
+  color: #fff;
   font-size: 0.82rem;
-  font-weight: 850;
-  box-shadow: 0 9px 20px rgba(20, 184, 166, 0.12);
+  font-weight: 700;
+  box-shadow: none;
   transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease;
   white-space: nowrap;
 }
 
 .jarvis-voice-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 12px 24px rgba(20, 184, 166, 0.18);
+  box-shadow: 0 8px 18px rgba(39, 37, 30, 0.16);
+}
+
+.jarvis-voice-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 
 .jarvis-voice-btn:active {
