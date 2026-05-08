@@ -26,6 +26,7 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/seo-pages.css">
   <link rel="stylesheet" href="css/programming-assistant.css">
+  <link rel="stylesheet" href="css/jarvis.css">
 </head>
 <body class="programming-app-page">
   <header>
@@ -104,14 +105,7 @@
 
             <div id="attachmentPreview" class="attachment-preview" aria-live="polite" hidden></div>
 
-            <div id="jarvisStatus" class="jarvis-status" aria-live="polite" hidden>
-              <span class="jarvis-wave" aria-hidden="true">
-                <span></span>
-                <span></span>
-                <span></span>
-              </span>
-              <span id="jarvisStatusText">Jarvis listo.</span>
-            </div>
+            <div id="jarvisStatus" class="jarvis-status" role="status" aria-live="polite"></div>
 
             <div class="composer-toolbar">
               <div class="composer-tools" aria-label="Herramientas del asistente">
@@ -160,6 +154,7 @@
       'http://localhost:8787/api/ask'
     ];
   </script>
+  <script src="js/jarvis-assistant.js"></script>
   <script src="js/programming-assistant.js"></script>
 </body>
 </html>

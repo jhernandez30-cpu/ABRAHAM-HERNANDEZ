@@ -208,6 +208,10 @@ WEB_FAST_WORKSPACE_FILES = int(os.getenv("TUTOR_IA_WEB_FAST_WORKSPACE_FILES", "1
 WEB_FAST_WORKSPACE_CHARS = int(os.getenv("TUTOR_IA_WEB_FAST_WORKSPACE_CHARS", "350"))
 WEB_OLLAMA_NUM_CTX = int(os.getenv("TUTOR_IA_WEB_OLLAMA_NUM_CTX", "4096"))
 WEB_OLLAMA_NUM_PREDICT = int(os.getenv("TUTOR_IA_WEB_OLLAMA_NUM_PREDICT", "1600"))
+WEB_FAST_OLLAMA_NUM_CTX = int(os.getenv("TUTOR_IA_WEB_FAST_OLLAMA_NUM_CTX", "3072"))
+WEB_FAST_OLLAMA_NUM_PREDICT = int(os.getenv("TUTOR_IA_WEB_FAST_OLLAMA_NUM_PREDICT", "420"))
+WEB_FAST_CODE_OLLAMA_NUM_PREDICT = int(os.getenv("TUTOR_IA_WEB_FAST_CODE_OLLAMA_NUM_PREDICT", "850"))
+WEB_FAST_OLLAMA_TIMEOUT_SECONDS = int(os.getenv("TUTOR_IA_WEB_FAST_OLLAMA_TIMEOUT_SECONDS", str(OLLAMA_TIMEOUT_SECONDS)))
 
 INTERACTION_MODES = {
     "unified": {
@@ -340,16 +344,25 @@ def get_collection():
     return client.get_or_create_collection(COLLECTION_NAME)
 
 
-@lru_cache(maxsize=8)
-def get_llm(model_name):
+@lru_cache(maxsize=16)
+def get_llm(model_name, fast_profile=False, extended_fast=False):
+    if fast_profile:
+        num_ctx = WEB_FAST_OLLAMA_NUM_CTX
+        num_predict = WEB_FAST_CODE_OLLAMA_NUM_PREDICT if extended_fast else WEB_FAST_OLLAMA_NUM_PREDICT
+        timeout_seconds = WEB_FAST_OLLAMA_TIMEOUT_SECONDS
+    else:
+        num_ctx = WEB_OLLAMA_NUM_CTX
+        num_predict = WEB_OLLAMA_NUM_PREDICT
+        timeout_seconds = OLLAMA_TIMEOUT_SECONDS
+
     return OllamaLLM(
         model=model_name,
         temperature=0.25,
-        num_ctx=WEB_OLLAMA_NUM_CTX,
-        num_predict=WEB_OLLAMA_NUM_PREDICT,
+        num_ctx=num_ctx,
+        num_predict=num_predict,
         keep_alive="5m",
-        sync_client_kwargs={"timeout": OLLAMA_TIMEOUT_SECONDS},
-        async_client_kwargs={"timeout": OLLAMA_TIMEOUT_SECONDS},
+        sync_client_kwargs={"timeout": timeout_seconds},
+        async_client_kwargs={"timeout": timeout_seconds},
     )
 
 
@@ -470,6 +483,31 @@ def source_requested(question):
 
 def normalized_query_text(value):
     return normalize_mode_text(value).replace("ñ", "n")
+
+
+def needs_extended_fast_answer(question, docs=None):
+    text = normalized_query_text(question)
+    action_terms = ("crea", "crear", "creame", "creale", "genera", "generar", "implementa", "corrige", "modifica")
+    technical_terms = (
+        "base de datos",
+        "base datos",
+        "sql",
+        "script",
+        "codigo",
+        "tabla",
+        "tablas",
+        "backend",
+        "frontend",
+        "api",
+        "html",
+        "css",
+        "javascript",
+        "python",
+    )
+    has_action = any(term in text for term in action_terms)
+    has_technical_target = any(term in text for term in technical_terms)
+    has_files = bool(docs)
+    return (has_action and has_technical_target) or (has_files and has_technical_target)
 
 
 def smart_web_search(query):
@@ -1521,9 +1559,10 @@ Respuesta:
             compact_prompt = build_prompt(question, uploaded_prompt_docs, tutor_context)
         try:
             llm_started = time.perf_counter()
-            response = get_llm(model_name).invoke(compact_prompt)
+            extended_fast = needs_extended_fast_answer(question, uploaded_prompt_docs or docs)
+            response = get_llm(model_name, fast_profile=True, extended_fast=extended_fast).invoke(compact_prompt)
             log_bridge(
-                f"ollama response model={model_name} seconds={time.perf_counter() - llm_started:.2f} prompt_chars={len(compact_prompt)}"
+                f"ollama response model={model_name} fast=true extended={extended_fast} seconds={time.perf_counter() - llm_started:.2f} prompt_chars={len(compact_prompt)}"
             )
         except Exception as exc:
             log_bridge(f"ollama error model={model_name} error={exc}")
@@ -1620,6 +1659,7 @@ def generate_general_answer(
     memory=None,
     interaction_mode="unified",
     model_name=None,
+    fast_profile=False,
 ):
     mode = get_interaction_mode(interaction_mode)
     model_name = choose_llm_model(model_name)
@@ -1678,9 +1718,10 @@ Respuesta:
         prompt = build_prompt(question, file_docs, tutor_context)
     try:
         llm_started = time.perf_counter()
-        response = get_llm(model_name).invoke(prompt)
+        extended_fast = needs_extended_fast_answer(question, file_docs)
+        response = get_llm(model_name, fast_profile=fast_profile, extended_fast=extended_fast).invoke(prompt)
         log_bridge(
-            f"ollama response model={model_name} seconds={time.perf_counter() - llm_started:.2f} prompt_chars={len(prompt)}"
+            f"ollama response model={model_name} fast={fast_profile} extended={extended_fast} seconds={time.perf_counter() - llm_started:.2f} prompt_chars={len(prompt)}"
         )
     except Exception as exc:
         log_bridge(f"ollama error model={model_name} error={exc}")
@@ -2074,6 +2115,7 @@ def answer_from_brain(payload, uploaded_files=None):
             memory=memory,
             interaction_mode=interaction_mode,
             model_name=model_name,
+            fast_profile=fast_profile,
         )
 
     smart_search = None

@@ -614,62 +614,6 @@
   gap: 10px;
 }
 
-.composer-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  flex: 0 0 auto;
-}
-
-.jarvis-voice-btn {
-  flex: 0 0 auto;
-  min-width: 92px;
-  height: 38px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  border-radius: 999px;
-  border: 1px solid rgba(20, 184, 166, 0.28);
-  background: #ecfeff;
-  color: #0f766e;
-  font-size: 0.82rem;
-  font-weight: 850;
-  box-shadow: 0 9px 20px rgba(20, 184, 166, 0.12);
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease;
-  white-space: nowrap;
-}
-
-.jarvis-voice-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 24px rgba(20, 184, 166, 0.18);
-}
-
-.jarvis-voice-btn:active {
-  transform: scale(0.97);
-}
-
-.jarvis-voice-btn.listening {
-  border-color: rgba(20, 184, 166, 0.62);
-  background: linear-gradient(135deg, #0f766e, #2563eb);
-  color: #fff;
-  box-shadow: 0 0 0 6px rgba(20, 184, 166, 0.12), 0 14px 30px rgba(15, 118, 110, 0.22);
-  animation: jarvisPulse 1.35s ease-in-out infinite;
-}
-
-.jarvis-voice-btn.jarvis-disabled {
-  opacity: 0.58;
-  box-shadow: none;
-}
-
-.jarvis-voice-btn[disabled] {
-  opacity: 0.58;
-  pointer-events: none;
-  transform: none;
-  box-shadow: none;
-}
-
 .composer-tools {
   display: flex;
   align-items: center;
@@ -723,67 +667,6 @@
   padding-top: 2px;
 }
 
-.jarvis-status {
-  min-height: 30px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: fit-content;
-  max-width: 100%;
-  border: 1px solid #dbeafe;
-  border-radius: 999px;
-  padding: 4px 10px;
-  background: #eff6ff;
-  color: #1e3a8a;
-  font-size: 0.78rem;
-  font-weight: 800;
-}
-
-.jarvis-status[hidden] {
-  display: none;
-}
-
-.jarvis-status[data-state="listening"] {
-  border-color: rgba(20, 184, 166, 0.34);
-  background: #ecfdf5;
-  color: #0f766e;
-}
-
-.jarvis-status[data-state="thinking"] {
-  border-color: rgba(37, 99, 235, 0.26);
-  background: #eef5ff;
-  color: #1d4ed8;
-}
-
-.jarvis-status[data-state="error"] {
-  border-color: rgba(239, 68, 68, 0.28);
-  background: #fef2f2;
-  color: #b91c1c;
-}
-
-.jarvis-wave {
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 15px;
-}
-
-.jarvis-wave span {
-  width: 3px;
-  min-height: 5px;
-  border-radius: 999px;
-  background: currentColor;
-  animation: jarvisWave 0.9s ease-in-out infinite;
-}
-
-.jarvis-wave span:nth-child(2) {
-  animation-delay: 0.12s;
-}
-
-.jarvis-wave span:nth-child(3) {
-  animation-delay: 0.24s;
-}
-
 .attachment-pill {
   min-height: 34px;
   display: inline-flex;
@@ -835,30 +718,6 @@
   75%,
   100% {
     content: "...";
-  }
-}
-
-@keyframes jarvisPulse {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-1px);
-  }
-}
-
-@keyframes jarvisWave {
-  0%,
-  100% {
-    height: 5px;
-    opacity: 0.55;
-  }
-
-  50% {
-    height: 14px;
-    opacity: 1;
   }
 }
 
@@ -946,20 +805,6 @@
   .composer-toolbar {
     align-items: stretch;
     flex-direction: column;
-  }
-
-  .composer-actions {
-    align-self: flex-end;
-  }
-
-  .jarvis-voice-label {
-    display: none;
-  }
-
-  .jarvis-voice-btn {
-    min-width: 38px;
-    width: 38px;
-    padding: 0;
   }
 
   .send-orb {
