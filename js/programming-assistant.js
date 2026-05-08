@@ -14,8 +14,9 @@ const CHAT_TIMEOUT_MS = 120000;
 const JARVIS_READ_RESPONSES = window.JARVIS_READ_RESPONSES === undefined
   ? true
   : window.JARVIS_READ_RESPONSES === true || window.JARVIS_READ_RESPONSES === 'true';
-const JARVIS_RECOGNITION_LANGS = ['es-NI', 'es-ES'];
+const JARVIS_RECOGNITION_LANGS = ['es-NI', 'es-ES', 'es-MX'];
 const JARVIS_UNSUPPORTED_MESSAGE = 'Jarvis no puede acceder al reconocimiento de voz en este navegador. Usa Google Chrome o Microsoft Edge en Windows.';
+const JARVIS_NETWORK_MESSAGE = 'Jarvis no pudo conectar con el servicio de reconocimiento de voz del navegador. Abre el asistente en Google Chrome o Microsoft Edge desde http://127.0.0.1:5500, permite el micrófono y revisa Internet, VPN o firewall.';
 const ALLOWED_FILE_EXTENSIONS = new Set([
   'png', 'jpg', 'jpeg', 'webp', 'pdf', 'docx', 'txt', 'py', 'js', 'html', 'css', 'json', 'md', 'sql', 'cs'
 ]);
@@ -982,10 +983,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function handleJarvisError(event) {
     const code = event && event.error ? event.error : '';
 
-    if (code === 'language-not-supported' && jarvisLangIndex < JARVIS_RECOGNITION_LANGS.length - 1) {
+    if ((code === 'language-not-supported' || code === 'network') && jarvisLangIndex < JARVIS_RECOGNITION_LANGS.length - 1) {
+      const previousLang = JARVIS_RECOGNITION_LANGS[jarvisLangIndex];
       jarvisLangIndex += 1;
+      const nextLang = JARVIS_RECOGNITION_LANGS[jarvisLangIndex];
       jarvisRecognition = createJarvisRecognition(JARVIS_RECOGNITION_LANGS[jarvisLangIndex]);
-      window.setTimeout(startJarvisListening, 120);
+      setJarvisListening(false);
+      setJarvisStatus(`Jarvis no pudo usar ${previousLang}. Reintentando con ${nextLang}...`, 'thinking', 0);
+      window.setTimeout(startJarvisListening, 650);
       return;
     }
 
@@ -994,10 +999,10 @@ document.addEventListener('DOMContentLoaded', () => {
       'service-not-allowed': 'El navegador bloqueó el servicio de voz. Usa Google Chrome o Microsoft Edge en Windows.',
       'audio-capture': 'No encuentro un micrófono disponible en Windows.',
       'no-speech': 'No pude escuchar correctamente. Intenta de nuevo.',
-      network: 'Jarvis no pudo usar el reconocimiento de voz. Revisa tu conexión o intenta de nuevo.'
+      network: JARVIS_NETWORK_MESSAGE
     };
     setJarvisListening(false);
-    setJarvisStatus(messages[code] || 'No pude escuchar correctamente. Intenta de nuevo.', 'error', 6200);
+    setJarvisStatus(messages[code] || 'No pude escuchar correctamente. Intenta de nuevo.', 'error', code === 'network' ? 12000 : 6200);
   }
 
   function createJarvisRecognition(lang) {
@@ -1029,6 +1034,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function startJarvisListening() {
     if (!jarvisSupported) {
       setJarvisStatus(JARVIS_UNSUPPORTED_MESSAGE, 'error', 8000);
+      return;
+    }
+
+    if (!window.isSecureContext && !['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+      setJarvisStatus('Jarvis necesita un origen seguro. Abre el asistente desde http://127.0.0.1:5500 o localhost.', 'error', 8000);
       return;
     }
 
