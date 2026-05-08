@@ -16,7 +16,7 @@ except Exception:
 
 LOGGER = logging.getLogger(__name__)
 DEFAULT_BASE_URL = "http://127.0.0.1:8787"
-DEFAULT_TIMEOUT = int(os.getenv("BRIDGE_TIMEOUT_SECONDS", "10"))
+DEFAULT_TIMEOUT = int(os.getenv("BRIDGE_TIMEOUT_SECONDS", "120"))
 HEALTH_TIMEOUT = int(os.getenv("BRIDGE_HEALTH_TIMEOUT_SECONDS", "3"))
 
 HEALTH_CANDIDATES = ["/health", "/status", "/api/health", "/api/status"]

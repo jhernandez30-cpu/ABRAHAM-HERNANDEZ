@@ -10,7 +10,12 @@ const ACTIVE_CHAT_KEY = 'tutorIaActiveChatId';
 const DEFAULT_MODE = 'Cerebro Unificado';
 const PROJECT_PATH = window.TUTOR_IA_PROJECT_PATH || '';
 const BRIDGE_URL = (window.TUTOR_IA_BRIDGE_URL || 'http://127.0.0.1:8787').replace(/\/$/, '');
-const CHAT_TIMEOUT_MS = 35000;
+const CHAT_TIMEOUT_MS = 120000;
+const JARVIS_READ_RESPONSES = window.JARVIS_READ_RESPONSES === undefined
+  ? true
+  : window.JARVIS_READ_RESPONSES === true || window.JARVIS_READ_RESPONSES === 'true';
+const JARVIS_RECOGNITION_LANGS = ['es-NI', 'es-ES'];
+const JARVIS_UNSUPPORTED_MESSAGE = 'Jarvis no puede acceder al reconocimiento de voz en este navegador. Usa Google Chrome o Microsoft Edge en Windows.';
 const ALLOWED_FILE_EXTENSIONS = new Set([
   'png', 'jpg', 'jpeg', 'webp', 'pdf', 'docx', 'txt', 'py', 'js', 'html', 'css', 'json', 'md', 'sql', 'cs'
 ]);
@@ -37,12 +42,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const fileInput = document.getElementById('fileInput');
   const attachmentPreview = document.getElementById('attachmentPreview');
   const sendButton = coachForm ? coachForm.querySelector('.send-orb') : null;
+  const jarvisVoiceBtn = document.getElementById('jarvisVoiceBtn');
+  const jarvisStatus = document.getElementById('jarvisStatus');
+  const jarvisStatusText = document.getElementById('jarvisStatusText');
   const endpointCandidates = normalizeEndpoints(window.TUTOR_IA_ENDPOINTS || DEFAULT_ENDPOINTS);
 
   let activeTutorEndpoint = '';
   let tutorIAEnabled = true;
   let smartSearchEnabled = false;
   let selectedFiles = [];
+  let isSubmitting = false;
+  let jarvisRecognition = null;
+  let jarvisListening = false;
+  let jarvisSupported = false;
+  let jarvisLangIndex = 0;
+  let jarvisStatusTimer = null;
   let chats = loadChats();
   let activeChatId = loadActiveChatId();
 
@@ -236,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setBrainStatus('offline', 'TUTOR_IA sin conexion local');
   }
 
-  function buildChatFormData(question, chatId) {
+  function buildChatFormData(question, chatId, source = 'typed_chat') {
     const formData = new FormData();
     formData.append('message', question);
     formData.append('question', question);
@@ -245,6 +259,8 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('smartSearch', String(smartSearchEnabled));
     formData.append('session_id', chatId);
     formData.append('client', 'abraham-programming-assistant');
+    formData.append('source', source);
+    formData.append('input_source', source);
     formData.append('response_profile', 'web_fast');
     formData.append('local_first', 'true');
     formData.append('fast_mode', 'true');
@@ -268,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return formData;
   }
 
-  async function askTutorBrain(question, chatId) {
+  async function askTutorBrain(question, chatId, source = 'typed_chat') {
     const endpoints = activeTutorEndpoint
       ? [activeTutorEndpoint]
       : endpointCandidates;
@@ -283,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setBrainStatus('checking', `TUTOR_IA pensando (max ${Math.round(CHAT_TIMEOUT_MS / 1000)}s)`);
         const response = await fetchWithTimeout(endpoint, {
           method: 'POST',
-          body: buildChatFormData(question, chatId)
+          body: buildChatFormData(question, chatId, source)
         }, CHAT_TIMEOUT_MS);
 
         if (!response.ok) {
@@ -319,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const timedOut = lastError && lastError.name === 'AbortError';
-    setBrainStatus(timedOut ? 'error' : 'offline', timedOut ? 'TUTOR_IA tardo demasiado' : 'TUTOR_IA sin conexion local');
+    setBrainStatus(timedOut ? 'error' : 'offline', timedOut ? 'TUTOR_IA no respondio a tiempo' : 'TUTOR_IA sin conexion local');
     throw lastError || new Error('No se pudo conectar con TUTOR_IA.');
   }
 
@@ -605,14 +621,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (fileInput) fileInput.disabled = isLoading;
     if (tutorIABtn) tutorIABtn.disabled = isLoading;
     if (smartSearchBtn) smartSearchBtn.disabled = isLoading;
+    if (jarvisVoiceBtn) {
+      jarvisVoiceBtn.disabled = isLoading;
+      jarvisVoiceBtn.classList.toggle('jarvis-disabled', !jarvisSupported);
+      jarvisVoiceBtn.setAttribute('aria-disabled', String(isLoading || !jarvisSupported));
+    }
   }
 
-  function fallbackAnswer(error) {
+  function fallbackAnswer(error, filesForMessage = []) {
+    const fileNames = Array.isArray(filesForMessage)
+      ? filesForMessage.map(file => file.name).filter(Boolean)
+      : [];
+    const fileStatus = fileNames.length
+      ? `Archivo recibido por la interfaz: ${fileNames.join(', ')}. El backend debe leerlo antes de llamar al modelo; vuelve a enviar la misma pregunta si el proceso local estaba ocupado.`
+      : 'No habia archivos adjuntos en este mensaje.';
+
     if (error && error.name === 'AbortError') {
-      return `TUTOR_IA si esta conectado, pero el modelo local tardo mas de ${Math.round(CHAT_TIMEOUT_MS / 1000)} segundos. Prueba una pregunta mas concreta o libera Ollama si tiene otra generacion en curso.`;
+      return `El modelo local/Ollama no respondio dentro de ${Math.round(CHAT_TIMEOUT_MS / 1000)} segundos. ${fileStatus}\n\nPosibles soluciones:\n- Revisa que Ollama no tenga otra generacion en curso.\n- Usa un modelo ligero como llama3.2:1b para la interfaz web.\n- Reinicia el puente TUTOR_IA si el proceso quedo ocupado.\n- Si el archivo es grande, intenta una peticion mas concreta sobre una parte del archivo.`;
     }
     const detail = error && error.message ? ` Detalle: ${error.message}` : '';
-    return `No pude completar la consulta con TUTOR_IA.${detail} Verifica el puente local en ${BRIDGE_URL}/health o ${BRIDGE_URL}/api/health.`;
+    return `No pude completar la consulta con TUTOR_IA. ${fileStatus}${detail} Verifica el puente local en ${BRIDGE_URL}/health o ${BRIDGE_URL}/api/health.`;
   }
 
   function autosizeInput() {
@@ -689,6 +717,381 @@ document.addEventListener('DOMContentLoaded', () => {
     if (fileInput) fileInput.value = '';
   }
 
+  function setJarvisStatus(text, state = 'idle', autoHideMs = 4200) {
+    if (!jarvisStatus || !jarvisStatusText) return;
+    window.clearTimeout(jarvisStatusTimer);
+    jarvisStatus.hidden = false;
+    jarvisStatus.dataset.state = state;
+    jarvisStatusText.textContent = text;
+
+    if (autoHideMs > 0) {
+      jarvisStatusTimer = window.setTimeout(() => {
+        if (jarvisListening) return;
+        jarvisStatus.hidden = true;
+      }, autoHideMs);
+    }
+  }
+
+  function setJarvisListening(isListening) {
+    jarvisListening = Boolean(isListening);
+    if (!jarvisVoiceBtn) return;
+    const label = jarvisVoiceBtn.querySelector('.jarvis-voice-label');
+    jarvisVoiceBtn.classList.toggle('listening', jarvisListening);
+    jarvisVoiceBtn.setAttribute('aria-pressed', String(jarvisListening));
+    jarvisVoiceBtn.setAttribute('title', jarvisListening ? 'Detener escucha de Jarvis' : 'Hablar con Jarvis');
+    if (label) label.textContent = jarvisListening ? 'Escuchando' : 'Jarvis';
+  }
+
+  function shortenJarvisText(text, maxLength = 84) {
+    const clean = String(text || '').replace(/\s+/g, ' ').trim();
+    return clean.length > maxLength ? `${clean.slice(0, maxLength - 1).trim()}...` : clean;
+  }
+
+  function normalizeJarvisCommand(text) {
+    return String(text || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[¿?¡!.,;:]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function showJarvisUnavailableFeature() {
+    setJarvisStatus('Esa función todavía no está disponible en esta interfaz.', 'error', 5200);
+  }
+
+  function toggleDeepThinkingFromJarvis(enable) {
+    const deepThinkingControl = document.getElementById('deepThinkingBtn')
+      || document.querySelector('[data-action="deep-thinking"], [data-feature="deep-thinking"], .deep-thinking-btn');
+
+    if (!deepThinkingControl) {
+      showJarvisUnavailableFeature();
+      return;
+    }
+
+    const isActive = deepThinkingControl.getAttribute('aria-pressed') === 'true'
+      || deepThinkingControl.classList.contains('is-active')
+      || deepThinkingControl.checked === true;
+
+    if (isActive !== enable) {
+      deepThinkingControl.click();
+    }
+
+    setJarvisStatus(enable ? 'Pensamiento profundo activado.' : 'Pensamiento profundo desactivado.', 'idle', 3200);
+  }
+
+  function handleJarvisCommand(transcript) {
+    const command = normalizeJarvisCommand(transcript);
+    if (!command.startsWith('jarvis')) return false;
+
+    if (command.includes('limpia el chat') || command.includes('limpiar el chat') || command.includes('limpia chat')) {
+      clearHistory();
+      coachInput.value = '';
+      autosizeInput();
+      setJarvisStatus('Chat limpio.', 'idle', 3000);
+      return true;
+    }
+
+    if (command.includes('detener voz') || command.includes('para la voz') || command.includes('callate')) {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      setJarvisStatus('Voz de Jarvis detenida.', 'idle', 3000);
+      return true;
+    }
+
+    if (command.includes('adjuntar archivo') || command.includes('adjunta archivo')) {
+      if (fileInput && !fileInput.disabled) {
+        fileInput.click();
+        setJarvisStatus('Selecciona el archivo para adjuntarlo.', 'idle', 4200);
+      } else {
+        showJarvisUnavailableFeature();
+      }
+      return true;
+    }
+
+    if (command.includes('desactiva busqueda inteligente')) {
+      if (smartSearchBtn) {
+        setSmartSearch(false);
+        setJarvisStatus('Búsqueda inteligente desactivada.', 'idle', 3200);
+      } else {
+        showJarvisUnavailableFeature();
+      }
+      return true;
+    }
+
+    if (command.includes('activa busqueda inteligente')) {
+      if (smartSearchBtn) {
+        setSmartSearch(true);
+        setJarvisStatus('Búsqueda inteligente activada.', 'idle', 3200);
+      } else {
+        showJarvisUnavailableFeature();
+      }
+      return true;
+    }
+
+    if (command.includes('desactiva pensamiento profundo')) {
+      toggleDeepThinkingFromJarvis(false);
+      return true;
+    }
+
+    if (command.includes('activa pensamiento profundo')) {
+      toggleDeepThinkingFromJarvis(true);
+      return true;
+    }
+
+    return false;
+  }
+
+  function cleanTextForSpeech(text) {
+    return String(text || '')
+      .replace(/```[\s\S]*?```/g, ' bloque de código disponible en pantalla. ')
+      .replace(/`([^`]+)`/g, '$1')
+      .replace(/[#*_>\[\]{}()]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function speakJarvisResponse(text) {
+    if (!JARVIS_READ_RESPONSES || !window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
+    const clean = cleanTextForSpeech(text);
+    if (!clean) return;
+
+    const speechText = clean.length > 1500
+      ? `${clean.slice(0, 1500).trim()}. La respuesta completa está en pantalla.`
+      : clean;
+    const utterance = new SpeechSynthesisUtterance(speechText);
+    const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
+    const preferredVoice = voices.find(voice => /^es[-_]?NI/i.test(voice.lang))
+      || voices.find(voice => /^es[-_]?ES/i.test(voice.lang))
+      || voices.find(voice => /^es[-_]?MX/i.test(voice.lang))
+      || voices.find(voice => /^es/i.test(voice.lang));
+
+    if (preferredVoice) {
+      utterance.voice = preferredVoice;
+      utterance.lang = preferredVoice.lang;
+    } else {
+      utterance.lang = 'es-ES';
+    }
+
+    utterance.rate = 1;
+    utterance.pitch = 0.9;
+    utterance.volume = 1;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  }
+
+  async function sendCurrentMessage(options = {}) {
+    if (isSubmitting) return false;
+
+    const source = options.source || 'typed_chat';
+    const typedQuestion = coachInput.value.trim();
+    const question = typedQuestion || (selectedFiles.length ? 'Analiza los archivos adjuntos.' : '');
+    if (!question) return false;
+
+    isSubmitting = true;
+    const filesForMessage = selectedFiles.map(fileMeta);
+    const chatId = activeChatId;
+    addMessageToChat(chatId, { role: 'user', content: question, uploadedFiles: filesForMessage });
+    coachInput.value = '';
+    autosizeInput();
+    renderChat();
+    setComposerLoading(true);
+
+    const loadingMessage = {
+      id: createId(),
+      role: 'assistant',
+      content: 'Pensando...',
+      createdAt: nowIso(),
+      loading: true
+    };
+    const chat = chats.find(item => item.id === chatId);
+    chat.messages.push(loadingMessage);
+    chat.updatedAt = nowIso();
+    persist();
+    renderChat();
+
+    try {
+      const result = await askTutorBrain(question, chatId, source);
+      const answer = result.answer || result.response || 'TUTOR_IA respondió sin texto.';
+      const showSources = Boolean(result.show_sources);
+      updateMessageInChat(chatId, loadingMessage.id, {
+        content: answer,
+        sources: showSources ? result.sources || [] : [],
+        uploadedFiles: result.uploadedFiles || [],
+        showSources,
+        loading: false
+      });
+      updateRenderedMessage(loadingMessage.id, answer, {
+        sources: showSources ? result.sources || [] : [],
+        uploadedFiles: result.uploadedFiles || [],
+        showSources
+      });
+      selectedFiles = [];
+      renderAttachments();
+
+      if (source === 'jarvis_voice') {
+        setJarvisStatus('Respuesta lista.', 'idle', 3600);
+        speakJarvisResponse(answer);
+      }
+      return true;
+    } catch (error) {
+      const answer = fallbackAnswer(error, filesForMessage);
+      updateMessageInChat(chatId, loadingMessage.id, {
+        content: answer,
+        sources: [],
+        loading: false
+      });
+      updateRenderedMessage(loadingMessage.id, answer);
+
+      if (source === 'jarvis_voice') {
+        setJarvisStatus('Jarvis no pudo completar la respuesta.', 'error', 6200);
+        speakJarvisResponse(answer);
+      }
+      return false;
+    } finally {
+      isSubmitting = false;
+      setComposerLoading(false);
+      coachInput.focus();
+      renderHistory();
+    }
+  }
+
+  function sendMessageFromVoice(text) {
+    coachInput.value = String(text || '').trim();
+    autosizeInput();
+    setJarvisStatus('Jarvis está pensando...', 'thinking', 0);
+    return sendCurrentMessage({ source: 'jarvis_voice' });
+  }
+
+  function handleJarvisResult(transcript) {
+    const text = String(transcript || '').trim();
+    if (!text) {
+      setJarvisStatus('No pude escuchar correctamente. Intenta de nuevo.', 'error', 5200);
+      return;
+    }
+
+    coachInput.value = text;
+    autosizeInput();
+    coachInput.focus();
+    setJarvisStatus(`Entendido: ${shortenJarvisText(text)}`, 'idle', 2600);
+
+    if (handleJarvisCommand(text)) return;
+    sendMessageFromVoice(text);
+  }
+
+  function handleJarvisError(event) {
+    const code = event && event.error ? event.error : '';
+
+    if (code === 'language-not-supported' && jarvisLangIndex < JARVIS_RECOGNITION_LANGS.length - 1) {
+      jarvisLangIndex += 1;
+      jarvisRecognition = createJarvisRecognition(JARVIS_RECOGNITION_LANGS[jarvisLangIndex]);
+      window.setTimeout(startJarvisListening, 120);
+      return;
+    }
+
+    const messages = {
+      'not-allowed': 'Permiso de micrófono denegado. Actívalo en el navegador y vuelve a intentar.',
+      'service-not-allowed': 'El navegador bloqueó el servicio de voz. Usa Google Chrome o Microsoft Edge en Windows.',
+      'audio-capture': 'No encuentro un micrófono disponible en Windows.',
+      'no-speech': 'No pude escuchar correctamente. Intenta de nuevo.',
+      network: 'Jarvis no pudo usar el reconocimiento de voz. Revisa tu conexión o intenta de nuevo.'
+    };
+    setJarvisListening(false);
+    setJarvisStatus(messages[code] || 'No pude escuchar correctamente. Intenta de nuevo.', 'error', 6200);
+  }
+
+  function createJarvisRecognition(lang) {
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new Recognition();
+    recognition.lang = lang;
+    recognition.interimResults = false;
+    recognition.continuous = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setJarvisListening(true);
+      setJarvisStatus('Jarvis escuchando...', 'listening', 0);
+    };
+
+    recognition.onresult = event => {
+      const result = event.results && event.results[0] && event.results[0][0];
+      handleJarvisResult(result ? result.transcript : '');
+    };
+
+    recognition.onerror = handleJarvisError;
+    recognition.onend = () => {
+      setJarvisListening(false);
+    };
+
+    return recognition;
+  }
+
+  function startJarvisListening() {
+    if (!jarvisSupported) {
+      setJarvisStatus(JARVIS_UNSUPPORTED_MESSAGE, 'error', 8000);
+      return;
+    }
+
+    if (isSubmitting) {
+      setJarvisStatus('Espera a que termine la respuesta actual.', 'thinking', 3600);
+      return;
+    }
+
+    if (!jarvisRecognition) {
+      jarvisRecognition = createJarvisRecognition(JARVIS_RECOGNITION_LANGS[jarvisLangIndex]);
+    }
+
+    try {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      jarvisRecognition.start();
+    } catch (error) {
+      setJarvisStatus('Jarvis ya está escuchando o el navegador no liberó el micrófono todavía.', 'error', 5200);
+    }
+  }
+
+  function stopJarvisListening() {
+    if (!jarvisRecognition) return;
+    try {
+      jarvisRecognition.stop();
+    } catch (error) {
+      // El navegador puede lanzar error si la escucha ya terminó.
+    }
+    setJarvisListening(false);
+    setJarvisStatus('Escucha detenida.', 'idle', 2400);
+  }
+
+  function initJarvisVoice() {
+    if (!jarvisVoiceBtn) return;
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    jarvisSupported = Boolean(Recognition);
+
+    if (!jarvisSupported) {
+      jarvisVoiceBtn.disabled = false;
+      jarvisVoiceBtn.classList.add('jarvis-disabled');
+      jarvisVoiceBtn.setAttribute('aria-disabled', 'true');
+      jarvisVoiceBtn.addEventListener('click', () => {
+        setJarvisStatus(JARVIS_UNSUPPORTED_MESSAGE, 'error', 8000);
+      });
+      return;
+    }
+
+    jarvisVoiceBtn.classList.remove('jarvis-disabled');
+    jarvisVoiceBtn.setAttribute('aria-disabled', 'false');
+    jarvisVoiceBtn.disabled = false;
+    jarvisRecognition = createJarvisRecognition(JARVIS_RECOGNITION_LANGS[jarvisLangIndex]);
+    jarvisVoiceBtn.addEventListener('click', () => {
+      if (jarvisListening) {
+        stopJarvisListening();
+      } else {
+        startJarvisListening();
+      }
+    });
+
+    if (window.speechSynthesis && window.speechSynthesis.getVoices) {
+      window.speechSynthesis.getVoices();
+    }
+  }
+
   newChatBtn.addEventListener('click', startNewChat);
   clearHistoryBtn.addEventListener('click', clearHistory);
   chatSearchInput.addEventListener('input', renderHistory);
@@ -747,67 +1150,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   coachForm.addEventListener('submit', async event => {
     event.preventDefault();
-    const typedQuestion = coachInput.value.trim();
-    const question = typedQuestion || (selectedFiles.length ? 'Analiza los archivos adjuntos.' : '');
-    if (!question) return;
-
-    const filesForMessage = selectedFiles.map(fileMeta);
-    const chatId = activeChatId;
-    addMessageToChat(chatId, { role: 'user', content: question, uploadedFiles: filesForMessage });
-    coachInput.value = '';
-    autosizeInput();
-    renderChat();
-    setComposerLoading(true);
-
-    const loadingMessage = {
-      id: createId(),
-      role: 'assistant',
-      content: 'Pensando...',
-      createdAt: nowIso(),
-      loading: true
-    };
-    const chat = chats.find(item => item.id === chatId);
-    chat.messages.push(loadingMessage);
-    chat.updatedAt = nowIso();
-    persist();
-    renderChat();
-
-    try {
-      const result = await askTutorBrain(question, chatId);
-      const answer = result.answer || result.response || 'TUTOR_IA respondió sin texto.';
-      const showSources = Boolean(result.show_sources);
-      updateMessageInChat(chatId, loadingMessage.id, {
-        content: answer,
-        sources: showSources ? result.sources || [] : [],
-        uploadedFiles: result.uploadedFiles || [],
-        showSources,
-        loading: false
-      });
-      updateRenderedMessage(loadingMessage.id, answer, {
-        sources: showSources ? result.sources || [] : [],
-        uploadedFiles: result.uploadedFiles || [],
-        showSources
-      });
-      selectedFiles = [];
-      renderAttachments();
-    } catch (error) {
-      const answer = fallbackAnswer(error);
-      updateMessageInChat(chatId, loadingMessage.id, {
-        content: answer,
-        sources: [],
-        loading: false
-      });
-      updateRenderedMessage(loadingMessage.id, answer);
-    } finally {
-      setComposerLoading(false);
-      coachInput.focus();
-      renderHistory();
-    }
+    await sendCurrentMessage({ source: 'typed_chat' });
   });
 
   sortChats();
   setTutorIA(true);
   setSmartSearch(false);
+  initJarvisVoice();
   renderAttachments();
   renderChat();
   autosizeInput();

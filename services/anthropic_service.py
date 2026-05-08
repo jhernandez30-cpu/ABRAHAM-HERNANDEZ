@@ -25,7 +25,7 @@ class AnthropicService:
     ) -> None:
         self.api_key = api_key if api_key is not None else os.getenv("ANTHROPIC_API_KEY", "")
         self.model = model or os.getenv("ANTHROPIC_MODEL", DEFAULT_MODEL)
-        self.timeout = timeout or int(os.getenv("BRAIN_TIMEOUT_SECONDS", "8"))
+        self.timeout = timeout or int(os.getenv("BRAIN_TIMEOUT_SECONDS", "120"))
         self._client = None
 
     def is_configured(self) -> bool:
