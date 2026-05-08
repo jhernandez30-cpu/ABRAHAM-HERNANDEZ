@@ -1,4 +1,4 @@
-const DEFAULT_ENDPOINTS = [
+﻿const DEFAULT_ENDPOINTS = [
   'http://127.0.0.1:8787/api/chat',
   'http://127.0.0.1:8787/api/ask',
   'http://127.0.0.1:8787/ask',
@@ -14,8 +14,6 @@ const CHAT_TIMEOUT_MS = 120000;
 const JARVIS_READ_RESPONSES = window.JARVIS_READ_RESPONSES === undefined
   ? true
   : window.JARVIS_READ_RESPONSES === true || window.JARVIS_READ_RESPONSES === 'true';
-const JARVIS_RECOGNITION_LANGS = ['es-NI', 'es-ES'];
-const JARVIS_UNSUPPORTED_MESSAGE = 'Jarvis no puede acceder al reconocimiento de voz en este navegador. Usa Google Chrome o Microsoft Edge en Windows.';
 const ALLOWED_FILE_EXTENSIONS = new Set([
   'png', 'jpg', 'jpeg', 'webp', 'pdf', 'docx', 'txt', 'py', 'js', 'html', 'css', 'json', 'md', 'sql', 'cs'
 ]);
@@ -44,24 +42,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const sendButton = coachForm ? coachForm.querySelector('.send-orb') : null;
   const jarvisVoiceBtn = document.getElementById('jarvisVoiceBtn');
   const jarvisStatus = document.getElementById('jarvisStatus');
-  const jarvisStatusText = document.getElementById('jarvisStatusText');
   const endpointCandidates = normalizeEndpoints(window.TUTOR_IA_ENDPOINTS || DEFAULT_ENDPOINTS);
 
   let activeTutorEndpoint = '';
   let tutorIAEnabled = true;
   let smartSearchEnabled = false;
+  let deepThinkingEnabled = false;
   let selectedFiles = [];
   let isSubmitting = false;
-  let jarvisRecognition = null;
-  let jarvisListening = false;
   let jarvisSupported = false;
-  let jarvisLangIndex = 0;
-  let jarvisStatusTimer = null;
+  let jarvisAssistant = null;
   let chats = loadChats();
   let activeChatId = loadActiveChatId();
 
   window.tutorIAEnabled = tutorIAEnabled;
   window.smartSearchEnabled = smartSearchEnabled;
+  window.deepThinkingEnabled = deepThinkingEnabled;
 
   if (!chats.length) {
     const initialChat = createChat();
@@ -263,8 +259,8 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('input_source', source);
     formData.append('response_profile', 'web_fast');
     formData.append('local_first', 'true');
-    formData.append('fast_mode', 'true');
-    formData.append('deep_thinking', 'false');
+    formData.append('fast_mode', String(!deepThinkingEnabled));
+    formData.append('deep_thinking', String(deepThinkingEnabled));
     formData.append('bridge_api', 'true');
     formData.append('bridge_api_url', BRIDGE_URL);
     formData.append('anthropic', 'true');
@@ -359,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderCodeBlock(fenceContent) {
     let code = String(fenceContent || '').replace(/^\n/, '').replace(/\n$/, '');
-    let language = 'código';
+    let language = 'cÃ³digo';
     const firstBreak = code.indexOf('\n');
 
     if (firstBreak > -1) {
@@ -546,7 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!filtered.length) {
       const empty = document.createElement('div');
       empty.className = 'empty-history';
-      empty.textContent = query ? 'No encontré chats con esa búsqueda.' : 'Tus chats aparecerán aquí.';
+      empty.textContent = query ? 'No encontrÃ© chats con esa bÃºsqueda.' : 'Tus chats aparecerÃ¡n aquÃ­.';
       chatHistoryList.appendChild(empty);
       return;
     }
@@ -622,7 +618,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tutorIABtn) tutorIABtn.disabled = isLoading;
     if (smartSearchBtn) smartSearchBtn.disabled = isLoading;
     if (jarvisVoiceBtn) {
-      jarvisVoiceBtn.disabled = isLoading;
+      jarvisVoiceBtn.disabled = isLoading || !jarvisSupported;
       jarvisVoiceBtn.classList.toggle('jarvis-disabled', !jarvisSupported);
       jarvisVoiceBtn.setAttribute('aria-disabled', String(isLoading || !jarvisSupported));
     }
@@ -717,169 +713,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (fileInput) fileInput.value = '';
   }
 
-  function setJarvisStatus(text, state = 'idle', autoHideMs = 4200) {
-    if (!jarvisStatus || !jarvisStatusText) return;
-    window.clearTimeout(jarvisStatusTimer);
-    jarvisStatus.hidden = false;
-    jarvisStatus.dataset.state = state;
-    jarvisStatusText.textContent = text;
-
-    if (autoHideMs > 0) {
-      jarvisStatusTimer = window.setTimeout(() => {
-        if (jarvisListening) return;
-        jarvisStatus.hidden = true;
-      }, autoHideMs);
-    }
-  }
-
-  function setJarvisListening(isListening) {
-    jarvisListening = Boolean(isListening);
-    if (!jarvisVoiceBtn) return;
-    const label = jarvisVoiceBtn.querySelector('.jarvis-voice-label');
-    jarvisVoiceBtn.classList.toggle('listening', jarvisListening);
-    jarvisVoiceBtn.setAttribute('aria-pressed', String(jarvisListening));
-    jarvisVoiceBtn.setAttribute('title', jarvisListening ? 'Detener escucha de Jarvis' : 'Hablar con Jarvis');
-    if (label) label.textContent = jarvisListening ? 'Escuchando' : 'Jarvis';
-  }
-
-  function shortenJarvisText(text, maxLength = 84) {
-    const clean = String(text || '').replace(/\s+/g, ' ').trim();
-    return clean.length > maxLength ? `${clean.slice(0, maxLength - 1).trim()}...` : clean;
-  }
-
-  function normalizeJarvisCommand(text) {
-    return String(text || '')
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[¿?¡!.,;:]/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-
-  function showJarvisUnavailableFeature() {
-    setJarvisStatus('Esa función todavía no está disponible en esta interfaz.', 'error', 5200);
-  }
-
-  function toggleDeepThinkingFromJarvis(enable) {
-    const deepThinkingControl = document.getElementById('deepThinkingBtn')
-      || document.querySelector('[data-action="deep-thinking"], [data-feature="deep-thinking"], .deep-thinking-btn');
-
-    if (!deepThinkingControl) {
-      showJarvisUnavailableFeature();
-      return;
-    }
-
-    const isActive = deepThinkingControl.getAttribute('aria-pressed') === 'true'
-      || deepThinkingControl.classList.contains('is-active')
-      || deepThinkingControl.checked === true;
-
-    if (isActive !== enable) {
-      deepThinkingControl.click();
-    }
-
-    setJarvisStatus(enable ? 'Pensamiento profundo activado.' : 'Pensamiento profundo desactivado.', 'idle', 3200);
-  }
-
-  function handleJarvisCommand(transcript) {
-    const command = normalizeJarvisCommand(transcript);
-    if (!command.startsWith('jarvis')) return false;
-
-    if (command.includes('limpia el chat') || command.includes('limpiar el chat') || command.includes('limpia chat')) {
-      clearHistory();
-      coachInput.value = '';
-      autosizeInput();
-      setJarvisStatus('Chat limpio.', 'idle', 3000);
-      return true;
-    }
-
-    if (command.includes('detener voz') || command.includes('para la voz') || command.includes('callate')) {
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
-      setJarvisStatus('Voz de Jarvis detenida.', 'idle', 3000);
-      return true;
-    }
-
-    if (command.includes('adjuntar archivo') || command.includes('adjunta archivo')) {
-      if (fileInput && !fileInput.disabled) {
-        fileInput.click();
-        setJarvisStatus('Selecciona el archivo para adjuntarlo.', 'idle', 4200);
-      } else {
-        showJarvisUnavailableFeature();
-      }
-      return true;
-    }
-
-    if (command.includes('desactiva busqueda inteligente')) {
-      if (smartSearchBtn) {
-        setSmartSearch(false);
-        setJarvisStatus('Búsqueda inteligente desactivada.', 'idle', 3200);
-      } else {
-        showJarvisUnavailableFeature();
-      }
-      return true;
-    }
-
-    if (command.includes('activa busqueda inteligente')) {
-      if (smartSearchBtn) {
-        setSmartSearch(true);
-        setJarvisStatus('Búsqueda inteligente activada.', 'idle', 3200);
-      } else {
-        showJarvisUnavailableFeature();
-      }
-      return true;
-    }
-
-    if (command.includes('desactiva pensamiento profundo')) {
-      toggleDeepThinkingFromJarvis(false);
-      return true;
-    }
-
-    if (command.includes('activa pensamiento profundo')) {
-      toggleDeepThinkingFromJarvis(true);
-      return true;
-    }
-
-    return false;
-  }
-
-  function cleanTextForSpeech(text) {
-    return String(text || '')
-      .replace(/```[\s\S]*?```/g, ' bloque de código disponible en pantalla. ')
-      .replace(/`([^`]+)`/g, '$1')
-      .replace(/[#*_>\[\]{}()]/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-
-  function speakJarvisResponse(text) {
-    if (!JARVIS_READ_RESPONSES || !window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
-    const clean = cleanTextForSpeech(text);
-    if (!clean) return;
-
-    const speechText = clean.length > 1500
-      ? `${clean.slice(0, 1500).trim()}. La respuesta completa está en pantalla.`
-      : clean;
-    const utterance = new SpeechSynthesisUtterance(speechText);
-    const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
-    const preferredVoice = voices.find(voice => /^es[-_]?NI/i.test(voice.lang))
-      || voices.find(voice => /^es[-_]?ES/i.test(voice.lang))
-      || voices.find(voice => /^es[-_]?MX/i.test(voice.lang))
-      || voices.find(voice => /^es/i.test(voice.lang));
-
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
-      utterance.lang = preferredVoice.lang;
-    } else {
-      utterance.lang = 'es-ES';
-    }
-
-    utterance.rate = 1;
-    utterance.pitch = 0.9;
-    utterance.volume = 1;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
-  }
-
   async function sendCurrentMessage(options = {}) {
     if (isSubmitting) return false;
 
@@ -912,7 +745,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const result = await askTutorBrain(question, chatId, source);
-      const answer = result.answer || result.response || 'TUTOR_IA respondió sin texto.';
+      const answer = result.answer || result.response || 'TUTOR_IA respondiÃ³ sin texto.';
       const showSources = Boolean(result.show_sources);
       updateMessageInChat(chatId, loadingMessage.id, {
         content: answer,
@@ -930,8 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderAttachments();
 
       if (source === 'jarvis_voice') {
-        setJarvisStatus('Respuesta lista.', 'idle', 3600);
-        speakJarvisResponse(answer);
+        notifyJarvisResponse(answer, true);
       }
       return true;
     } catch (error) {
@@ -944,8 +776,7 @@ document.addEventListener('DOMContentLoaded', () => {
       updateRenderedMessage(loadingMessage.id, answer);
 
       if (source === 'jarvis_voice') {
-        setJarvisStatus('Jarvis no pudo completar la respuesta.', 'error', 6200);
-        speakJarvisResponse(answer);
+        notifyJarvisResponse(answer, false);
       }
       return false;
     } finally {
@@ -956,140 +787,110 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function sendMessageFromVoice(text) {
-    coachInput.value = String(text || '').trim();
-    autosizeInput();
-    setJarvisStatus('Jarvis está pensando...', 'thinking', 0);
-    return sendCurrentMessage({ source: 'jarvis_voice' });
+  function setDeepThinkingFromJarvis(enable) {
+    const deepThinkingControl = document.getElementById('deepThinkingBtn')
+      || document.querySelector('[data-action="deep-thinking"], [data-feature="deep-thinking"], .deep-thinking-btn');
+
+    if (!deepThinkingControl) {
+      deepThinkingEnabled = Boolean(enable);
+      window.deepThinkingEnabled = deepThinkingEnabled;
+      return true;
+    }
+
+    const isActive = deepThinkingControl.getAttribute('aria-pressed') === 'true'
+      || deepThinkingControl.classList.contains('is-active')
+      || deepThinkingControl.checked === true;
+
+    if (isActive !== enable) {
+      deepThinkingControl.click();
+    }
+
+    deepThinkingEnabled = Boolean(enable);
+    window.deepThinkingEnabled = deepThinkingEnabled;
+    return true;
   }
 
-  function handleJarvisResult(transcript) {
-    const text = String(transcript || '').trim();
-    if (!text) {
-      setJarvisStatus('No pude escuchar correctamente. Intenta de nuevo.', 'error', 5200);
+  function getLastAssistantText() {
+    const chat = getActiveChat();
+    if (!chat || !Array.isArray(chat.messages)) return '';
+    const lastAssistant = [...chat.messages]
+      .reverse()
+      .find(message => message.role === 'assistant' && !message.loading && message.content);
+    return lastAssistant ? lastAssistant.content : '';
+  }
+
+  function notifyJarvisResponse(answer, ok = true) {
+    if (!jarvisAssistant) return;
+    jarvisAssistant.showStatus(ok ? 'Listo.' : 'Jarvis no pudo responder. Puedes escribir tu mensaje.', ok ? 'success' : 'error');
+    jarvisAssistant.speakResponse(answer);
+  }
+
+  function initJarvisIntegration() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    jarvisSupported = Boolean(SpeechRecognition);
+
+    if (!window.JarvisAssistant) {
+      if (jarvisVoiceBtn) {
+        jarvisVoiceBtn.disabled = true;
+        jarvisVoiceBtn.title = 'Voz no disponible en este navegador.';
+      }
+      if (jarvisStatus) {
+        jarvisStatus.textContent = 'Tu navegador no soporta voz. Usa Chrome o Edge.';
+        jarvisStatus.className = 'jarvis-status warning';
+      }
       return;
     }
 
-    coachInput.value = text;
-    autosizeInput();
-    coachInput.focus();
-    setJarvisStatus(`Entendido: ${shortenJarvisText(text)}`, 'idle', 2600);
-
-    if (handleJarvisCommand(text)) return;
-    sendMessageFromVoice(text);
-  }
-
-  function handleJarvisError(event) {
-    const code = event && event.error ? event.error : '';
-
-    if (code === 'language-not-supported' && jarvisLangIndex < JARVIS_RECOGNITION_LANGS.length - 1) {
-      jarvisLangIndex += 1;
-      jarvisRecognition = createJarvisRecognition(JARVIS_RECOGNITION_LANGS[jarvisLangIndex]);
-      window.setTimeout(startJarvisListening, 120);
-      return;
-    }
-
-    const messages = {
-      'not-allowed': 'Permiso de micrófono denegado. Actívalo en el navegador y vuelve a intentar.',
-      'service-not-allowed': 'El navegador bloqueó el servicio de voz. Usa Google Chrome o Microsoft Edge en Windows.',
-      'audio-capture': 'No encuentro un micrófono disponible en Windows.',
-      'no-speech': 'No pude escuchar correctamente. Intenta de nuevo.',
-      network: 'Jarvis no pudo usar el reconocimiento de voz. Revisa tu conexión o intenta de nuevo.'
-    };
-    setJarvisListening(false);
-    setJarvisStatus(messages[code] || 'No pude escuchar correctamente. Intenta de nuevo.', 'error', 6200);
-  }
-
-  function createJarvisRecognition(lang) {
-    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new Recognition();
-    recognition.lang = lang;
-    recognition.interimResults = false;
-    recognition.continuous = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = () => {
-      setJarvisListening(true);
-      setJarvisStatus('Jarvis escuchando...', 'listening', 0);
-    };
-
-    recognition.onresult = event => {
-      const result = event.results && event.results[0] && event.results[0][0];
-      handleJarvisResult(result ? result.transcript : '');
-    };
-
-    recognition.onerror = handleJarvisError;
-    recognition.onend = () => {
-      setJarvisListening(false);
-    };
-
-    return recognition;
-  }
-
-  function startJarvisListening() {
-    if (!jarvisSupported) {
-      setJarvisStatus(JARVIS_UNSUPPORTED_MESSAGE, 'error', 8000);
-      return;
-    }
-
-    if (isSubmitting) {
-      setJarvisStatus('Espera a que termine la respuesta actual.', 'thinking', 3600);
-      return;
-    }
-
-    if (!jarvisRecognition) {
-      jarvisRecognition = createJarvisRecognition(JARVIS_RECOGNITION_LANGS[jarvisLangIndex]);
-    }
-
-    try {
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
-      jarvisRecognition.start();
-    } catch (error) {
-      setJarvisStatus('Jarvis ya está escuchando o el navegador no liberó el micrófono todavía.', 'error', 5200);
-    }
-  }
-
-  function stopJarvisListening() {
-    if (!jarvisRecognition) return;
-    try {
-      jarvisRecognition.stop();
-    } catch (error) {
-      // El navegador puede lanzar error si la escucha ya terminó.
-    }
-    setJarvisListening(false);
-    setJarvisStatus('Escucha detenida.', 'idle', 2400);
-  }
-
-  function initJarvisVoice() {
-    if (!jarvisVoiceBtn) return;
-    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    jarvisSupported = Boolean(Recognition);
-
-    if (!jarvisSupported) {
-      jarvisVoiceBtn.disabled = false;
-      jarvisVoiceBtn.classList.add('jarvis-disabled');
-      jarvisVoiceBtn.setAttribute('aria-disabled', 'true');
-      jarvisVoiceBtn.addEventListener('click', () => {
-        setJarvisStatus(JARVIS_UNSUPPORTED_MESSAGE, 'error', 8000);
-      });
-      return;
-    }
-
-    jarvisVoiceBtn.classList.remove('jarvis-disabled');
-    jarvisVoiceBtn.setAttribute('aria-disabled', 'false');
-    jarvisVoiceBtn.disabled = false;
-    jarvisRecognition = createJarvisRecognition(JARVIS_RECOGNITION_LANGS[jarvisLangIndex]);
-    jarvisVoiceBtn.addEventListener('click', () => {
-      if (jarvisListening) {
-        stopJarvisListening();
-      } else {
-        startJarvisListening();
+    jarvisAssistant = window.JarvisAssistant.create({
+      elements: {
+        button: jarvisVoiceBtn,
+        status: jarvisStatus,
+        input: coachInput
+      },
+      config: {
+        readResponses: JARVIS_READ_RESPONSES,
+        stt: {
+          provider: 'web-speech',
+          language: 'es-NI',
+          fallbackLanguage: 'es-ES',
+          localProvidersReadyForPhase2: ['faster-whisper', 'vosk', 'speechrecognition']
+        },
+        tts: {
+          provider: 'speech-synthesis',
+          codeNotice: 'La respuesta incluye cÃ³digo. Te recomiendo revisarlo en pantalla.'
+        }
+      },
+      state: {
+        isSubmitting: () => isSubmitting
+      },
+      callbacks: {
+        autosizeInput,
+        sendMessage: text => {
+          coachInput.value = String(text || '').trim();
+          autosizeInput();
+          return sendCurrentMessage({ source: 'jarvis_voice' });
+        },
+        clearChat: () => {
+          clearHistory();
+          coachInput.value = '';
+          autosizeInput();
+          return true;
+        },
+        setSmartSearch: enabled => {
+          setSmartSearch(Boolean(enabled));
+          coachInput.focus();
+          return true;
+        },
+        setDeepThinking: setDeepThinkingFromJarvis,
+        openFilePicker: () => {
+          if (!fileInput || fileInput.disabled) return false;
+          fileInput.click();
+          return true;
+        },
+        getLastAssistantText
       }
     });
-
-    if (window.speechSynthesis && window.speechSynthesis.getVoices) {
-      window.speechSynthesis.getVoices();
-    }
+    window.jarvisAssistant = jarvisAssistant;
   }
 
   newChatBtn.addEventListener('click', startNewChat);
@@ -1156,7 +957,7 @@ document.addEventListener('DOMContentLoaded', () => {
   sortChats();
   setTutorIA(true);
   setSmartSearch(false);
-  initJarvisVoice();
+  initJarvisIntegration();
   renderAttachments();
   renderChat();
   autosizeInput();
