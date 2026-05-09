@@ -1,0 +1,292 @@
+/* Page-specific polish for titulos.html. */
+body.titles-page .titles-hero {
+  min-height: 680px;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.94) 52%, rgba(0, 0, 0, 0.78) 100%),
+    linear-gradient(135deg, rgba(77, 216, 255, 0.22), transparent 44%),
+    #070b0f !important;
+}
+
+body.titles-page .titles-hero-copy {
+  max-width: 840px;
+}
+
+body.titles-page .titles-profile-card {
+  display: grid;
+  gap: 16px;
+}
+
+body.titles-page .profile-label {
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+body.titles-page .profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+body.titles-page .profile-tags span {
+  border: 1px solid rgba(77, 216, 255, 0.38);
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: rgba(77, 216, 255, 0.1);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+body.titles-page .credential-grid,
+body.titles-page .formation-grid,
+body.titles-page .indicator-grid {
+  display: grid;
+  gap: 24px;
+}
+
+body.titles-page .credential-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+body.titles-page .credential-grid-primary {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+body.titles-page .credential-card,
+body.titles-page .formation-card,
+body.titles-page .experience-item,
+body.titles-page .indicator-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 24px 62px rgba(24, 80, 110, 0.1);
+}
+
+body.titles-page .credential-card {
+  position: relative;
+  min-height: 248px;
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  padding: 32px;
+  overflow: hidden;
+}
+
+body.titles-page .credential-card::before,
+body.titles-page .formation-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--accent);
+}
+
+body.titles-page .credential-card-featured {
+  min-height: 210px;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+}
+
+body.titles-page .credential-icon {
+  width: 68px;
+  height: 68px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(77, 216, 255, 0.38);
+  border-radius: 50%;
+  background: rgba(77, 216, 255, 0.1);
+  color: #009ac6;
+  font-size: 1.8rem;
+}
+
+body.titles-page .credential-card h3,
+body.titles-page .formation-card h3,
+body.titles-page .experience-item h3 {
+  margin: 12px 0 8px;
+  font-size: clamp(1.18rem, 2vw, 1.48rem);
+  line-height: 1.18;
+}
+
+body.titles-page .credential-card p,
+body.titles-page .formation-card p,
+body.titles-page .experience-item p {
+  margin: 0;
+  color: var(--muted) !important;
+}
+
+body.titles-page .formation-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.titles-page .formation-card {
+  position: relative;
+  min-height: 230px;
+  padding: 28px;
+  overflow: hidden;
+}
+
+body.titles-page .formation-card i {
+  width: 54px;
+  height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(77, 216, 255, 0.36);
+  border-radius: 50%;
+  background: rgba(77, 216, 255, 0.1);
+  color: #009ac6;
+  font-size: 1.35rem;
+}
+
+body.titles-page .formation-card span {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 18px;
+  border: 1px solid rgba(77, 216, 255, 0.42);
+  border-radius: 999px;
+  padding: 7px 12px;
+  background: rgba(77, 216, 255, 0.1);
+  color: #009ac6;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+body.titles-page .experience-section .split-layout {
+  align-items: center;
+}
+
+body.titles-page .experience-track {
+  display: grid;
+  gap: 16px;
+}
+
+body.titles-page .experience-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 18px;
+  padding: 24px;
+}
+
+body.titles-page .experience-item > span {
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #071017;
+  color: var(--accent);
+  font-weight: 900;
+}
+
+body.titles-page .indicator-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.titles-page .indicator-card {
+  display: grid;
+  gap: 10px;
+  padding: 32px;
+  text-align: center;
+}
+
+body.titles-page .indicator-card strong {
+  color: #009ac6;
+  font-size: clamp(3rem, 7vw, 5rem);
+  line-height: 0.95;
+  font-weight: 900;
+}
+
+body.titles-page .indicator-card span {
+  color: var(--ink);
+  font-weight: 900;
+}
+
+body.titles-page .quote-section {
+  padding-top: 0;
+}
+
+body.titles-page .titles-quote {
+  text-align: center;
+}
+
+body.titles-page .titles-quote p {
+  max-width: 920px;
+  margin: 14px auto 18px;
+  color: var(--ink) !important;
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  font-style: italic;
+  line-height: 1.7;
+}
+
+body.titles-page .titles-quote .referencia {
+  color: #009ac6;
+  font-weight: 900;
+}
+
+body.titles-page .titles-cta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: center;
+}
+
+body.titles-page .cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+body.titles-page .credential-card,
+body.titles-page .formation-card,
+body.titles-page .experience-item,
+body.titles-page .indicator-card {
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+body.titles-page .credential-card:hover,
+body.titles-page .formation-card:hover,
+body.titles-page .experience-item:hover,
+body.titles-page .indicator-card:hover {
+  transform: translateY(-7px);
+  border-color: rgba(77, 216, 255, 0.72);
+  box-shadow: 0 34px 80px rgba(20, 44, 62, 0.18);
+}
+
+@media (max-width: 980px) {
+  body.titles-page .formation-grid,
+  body.titles-page .indicator-grid,
+  body.titles-page .titles-cta {
+    grid-template-columns: 1fr;
+  }
+
+  body.titles-page .cta-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  body.titles-page .credential-card-featured,
+  body.titles-page .experience-item {
+    grid-template-columns: 1fr;
+  }
+
+  body.titles-page .credential-card,
+  body.titles-page .formation-card,
+  body.titles-page .experience-item,
+  body.titles-page .indicator-card {
+    padding: 24px;
+  }
+
+  body.titles-page .profile-tags span,
+  body.titles-page .formation-card span {
+    font-size: 0.76rem;
+  }
+}

@@ -179,15 +179,21 @@ function initPortfolioChatbot() {
   const githubUrl = 'https://github.com/jhernandez30-cpu';
   const instagramUrl = 'https://www.instagram.com/abrhamdev/';
   const youtubeUrl = 'https://www.youtube.com/@abrhamdev';
+  const jahAvatarUrl = pageUrl('assets/img/jah-avatar.png');
   const fallbackAnswer = {
     text: `Puedo guiarte por el sitio. Elige una ruta: <a href="${pageUrl('servicios/')}">servicios</a>, <a href="${pageUrl('proyectos/')}">casos de estudio</a>, <a href="${pageUrl('recursos/')}">blog/recursos</a>, <a href="${pageUrl('sobre-mi/')}">perfil profesional</a> o <a href="${pageUrl('contacto.html')}">contacto</a>. Si me dices tu problema, te recomiendo la página correcta.`,
-    suggestions: ['Guíame', 'Servicios', 'Proyectos', 'Contacto']
+    suggestions: ['Mapa del sitio', 'Servicios', 'Proyectos', 'Contacto']
   };
   const answers = [
     {
       keys: ['hola', 'buenas', 'hey', 'saludos', 'inicio', 'empezar', 'ayuda'],
-      text: `Hola, soy el asistente virtual de Abraham. Puedo ayudarte a navegar el sitio, elegir un servicio, revisar proyectos, leer recursos o pedir presupuesto. Si no sabes por dónde empezar, dime qué quieres mejorar: ventas, datos, reportes, procesos manuales, APIs, atención al cliente o tu sitio web.`,
+      text: `Hola, soy JAH, el asistente virtual de Abraham. Puedo ayudarte a navegar el sitio, elegir un servicio, revisar proyectos, conocer títulos y experiencia, ver recursos o pedir presupuesto. Si no sabes por dónde empezar, dime qué quieres mejorar: ventas, datos, reportes, procesos manuales, APIs, atención al cliente o tu sitio web.`,
       suggestions: ['Guíame', 'Servicios', 'Proyectos', 'Contacto']
+    },
+    {
+      keys: ['jah', 'joshue', 'josue', 'josué', 'abraham hernandez', 'abraham hernández', 'quien es', 'quién es', 'perfil profesional', 'ingeniero en sistemas'],
+      text: `Josué Abraham Hernández es Ingeniero en Sistemas y desarrollador web en Nicaragua. Su perfil combina desarrollo web, software, bases de datos, ciberseguridad e inteligencia artificial para crear soluciones digitales empresariales: sitios profesionales, dashboards, automatizaciones, APIs y chatbots.`,
+      suggestions: ['Sobre mí', 'Servicios', 'Títulos', 'Contacto']
     },
     {
       keys: ['guia', 'guiame', 'orientame', 'recomienda', 'recomendacion', 'no se', 'no sé', 'que necesito', 'necesito ayuda', 'ruta'],
@@ -196,13 +202,18 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['mapa', 'navegar', 'sitio', 'secciones', 'paginas', 'páginas', 'menu', 'todo el sitio'],
-      text: `Mapa del sitio: <a href="${pageUrl('index.html')}">Inicio</a>, <a href="${pageUrl('desarrollador-web-nicaragua/')}">desarrollador web en Nicaragua</a>, <a href="${pageUrl('servicios/')}">servicios</a>, <a href="${pageUrl('proyectos/')}">proyectos</a>, <a href="${pageUrl('recursos/')}">blog/recursos</a>, <a href="${pageUrl('sobre-mi/')}">sobre mí</a>, <a href="${pageUrl('titulos.html')}">títulos</a>, <a href="${pageUrl('interactua.html')}">herramientas IA</a>, <a href="${pageUrl('asistente-programacion.html')}">asistente de programación</a> y <a href="${pageUrl('contacto.html')}">contacto</a>.`,
+      text: `Mapa del sitio: <a href="${pageUrl('index.html')}">Inicio</a>, <a href="${pageUrl('desarrollador-web-nicaragua/')}">desarrollador web en Nicaragua</a>, <a href="${pageUrl('servicios/')}">servicios</a>, <a href="${pageUrl('proyectos/')}">proyectos</a>, <a href="${pageUrl('recursos/')}">blog/recursos</a>, <a href="${pageUrl('sobre-mi/')}">sobre mí</a>, <a href="${pageUrl('titulos.html')}">títulos y experiencia</a>, <a href="${pageUrl('interactua.html')}">herramientas IA</a>, <a href="${pageUrl('asistente-programacion.html')}">asistente de programación</a>, <a href="${pageUrl('jah/')}">Marca JAH</a> y <a href="${pageUrl('contacto.html')}">contacto</a>.`,
       suggestions: ['Servicios', 'Proyectos', 'Recursos', 'Contacto']
     },
     {
       keys: ['servicio', 'servicios', 'haces', 'ofreces', 'oferta', 'desarrollo', 'web profesional'],
       text: `Abraham ofrece <a href="${pageUrl('servicios/')}">servicios digitales B2B</a>: <a href="${pageUrl('dashboards-tiempo-real/')}">dashboards en tiempo real</a>, <a href="${pageUrl('automatizacion-procesos-python/')}">automatización con Python</a>, <a href="${pageUrl('desarrollo-web-a-medida/')}">desarrollo web a medida</a>, <a href="${pageUrl('desarrollo-frontend-react-vue/')}">frontend React/Vue</a>, <a href="${pageUrl('integracion-apis/')}">integración de APIs</a> y <a href="${pageUrl('chatbots-para-web/')}">chatbots para web</a>.`,
       suggestions: ['Dashboards', 'Automatización', 'APIs', 'Chatbot']
+    },
+    {
+      keys: ['habilidades', 'skills', 'html', 'css', 'javascript', 'python', 'c#', 'c sharp', 'sql', 'power bi', 'ciberseguridad', 'bases de datos', 'desarrollo web', 'inteligencia artificial'],
+      text: `Habilidades destacadas del sitio: HTML, CSS, JavaScript, Python, C#, SQL, Power BI, bases de datos, desarrollo web, APIs, automatización, ciberseguridad e inteligencia artificial. En la home también aparece la sección de tecnologías y áreas de especialidad.`,
+      suggestions: ['Tecnologías', 'Servicios', 'Proyectos', 'Títulos']
     },
     {
       keys: ['desarrollador web nicaragua', 'nicaragua', 'local', 'perfil local', 'desarrollador web en nicaragua'],
@@ -212,7 +223,7 @@ function initPortfolioChatbot() {
     {
       keys: ['dashboard', 'dashboards', 'datos', 'metricas', 'métricas', 'kpi', 'reporte', 'reportes', 'tiempo real', 'alertas', 'websocket', 'socket'],
       text: `Si necesitas ver datos, KPIs o alertas en vivo, revisa <a href="${pageUrl('dashboards-tiempo-real/')}">dashboards en tiempo real</a>. Es ideal para operaciones, ventas, seguridad o soporte cuando el equipo no puede esperar reportes manuales.`,
-      suggestions: ['Caso ITSA', 'Dashboard vs reporte', 'APIs', 'Contacto']
+      suggestions: ['ITSA Segurity', 'Dashboard vs reporte', 'APIs', 'Contacto']
     },
     {
       keys: ['automatizacion', 'automatización', 'python', 'excel', 'manual', 'tarea repetitiva', 'tareas repetitivas', 'ahorrar tiempo', 'procesos', 'validacion', 'validación'],
@@ -241,18 +252,33 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['proyecto', 'proyectos', 'portfolio', 'portafolio', 'demo', 'caso', 'casos', 'trabajos'],
-      text: `En <a href="${pageUrl('proyectos/')}">Proyectos</a> encuentras casos de estudio: <a href="${pageUrl('proyectos/itsa-segurity/')}">ITSA Segurity</a>, <a href="${pageUrl('proyectos/dashboard-analytics/')}">Dashboard Analytics</a> y <a href="${pageUrl('proyectos/ai-chatbot/')}">AI Chatbot</a>. Cada caso muestra problema, solución, stack y resultado.`,
-      suggestions: ['Caso ITSA', 'Dashboard Analytics', 'AI Chatbot', 'Servicios']
+      text: `En <a href="${pageUrl('proyectos/')}">Proyectos</a> aparecen proyectos reales como <a href="https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino.html" target="_blank" rel="noopener">Mural Interactivo Sandino</a>, <a href="${pageUrl('proyectos/dashboard-analytics/')}">Dashboard Analytics</a>, <a href="${pageUrl('proyectos/ai-chatbot/')}">AI Chatbot</a>, <a href="${pageUrl('jah/')}">Marca JAH</a> y <a href="https://jhernandez30-cpu.github.io/Variedades-Nora/" target="_blank" rel="noopener">Variedades Nora</a>. <a href="${pageUrl('proyectos/itsa-segurity/')}">ITSA Segurity</a> queda conectado como mi empresa, no como proyecto de portafolio.`,
+      suggestions: ['Sandino', 'Variedades Nora', 'ITSA Segurity', 'Servicios']
     },
     {
-      keys: ['itsa', 'segurity', 'seguridad', 'monitoreo', 'incidentes'],
-      text: `<a href="${pageUrl('proyectos/itsa-segurity/')}">ITSA Segurity</a> es un caso de dashboard con alertas en tiempo real para seguridad operativa. El stack incluye React, Socket.IO, Node.js y MongoDB, con foco en visibilidad y respuesta rápida.`,
-      suggestions: ['Dashboards', 'Proyectos', 'Demo', 'Contacto']
+      keys: ['itsa', 'segurity', 'seguridad', 'monitoreo', 'incidentes', 'empresa', 'mi empresa'],
+      text: `<a href="${pageUrl('proyectos/itsa-segurity/')}">ITSA Segurity</a> es mi empresa, conectada al portafolio como marca empresarial orientada a seguridad, monitoreo, tecnología y soluciones digitales. También puedes abrir el <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" rel="noopener">sitio público de ITSA Segurity</a> o escribirme para hablar de una solución relacionada.`,
+      suggestions: ['Dashboards', 'Empresa', 'Contacto', 'Servicios']
     },
     {
       keys: ['analytics', 'marketing', 'dashboard analytics', 'analitica', 'analítica', 'visualizacion', 'visualización'],
       text: `<a href="${pageUrl('proyectos/dashboard-analytics/')}">Dashboard Analytics</a> muestra cómo convertir datos dispersos en un panel con filtros y KPIs para tomar decisiones de marketing más rápido.`,
       suggestions: ['Dashboards', 'Proyectos', 'Recursos', 'Contacto']
+    },
+    {
+      keys: ['sandino', 'mural sandino', 'museo sandino', 'museo digital', 'ciencia sociales', 'ciencias sociales', 'augusto sandino'],
+      text: `El <a href="https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino.html" target="_blank" rel="noopener">Mural Interactivo Sandino</a> es un proyecto educativo/museo digital sobre el General Augusto Nicolás Calderón Sandino. Está integrado en el portafolio como proyecto real con enlace público.`,
+      suggestions: ['Proyectos', 'Recursos', 'Servicios', 'Contacto']
+    },
+    {
+      keys: ['variedades nora', 'nora', 'ecommerce', 'e-commerce', 'tienda', 'tienda online'],
+      text: `<a href="https://jhernandez30-cpu.github.io/Variedades-Nora/" target="_blank" rel="noopener">Variedades Nora</a> aparece como proyecto de e-commerce/tienda online dentro del portafolio. Puedes verlo desde la sección de proyectos de la home.`,
+      suggestions: ['Proyectos', 'Web a medida', 'Contacto', 'Servicios']
+    },
+    {
+      keys: ['marca jah', 'jah marca', 'logo jah', 'ropa jah', 'tienda jah', 'marca'],
+      text: `<a href="${pageUrl('jah/')}">Marca JAH</a> es una página visual de marca con estética deportiva/premium. En el portafolio aparece como proyecto de marca y experiencia visual.`,
+      suggestions: ['Proyectos', 'Inicio', 'Contacto', 'Servicios']
     },
     {
       keys: ['ai chatbot', 'asistente virtual', 'nlp', 'rasa'],
@@ -276,7 +302,7 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['tecnologia', 'tecnologias', 'tecnología', 'tecnologías', 'stack', 'javascript', 'typescript', 'sql', 'node', 'mongodb', 'postgresql', 'git'],
-      text: `Stack principal: React, Vue, JavaScript, TypeScript, Python, APIs REST, SQL, WebSockets, Socket.IO, Node.js, bases de datos y Git/GitHub Actions. Para ver cómo se aplica, revisa <a href="${pageUrl('proyectos/')}">proyectos</a> o <a href="${pageUrl('sobre-mi/')}">sobre mí</a>.`,
+      text: `Stack y áreas del sitio: React, Vue, JavaScript, TypeScript, Python, APIs REST, SQL, WebSockets, Socket.IO, Node.js, bases de datos, Power BI, ciberseguridad y Git/GitHub Actions. Para ver cómo se aplica, revisa <a href="${pageUrl('proyectos/')}">proyectos</a> o <a href="${pageUrl('sobre-mi/')}">sobre mí</a>.`,
       suggestions: ['Proyectos', 'Sobre mí', 'Frontend', 'APIs']
     },
     {
@@ -286,12 +312,17 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['titulo', 'titulos', 'título', 'títulos', 'certificacion', 'certificaciones', 'estudios', 'maestria', 'maestría', 'cv', 'curriculum', 'currículum'],
-      text: `Puedes ver formación, títulos y certificaciones en <a href="${pageUrl('titulos.html')}">Títulos</a>. También puedes descargar el <a href="${pageUrl('cv.pdf')}">CV en PDF</a> para evaluar el perfil profesional.`,
+      text: `Puedes ver <a href="${pageUrl('titulos.html')}">Títulos, formación y experiencia</a>: Ingeniero en Sistema de Informática por la Universidad Nacional Héroes de San José de las Mulas, Máster en Desarrollo con IA, Máster en Ciberseguridad, Power BI, Data Science, Marketing Digital con IA y SEO para IA y Google. También puedes descargar el <a href="${pageUrl('cv.pdf')}">CV en PDF</a>.`,
       suggestions: ['Sobre mí', 'CV', 'Contacto', 'Tecnologías']
     },
     {
+      keys: ['indicadores', 'años', 'anos', 'practica tecnica', 'práctica técnica', 'areas de servicio', 'demos'],
+      text: `La home muestra indicadores reales: 5 años de práctica técnica, 15 proyectos y demos, y 5 áreas de servicio. No se usan estadísticas falsas de clientes, premios o ventas.`,
+      suggestions: ['Proyectos', 'Servicios', 'Sobre mí', 'Contacto']
+    },
+    {
       keys: ['ia', 'ai', 'inteligencia artificial', 'agente', 'agentes', 'herramientas ia', 'notebooklm', 'interactua'],
-      text: `En <a href="${pageUrl('interactua.html')}">Interactúa</a> hay herramientas IA y recursos para negocio/aprendizaje. También puedes visitar <a href="${pageUrl('asistente-programacion.html')}">Asistente de Programación</a> si quieres aprender o practicar conceptos técnicos.`,
+      text: `En <a href="${pageUrl('interactua.html')}">Interactúa</a> hay herramientas IA para captación de cliente, análisis de competencia, estrategia, seguridad, desarrollo, bases de datos y C#. También incluye libros NotebookLM de programación, Python, C#, bases de datos, Power BI, ciberseguridad y agente N8N. Para practicar código, abre <a href="${pageUrl('asistente-programacion.html')}">Asistente de Programación</a>.`,
       suggestions: ['Asistente programación', 'Chatbot', 'Recursos', 'Contacto']
     },
     {
@@ -301,7 +332,7 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['contacto', 'correo', 'email', 'cotizar', 'contratar', 'precio', 'costo', 'presupuesto', 'disponible', 'disponibilidad', 'freelance', 'trabajo'],
-      text: `Para solicitar presupuesto, escribe por <a href="${whatsappBudget}" target="_blank" rel="noopener">WhatsApp</a> o completa el formulario en <a href="${pageUrl('contacto.html')}">Contacto</a>. Incluye objetivo, proceso actual, herramientas existentes, fecha ideal, presupuesto aproximado y ejemplos de referencia.`,
+      text: `Para solicitar presupuesto, escribe por <a href="${whatsappBudget}" target="_blank" rel="noopener">WhatsApp al +505 8987 1374</a> o completa el formulario en <a href="${pageUrl('contacto.html')}">Contacto</a>. Incluye objetivo, proceso actual, herramientas existentes, fecha ideal, presupuesto aproximado y ejemplos de referencia.`,
       suggestions: ['WhatsApp', 'Servicios', 'Proyectos', 'CV']
     },
     {
@@ -316,33 +347,60 @@ function initPortfolioChatbot() {
     }
   ];
 
-  const quickReplies = ['Guíame', 'Servicios', 'Proyectos', 'Recursos', 'Contacto'];
+  const quickReplies = ['Mapa del sitio', 'Servicios', 'Proyectos', 'Títulos', 'Contacto'];
   const widget = document.createElement('div');
   widget.className = 'chatbot-widget';
   widget.innerHTML = `
     <div class="chatbot-panel" role="dialog" aria-label="Chatbot del portafolio" aria-hidden="true">
       <div class="chatbot-header">
         <div class="chatbot-title">
-          <div class="chatbot-avatar"><i class="fas fa-robot"></i></div>
+          <div class="chatbot-avatar">
+            <img class="jah-header-avatar" src="${jahAvatarUrl}" alt="Avatar de JAH" loading="lazy" decoding="async">
+          </div>
           <div>
-            <strong>Asistente JAH</strong>
-            <span><span class="chatbot-status-dot"></span>Disponible ahora</span>
+            <strong>JAH</strong>
+            <span><span class="chatbot-status-dot"></span>Asistente virtual</span>
           </div>
         </div>
         <button class="chatbot-close" type="button" aria-label="Cerrar chat"><i class="fas fa-times"></i></button>
       </div>
       <div class="chatbot-messages" aria-live="polite"></div>
-      <div class="chatbot-actions">
-        <a href="${pageUrl('contacto.html')}" class="chatbot-action">Contacto</a>
-        <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20un%20presupuesto%20para%20un%20proyecto" target="_blank" rel="noopener" class="chatbot-action">WhatsApp</a>
+      <div class="chatbot-menu">
+        <button class="chatbot-menu-toggle" type="button" aria-expanded="false">
+          <span><i class="fas fa-list"></i> Menú de JAH</span>
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
+        </button>
+        <div class="chatbot-menu-panel" hidden>
+          <div class="chatbot-menu-section">
+            <span class="chatbot-menu-label">Preguntas sugeridas</span>
+            <div class="chatbot-menu-options" aria-label="Preguntas sugeridas"></div>
+          </div>
+          <div class="chatbot-menu-section">
+            <span class="chatbot-menu-label">Enlaces rápidos</span>
+            <a href="${pageUrl('index.html')}" class="chatbot-menu-link">Inicio</a>
+            <a href="${pageUrl('sobre-mi/')}" class="chatbot-menu-link">Sobre mí</a>
+            <a href="${pageUrl('servicios/')}" class="chatbot-menu-link">Servicios</a>
+            <a href="${pageUrl('proyectos/')}" class="chatbot-menu-link">Proyectos</a>
+            <a href="${pageUrl('recursos/')}" class="chatbot-menu-link">Recursos</a>
+            <a href="${pageUrl('titulos.html')}" class="chatbot-menu-link">Títulos y experiencia</a>
+            <a href="${pageUrl('interactua.html')}" class="chatbot-menu-link">Interactúa</a>
+            <a href="${pageUrl('asistente-programacion.html')}" class="chatbot-menu-link">Asistente programación</a>
+            <a href="${pageUrl('cv.pdf')}" class="chatbot-menu-link" download>Descargar CV</a>
+            <a href="${pageUrl('contacto.html')}" class="chatbot-menu-link">Contacto</a>
+            <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20un%20presupuesto%20para%20un%20proyecto" target="_blank" rel="noopener" class="chatbot-menu-link">WhatsApp</a>
+            <a href="${linkedinUrl}" target="_blank" rel="noopener" class="chatbot-menu-link">LinkedIn</a>
+            <a href="${githubUrl}" target="_blank" rel="noopener" class="chatbot-menu-link">GitHub</a>
+          </div>
+        </div>
       </div>
-      <div class="chatbot-quick-replies" aria-label="Preguntas rapidas"></div>
       <form class="chatbot-form">
         <input class="chatbot-input" type="text" placeholder="Escribe tu pregunta..." aria-label="Mensaje para el chatbot" autocomplete="off">
         <button class="chatbot-send" type="submit" aria-label="Enviar mensaje"><i class="fas fa-paper-plane"></i></button>
       </form>
     </div>
-    <button class="chatbot-toggle" type="button" aria-label="Abrir chat"><i class="fas fa-comments"></i></button>
+    <button class="chatbot-toggle" type="button" aria-label="Abrir chat">
+      <img class="jah-floating-avatar" src="${jahAvatarUrl}" alt="Abrir chatbot JAH" loading="lazy" decoding="async">
+    </button>
   `;
 
   document.body.appendChild(widget);
@@ -353,13 +411,29 @@ function initPortfolioChatbot() {
   const messages = widget.querySelector('.chatbot-messages');
   const form = widget.querySelector('.chatbot-form');
   const input = widget.querySelector('.chatbot-input');
-  const chips = widget.querySelector('.chatbot-quick-replies');
+  const menuToggle = widget.querySelector('.chatbot-menu-toggle');
+  const menuPanel = widget.querySelector('.chatbot-menu-panel');
+  const menuOptions = widget.querySelector('.chatbot-menu-options');
 
   function addMessage(content, type) {
     const message = document.createElement('div');
     message.className = `chatbot-message ${type}`;
     message.innerHTML = content;
-    messages.appendChild(message);
+    if (type === 'bot') {
+      const row = document.createElement('div');
+      row.className = 'chatbot-message-row bot';
+      const avatar = document.createElement('img');
+      avatar.className = 'jah-bot-avatar';
+      avatar.src = jahAvatarUrl;
+      avatar.alt = 'JAH';
+      avatar.loading = 'lazy';
+      avatar.decoding = 'async';
+      row.appendChild(avatar);
+      row.appendChild(message);
+      messages.appendChild(row);
+    } else {
+      messages.appendChild(message);
+    }
     messages.scrollTop = messages.scrollHeight;
   }
 
@@ -396,16 +470,25 @@ function initPortfolioChatbot() {
   }
 
   function renderQuickReplies(labels = quickReplies) {
-    chips.innerHTML = '';
+    menuOptions.innerHTML = '';
     labels.forEach(label => {
-      const chip = document.createElement('button');
-      chip.className = 'chatbot-chip';
-      chip.type = 'button';
-      chip.textContent = label;
-      chip.addEventListener('click', () => sendQuestion(label));
-      chips.appendChild(chip);
-      addHoverEffect(chip);
+      const option = document.createElement('button');
+      option.className = 'chatbot-menu-item';
+      option.type = 'button';
+      option.textContent = label;
+      option.addEventListener('click', () => {
+        setMenuOpen(false);
+        sendQuestion(label);
+      });
+      menuOptions.appendChild(option);
+      addHoverEffect(option);
     });
+  }
+
+  function setMenuOpen(open) {
+    menuToggle.setAttribute('aria-expanded', String(open));
+    menuPanel.hidden = !open;
+    widget.classList.toggle('menu-open', open);
   }
 
   function addHoverEffect(element) {
@@ -437,6 +520,10 @@ function initPortfolioChatbot() {
   renderQuickReplies();
   widget.querySelectorAll('a, button').forEach(addHoverEffect);
 
+  menuToggle.addEventListener('click', () => {
+    setMenuOpen(menuPanel.hidden);
+  });
+
   toggle.addEventListener('click', () => {
     const isOpen = widget.classList.toggle('open');
     panel.setAttribute('aria-hidden', String(!isOpen));
@@ -445,6 +532,11 @@ function initPortfolioChatbot() {
   });
 
   document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !menuPanel.hidden) {
+      setMenuOpen(false);
+      menuToggle.focus();
+      return;
+    }
     if (event.key === 'Escape' && widget.classList.contains('open')) {
       widget.classList.remove('open');
       panel.setAttribute('aria-hidden', 'true');
@@ -454,6 +546,7 @@ function initPortfolioChatbot() {
   });
 
   closeBtn.addEventListener('click', () => {
+    setMenuOpen(false);
     widget.classList.remove('open');
     panel.setAttribute('aria-hidden', 'true');
     toggle.setAttribute('aria-label', 'Abrir chat');
@@ -462,8 +555,9 @@ function initPortfolioChatbot() {
 
   form.addEventListener('submit', event => {
     event.preventDefault();
+    setMenuOpen(false);
     sendQuestion(input.value);
   });
 
-  addMessage('Hola, soy el asistente virtual de Abraham. Puedo guiarte por todo el sitio: servicios, proyectos, recursos, perfil, CV, redes o presupuesto. Escribe tu necesidad o toca una opción.', 'bot');
+  addMessage('Hola, soy JAH, el asistente virtual de Abraham. Puedo guiarte por todo el sitio: servicios, proyectos, recursos, perfil, títulos, experiencia, CV, redes o presupuesto. Escribe tu necesidad o abre el menú desplegable.', 'bot');
 }

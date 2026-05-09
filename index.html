@@ -1,157 +1,46 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-NI">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Desarrollador web en Nicaragua | Dashboards, Python y APIs</title>
-  
-  <!-- Meta etiquetas SEO -->
-  <meta name="description" content="Desarrollador web en Nicaragua para empresas: desarrollo web profesional, dashboards en tiempo real, automatización con Python, APIs, chatbots y frontend React/Vue.">
-  <meta name="keywords" content="desarrollador web en Nicaragua, desarrollo web profesional, dashboards en tiempo real, automatización con Python, integración de APIs, chatbot para empresas, frontend React y Vue, soluciones digitales para empresas">
-  <meta name="author" content="Abraham Hernández">
+  <meta name="format-detection" content="telephone=no">
+  <title>Josué Abraham Hernández | Ingeniero en Sistemas</title>
+  <meta name="description" content="Portafolio profesional de Josué Abraham Hernández, Ingeniero en Sistemas especializado en desarrollo web, software, bases de datos, ciberseguridad e inteligencia artificial.">
+  <meta name="keywords" content="Josué Abraham Hernández, Ingeniero en Sistemas, desarrollador web en Nicaragua, dashboards en tiempo real, automatización con Python, integración de APIs, chatbots, ciberseguridad, inteligencia artificial">
+  <meta name="author" content="Josué Abraham Hernández González">
   <meta name="robots" content="index, follow">
-  <meta name="relative-base" content="">
   <link rel="canonical" href="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/">
   <meta name="theme-color" content="#4dd8ff">
+
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_NI">
-  <meta property="og:site_name" content="Abraham Hernández">
-  <meta property="og:title" content="Desarrollador web en Nicaragua | Dashboards, Python y APIs">
-  <meta property="og:description" content="Desarrollo web profesional para empresas en Nicaragua: dashboards, automatización con Python, integración de APIs, chatbots y frontend React/Vue.">
+  <meta property="og:site_name" content="Josué Abraham Hernández">
+  <meta property="og:title" content="Josué Abraham Hernández | Ingeniero en Sistemas">
+  <meta property="og:description" content="Portafolio profesional de Josué Abraham Hernández, especializado en desarrollo web, software, bases de datos, ciberseguridad e inteligencia artificial.">
   <meta property="og:url" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/">
   <meta property="og:image" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/abraham-portrait-01.png">
-  <meta property="og:image:alt" content="Abraham Hernández, desarrollador web en Nicaragua">
+  <meta property="og:image:alt" content="Josué Abraham Hernández, Ingeniero en Sistemas y desarrollador web en Nicaragua">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Desarrollador web en Nicaragua | Abraham Hernández">
-  <meta name="twitter:description" content="Soluciones digitales para empresas: dashboards en tiempo real, automatización con Python, APIs, chatbots y frontend React/Vue.">
+  <meta name="twitter:title" content="Josué Abraham Hernández | Ingeniero en Sistemas">
+  <meta name="twitter:description" content="Desarrollo web, software, bases de datos, ciberseguridad e inteligencia artificial para soluciones digitales empresariales.">
   <meta name="twitter:image" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/abraham-portrait-01.png">
-  
-  <!-- Favicon -->
+
   <link rel="icon" type="image/png" href="assets/jah-logo.png">
   <link rel="manifest" href="manifest.webmanifest">
-  
-  <!-- Fuentes e iconos -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lucas-template/css/normalize.css">
+  <link rel="stylesheet" href="lucas-template/icomoon/icomoon.css">
+  <link rel="stylesheet" href="lucas-template/css/vendor.css">
+  <link rel="stylesheet" href="lucas-template/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  
-  <!-- CSS principales -->
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/hero.css">
-  <link rel="stylesheet" href="css/seo-pages.css">
+  <link rel="stylesheet" href="css/lucas-adapter.css">
   <link rel="stylesheet" href="css/cookies.css">
-  
-  <!-- Estilos críticos en línea (incluye logo) -->
-  <style>
-    /* Garantizar visibilidad inmediata de la sección #value */
-    #value {
-      display: block !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-    }
-    #value .skills-grid {
-      display: grid !important;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
-      gap: 30px !important;
-      margin-top: 50px !important;
-    }
-    #value .skill-card {
-      background: var(--glass-bg, rgba(255,255,255,0.05)) !important;
-      backdrop-filter: blur(5px) !important;
-      border: 1px solid var(--glass-border, rgba(255,255,255,0.1)) !important;
-      border-radius: 20px !important;
-      padding: 30px !important;
-      text-align: center !important;
-      transition: all 0.3s ease !important;
-    }
-    #value .skill-card:hover {
-      transform: translateY(-10px) !important;
-      border-color: var(--accent, #00ff9d) !important;
-      box-shadow: 0 0 20px rgba(0,255,157,0.4) !important;
-    }
-    #value .skill-icon {
-      font-size: 3rem !important;
-      color: var(--accent, #00ff9d) !important;
-      margin-bottom: 20px !important;
-    }
-    #value .skill-card h3 {
-      font-size: 1.5rem !important;
-      margin-bottom: 15px !important;
-    }
-    #value .skill-card p {
-      color: var(--text-secondary, #b0b0b0) !important;
-      font-size: 0.95rem !important;
-    }
-
-    /* Texto oculto para lectores de pantalla */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      border: 0;
-    }
-
-    /* Logo en navbar */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 5%;
-    }
-    .logo a {
-      font-family: 'Courier New', monospace;
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: var(--accent, #00ff9d);
-      text-decoration: none;
-      letter-spacing: 2px;
-      transition: text-shadow 0.3s ease;
-    }
-    .logo a:hover {
-      text-shadow: 0 0 8px var(--accent-glow, rgba(0,255,157,0.4));
-    }
-    /* Logo en footer */
-    .footer-logo {
-      font-family: 'Courier New', monospace;
-      font-size: 1.2rem;
-      color: var(--accent, #00ff9d);
-      margin-bottom: 15px;
-      letter-spacing: 2px;
-      opacity: 0.7;
-      transition: opacity 0.3s;
-    }
-    .footer-logo:hover {
-      opacity: 1;
-    }
-    /* Responsive navbar */
-    @media (max-width: 768px) {
-      .navbar {
-        flex-direction: column;
-        padding: 10px 0;
-      }
-      .logo {
-        margin-bottom: 10px;
-      }
-      .logo a {
-        font-size: 1.5rem;
-      }
-      .nav-links {
-        gap: 15px;
-      }
-    }
-  </style>
-
-  <!-- Anime.js, GSAP y ScrollTrigger -->
-  <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-
+  <link rel="stylesheet" href="css/home-widgets.css">
+  <script src="lucas-template/js/modernizr.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -159,10 +48,10 @@
       {
         "@type": "Person",
         "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#person",
-        "name": "Abraham Hernández",
+        "name": "Josué Abraham Hernández",
         "alternateName": "AbrhamDev",
-        "jobTitle": "Desarrollador web en Nicaragua especializado en dashboards, automatización, APIs y frontend",
-        "description": "Desarrollador web en Nicaragua que crea soluciones digitales para empresas: sitios profesionales, dashboards en tiempo real, automatización con Python, integración de APIs, chatbots y frontend React/Vue.",
+        "jobTitle": "Ingeniero en Sistemas y desarrollador web en Nicaragua",
+        "description": "Ingeniero en Sistemas especializado en desarrollo web, software, bases de datos, ciberseguridad e inteligencia artificial.",
         "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/",
         "image": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/abraham-portrait-01.png",
         "telephone": "+50589871374",
@@ -173,645 +62,437 @@
           "https://www.youtube.com/@abrhamdev"
         ],
         "knowsAbout": [
+          "Desarrollo web",
+          "Software a medida",
+          "Bases de datos",
+          "Ciberseguridad",
+          "Inteligencia artificial",
           "Dashboards en tiempo real",
           "Automatización con Python",
-          "Desarrollo web a medida",
+          "APIs REST",
           "React",
           "Vue",
-          "APIs REST",
-          "Chatbots para web",
-          "WebSockets",
-          "Soluciones digitales para empresas",
-          "Desarrollador web en Nicaragua"
+          "Power BI"
         ]
       },
       {
         "@type": "WebSite",
         "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#website",
-        "name": "Abraham Hernández | Desarrollador web en Nicaragua",
+        "name": "Josué Abraham Hernández | Ingeniero en Sistemas",
         "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/",
-        "image": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/jah-logo.png",
         "inLanguage": "es-NI",
-        "description": "Sitio profesional de Abraham Hernández con servicios de desarrollo web, dashboards, automatización, APIs, chatbots y frontend React/Vue para empresas.",
         "publisher": {
           "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#person"
         }
       },
       {
-        "@type": "WebPage",
-        "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#webpage",
-        "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/",
-        "name": "Desarrollador web en Nicaragua | Dashboards, Python y APIs",
-        "isPartOf": {
-          "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#website"
-        },
-        "about": {
-          "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#person"
-        },
-        "primaryImageOfPage": {
-          "@type": "ImageObject",
-          "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/abraham-portrait-01.png"
-        },
-        "inLanguage": "es-NI"
-      },
-      {
-        "@type": "ProfessionalService",
-        "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#professional-service",
-        "name": "Desarrollo web profesional en Nicaragua - Abraham Hernández",
-        "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/",
-        "logo": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/jah-logo.png",
-        "image": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/abraham-portrait-01.png",
-        "description": "Servicio profesional de desarrollo web en Nicaragua para empresas que necesitan dashboards en tiempo real, automatización con Python, integración de APIs, chatbots y frontend React/Vue.",
-        "provider": {
-          "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#person"
-        },
-        "areaServed": [
-          {"@type": "Country", "name": "Nicaragua"},
-          {"@type": "Place", "name": "Latinoamérica"}
-        ],
-        "priceRange": "$$",
-        "serviceType": [
-          "Desarrollo web profesional",
-          "Desarrollo de dashboards en tiempo real",
-          "Automatización de procesos con Python",
-          "Desarrollo web a medida para empresas",
-          "Desarrollo frontend con React y Vue",
-          "Integración de APIs",
-          "Chatbots para web"
-        ],
-        "hasOfferCatalog": {
-          "@type": "OfferCatalog",
-          "name": "Servicios digitales B2B",
-          "itemListElement": [
-            {"@type": "Offer", "itemOffered": {"@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/dashboards-tiempo-real/#service"}},
-            {"@type": "Offer", "itemOffered": {"@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/automatizacion-procesos-python/#service"}},
-            {"@type": "Offer", "itemOffered": {"@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/desarrollo-web-a-medida/#service"}},
-            {"@type": "Offer", "itemOffered": {"@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/desarrollo-frontend-react-vue/#service"}},
-            {"@type": "Offer", "itemOffered": {"@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/integracion-apis/#service"}},
-            {"@type": "Offer", "itemOffered": {"@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/chatbots-para-web/#service"}}
-          ]
-        }
-      },
-      {
-        "@type": "Service",
-        "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/dashboards-tiempo-real/#service",
-        "name": "Dashboards en tiempo real",
-        "serviceType": "Dashboards en tiempo real",
-        "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/dashboards-tiempo-real/",
-        "provider": {"@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#person"},
-        "areaServed": "Nicaragua",
-        "description": "Paneles web conectados a APIs, bases de datos y eventos en vivo para visualizar KPIs, alertas y estados operativos."
-      },
-      {
-        "@type": "Service",
-        "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/automatizacion-procesos-python/#service",
-        "name": "Automatización con Python",
-        "serviceType": "Automatización con Python",
-        "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/automatizacion-procesos-python/",
-        "provider": {"@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#person"},
-        "areaServed": "Nicaragua",
-        "description": "Scripts, conectores y flujos con Python para reducir trabajo manual, procesar datos, generar reportes y conectar herramientas."
-      },
-      {
-        "@type": "Service",
-        "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/desarrollo-web-a-medida/#service",
-        "name": "Desarrollo web profesional",
-        "serviceType": "Desarrollo web a medida",
-        "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/desarrollo-web-a-medida/",
-        "provider": {"@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#person"},
-        "areaServed": "Nicaragua",
-        "description": "Sistemas web, sitios profesionales, formularios, paneles internos y herramientas a medida para empresas."
-      },
-      {
-        "@type": "Service",
-        "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/desarrollo-frontend-react-vue/#service",
-        "name": "Frontend React y Vue",
-        "serviceType": "Frontend React y Vue",
-        "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/desarrollo-frontend-react-vue/",
-        "provider": {"@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#person"},
-        "areaServed": "Nicaragua",
-        "description": "Interfaces modernas, responsivas y conectadas a APIs para productos digitales, SaaS, dashboards y sistemas internos."
-      },
-      {
-        "@type": "Service",
-        "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/integracion-apis/#service",
-        "name": "Integración de APIs",
-        "serviceType": "Integración de APIs",
-        "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/integracion-apis/",
-        "provider": {"@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#person"},
-        "areaServed": "Nicaragua",
-        "description": "Conexión entre sistemas, consumo de APIs REST, webhooks y sincronización de datos para procesos empresariales."
-      },
-      {
-        "@type": "Service",
-        "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/chatbots-para-web/#service",
-        "name": "Chatbot para empresas",
-        "serviceType": "Chatbots para web",
-        "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/chatbots-para-web/",
-        "provider": {"@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#person"},
-        "areaServed": "Nicaragua",
-        "description": "Chatbots para responder preguntas frecuentes, captar leads, orientar solicitudes de presupuesto y derivar a WhatsApp o formulario."
-      },
-      {
-        "@type": "FAQPage",
-        "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#faq",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "¿Trabajas como desarrollador web en Nicaragua?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Sí. Abraham Hernández ofrece desarrollo web profesional en Nicaragua y también puede colaborar con empresas de Latinoamérica de forma remota."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Qué soluciones digitales puedes crear para empresas?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Puede crear sitios web profesionales, dashboards en tiempo real, automatizaciones con Python, integraciones de APIs, chatbots para empresas y frontend con React o Vue."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Puedes integrar un sitio web con APIs, formularios o WhatsApp?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Sí. El sitio puede conectarse a APIs REST, webhooks, formularios, bases de datos, WhatsApp y herramientas internas o comerciales."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Puedes construir dashboards en tiempo real?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Sí. Puede desarrollar dashboards conectados a APIs, bases de datos y eventos en vivo con tecnologías como WebSockets, Socket.IO, React, Vue y servicios backend."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Un chatbot para empresas puede enviar leads a WhatsApp?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Sí. Un chatbot puede responder preguntas frecuentes, clasificar solicitudes, captar datos iniciales y derivar conversaciones a WhatsApp o a un formulario de contacto."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Cómo solicito un presupuesto?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Puedes escribir por WhatsApp, usar el formulario de contacto, revisar LinkedIn o enviar el contexto del proyecto con objetivo, plazo, presupuesto aproximado y ejemplos de referencia."
-            }
-          }
-        ]
-      },
-      {
-        "@type": "BreadcrumbList",
-        "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#breadcrumb",
+        "@type": "ItemList",
+        "@id": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/#services",
+        "name": "Servicios profesionales",
         "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Inicio",
-            "item": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/"
-          }
+          {"@type": "ListItem", "position": 1, "name": "Dashboards en tiempo real", "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/dashboards-tiempo-real/"},
+          {"@type": "ListItem", "position": 2, "name": "Automatización con Python", "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/automatizacion-procesos-python/"},
+          {"@type": "ListItem", "position": 3, "name": "Desarrollo web a medida", "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/desarrollo-web-a-medida/"},
+          {"@type": "ListItem", "position": 4, "name": "Frontend React y Vue", "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/desarrollo-frontend-react-vue/"},
+          {"@type": "ListItem", "position": 5, "name": "Integración de APIs", "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/integracion-apis/"},
+          {"@type": "ListItem", "position": 6, "name": "Chatbots para web", "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/chatbots-para-web/"}
         ]
       }
     ]
   }
   </script>
-
-  <!-- Política de seguridad CSP (actualizada) -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://code.iconify.design; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: https://jhernandez30-cpu.github.io; connect-src 'self';">
 </head>
 <body>
-  <a class="skip-link" href="#main-content">Saltar al contenido</a>
-  <!-- LOADER -->
-  <div class="loader-wrapper" id="loader" style="transition: none;">
-    <div class="loader"></div>
-  </div>
+<a class="skip-link" href="#main">Saltar al contenido</a>
 
-  <!-- HEADER con navbar y logo -->
-  <header>
-    <nav class="navbar" id="navbar">
-      <div class="logo"><a href="index.html" class="brand-logo" aria-label="Inicio - Abraham Hernández"><img src="assets/jah-logo.png" alt="Logo JAH de Abraham Hernández" width="180" height="120" loading="eager" decoding="async"></a></div>
-      <div class="nav-links">
-        <a href="index.html" class="nav-link">Inicio</a>
-        <a href="servicios/" class="nav-link">Servicios</a>
-        <a href="proyectos/" class="nav-link">Proyectos</a>
-        <a href="sobre-mi/" class="nav-link">Sobre mí</a>
-        <a href="recursos/" class="nav-link">Recursos</a>
-        <a href="contacto.html" class="nav-link">Contacto</a>
+<div id="entire-wrapper">
+
+  <header id="header">
+    <div class="header-wrap">
+      <div class="main-logo">
+        <a href="#billboard" aria-label="Inicio - Josué Abraham Hernández">
+          <img src="assets/jah-logo.png" alt="Logo JAH de Josué Abraham Hernández" width="180" height="120" loading="eager" decoding="async">
+        </a>
       </div>
-    </nav>
+
+      <nav id="navbar" aria-label="Navegación principal">
+        <div class="top-menu" id="navigation">
+          <ul class="menu-list">
+            <li class="menu-item active"><a href="#billboard" data-effect="Inicio">Inicio</a></li>
+            <li class="menu-item"><a href="#about-me" class="nav-link" data-effect="Perfil">Perfil</a></li>
+            <li class="menu-item"><a href="#skills" class="nav-link" data-effect="Habilidades">Habilidades</a></li>
+            <li class="menu-item"><a href="servicios/" data-effect="Servicios">Servicios</a></li>
+            <li class="menu-item"><a href="proyectos/" data-effect="Proyectos">Proyectos</a></li>
+            <li class="menu-item"><a href="#about-profile" class="nav-link" data-effect="Sobre mí">Sobre mí</a></li>
+            <li class="menu-item"><a href="titulos.html" data-effect="Títulos y experiencia">Títulos y experiencia</a></li>
+            <li class="menu-item"><a href="contacto.html" data-effect="Contacto">Contacto</a></li>
+          </ul>
+
+          <div class="menu-icon">
+            <button class="bar-icon menu-toggle" type="button" aria-label="Abrir o cerrar menú" aria-expanded="false">
+              <i class="icon icon-segment" aria-hidden="true"></i>
+              <i class="icon icon-close" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </nav>
+    </div>
   </header>
 
-  <!-- BOTÓN VOLVER ARRIBA -->
-  <div class="back-to-top" id="backToTop">
-    <i class="fas fa-arrow-up"></i>
+  <div id="billboard">
+    <img src="assets/abraham-portrait-01.png" alt="Josué Abraham Hernández, Ingeniero en Sistemas y desarrollador web en Nicaragua" class="banner-image" width="1122" height="1402" loading="eager" decoding="async" fetchpriority="high">
+    <div class="banner-content">
+      <div class="banner-header">
+        <p class="hero-kicker">Ingeniero en Sistemas · Desarrollo web · IA</p>
+        <h1>Hola, soy <span class="colored">Josué Abraham Hernández</span></h1>
+        <p>Desarrollo soluciones digitales para empresas: sitios web profesionales, dashboards en tiempo real, automatización con Python, integración de APIs, chatbots, bases de datos, ciberseguridad e inteligencia artificial.</p>
+        <div class="btn-wrap">
+          <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20cotizar%20un%20proyecto%20web" target="_blank" rel="noopener" class="btn-outline-orange btn-pill">Cotizar por WhatsApp</a>
+          <a href="cv.pdf" download class="btn-outline-light btn-pill">Descargar CV</a>
+        </div>
+      </div>
+      <div class="socila-links" aria-label="Redes y canales reales">
+        <ul>
+          <li><a href="https://wa.me/50589871374" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a></li>
+          <li><a href="https://github.com/jhernandez30-cpu" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a></li>
+          <li><a href="https://www.linkedin.com/in/abrhamdev/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a></li>
+          <li><a href="https://www.instagram.com/abrhamdev/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a></li>
+          <li><a href="https://www.youtube.com/@abrhamdev" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a></li>
+        </ul>
+      </div>
+    </div>
   </div>
 
-  <!-- Cursor personalizado -->
-  <div class="custom-cursor"></div>
+  <main id="main">
 
-  <!-- CONTENIDO PRINCIPAL -->
-  <main id="main-content">
-    <!-- HERO SECTION -->
-    <section id="hero">
-      <div class="container hero-content">
-        <div class="hero-text">
-          <h1 class="hero-title">Desarrollador web en Nicaragua para dashboards, automatización y sistemas web</h1>
-          <div class="dynamic-text">
-            <span class="typed">Dashboards en tiempo real</span>
-          </div>
-          <p class="hero-copy" style="margin-bottom: 30px; color: var(--text-secondary); font-size: 1.2rem;">
-            Desarrollo web profesional para empresas que necesitan soluciones digitales claras: dashboards en tiempo real, automatización con Python, integración de APIs, chatbots y frontend React/Vue.
-          </p>
-          <div class="hero-actions">
-            <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20cotizar%20un%20proyecto%20web" target="_blank" rel="noopener" class="btn btn-primary"><i class="fab fa-whatsapp"></i> Cotizar por WhatsApp</a>
-            <a href="servicios/" class="btn btn-outline"><i class="fas fa-layer-group"></i> Ver servicios</a>
-            <a href="cv.pdf" download class="btn btn-outline"><i class="fas fa-download"></i> Descargar CV</a>
-          </div>
-          <!-- Redes sociales con accesibilidad -->
-          <div style="margin-top: 30px; display: flex; gap: 20px; justify-content: center;">
-            <a href="https://wa.me/50589871374" target="_blank" rel="noopener" aria-label="WhatsApp" data-tooltip="WhatsApp" class="hero-social-link" style="color: var(--accent); font-size: 1.8rem;">
-              <i class="fab fa-whatsapp"></i>
-              <span class="sr-only">WhatsApp</span>
-            </a>
-            <a href="https://github.com/jhernandez30-cpu" target="_blank" rel="noopener" aria-label="GitHub" data-tooltip="GitHub" class="hero-social-link" style="color: var(--accent); font-size: 1.8rem;">
-              <i class="fab fa-github"></i>
-              <span class="sr-only">GitHub</span>
-            </a>
-            <a href="https://www.linkedin.com/in/abrhamdev/" target="_blank" rel="noopener" aria-label="LinkedIn" data-tooltip="LinkedIn" class="hero-social-link" style="color: var(--accent); font-size: 1.8rem;">
-              <i class="fab fa-linkedin"></i>
-              <span class="sr-only">LinkedIn</span>
-            </a>
-            <a href="https://www.instagram.com/abrhamdev/" target="_blank" rel="noopener" aria-label="Instagram" data-tooltip="Instagram" class="hero-social-link" style="color: var(--accent); font-size: 1.8rem;">
-              <i class="fab fa-instagram"></i>
-              <span class="sr-only">Instagram</span>
-            </a>
-            <a href="https://www.youtube.com/@abrhamdev" target="_blank" rel="noopener" aria-label="YouTube" data-tooltip="YouTube" class="hero-social-link" style="color: var(--accent); font-size: 1.8rem;">
-              <i class="fab fa-youtube"></i>
-              <span class="sr-only">YouTube</span>
-            </a>
-          </div>
-        </div>
-        <div class="hero-image">
-          <div class="portrait-stage" aria-label="Retratos profesionales de Abraham Hernández">
-            <span class="portrait-scanline" aria-hidden="true"></span>
-            <figure class="hero-portrait hero-portrait--secondary" data-depth="0.12">
-              <span class="hero-portrait-inner">
-                <img src="assets/abraham-portrait-02.png" alt="Abraham Hernández ajustando el reloj en retrato profesional" width="1023" height="1537" loading="lazy" decoding="async">
-              </span>
-            </figure>
-            <figure class="hero-portrait hero-portrait--primary" data-depth="0.06">
-              <span class="hero-portrait-inner">
-                <img src="assets/abraham-portrait-01.png" alt="Abraham Hernández, desarrollador web en Nicaragua, con saco en retrato de portada" width="1122" height="1402" loading="eager" decoding="async" fetchpriority="high">
-              </span>
-            </figure>
-            <figure class="hero-portrait hero-portrait--tertiary" data-depth="0.16">
-              <span class="hero-portrait-inner">
-                <img src="assets/abraham-portrait-03.png" alt="Abraham Hernández con camiseta negra en retrato profesional" width="1122" height="1402" loading="lazy" decoding="async">
-              </span>
-            </figure>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- RESUMEN SEO PARA IA -->
-    <section id="desarrollador-web-nicaragua" class="page-section alt ai-answer-section">
-      <div class="container split-layout">
-        <div>
-          <span class="section-kicker">Desarrollador web en Nicaragua</span>
-          <h2>Abraham Hernández crea soluciones digitales para empresas que necesitan operar, vender y decidir mejor</h2>
-          <p class="section-lede">
-            Soy desarrollador web en Nicaragua y ayudo a empresas, pymes y equipos B2B a pasar de procesos manuales a sistemas web profesionales, dashboards en tiempo real, automatizaciones con Python, integraciones de APIs y chatbots para captar oportunidades.
-          </p>
-          <div class="intent-tags">
-            <span>Desarrollo web profesional</span>
-            <span>Soluciones digitales para empresas</span>
-            <span>Frontend React y Vue</span>
-            <span>Automatización con Python</span>
-          </div>
-        </div>
-        <div class="seo-grid">
-          <article class="seo-card">
-            <h3>Especialidad</h3>
-            <p>Dashboards, sistemas web, automatización, APIs, chatbots, frontend React/Vue y herramientas internas para operación real.</p>
-          </article>
-          <article class="seo-card">
-            <h3>Ubicación</h3>
-            <p>Trabajo desde Nicaragua para empresas locales y equipos remotos que buscan un desarrollador web confiable y orientado a negocio.</p>
-          </article>
-          <article class="seo-card">
-            <h3>Resultado esperado</h3>
-            <p>Menos trabajo manual, datos más claros, procesos conectados y canales web que ayudan a convertir visitas en conversaciones comerciales.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- SOBRE MÍ -->
-    <section id="about">
+    <section id="about-me">
       <div class="container">
-        <h2>Sobre mí</h2>
-        <div class="about-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center;">
-          <div>
-            <ul style="list-style: none; padding: 0;">
-              <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Frontend con Vue, React, Next.js</li>
-              <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Apps en tiempo real (WebSockets, Socket.IO)</li>
-              <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Automatización con Python y APIs</li>
-              <li><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Trabajo en equipos ágiles (Scrum)</li>
+        <div class="row">
+          <div class="inner-content">
+            <div class="person-information">
+              <div class="description">
+                <div class="section-header">
+                  <h2 class="section-title">Perfil profesional</h2>
+                </div>
+                <p>Soy Ingeniero en Sistemas y desarrollador web en Nicaragua. Trabajo con empresas, pymes y equipos B2B que necesitan pasar de procesos manuales a sistemas web profesionales, dashboards en tiempo real, automatizaciones con Python, integraciones de APIs y chatbots para captar oportunidades.</p>
+                <p>Mi enfoque combina desarrollo web, software, bases de datos, ciberseguridad e inteligencia artificial para construir herramientas claras, mantenibles y orientadas a resultados reales de operación.</p>
+                <div class="general-button">
+                  <div class="btn-wrap">
+                    <a href="contacto.html" class="btn-accent">Contactar</a>
+                  </div>
+                  <div class="btn-wrap">
+                    <a href="sobre-mi/" class="btn-outline-dark">Ver perfil completo</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="skill-chart" id="skills">
+                <div class="section-header">
+                  <h2 class="section-title">Habilidades</h2>
+                </div>
+                <ul class="skill-chart-list">
+                  <li>
+                    <div class="skill-title">Vue / React</div>
+                    <span class="skill ninety-percent"></span>
+                  </li>
+                  <li>
+                    <div class="skill-title">JavaScript / TypeScript</div>
+                    <span class="skill eighty-five-percent"></span>
+                  </li>
+                  <li>
+                    <div class="skill-title">SQL / APIs REST</div>
+                    <span class="skill eighty-five-percent"></span>
+                  </li>
+                  <li>
+                    <div class="skill-title">WebSockets / Socket.IO</div>
+                    <span class="skill eighty-percent"></span>
+                  </li>
+                  <li>
+                    <div class="skill-title">Python para automatización</div>
+                    <span class="skill seventy-five-percent"></span>
+                  </li>
+                  <li>
+                    <div class="skill-title">Git / GitHub Actions</div>
+                    <span class="skill eighty-percent"></span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="services">
+      <div class="container">
+        <div class="row">
+          <div class="inner-content">
+            <div class="section-header align-center">
+              <h2 class="section-title">Servicios</h2>
+              <p>Servicios reales enfocados en convertir datos, procesos y canales de atención en herramientas claras para vender, decidir y trabajar con menos fricción.</p>
+            </div>
+            <div class="service-slider grid">
+              <article class="column">
+                <span class="iconify" data-icon="mdi:chart-line"></span>
+                <h3>Dashboards en tiempo real</h3>
+                <p>Paneles con datos vivos, alertas y actualizaciones por WebSockets para equipos que necesitan reaccionar rápido.</p>
+                <a href="dashboards-tiempo-real/" class="service-link">Ver servicio</a>
+              </article>
+              <article class="column">
+                <span class="iconify" data-icon="mdi:language-python"></span>
+                <h3>Automatización con Python</h3>
+                <p>Scripts e integraciones que reducen tareas manuales, ordenan datos y conectan procesos internos.</p>
+                <a href="automatizacion-procesos-python/" class="service-link">Ver servicio</a>
+              </article>
+              <article class="column">
+                <span class="iconify" data-icon="mdi:application-brackets-outline"></span>
+                <h3>Desarrollo web a medida</h3>
+                <p>Aplicaciones, paneles internos, formularios y herramientas web conectadas a procesos reales de negocio.</p>
+                <a href="desarrollo-web-a-medida/" class="service-link">Ver servicio</a>
+              </article>
+              <article class="column">
+                <span class="iconify" data-icon="mdi:vuejs"></span>
+                <h3>Frontend React y Vue</h3>
+                <p>Interfaces, paneles administrativos y aplicaciones web para productos digitales y equipos internos.</p>
+                <a href="desarrollo-frontend-react-vue/" class="service-link">Ver servicio</a>
+              </article>
+              <article class="column">
+                <span class="iconify" data-icon="mdi:api"></span>
+                <h3>Integración de APIs</h3>
+                <p>Conexión entre herramientas, consumo de APIs REST y documentación para mantener sistemas comunicados.</p>
+                <a href="integracion-apis/" class="service-link">Ver servicio</a>
+              </article>
+              <article class="column">
+                <span class="iconify" data-icon="mdi:robot-outline"></span>
+                <h3>Chatbots para web</h3>
+                <p>Asistentes para preguntas frecuentes, solicitudes de presupuesto, captación de leads y derivación a WhatsApp.</p>
+                <a href="chatbots-para-web/" class="service-link">Ver servicio</a>
+              </article>
+            </div>
+            <div class="btn-wrap align-center section-cta">
+              <a href="servicios/" class="btn-outline-dark">Ver arquitectura completa de servicios</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="portfolio">
+      <div class="container">
+        <div class="row">
+          <div class="inner-content">
+            <div class="section-header align-center">
+              <h2 class="section-title">Proyectos</h2>
+              <p class="portfolio-lede">Una selección de proyectos reales con enfoque web, datos, IA, tiendas, marca y experiencias educativas interactivas.</p>
+              <div class="portfolio-summary" aria-label="Resumen de proyectos">
+                <span>Proyectos reales</span>
+                <span>Enlaces públicos</span>
+                <span>Soluciones web, datos e IA</span>
+              </div>
+            </div>
+
+            <ul class="tabs">
+              <li data-tab-target="#all" class="active tab">Todos</li>
+              <li data-tab-target="#dashboards" class="tab">Dashboards</li>
+              <li data-tab-target="#web" class="tab">Web</li>
+              <li data-tab-target="#ai" class="tab">IA</li>
+              <li data-tab-target="#education" class="tab">Educativo</li>
             </ul>
-          </div>
-          <div class="glass-card" style="padding: 30px; text-align: center;">
-            <i class="fas fa-bullhorn" style="font-size: 3rem; color: var(--accent);"></i>
-            <h3 style="margin: 20px 0;">Impacto real</h3>
-            <p>He ayudado a empresas a reducir hasta un 40% el tiempo en tareas repetitivas con dashboards automatizados.</p>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- BOTONES DESTACADOS -->
-    <div class="container" style="display: flex; justify-content: center; gap: 20px; margin: 20px 0 40px; flex-wrap: wrap;">
-      <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-primary" data-tooltip="Visita mi empresa" aria-label="Visitar ITSA Segurity">
-        <i class="fas fa-shield-alt"></i> ITSA SEGURITY
-      </a>
-      <a href="https://jhernandez30-cpu.github.io/Variedades-Nora/" target="_blank" rel="noopener" class="btn btn-primary" data-tooltip="Visita mi tienda" aria-label="Visitar tienda Variedades Nora">
-        <i class="fas fa-store"></i> TIENDA
-      </a>
-      <a href="jah/" class="jah-logo-btn" data-tooltip="Ver marca JAH" aria-label="Ver página de la marca JAH">
-        <img src="assets/jah-logo-button.png" alt="" width="1536" height="1024" loading="lazy" decoding="async">
-        <span class="sr-only">Ver marca JAH</span>
-      </a>
-      <a href="asistente-programacion.html" class="btn btn-outline" data-tooltip="Asistente de programación con IA" aria-label="Asistente de programación">
-        <i class="fas fa-code"></i> Asistente de programación
-      </a>
-    </div>
+            <div class="tab-content">
+              <div id="all" data-tab-content class="active">
+                <div class="tab-element">
+                  <figure>
+                    <a href="https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino.html" target="_blank" rel="noopener" aria-label="Ver Mural Interactivo Sandino">
+                      <img src="https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino/assets/img/optimized/file_00000000f3e871fdb42c41a5eed35c4b.jpg" alt="Portada real del Mural Interactivo Sandino, Museo Digital" class="tab-image" width="1024" height="1280" loading="lazy" decoding="async">
+                    </a>
+                    <figcaption>
+                      <div class="caption">
+                        <span class="project-type">Museo digital</span>
+                        <h3>Mural Interactivo Sandino</h3>
+                        <span class="category">Recorrido educativo interactivo</span>
+                      </div>
+                      <a href="https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino.html" target="_blank" rel="noopener" class="btn-arrow light" aria-label="Ver Mural Interactivo Sandino"><i class="icon icon-arrow-right"></i></a>
+                    </figcaption>
+                  </figure>
+                  <figure>
+                    <a href="proyectos/dashboard-analytics/" aria-label="Ver caso Dashboard Analytics">
+                      <span class="portfolio-visual dashboard-visual" role="img" aria-label="Panel visual para Dashboard Analytics"><i class="fas fa-chart-line"></i></span>
+                    </a>
+                    <figcaption>
+                      <div class="caption">
+                        <span class="project-type">Datos</span>
+                        <h3>Dashboard Analytics</h3>
+                        <span class="category">Visualización de datos</span>
+                      </div>
+                      <a href="dashboards-tiempo-real/" class="btn-arrow light" aria-label="Ver servicio de dashboards"><i class="icon icon-arrow-right"></i></a>
+                    </figcaption>
+                  </figure>
+                  <figure>
+                    <a href="proyectos/ai-chatbot/" aria-label="Ver caso AI Chatbot">
+                      <span class="portfolio-visual chatbot-visual" role="img" aria-label="Interfaz visual para AI Chatbot"><i class="fas fa-robot"></i></span>
+                    </a>
+                    <figcaption>
+                      <div class="caption">
+                        <span class="project-type">IA</span>
+                        <h3>AI Chatbot</h3>
+                        <span class="category">Asistente con IA</span>
+                      </div>
+                      <a href="chatbots-para-web/" class="btn-arrow light" aria-label="Ver servicio de chatbots"><i class="icon icon-arrow-right"></i></a>
+                    </figcaption>
+                  </figure>
+                  <figure>
+                    <a href="jah/" aria-label="Ver marca JAH">
+                      <img src="assets/jah-logo-button.png" alt="Imagen real de la marca JAH" class="tab-image project-logo-image" width="1536" height="1024" loading="lazy" decoding="async">
+                    </a>
+                    <figcaption>
+                      <div class="caption">
+                        <span class="project-type">Marca</span>
+                        <h3>Marca JAH</h3>
+                        <span class="category">Proyecto visual y tienda</span>
+                      </div>
+                      <a href="jah/" class="btn-arrow light" aria-label="Ver marca JAH"><i class="icon icon-arrow-right"></i></a>
+                    </figcaption>
+                  </figure>
+                  <figure>
+                    <a href="https://jhernandez30-cpu.github.io/Variedades-Nora/" target="_blank" rel="noopener" aria-label="Ver Variedades Nora">
+                      <img src="https://jhernandez30-cpu.github.io/Variedades-Nora/assets/img/optimized/hero-main.webp" alt="Imagen real de Variedades Nora, tienda online" class="tab-image" width="900" height="506" loading="lazy" decoding="async">
+                    </a>
+                    <figcaption>
+                      <div class="caption">
+                        <span class="project-type">E-commerce</span>
+                        <h3>Variedades Nora</h3>
+                        <span class="category">Tienda online</span>
+                      </div>
+                      <a href="https://jhernandez30-cpu.github.io/Variedades-Nora/" target="_blank" rel="noopener" class="btn-arrow light" aria-label="Ver Variedades Nora"><i class="icon icon-arrow-right"></i></a>
+                    </figcaption>
+                  </figure>
+                </div>
+              </div>
 
-    <!-- ESTADÍSTICAS ANIMADAS -->
-    <div class="container">
-      <div class="stats-grid">
-        <div class="stat-item">
-          <div class="stat-number" id="stat1" data-target="5">5</div>
-          <div class="stat-label">Años de práctica técnica</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number" id="stat2" data-target="15">15</div>
-          <div class="stat-label">Proyectos y demos</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number" id="stat3" data-target="5">5</div>
-          <div class="stat-label">Áreas de servicio</div>
-        </div>
-      </div>
-    </div>
+              <div id="dashboards" data-tab-content>
+                <div class="tab-element">
+                  <figure>
+                    <a href="proyectos/dashboard-analytics/">
+                      <span class="portfolio-visual dashboard-visual" role="img" aria-label="Panel visual para Dashboard Analytics"><i class="fas fa-chart-line"></i></span>
+                    </a>
+                    <figcaption>
+                      <div class="caption">
+                        <span class="project-type">Datos</span>
+                        <h3>Dashboard Analytics</h3>
+                        <span class="category">Datos y marketing</span>
+                      </div>
+                      <a href="proyectos/dashboard-analytics/" class="btn-arrow light" aria-label="Ver caso Dashboard Analytics"><i class="icon icon-arrow-right"></i></a>
+                    </figcaption>
+                  </figure>
+                </div>
+              </div>
 
-    <!-- CANALES DE CONVERSIÓN -->
-    <section id="contact-channels" class="page-section conversion-section">
-      <div class="container">
-        <div class="section-heading center">
-          <span class="section-kicker">Contacto directo</span>
-          <h2>Elige el canal que te quede más cómodo para iniciar tu proyecto web</h2>
-          <p class="section-lede">
-            Si buscas desarrollo web profesional, un dashboard, una automatización con Python o un chatbot para empresas, envía el contexto y te respondo con una ruta clara.
-          </p>
-        </div>
-        <div class="conversion-grid" aria-label="Canales de contacto y conversión">
-          <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20hablar%20sobre%20un%20proyecto%20web" target="_blank" rel="noopener" class="conversion-card">
-            <i class="fab fa-whatsapp"></i>
-            <strong>WhatsApp</strong>
-            <span>Respuesta rápida para cotizar o aclarar alcance.</span>
-          </a>
-          <a href="https://www.linkedin.com/in/abrhamdev/" target="_blank" rel="noopener" class="conversion-card">
-            <i class="fab fa-linkedin"></i>
-            <strong>LinkedIn</strong>
-            <span>Perfil profesional, experiencia y contacto B2B.</span>
-          </a>
-          <a href="https://github.com/jhernandez30-cpu" target="_blank" rel="noopener" class="conversion-card">
-            <i class="fab fa-github"></i>
-            <strong>GitHub</strong>
-            <span>Código, demos y proyectos técnicos públicos.</span>
-          </a>
-          <a href="contacto.html" class="conversion-card">
-            <i class="fas fa-envelope"></i>
-            <strong>Correo / formulario</strong>
-            <span>Describe objetivo, plazo, presupuesto y herramientas actuales.</span>
-          </a>
-          <a href="cv.pdf" download class="conversion-card">
-            <i class="fas fa-file-download"></i>
-            <strong>Descargar CV</strong>
-            <span>Resumen profesional para evaluación o contratación.</span>
-          </a>
-        </div>
-      </div>
-    </section>
+              <div id="web" data-tab-content>
+                <div class="tab-element">
+                  <figure>
+                    <a href="https://jhernandez30-cpu.github.io/Variedades-Nora/" target="_blank" rel="noopener">
+                      <img src="https://jhernandez30-cpu.github.io/Variedades-Nora/assets/img/optimized/hero-main.webp" alt="Imagen real de Variedades Nora, tienda online" class="tab-image" width="900" height="506" loading="lazy" decoding="async">
+                    </a>
+                    <figcaption>
+                      <div class="caption">
+                        <span class="project-type">E-commerce</span>
+                        <h3>Variedades Nora</h3>
+                        <span class="category">Tienda online</span>
+                      </div>
+                      <a href="https://jhernandez30-cpu.github.io/Variedades-Nora/" target="_blank" rel="noopener" class="btn-arrow light" aria-label="Ver Variedades Nora"><i class="icon icon-arrow-right"></i></a>
+                    </figcaption>
+                  </figure>
+                  <figure>
+                    <a href="jah/">
+                      <img src="assets/jah-logo-button.png" alt="Imagen real de la marca JAH" class="tab-image project-logo-image" width="1536" height="1024" loading="lazy" decoding="async">
+                    </a>
+                    <figcaption>
+                      <div class="caption">
+                        <span class="project-type">Marca</span>
+                        <h3>Marca JAH</h3>
+                        <span class="category">Proyecto visual y tienda</span>
+                      </div>
+                      <a href="jah/" class="btn-arrow light" aria-label="Ver marca JAH"><i class="icon icon-arrow-right"></i></a>
+                    </figcaption>
+                  </figure>
+                </div>
+              </div>
 
-    <!-- SERVICIOS -->
-    <section id="services" class="page-section alt">
-      <div class="container">
-        <div class="section-heading center">
-          <span class="section-kicker">Servicios</span>
-          <h2>Servicios de desarrollo web profesional para empresas en Nicaragua</h2>
-          <p class="section-lede">
-            Servicios enfocados en convertir datos, procesos y canales de atención en herramientas claras para vender,
-            decidir y trabajar con menos fricción: desarrollo web a medida, dashboards, APIs, chatbots y automatización.
-          </p>
-        </div>
-        <div class="service-grid">
-          <article class="service-card">
-            <i class="fas fa-chart-line"></i>
-            <h3>Dashboards en tiempo real</h3>
-            <p>Paneles con datos vivos, alertas y actualizaciones por WebSockets para equipos que necesitan reaccionar rápido.</p>
-            <a href="dashboards-tiempo-real/">Ver servicio <i class="fas fa-arrow-right"></i></a>
-          </article>
-          <article class="service-card">
-            <i class="fab fa-python"></i>
-            <h3>Automatización con Python</h3>
-            <p>Scripts e integraciones que reducen tareas manuales, ordenan datos y conectan procesos internos.</p>
-            <a href="automatizacion-procesos-python/">Ver servicio <i class="fas fa-arrow-right"></i></a>
-          </article>
-          <article class="service-card">
-            <i class="fas fa-window-restore"></i>
-            <h3>Desarrollo web a medida</h3>
-            <p>Aplicaciones, paneles internos, formularios y herramientas web conectadas a procesos reales de negocio.</p>
-            <a href="desarrollo-web-a-medida/">Ver servicio <i class="fas fa-arrow-right"></i></a>
-          </article>
-          <article class="service-card">
-            <i class="fas fa-laptop-code"></i>
-            <h3>Frontend React y Vue</h3>
-            <p>Interfaces, paneles administrativos y aplicaciones web a medida para productos digitales y equipos internos.</p>
-            <a href="desarrollo-frontend-react-vue/">Ver servicio <i class="fas fa-arrow-right"></i></a>
-          </article>
-          <article class="service-card">
-            <i class="fas fa-plug"></i>
-            <h3>Integración de APIs</h3>
-            <p>Conexión entre herramientas, consumo de APIs REST y documentación para mantener sistemas comunicados.</p>
-            <a href="integracion-apis/">Ver servicio <i class="fas fa-arrow-right"></i></a>
-          </article>
-          <article class="service-card">
-            <i class="fas fa-robot"></i>
-            <h3>Chatbots para web</h3>
-            <p>Asistentes para preguntas frecuentes, solicitudes de presupuesto, captación de leads y derivación a WhatsApp.</p>
-            <a href="chatbots-para-web/">Ver servicio <i class="fas fa-arrow-right"></i></a>
-          </article>
-        </div>
-        <div class="section-actions center-actions">
-          <a href="servicios/" class="btn btn-outline"><i class="fas fa-layer-group"></i> Ver arquitectura completa de servicios</a>
-          <a href="desarrollador-web-nicaragua/" class="btn btn-outline"><i class="fas fa-map-marker-alt"></i> Ver perfil local en Nicaragua</a>
-        </div>
-      </div>
-    </section>
+              <div id="ai" data-tab-content>
+                <div class="tab-element">
+                  <figure>
+                    <a href="proyectos/ai-chatbot/">
+                      <span class="portfolio-visual chatbot-visual" role="img" aria-label="Interfaz visual para AI Chatbot"><i class="fas fa-robot"></i></span>
+                    </a>
+                    <figcaption>
+                      <div class="caption">
+                        <span class="project-type">IA</span>
+                        <h3>AI Chatbot</h3>
+                        <span class="category">Atención inicial</span>
+                      </div>
+                      <a href="proyectos/ai-chatbot/" class="btn-arrow light" aria-label="Ver caso AI Chatbot"><i class="icon icon-arrow-right"></i></a>
+                    </figcaption>
+                  </figure>
+                </div>
+              </div>
 
-    <!-- PROBLEMAS B2B -->
-    <section class="page-section">
-      <div class="container">
-        <div class="section-heading">
-          <span class="section-kicker">Problemas que resuelvo</span>
-          <h2>Cuando el trabajo manual frena al equipo, la web puede convertirse en una herramienta operativa</h2>
-          <p class="section-lede">Estas son situaciones habituales donde una solución a medida aporta más valor que seguir acumulando hojas, correos y tareas repetidas.</p>
-        </div>
-        <div class="seo-grid">
-          <article class="seo-card">
-            <i class="fas fa-file-excel"></i>
-            <h3>Reportes manuales</h3>
-            <p>Datos que se copian entre archivos, se limpian a mano o llegan tarde a la persona que decide.</p>
-          </article>
-          <article class="seo-card">
-            <i class="fas fa-unlink"></i>
-            <h3>Herramientas desconectadas</h3>
-            <p>Formularios, CRM, bases de datos o plataformas que no comparten información entre sí.</p>
-          </article>
-          <article class="seo-card">
-            <i class="fas fa-headset"></i>
-            <h3>Consultas repetitivas</h3>
-            <p>Preguntas frecuentes y solicitudes iniciales que consumen tiempo antes de llegar a una oportunidad real.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ARQUITECTURA WEB Y SEO -->
-    <section class="page-section alt" id="arquitectura-web">
-      <div class="container split-layout">
-        <div>
-          <span class="section-kicker">Arquitectura web</span>
-          <h2>Una web profesional debe posicionar, explicar y convertir</h2>
-          <p class="section-lede">
-            El sitio está organizado para que Google y los asistentes de IA entiendan quién soy, qué servicios ofrezco, dónde trabajo y qué evidencia técnica respalda cada solución.
-          </p>
-        </div>
-        <div class="steps-grid">
-          <article class="step-card">
-            <h3>Home local</h3>
-            <p>Presenta la intención principal: desarrollador web en Nicaragua con servicios digitales para empresas.</p>
-          </article>
-          <article class="step-card">
-            <h3>Servicios</h3>
-            <p>Cada servicio tiene una página propia con alcance, proceso, preguntas frecuentes y CTA comercial.</p>
-          </article>
-          <article class="step-card">
-            <h3>Casos de estudio</h3>
-            <p>Los proyectos explican problema, solución, stack y resultado para reforzar confianza y conversión.</p>
-          </article>
-          <article class="step-card">
-            <h3>Blog SEO</h3>
-            <p>Los recursos responden dudas informacionales antes de contratar dashboards, APIs, automatización o chatbots.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- HABILIDADES TÉCNICAS -->
-    <section id="skills">
-      <div class="container">
-        <h2>Habilidades técnicas</h2>
-        <div class="skills-grid">
-          <div class="skill-card" data-tooltip="90%">
-            <div class="skill-icon"><i class="fab fa-vuejs"></i></div>
-            <h3>Vue / React</h3>
-            <div class="skill-bar"><div class="skill-progress" data-width="90"></div></div>
-          </div>
-          <div class="skill-card" data-tooltip="85%">
-            <div class="skill-icon"><i class="fab fa-js"></i></div>
-            <h3>JavaScript / TypeScript</h3>
-            <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
-          </div>
-          <div class="skill-card" data-tooltip="80%">
-            <div class="skill-icon"><i class="fas fa-exchange-alt"></i></div>
-            <h3>WebSockets / Socket.IO</h3>
-            <div class="skill-bar"><div class="skill-progress" data-width="80"></div></div>
-          </div>
-          <div class="skill-card" data-tooltip="75%">
-            <div class="skill-icon"><i class="fab fa-python"></i></div>
-            <h3>Python (Automatización)</h3>
-            <div class="skill-bar"><div class="skill-progress" data-width="75"></div></div>
-          </div>
-          <div class="skill-card" data-tooltip="85%">
-            <div class="skill-icon"><i class="fas fa-database"></i></div>
-            <h3>SQL / APIs REST</h3>
-            <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
-          </div>
-          <div class="skill-card" data-tooltip="80%">
-            <div class="skill-icon"><i class="fab fa-git-alt"></i></div>
-            <h3>Git / GitHub Actions</h3>
-            <div class="skill-bar"><div class="skill-progress" data-width="80"></div></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROYECTOS DESTACADOS -->
-    <section id="projects">
-      <div class="container">
-        <h2>Proyectos destacados</h2>
-        <div class="projects-grid">
-          <!-- Proyecto 1 -->
-          <div class="project-card">
-            <div class="project-img"><i class="fas fa-lock"></i></div>
-            <div class="project-info">
-              <h3>ITSA Segurity</h3>
-              <p><strong>Problema:</strong> Empresas sin visibilidad en tiempo real de amenazas.</p>
-              <p><strong>Solución:</strong> Dashboard con WebSockets que muestra alertas al instante.</p>
-              <p><strong>Stack:</strong> React, Socket.IO, Node.js, MongoDB.</p>
-              <p><strong>Resultado:</strong> Reducción del 30% en tiempo de respuesta ante incidentes.</p>
-              <div class="project-links">
-                <a href="proyectos/itsa-segurity/" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Ver caso ITSA Segurity">Ver caso</a>
-                <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Ver demo de ITSA Segurity">Live demo →</a>
-                <a href="https://github.com/jhernandez30-cpu/ITSA-Segurity" target="_blank" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Ver código en GitHub">Código</a>
+              <div id="education" data-tab-content>
+                <div class="tab-element">
+                  <figure>
+                    <a href="https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino.html" target="_blank" rel="noopener" aria-label="Ver Mural Interactivo Sandino">
+                      <img src="https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino/assets/img/optimized/file_00000000f3e871fdb42c41a5eed35c4b.jpg" alt="Portada real del Mural Interactivo Sandino, Museo Digital" class="tab-image" width="1024" height="1280" loading="lazy" decoding="async">
+                    </a>
+                    <figcaption>
+                      <div class="caption">
+                        <span class="project-type">Museo digital</span>
+                        <h3>Mural Interactivo Sandino</h3>
+                        <span class="category">General Augusto Nicolás Calderón Sandino</span>
+                      </div>
+                      <a href="https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino.html" target="_blank" rel="noopener" class="btn-arrow light" aria-label="Ver Mural Interactivo Sandino"><i class="icon icon-arrow-right"></i></a>
+                    </figcaption>
+                  </figure>
+                </div>
               </div>
             </div>
-          </div>
-          <!-- Proyecto 2 -->
-          <div class="project-card">
-            <div class="project-img"><i class="fas fa-chart-line"></i></div>
-            <div class="project-info">
-              <h3>Dashboard Analytics</h3>
-              <p><strong>Problema:</strong> Datos dispersos sin visualización clara.</p>
-              <p><strong>Solución:</strong> Dashboard interactivo con filtros en tiempo real.</p>
-              <p><strong>Stack:</strong> Vue, D3.js, Express, PostgreSQL.</p>
-              <p><strong>Resultado:</strong> Toma de decisiones 50% más rápida para el equipo de marketing.</p>
-              <div class="project-links">
-                <a href="proyectos/dashboard-analytics/" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Ver caso Dashboard Analytics">Ver caso</a>
-                <a href="dashboards-tiempo-real/" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Servicio de dashboards en tiempo real">Servicio</a>
-              </div>
+
+            <div class="btn-wrap align-center">
+              <a href="proyectos/" class="btn-accent">Ver todos los proyectos</a>
             </div>
           </div>
-          <!-- Proyecto 3 -->
-          <div class="project-card">
-            <div class="project-img"><i class="fas fa-robot"></i></div>
-            <div class="project-info">
-              <h3>AI Chatbot</h3>
-              <p><strong>Problema:</strong> Atención al cliente 24/7 con alta demanda.</p>
-              <p><strong>Solución:</strong> Chatbot con NLP que responde consultas comunes y escala a agente humano.</p>
-              <p><strong>Stack:</strong> React, Python (Flask), Rasa, MongoDB.</p>
-              <p><strong>Resultado:</strong> 40% de consultas resueltas sin intervención humana, ahorro de 20h/semana.</p>
-              <div class="project-links">
-                <a href="proyectos/ai-chatbot/" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Ver caso AI Chatbot">Ver caso</a>
-                <a href="chatbots-para-web/" class="btn btn-outline" style="padding: 8px 20px;" aria-label="Servicio de chatbots para web">Servicio</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="technologies" aria-labelledby="tech-heading">
+      <div class="container">
+        <div class="row">
+          <div class="inner-content">
+            <div class="section-header align-center">
+              <h2 class="section-title light" id="tech-heading">Tecnologías y áreas de especialidad</h2>
+              <p>Stack y áreas reales presentes en mi portafolio, servicios, proyectos y formación profesional.</p>
+            </div>
+
+            <div class="top-grid-item">
+              <div class="grid">
+                <div class="technology-item"><i class="fab fa-react"></i><span>React</span></div>
+                <div class="technology-item"><i class="fab fa-vuejs"></i><span>Vue</span></div>
+                <div class="technology-item"><i class="fab fa-js"></i><span>JavaScript</span></div>
+                <div class="technology-item"><i class="fab fa-python"></i><span>Python</span></div>
+                <div class="technology-item"><i class="fas fa-database"></i><span>SQL</span></div>
+                <div class="technology-item"><i class="fas fa-plug"></i><span>APIs REST</span></div>
+              </div>
+            </div>
+
+            <div class="bottom-grid-item">
+              <div class="grid">
+                <div class="technology-item"><i class="fas fa-bolt"></i><span>WebSockets</span></div>
+                <div class="technology-item"><i class="fab fa-github"></i><span>GitHub Actions</span></div>
+                <div class="technology-item"><i class="fas fa-chart-pie"></i><span>Power BI</span></div>
+                <div class="technology-item"><i class="fas fa-shield-alt"></i><span>Ciberseguridad</span></div>
+                <div class="technology-item"><i class="fas fa-brain"></i><span>IA</span></div>
+                <div class="technology-item"><i class="fas fa-search"></i><span>SEO</span></div>
               </div>
             </div>
           </div>
@@ -819,225 +500,282 @@
       </div>
     </section>
 
-    <!-- BLOG SEO Y RECURSOS -->
-    <section id="blog-seo" class="page-section alt">
+    <section id="about-profile">
       <div class="container">
-        <div class="section-heading center">
-          <span class="section-kicker">Blog SEO</span>
-          <h2>Guías para empresas que evalúan desarrollo web, automatización y datos</h2>
-          <p class="section-lede">
-            Contenido pensado para responder preguntas reales antes de contratar una solución digital, útil tanto para Google como para motores de respuesta con IA.
-          </p>
-        </div>
-        <div class="case-grid">
-          <article class="case-card">
-            <i class="fab fa-python"></i>
-            <h3>Qué procesos puede automatizar una empresa con Python</h3>
-            <p>Detecta reportes, validaciones, alertas e integraciones que pueden dejar de hacerse a mano.</p>
-            <a href="recursos/que-procesos-automatizar-python/">Leer guía <i class="fas fa-arrow-right"></i></a>
-          </article>
-          <article class="case-card">
-            <i class="fas fa-chart-line"></i>
-            <h3>Dashboard en tiempo real vs informe automático</h3>
-            <p>Aprende cuándo necesitas datos vivos y cuándo basta con un reporte programado.</p>
-            <a href="recursos/dashboard-tiempo-real-vs-reporte-automatico/">Leer guía <i class="fas fa-arrow-right"></i></a>
-          </article>
-          <article class="case-card">
-            <i class="fas fa-plug"></i>
-            <h3>API REST vs webhook</h3>
-            <p>Comparativa sencilla para conectar herramientas, sincronizar datos y activar flujos.</p>
-            <a href="recursos/api-rest-vs-webhook/">Leer guía <i class="fas fa-arrow-right"></i></a>
-          </article>
-        </div>
-        <div class="section-actions center-actions">
-          <a href="recursos/" class="btn btn-outline"><i class="fas fa-book-open"></i> Ver recursos y artículos sugeridos</a>
-        </div>
-      </div>
-    </section>
+        <div class="row">
+          <div class="inner-content">
+            <div class="section-header align-center">
+              <h2 class="section-title">Sobre mí</h2>
+            </div>
+            <div class="experience-slider">
+              <article class="grid review-item">
+                <figure>
+                  <img src="assets/abraham-portrait-02.png" alt="Josué Abraham Hernández en retrato profesional" class="review-image" width="1023" height="1537" loading="lazy" decoding="async">
+                </figure>
+                <div class="reviews-content">
+                  <div class="experience-inner">
+                    <q>Trabajo desde Nicaragua para empresas locales y equipos remotos que necesitan desarrollo web profesional, dashboards, automatización, APIs o chatbots.</q>
+                    <div class="experience-author">
+                      <div class="author-detail">
+                        <div class="name">Desarrollo web B2B</div>
+                        <div class="author-title">Soluciones digitales para empresas</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
 
-    <!-- ASISTENTE VIRTUAL -->
-    <section id="assistant-demo" class="assistant-showcase">
-      <div class="container assistant-layout">
-        <div class="assistant-copy">
-          <span class="section-kicker">Nuevo en el portafolio</span>
-          <h2>Asistente virtual para responder al instante</h2>
-          <p>
-            Agregué un chatbot que guía a los visitantes, responde preguntas frecuentes sobre servicios,
-            proyectos, tecnologías y ayuda a iniciar una solicitud de presupuesto sin salir del sitio.
-          </p>
-          <div class="assistant-features">
-            <div>
-              <i class="fas fa-comments"></i>
-              <span>Respuestas rápidas por intención</span>
-            </div>
-            <div>
-              <i class="fas fa-clock"></i>
-              <span>Atención inicial 24/7</span>
-            </div>
-            <div>
-              <i class="fas fa-paper-plane"></i>
-              <span>Derivación directa a WhatsApp</span>
-            </div>
-          </div>
-          <div class="assistant-cta">
-            <a href="chatbots-para-web/" class="btn btn-primary"><i class="fas fa-robot"></i> Ver servicio de chatbot</a>
-            <a href="asistente-programacion.html" class="btn btn-outline"><i class="fas fa-graduation-cap"></i> Aprender programación</a>
-            <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20un%20chatbot%20para%20mi%20sitio%20web" target="_blank" rel="noopener" class="btn btn-outline"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-          </div>
-        </div>
+              <article class="grid review-item">
+                <figure>
+                  <img src="assets/abraham-portrait-03.png" alt="Josué Abraham Hernández con camiseta negra en retrato profesional" class="review-image" width="1122" height="1402" loading="lazy" decoding="async">
+                </figure>
+                <div class="reviews-content">
+                  <div class="experience-inner">
+                    <q>He trabajado con frontend moderno, WebSockets, Socket.IO, Python y APIs REST para reducir trabajo manual, conectar herramientas y visualizar datos.</q>
+                    <div class="experience-author">
+                      <div class="author-detail">
+                        <div class="name">Tiempo real y automatización</div>
+                        <div class="author-title">Dashboards, procesos e integraciones</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
 
-        <div class="assistant-preview glass-card" aria-label="Vista previa del asistente virtual">
-          <div class="assistant-preview-header">
-            <div class="assistant-preview-avatar"><i class="fas fa-robot"></i></div>
-            <div>
-              <strong>Asistente JAH</strong>
-              <span>Disponible ahora</span>
+              <article class="grid review-item">
+                <figure>
+                  <img src="profile.jpg" alt="Foto profesional de Abraham Hernández" class="review-image" width="640" height="640" loading="lazy" decoding="async">
+                </figure>
+                <div class="reviews-content">
+                  <div class="experience-inner">
+                    <q>Mi forma de trabajo prioriza diagnóstico, entrega funcional, código mantenible y colaboración con Scrum, Git y CI/CD.</q>
+                    <div class="experience-author">
+                      <div class="author-detail">
+                        <div class="name">Trabajo técnico colaborativo</div>
+                        <div class="author-title">Scrum, Git y entregas funcionales</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
             </div>
-          </div>
-          <div class="assistant-preview-messages">
-            <div class="preview-message bot">Hola, puedo ayudarte con servicios, proyectos o un presupuesto.</div>
-            <div class="preview-message user">Quiero un sitio con chatbot.</div>
-            <div class="preview-message bot">Perfecto. Puedo orientarte y conectar tu solicitud directo con Abraham por WhatsApp.</div>
-          </div>
-          <div class="assistant-preview-chips">
-            <span>Servicios</span>
-            <span>Proyectos</span>
-            <span>Presupuesto</span>
+
+            <div class="button-container">
+              <button class="prev slick-arrow" type="button" aria-label="Sobre mí anterior">
+                <i class="icon icon-arrow-left"></i>
+              </button>
+              <button class="next slick-arrow" type="button" aria-label="Sobre mí siguiente">
+                <i class="icon icon-arrow-right"></i>
+              </button>
+            </div>
+            <div class="about-action-buttons">
+              <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" rel="noopener" class="btn-accent">ITSA Segurity</a>
+              <a href="asistente-programacion.html" class="btn-outline-dark">Asistente de programación</a>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ¿POR QUÉ TRABAJAR CONMIGO? -->
-    <section id="value">
+    <section id="titles-experience">
       <div class="container">
-        <h2>¿Por qué trabajar conmigo?</h2>
-        <div class="skills-grid">
-          <div class="skill-card">
-            <div class="skill-icon"><i class="fas fa-bolt"></i></div>
-            <h3>Experiencia en tiempo real</h3>
-            <p>WebSockets, Socket.IO, actualizaciones en vivo para dashboards y notificaciones.</p>
-          </div>
-          <div class="skill-card">
-            <div class="skill-icon"><i class="fas fa-robot"></i></div>
-            <h3>Automatización con Python</h3>
-            <p>Scripts que ahorran horas de trabajo repetitivo y optimizan procesos internos.</p>
-          </div>
-          <div class="skill-card">
-            <div class="skill-icon"><i class="fas fa-plug"></i></div>
-            <h3>Integración API REST</h3>
-            <p>Consumo y exposición de servicios robustos, con documentación OpenAPI.</p>
-          </div>
-          <div class="skill-card">
-            <div class="skill-icon"><i class="fas fa-users"></i></div>
-            <h3>Trabajo en equipos ágiles</h3>
-            <p>Scrum, revisiones de código, CI/CD y colaboración con equipos multidisciplinares.</p>
+        <div class="row">
+          <div class="inner-content">
+            <div class="section-header align-center">
+              <h2 class="section-title" id="titles-experience-heading">Títulos y experiencia</h2>
+            </div>
+            <div class="post-content">
+              <div class="grid">
+                <div class="post-item">
+                  <div class="meta-date">
+                    <span class="day">Ing.</span>
+                    <span class="month">Título</span>
+                  </div>
+                  <h3><a href="titulos.html">Ingeniero en Sistema de Informática · Universidad Nacional Héroes de San José de las Mulas</a></h3>
+                </div>
+                <div class="btn-wrap">
+                  <a href="titulos.html" class="btn-normal">Ver detalle <i class="icon icon-arrow-top"></i></a>
+                </div>
+              </div>
+              <div class="grid">
+                <div class="post-item">
+                  <div class="meta-date">
+                    <span class="day">IA</span>
+                    <span class="month">Big School</span>
+                  </div>
+                  <h3><a href="titulos.html">Máster en Desarrollo con IA y formación en desarrollo con inteligencia artificial</a></h3>
+                </div>
+                <div class="btn-wrap">
+                  <a href="titulos.html" class="btn-normal">Ver detalle <i class="icon icon-arrow-top"></i></a>
+                </div>
+              </div>
+              <div class="grid">
+                <div class="post-item">
+                  <div class="meta-date">
+                    <span class="day">Sec.</span>
+                    <span class="month">UNIR / UNAN</span>
+                  </div>
+                  <h3><a href="titulos.html">Máster en Ciberseguridad y formación en ciberseguridad y hacking ético</a></h3>
+                </div>
+                <div class="btn-wrap">
+                  <a href="titulos.html" class="btn-normal">Ver detalle <i class="icon icon-arrow-top"></i></a>
+                </div>
+              </div>
+              <div class="grid">
+                <div class="post-item">
+                  <div class="meta-date">
+                    <span class="day">BI</span>
+                    <span class="month">DATLY</span>
+                  </div>
+                  <h3><a href="titulos.html">Power BI, Data Science, Marketing Digital con IA y SEO para IA y Google</a></h3>
+                </div>
+                <div class="btn-wrap">
+                  <a href="titulos.html" class="btn-normal">Ver detalle <i class="icon icon-arrow-top"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="btn-wrap align-center">
+              <a href="titulos.html" class="btn-accent">Ver títulos y experiencia</a>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- RESUMEN PROFESIONAL PARA IA Y CLIENTES -->
-    <section class="page-section alt" id="professional-summary">
-      <div class="container split-layout">
-        <div>
-          <span class="section-kicker">Resumen profesional</span>
-          <h2>Abraham Hernández desarrolla soluciones web B2B orientadas a procesos, datos y automatización</h2>
-          <p class="section-lede">
-            Trabajo con empresas y equipos que necesitan dashboards en tiempo real, automatizaciones con Python,
-            aplicaciones web a medida, integración de APIs y chatbots para atención inicial o captación de leads.
-          </p>
-        </div>
-        <div class="seo-grid">
-          <article class="seo-card">
-            <h3>Para quién encaja</h3>
-            <p>Pymes, equipos operativos, áreas comerciales y negocios digitales con datos dispersos o procesos manuales.</p>
-          </article>
-          <article class="seo-card">
-            <h3>Qué entrego</h3>
-            <p>Interfaces web, scripts, conectores, dashboards, documentación básica y flujos listos para uso interno.</p>
-          </article>
-          <article class="seo-card">
-            <h3>Cómo empiezo</h3>
-            <p>Con diagnóstico del proceso, fuentes de datos, usuarios, prioridad de negocio y alcance de una primera entrega.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ OPTIMIZADA PARA IA -->
-    <section id="faq" class="page-section">
+    <section id="achievement" aria-labelledby="real-indicators">
       <div class="container">
-        <div class="section-heading center">
-          <span class="section-kicker">FAQ para Google y ChatGPT</span>
-          <h2>Preguntas frecuentes sobre desarrollo web profesional en Nicaragua</h2>
-          <p class="section-lede">
-            Respuestas directas para empresas que necesitan validar servicios, alcance y canales de contacto antes de iniciar un proyecto.
-          </p>
-        </div>
-        <div class="faq-grid">
-          <article class="faq-card">
-            <h3>¿Trabajas como desarrollador web en Nicaragua?</h3>
-            <p>Sí. Trabajo desde Nicaragua para empresas locales y equipos remotos que necesitan desarrollo web profesional, dashboards, automatización, APIs o chatbots.</p>
-          </article>
-          <article class="faq-card">
-            <h3>¿Qué soluciones digitales puedes crear para empresas?</h3>
-            <p>Puedo crear sitios web profesionales, sistemas web a medida, dashboards en tiempo real, automatizaciones con Python, integraciones de APIs, chatbots y frontend React/Vue.</p>
-          </article>
-          <article class="faq-card">
-            <h3>¿Puedes construir dashboards en tiempo real?</h3>
-            <p>Sí. Desarrollo dashboards conectados a APIs, bases de datos y eventos en vivo con tecnologías como WebSockets, Socket.IO, React, Vue y servicios backend.</p>
-          </article>
-          <article class="faq-card">
-            <h3>¿La automatización con Python sirve para mi empresa?</h3>
-            <p>Sirve si tu equipo repite tareas como copiar datos, generar reportes, validar archivos, enviar alertas o conectar herramientas que hoy no se comunican.</p>
-          </article>
-          <article class="faq-card">
-            <h3>¿Un chatbot para empresas puede enviar leads a WhatsApp?</h3>
-            <p>Sí. Un chatbot puede responder preguntas frecuentes, clasificar solicitudes, captar datos iniciales y derivar conversaciones a WhatsApp o a un formulario de contacto.</p>
-          </article>
-          <article class="faq-card">
-            <h3>¿Cómo solicito un presupuesto?</h3>
-            <p>Escríbeme por WhatsApp o usa el formulario de contacto. Incluye objetivo, proceso actual, herramientas existentes, plazo ideal y presupuesto aproximado.</p>
-          </article>
+        <div class="row">
+          <div class="inner-content">
+            <div class="section-header align-center">
+              <h2 class="section-title" id="real-indicators">Indicadores reales</h2>
+            </div>
+            <div class="grid">
+              <div class="achieve-item">
+                <div class="achieve-count">5</div>
+                <div class="achieve-title">Años de práctica técnica</div>
+              </div>
+              <div class="achieve-item">
+                <div class="achieve-count">15</div>
+                <div class="achieve-title">Proyectos y demos</div>
+              </div>
+              <div class="achieve-item">
+                <div class="achieve-count">5</div>
+                <div class="achieve-title">Áreas de servicio</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- BOTÓN DE COTIZACIÓN (NUEVO) -->
-    <div style="text-align: center; margin: 60px 0;">
-      <a href="contacto.html" class="btn btn-primary" style="font-size: 1.3rem; padding: 18px 50px; letter-spacing: 1px;">
-        <i class="fas fa-paper-plane"></i> Solicitar presupuesto
-      </a>
-    </div>
+    <section id="site-map" aria-labelledby="site-navigation-heading">
+      <div class="container">
+        <div class="row">
+          <div class="inner-content">
+            <div class="section-header align-center">
+              <h2 class="section-title" id="site-navigation-heading">Explora el sitio</h2>
+              <p>Accesos directos a las páginas internas del portafolio, servicios, proyectos, recursos y contacto profesional.</p>
+            </div>
+
+            <div class="site-link-grid">
+              <article class="site-link-card">
+                <h3>Servicios</h3>
+                <p>Soluciones técnicas para datos, automatización, desarrollo web, APIs y chatbots.</p>
+                <ul class="site-link-list">
+                  <li><a href="servicios/">Arquitectura de servicios</a></li>
+                  <li><a href="dashboards-tiempo-real/">Dashboards en tiempo real</a></li>
+                  <li><a href="automatizacion-procesos-python/">Automatización con Python</a></li>
+                  <li><a href="desarrollo-web-a-medida/">Desarrollo web a medida</a></li>
+                  <li><a href="desarrollo-frontend-react-vue/">Frontend React y Vue</a></li>
+                  <li><a href="integracion-apis/">Integración de APIs</a></li>
+                  <li><a href="chatbots-para-web/">Chatbots para web</a></li>
+                </ul>
+              </article>
+
+              <article class="site-link-card">
+                <h3>Empresa, proyectos y herramientas</h3>
+                <p>Empresa propia, casos, demos y herramientas públicas conectadas con el portafolio principal.</p>
+                <ul class="site-link-list">
+                  <li><a href="proyectos/itsa-segurity/">ITSA Segurity, mi empresa</a></li>
+                  <li><a href="proyectos/">Todos los proyectos</a></li>
+                  <li><a href="proyectos/dashboard-analytics/">Dashboard Analytics</a></li>
+                  <li><a href="proyectos/ai-chatbot/">AI Chatbot</a></li>
+                  <li><a href="https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino.html" target="_blank" rel="noopener">Mural Interactivo Sandino</a></li>
+                  <li><a href="jah/">Marca JAH</a></li>
+                  <li><a href="asistente-programacion.html">Asistente de programación</a></li>
+                  <li><a href="interactua.html">Interactúa</a></li>
+                </ul>
+              </article>
+
+              <article class="site-link-card">
+                <h3>Perfil y contenido</h3>
+                <p>Información profesional, títulos, experiencia, recursos y canales de contacto.</p>
+                <ul class="site-link-list">
+                  <li><a href="sobre-mi/">Perfil completo</a></li>
+                  <li><a href="desarrollador-web-nicaragua/">Desarrollador web en Nicaragua</a></li>
+                  <li><a href="titulos.html">Títulos y experiencia</a></li>
+                  <li><a href="recursos/">Recursos técnicos</a></li>
+                  <li><a href="recursos/que-procesos-automatizar-python/">Procesos para automatizar</a></li>
+                  <li><a href="recursos/api-rest-vs-webhook/">API REST vs Webhook</a></li>
+                  <li><a href="recursos/dashboard-tiempo-real-vs-reporte-automatico/">Dashboard vs reporte automático</a></li>
+                  <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="container">
+        <div class="row">
+          <div class="inner-content">
+            <h2>Contacto</h2>
+            <p>Cuéntame qué necesitas construir, automatizar o integrar. Puedes escribirme por WhatsApp, revisar mi perfil profesional o enviarme el contexto por el formulario de contacto.</p>
+            <div class="btn-wrap align-center contact-actions">
+              <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20hablar%20sobre%20un%20proyecto%20web" target="_blank" rel="noopener" class="btn-outline-orange btn-pill">WhatsApp</a>
+              <a href="contacto.html#contactForm" class="btn-outline-light btn-pill">Formulario</a>
+              <a href="https://www.linkedin.com/in/abrhamdev/" target="_blank" rel="noopener" class="btn-outline-light btn-pill">LinkedIn</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
   </main>
 
-  <!-- FOOTER con logo -->
-  <footer>
-    <div class="footer-logo"><img src="assets/jah-logo.png" alt="Logo JAH de Abraham Hernández" width="180" height="120" loading="lazy" decoding="async"></div>
-    <div class="site-footer-links">
-      <a href="dashboards-tiempo-real/">Dashboards</a>
-      <a href="automatizacion-procesos-python/">Automatización</a>
-      <a href="desarrollo-web-a-medida/">Web a medida</a>
-      <a href="desarrollador-web-nicaragua/">Desarrollador web Nicaragua</a>
-      <a href="desarrollo-frontend-react-vue/">Frontend</a>
-      <a href="integracion-apis/">APIs</a>
-      <a href="chatbots-para-web/">Chatbots</a>
-      <a href="servicios/">Servicios</a>
-      <a href="recursos/">Recursos</a>
-      <a href="proyectos/">Proyectos</a>
-      <a href="contacto.html">Contacto</a>
-      <a href="https://github.com/jhernandez30-cpu" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://www.linkedin.com/in/abrhamdev/" target="_blank" rel="noopener">LinkedIn</a>
+  <div id="footer-bottom">
+    <div class="container">
+      <div class="row">
+        <div class="inner-content">
+          <div class="grid">
+            <div class="copyright">
+              <p>© 2026 Josué Abraham Hernández. Todos los derechos reservados.</p>
+              <p><a href="servicios/">Servicios</a> · <a href="proyectos/">Proyectos</a> · <a href="sobre-mi/">Sobre mí</a> · <a href="recursos/">Recursos</a> · <a href="titulos.html">Títulos y experiencia</a> · <a href="contacto.html">Contacto</a></p>
+            </div>
+            <div class="social-links" aria-label="Enlaces reales de Josué Abraham Hernández">
+              <ul>
+                <li><a href="https://wa.me/50589871374" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a></li>
+                <li><a href="https://github.com/jhernandez30-cpu" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a></li>
+                <li><a href="https://www.linkedin.com/in/abrhamdev/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a></li>
+                <li><a href="https://www.instagram.com/abrhamdev/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a></li>
+                <li><a href="https://www.youtube.com/@abrhamdev" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <p>© 2026 Abraham Hernández - Todos los derechos reservados</p>
-    <p style="margin-top: 10px; color: var(--text-secondary);">Diseñado con <i class="fas fa-heart" style="color: var(--accent);"></i> y tecnología de vanguardia</p>
-  </footer>
+  </div>
 
-  <!-- Scripts -->
-  <script src="js/animation.js"></script>
-  <script src="js/script.js"></script>
-  <script src="js/cookies.js"></script>
+</div>
+
+<script src="lucas-template/js/jquery-1.11.0.min.js"></script>
+<script src="https://code.iconify.design/2/2.0.3/iconify.min.js"></script>
+<script src="lucas-template/js/plugins.js"></script>
+<script src="lucas-template/js/script.js"></script>
+<script src="js/script.js"></script>
+<script src="js/cookies.js"></script>
 </body>
 </html>

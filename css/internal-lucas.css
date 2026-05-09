@@ -1,0 +1,668 @@
+/* Professional internal-page shell aligned with the Lucas-inspired home. */
+body.internal-lucas-page {
+  --accent: #4dd8ff;
+  --accent-2: #7fe7ff;
+  --accent-glow: rgba(77, 216, 255, 0.36);
+  --accent-soft: rgba(77, 216, 255, 0.1);
+  --ink: #1f2529;
+  --muted: #5d6a72;
+  --line: #d7edf5;
+  --panel: #ffffff;
+  --surface: #f7fcff;
+  --dark: #080b0e;
+  background: #fff !important;
+  color: var(--ink) !important;
+  cursor: auto !important;
+}
+
+body.internal-lucas-page * {
+  letter-spacing: 0;
+}
+
+body.internal-lucas-page .custom-cursor,
+body.internal-lucas-page .loader-wrapper {
+  display: none !important;
+}
+
+body.internal-lucas-page a,
+body.internal-lucas-page button,
+body.internal-lucas-page input,
+body.internal-lucas-page textarea,
+body.internal-lucas-page select {
+  cursor: pointer !important;
+}
+
+body.internal-lucas-page input,
+body.internal-lucas-page textarea,
+body.internal-lucas-page select {
+  cursor: text !important;
+}
+
+body.internal-lucas-page .container {
+  width: min(1180px, calc(100% - 48px));
+  max-width: 1180px;
+}
+
+body.internal-lucas-page header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.92);
+  border-bottom: 1px solid rgba(77, 216, 255, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+body.internal-lucas-page .navbar {
+  min-height: 92px;
+  width: min(1480px, 100%);
+  margin: 0 auto;
+  padding: 12px clamp(18px, 4vw, 64px) !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+body.internal-lucas-page .logo,
+body.internal-lucas-page .footer-logo {
+  line-height: 0;
+}
+
+body.internal-lucas-page .logo img {
+  width: clamp(126px, 9vw, 172px);
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 12px 28px rgba(77, 216, 255, 0.22));
+}
+
+body.internal-lucas-page .nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(14px, 2vw, 30px);
+  flex-wrap: wrap;
+}
+
+body.internal-lucas-page .nav-links a,
+body.internal-lucas-page .nav-link {
+  color: #fff !important;
+  font-weight: 800 !important;
+  font-size: 0.98rem;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+body.internal-lucas-page .nav-links a:hover,
+body.internal-lucas-page .nav-links a.active,
+body.internal-lucas-page .nav-link.active {
+  color: var(--accent) !important;
+  transform: translateY(-1px);
+}
+
+body.internal-lucas-page main {
+  background: #fff;
+}
+
+body.internal-lucas-page .page-hero,
+body.internal-lucas-page #contact-page,
+body.internal-lucas-page .content-section,
+body.internal-lucas-page .section:first-of-type {
+  padding-top: 158px !important;
+}
+
+body.internal-lucas-page .page-hero,
+body.internal-lucas-page .section:first-of-type {
+  position: relative;
+  min-height: 620px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.93) 50%, rgba(0, 0, 0, 0.74) 100%),
+    radial-gradient(circle at 82% 22%, rgba(77, 216, 255, 0.22), transparent 34%),
+    #090d11 !important;
+  color: #fff;
+}
+
+body.internal-lucas-page .page-hero::after,
+body.internal-lucas-page .section:first-of-type::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(77, 216, 255, 0.6), transparent);
+}
+
+body.internal-lucas-page .page-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.72fr);
+  gap: 54px;
+  align-items: center;
+}
+
+body.internal-lucas-page .breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 700;
+}
+
+body.internal-lucas-page .breadcrumbs a {
+  color: var(--accent);
+}
+
+body.internal-lucas-page .hero-kicker,
+body.internal-lucas-page .section-kicker {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-bottom: 14px;
+  color: var(--accent) !important;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+}
+
+body.internal-lucas-page h1,
+body.internal-lucas-page .page-title,
+body.internal-lucas-page #contact-page .section-title {
+  max-width: 900px;
+  margin: 0 0 22px;
+  background: none !important;
+  background-clip: border-box !important;
+  -webkit-background-clip: border-box !important;
+  -webkit-text-fill-color: currentColor !important;
+  color: inherit !important;
+  font-size: clamp(2.7rem, 6vw, 5.4rem) !important;
+  line-height: 0.95;
+  font-weight: 900;
+  text-transform: none;
+}
+
+body.internal-lucas-page .page-hero h1,
+body.internal-lucas-page .section:first-of-type h1 {
+  color: #fff !important;
+}
+
+body.internal-lucas-page .hero-lede,
+body.internal-lucas-page .page-hero p,
+body.internal-lucas-page .section-description,
+body.internal-lucas-page #contact-page .section-subtitle {
+  max-width: 760px;
+  color: rgba(255, 255, 255, 0.84) !important;
+  font-size: clamp(1.03rem, 1.5vw, 1.22rem);
+  line-height: 1.85;
+}
+
+body.internal-lucas-page .hero-panel {
+  border: 1px solid rgba(77, 216, 255, 0.28);
+  border-radius: 8px;
+  padding: 32px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(12px);
+}
+
+body.internal-lucas-page .hero-panel h2,
+body.internal-lucas-page .hero-panel h3 {
+  color: #fff !important;
+  font-size: 1.45rem;
+}
+
+body.internal-lucas-page .hero-panel li,
+body.internal-lucas-page .hero-panel p {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+body.internal-lucas-page .page-section,
+body.internal-lucas-page .section,
+body.internal-lucas-page #contact-page,
+body.internal-lucas-page .content-section {
+  padding: 116px 0;
+  background: #fff !important;
+  color: var(--ink) !important;
+}
+
+body.internal-lucas-page .page-section.alt,
+body.internal-lucas-page .section:nth-of-type(even) {
+  background: linear-gradient(180deg, #f7fcff 0%, #ffffff 100%) !important;
+}
+
+body.internal-lucas-page .section-heading,
+body.internal-lucas-page #contact-page .section-title,
+body.internal-lucas-page #contact-page .section-subtitle {
+  text-align: left;
+}
+
+body.internal-lucas-page .section-heading.center,
+body.internal-lucas-page .section-heading.align-center {
+  text-align: center;
+}
+
+body.internal-lucas-page h2 {
+  background: none !important;
+  background-clip: border-box !important;
+  -webkit-background-clip: border-box !important;
+  -webkit-text-fill-color: currentColor !important;
+  color: var(--ink) !important;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.06;
+  font-weight: 900;
+  text-transform: none;
+}
+
+body.internal-lucas-page h3 {
+  background: none !important;
+  background-clip: border-box !important;
+  -webkit-background-clip: border-box !important;
+  -webkit-text-fill-color: currentColor !important;
+  color: var(--ink) !important;
+  font-weight: 900;
+  text-transform: none;
+}
+
+body.internal-lucas-page .section-heading h2,
+body.internal-lucas-page .cta-band h2,
+body.internal-lucas-page .cta-band h3,
+body.internal-lucas-page .seo-card h3,
+body.internal-lucas-page .service-card h3,
+body.internal-lucas-page .case-card h3,
+body.internal-lucas-page .metric-card h3,
+body.internal-lucas-page .step-card h3,
+body.internal-lucas-page .faq-card h3,
+body.internal-lucas-page .card h3,
+body.internal-lucas-page .skill-card h3,
+body.internal-lucas-page .cert-item h3 {
+  background: none !important;
+  background-clip: border-box !important;
+  -webkit-background-clip: border-box !important;
+  -webkit-text-fill-color: currentColor !important;
+  color: var(--ink) !important;
+}
+
+body.internal-lucas-page .section-lede,
+body.internal-lucas-page .page-section p,
+body.internal-lucas-page .content-section p,
+body.internal-lucas-page .section p,
+body.internal-lucas-page .card p {
+  color: var(--muted) !important;
+}
+
+body.internal-lucas-page .seo-grid,
+body.internal-lucas-page .service-grid,
+body.internal-lucas-page .case-grid,
+body.internal-lucas-page .metric-grid,
+body.internal-lucas-page .steps-grid,
+body.internal-lucas-page .faq-grid,
+body.internal-lucas-page .cards-grid,
+body.internal-lucas-page .skills-grid,
+body.internal-lucas-page .grid-formacion {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 26px;
+}
+
+body.internal-lucas-page .seo-card,
+body.internal-lucas-page .service-card,
+body.internal-lucas-page .case-card,
+body.internal-lucas-page .metric-card,
+body.internal-lucas-page .step-card,
+body.internal-lucas-page .faq-card,
+body.internal-lucas-page .card,
+body.internal-lucas-page .skill-card,
+body.internal-lucas-page .cert-item,
+body.internal-lucas-page .info-card,
+body.internal-lucas-page .form-card {
+  border: 1px solid var(--line) !important;
+  border-radius: 8px !important;
+  padding: 30px !important;
+  background: var(--panel) !important;
+  color: var(--ink) !important;
+  box-shadow: 0 24px 62px rgba(24, 80, 110, 0.1) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+body.internal-lucas-page .seo-card:hover,
+body.internal-lucas-page .service-card:hover,
+body.internal-lucas-page .case-card:hover,
+body.internal-lucas-page .metric-card:hover,
+body.internal-lucas-page .step-card:hover,
+body.internal-lucas-page .faq-card:hover,
+body.internal-lucas-page .card:hover,
+body.internal-lucas-page .skill-card:hover,
+body.internal-lucas-page .cert-item:hover {
+  transform: translateY(-7px);
+  border-color: rgba(77, 216, 255, 0.72) !important;
+  box-shadow: 0 34px 80px rgba(20, 44, 62, 0.18) !important;
+}
+
+body.internal-lucas-page .seo-card i,
+body.internal-lucas-page .service-card i,
+body.internal-lucas-page .case-card i,
+body.internal-lucas-page .metric-card i,
+body.internal-lucas-page .step-card i,
+body.internal-lucas-page .card-icon,
+body.internal-lucas-page .skill-icon,
+body.internal-lucas-page .cert-icon {
+  color: var(--accent) !important;
+}
+
+body.internal-lucas-page .stack-tags span,
+body.internal-lucas-page .intent-tags span,
+body.internal-lucas-page .seo-pill,
+body.internal-lucas-page .badge-year {
+  border: 1px solid rgba(77, 216, 255, 0.42) !important;
+  color: #009ac6 !important;
+  background: rgba(77, 216, 255, 0.1) !important;
+  border-radius: 999px !important;
+  font-weight: 800;
+}
+
+body.internal-lucas-page .btn,
+body.internal-lucas-page .btn-primary,
+body.internal-lucas-page .btn-outline,
+body.internal-lucas-page .btn-submit,
+body.internal-lucas-page .service-card a,
+body.internal-lucas-page .case-card a,
+body.internal-lucas-page .section-actions a,
+body.internal-lucas-page .hero-actions a {
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 999px !important;
+  padding: 14px 24px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+body.internal-lucas-page .btn-primary,
+body.internal-lucas-page .btn-submit {
+  border: 1px solid var(--accent) !important;
+  background: var(--accent) !important;
+  color: #071017 !important;
+}
+
+body.internal-lucas-page .btn-outline,
+body.internal-lucas-page .hero-actions .btn-outline {
+  border: 1px solid rgba(255, 255, 255, 0.72) !important;
+  background: transparent !important;
+  color: #fff !important;
+}
+
+body.internal-lucas-page .page-section .btn-outline,
+body.internal-lucas-page .content-section .btn-outline,
+body.internal-lucas-page .section:not(:first-of-type) .btn-outline {
+  border-color: var(--ink) !important;
+  color: var(--ink) !important;
+}
+
+body.internal-lucas-page .btn:hover,
+body.internal-lucas-page .btn-primary:hover,
+body.internal-lucas-page .btn-outline:hover,
+body.internal-lucas-page .btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px rgba(77, 216, 255, 0.22);
+}
+
+body.internal-lucas-page .cta-band,
+body.internal-lucas-page .cita-biblica {
+  border: 1px solid rgba(77, 216, 255, 0.38) !important;
+  border-radius: 8px !important;
+  padding: clamp(30px, 5vw, 52px) !important;
+  background:
+    linear-gradient(135deg, rgba(77, 216, 255, 0.14), rgba(255, 255, 255, 0.96)),
+    #fff !important;
+  box-shadow: 0 28px 70px rgba(24, 80, 110, 0.12);
+}
+
+body.internal-lucas-page .contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.75fr);
+  gap: 28px;
+  align-items: start;
+}
+
+body.internal-lucas-page .form-group {
+  margin-bottom: 18px;
+}
+
+body.internal-lucas-page input,
+body.internal-lucas-page textarea,
+body.internal-lucas-page select {
+  width: 100%;
+  border: 1px solid var(--line) !important;
+  border-radius: 8px !important;
+  padding: 15px 16px !important;
+  background: #fff !important;
+  color: var(--ink) !important;
+  box-shadow: none !important;
+}
+
+body.internal-lucas-page input:focus,
+body.internal-lucas-page textarea:focus,
+body.internal-lucas-page select:focus {
+  outline: 3px solid rgba(77, 216, 255, 0.22) !important;
+  border-color: var(--accent) !important;
+}
+
+body.internal-lucas-page .contact-item,
+body.internal-lucas-page .social-row,
+body.internal-lucas-page .availability-note {
+  border-color: var(--line) !important;
+}
+
+body.internal-lucas-page .contact-item i,
+body.internal-lucas-page .contact-item a,
+body.internal-lucas-page .social-btn {
+  color: #009ac6 !important;
+}
+
+body.internal-lucas-page .social-btn {
+  border: 1px solid var(--line) !important;
+  background: #f7fcff !important;
+}
+
+body.internal-lucas-page .service-mini-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+body.internal-lucas-page .service-mini-nav a {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 12px 16px;
+  background: #fff;
+  color: var(--ink);
+  font-weight: 800;
+}
+
+body.internal-lucas-page .comparison-table {
+  display: grid !important;
+  gap: 0 !important;
+  margin-top: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 28px 70px rgba(24, 80, 110, 0.12);
+}
+
+body.internal-lucas-page .comparison-row {
+  display: grid !important;
+  grid-template-columns: minmax(170px, 0.78fr) repeat(2, minmax(0, 1fr));
+  gap: 0 !important;
+  align-items: stretch;
+}
+
+body.internal-lucas-page .comparison-row + .comparison-row {
+  border-top: 1px solid var(--line);
+}
+
+body.internal-lucas-page .comparison-row > div {
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 22px 24px !important;
+  background: #fff !important;
+  color: #2c343a !important;
+  font-size: 1.02rem;
+  font-weight: 650;
+  line-height: 1.55;
+  box-shadow: none !important;
+}
+
+body.internal-lucas-page .comparison-row > div + div {
+  border-left: 1px solid var(--line) !important;
+}
+
+body.internal-lucas-page .comparison-row > div:first-child {
+  background: #f7fcff !important;
+  color: #101820 !important;
+  font-weight: 900;
+}
+
+body.internal-lucas-page .comparison-row.header > div {
+  min-height: 64px;
+  background: #071017 !important;
+  color: #ffffff !important;
+  font-weight: 900;
+}
+
+body.internal-lucas-page .comparison-row.header > div:first-child {
+  color: var(--accent) !important;
+}
+
+body.internal-lucas-page .back-to-top {
+  right: 24px;
+  bottom: 24px;
+  border: 1px solid rgba(77, 216, 255, 0.4) !important;
+  background: rgba(0, 0, 0, 0.82) !important;
+  color: var(--accent) !important;
+}
+
+body.internal-lucas-page footer {
+  padding: 70px 24px 48px;
+  border-top: 1px solid rgba(77, 216, 255, 0.18);
+  background: #080b0e !important;
+  color: rgba(255, 255, 255, 0.78) !important;
+  text-align: center;
+}
+
+body.internal-lucas-page footer .footer-logo img {
+  width: clamp(128px, 9vw, 178px);
+  height: auto;
+  filter: drop-shadow(0 12px 28px rgba(77, 216, 255, 0.24));
+}
+
+body.internal-lucas-page .site-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px 24px;
+  margin: 26px auto;
+}
+
+body.internal-lucas-page .site-footer-links a,
+body.internal-lucas-page footer a {
+  color: #fff !important;
+  font-weight: 800;
+}
+
+body.internal-lucas-page .site-footer-links a:hover,
+body.internal-lucas-page footer a:hover {
+  color: var(--accent) !important;
+}
+
+@media (max-width: 980px) {
+  body.internal-lucas-page .navbar {
+    min-height: auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  body.internal-lucas-page .nav-links {
+    justify-content: center;
+    gap: 12px 18px;
+  }
+
+  body.internal-lucas-page .page-hero-grid,
+  body.internal-lucas-page .contact-grid,
+  body.internal-lucas-page .split-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.internal-lucas-page .page-hero,
+  body.internal-lucas-page #contact-page,
+  body.internal-lucas-page .content-section,
+  body.internal-lucas-page .section:first-of-type {
+    padding-top: 190px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body.internal-lucas-page .container {
+    width: min(100% - 32px, 1180px);
+  }
+
+  body.internal-lucas-page .logo img {
+    width: 120px;
+  }
+
+  body.internal-lucas-page .nav-links a {
+    font-size: 0.9rem;
+  }
+
+  body.internal-lucas-page h1,
+  body.internal-lucas-page .page-title,
+  body.internal-lucas-page #contact-page .section-title {
+    font-size: clamp(2.25rem, 12vw, 3.4rem) !important;
+  }
+
+  body.internal-lucas-page .page-section,
+  body.internal-lucas-page .section,
+  body.internal-lucas-page #contact-page,
+  body.internal-lucas-page .content-section {
+    padding: 86px 0;
+  }
+
+  body.internal-lucas-page .seo-grid,
+  body.internal-lucas-page .service-grid,
+  body.internal-lucas-page .case-grid,
+  body.internal-lucas-page .metric-grid,
+  body.internal-lucas-page .steps-grid,
+  body.internal-lucas-page .faq-grid,
+  body.internal-lucas-page .cards-grid,
+  body.internal-lucas-page .skills-grid,
+  body.internal-lucas-page .grid-formacion {
+    grid-template-columns: 1fr;
+  }
+
+  body.internal-lucas-page .comparison-table {
+    border-radius: 8px;
+  }
+
+  body.internal-lucas-page .comparison-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.internal-lucas-page .comparison-row > div + div {
+    border-left: 0 !important;
+    border-top: 1px solid var(--line) !important;
+  }
+
+  body.internal-lucas-page .comparison-row.header {
+    display: none !important;
+  }
+
+  body.internal-lucas-page .comparison-row {
+    border-top: 8px solid #f7fcff !important;
+  }
+}

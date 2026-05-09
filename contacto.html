@@ -322,8 +322,10 @@
 
     <!-- Política de seguridad CSP -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://formspree.io;">
+  <link rel="stylesheet" href="css/internal-lucas.css">
+  <link rel="stylesheet" href="css/contact-page.css">
 </head>
-<body>
+<body class="internal-lucas-page">
     <a class="skip-link" href="#main-content">Saltar al contenido</a>
     <!-- HEADER con navbar y logo -->
     <header>
@@ -352,13 +354,21 @@
     <main id="main-content">
         <section id="contact-page">
             <div class="container">
-                <h1 class="section-title">Solicita presupuesto o consulta inicial</h1>
-                <p class="section-subtitle">Cuéntame qué necesitas construir, automatizar o integrar para responderte con una ruta clara.</p>
+                <div class="contact-hero-copy">
+                    <span class="contact-kicker">Contacto profesional</span>
+                    <h1 class="section-title">Solicita presupuesto o consulta inicial</h1>
+                    <p class="section-subtitle">Cuéntame qué necesitas construir, automatizar o integrar para responderte con una ruta clara, realista y orientada a resultados.</p>
+                    <div class="contact-trust-row" aria-label="Ventajas de contacto">
+                        <span><i class="fas fa-clock"></i> Respuesta en menos de 24 horas</span>
+                        <span><i class="fas fa-laptop-code"></i> Desarrollo web, datos e IA</span>
+                        <span><i class="fab fa-whatsapp"></i> WhatsApp directo</span>
+                    </div>
+                </div>
                 <h2 class="sr-only">Formulario e información de contacto para desarrollo web profesional</h2>
 
                 <div class="contact-grid">
                     <!-- FORMULARIO -->
-                    <div>
+                    <div class="contact-form-panel">
                         <!-- Mensajes de éxito / error -->
                         <div data-fs-success class="form-feedback form-success">
                             <i class="fas fa-check-circle"></i> ¡Mensaje enviado con éxito! Te responderé en menos de 24 horas.
@@ -368,15 +378,23 @@
                         </div>
 
                         <form id="contactForm" class="form-card" aria-label="Formulario de solicitud de presupuesto">
+                            <div class="form-card-header">
+                                <span>Cuéntame el contexto</span>
+                                <h3>Datos del proyecto</h3>
+                                <p>Mientras más claro sea el problema, mejor puedo recomendarte una solución técnica viable.</p>
+                            </div>
                             <div class="form-group">
+                                <label for="name">Nombre completo</label>
                                 <input type="text" placeholder="Tu nombre completo" id="name" name="name" data-fs-field required>
                                 <span data-fs-error="name" class="error-message"></span>
                             </div>
                             <div class="form-group">
+                                <label for="email">Correo electrónico</label>
                                 <input type="email" placeholder="Tu correo electrónico" id="email" name="email" data-fs-field required>
                                 <span data-fs-error="email" class="error-message"></span>
                             </div>
                             <div class="form-group">
+                                <label for="project_type">Tipo de proyecto</label>
                                 <select id="project_type" name="project_type" data-fs-field required>
                                     <option value="">Tipo de proyecto</option>
                                     <option value="Dashboard en tiempo real">Dashboard en tiempo real</option>
@@ -389,15 +407,20 @@
                                 </select>
                                 <span data-fs-error="project_type" class="error-message"></span>
                             </div>
-                            <div class="form-group">
-                                <input type="text" placeholder="Rango de presupuesto aproximado" id="budget" name="budget" data-fs-field>
-                                <span data-fs-error="budget" class="error-message"></span>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="budget">Presupuesto aproximado</label>
+                                    <input type="text" placeholder="Ej. C$ / USD / por definir" id="budget" name="budget" data-fs-field>
+                                    <span data-fs-error="budget" class="error-message"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="deadline">Plazo ideal</label>
+                                    <input type="text" placeholder="Ej. 2 semanas, 1 mes..." id="deadline" name="deadline" data-fs-field>
+                                    <span data-fs-error="deadline" class="error-message"></span>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <input type="text" placeholder="Plazo ideal o fecha objetivo" id="deadline" name="deadline" data-fs-field>
-                                <span data-fs-error="deadline" class="error-message"></span>
-                            </div>
-                            <div class="form-group">
+                                <label for="message">Describe lo que necesitas</label>
                                 <textarea placeholder="Describe el problema, proceso actual, herramientas existentes y resultado esperado..." rows="5" id="message" name="message" data-fs-field required></textarea>
                                 <span data-fs-error="message" class="error-message"></span>
                             </div>
@@ -409,9 +432,11 @@
 
                     <!-- INFORMACIÓN DE CONTACTO -->
                     <div class="info-card">
+                        <span class="info-card-kicker">Canales reales</span>
                         <h3>
                             <i class="fas fa-address-card"></i> Información directa
                         </h3>
+                        <p class="info-card-lede">Elige el canal que te resulte más cómodo. Para cotizaciones rápidas, WhatsApp suele ser la mejor primera vía.</p>
                         <div class="contact-item">
                             <i class="fab fa-whatsapp"></i>
                             <a href="https://wa.me/50589871374" target="_blank" rel="noopener">+505 8987 1374</a>
@@ -453,6 +478,15 @@
                         <div class="availability-note">
                             <i class="fas fa-clock"></i> Disponible para proyectos freelance<br>
                             <small style="opacity: 0.7;">Respuesta garantizada en menos de 24 horas</small>
+                        </div>
+
+                        <div class="contact-direct-actions">
+                            <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20hablar%20sobre%20un%20proyecto%20web" target="_blank" rel="noopener">
+                                <i class="fab fa-whatsapp"></i> Escribir por WhatsApp
+                            </a>
+                            <a href="cv.pdf" download>
+                                <i class="fas fa-file-download"></i> Descargar CV
+                            </a>
                         </div>
                     </div>
                 </div>

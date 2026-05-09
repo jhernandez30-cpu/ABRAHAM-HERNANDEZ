@@ -1,269 +1,324 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-NI">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Títulos y Certificaciones | Abraham Hernández</title>
-  
-  <!-- Meta etiquetas SEO -->
-  <meta name="description" content="Títulos académicos, maestrías y certificaciones de Abraham Hernández. Ingeniero en Sistemas, Máster en Desarrollo con IA, Ciberseguridad, Power BI, y más.">
-  <meta name="author" content="Abraham Hernández">
+  <title>Títulos y experiencia | Josué Abraham Hernández</title>
+
+  <meta name="description" content="Títulos académicos, formación profesional y experiencia de Josué Abraham Hernández: Ingeniería en Sistemas, desarrollo con IA, ciberseguridad, Power BI, Data Science, SEO y marketing digital con IA.">
+  <meta name="author" content="Josué Abraham Hernández González">
   <meta name="robots" content="index, follow">
   <meta name="relative-base" content="">
   <link rel="canonical" href="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/titulos.html">
-  
-  <!-- Fuentes e iconos -->
+  <meta property="og:type" content="profile">
+  <meta property="og:locale" content="es_NI">
+  <meta property="og:site_name" content="Josué Abraham Hernández">
+  <meta property="og:title" content="Títulos y experiencia | Josué Abraham Hernández">
+  <meta property="og:description" content="Formación académica y profesional en sistemas, IA, ciberseguridad, datos, Power BI, SEO y marketing digital con IA.">
+  <meta property="og:url" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/titulos.html">
+  <meta property="og:image" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/abraham-portrait-01.png">
+  <meta property="og:image:alt" content="Josué Abraham Hernández, Ingeniero en Sistemas">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Títulos y experiencia | Josué Abraham Hernández">
+  <meta name="twitter:description" content="Perfil académico y experiencia aplicada en desarrollo web, software, datos, ciberseguridad e inteligencia artificial.">
+  <meta name="twitter:image" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/abraham-portrait-01.png">
+
+  <link rel="icon" type="image/png" href="assets/jah-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  
-  <!-- CSS principales (misma línea gráfica que el portafolio) -->
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/hero.css">
   <link rel="stylesheet" href="css/seo-pages.css">
-  
-  <!-- Anime.js, GSAP y ScrollTrigger (necesarios para animation.js) -->
+  <link rel="stylesheet" href="css/internal-lucas.css">
+  <link rel="stylesheet" href="css/titulos-page.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "name": "Títulos y experiencia de Josué Abraham Hernández",
+    "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/titulos.html",
+    "about": {
+      "@type": "Person",
+      "name": "Josué Abraham Hernández",
+      "jobTitle": "Ingeniero en Sistemas",
+      "url": "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/",
+      "sameAs": [
+        "https://github.com/jhernandez30-cpu",
+        "https://www.linkedin.com/in/abrhamdev/"
+      ],
+      "knowsAbout": [
+        "Desarrollo web",
+        "Software",
+        "Bases de datos",
+        "Ciberseguridad",
+        "Inteligencia artificial",
+        "Power BI",
+        "Data Science",
+        "SEO"
+      ]
+    }
+  }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  
-  <style>
-    /* Ajustes adicionales para esta página */
-    .content-section {
-      padding: 100px 20px 80px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .grid-certificaciones {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
-      margin-top: 40px;
-    }
-
-    .cert-item {
-      background: var(--glass-bg);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      padding: 30px;
-      text-align: center;
-      transition: all 0.3s ease;
-    }
-
-    .cert-item:hover {
-      transform: translateY(-10px);
-      border-color: var(--accent);
-      box-shadow: var(--neon-shadow);
-    }
-
-    .cert-icon {
-      font-size: 3rem;
-      color: var(--accent);
-      margin-bottom: 20px;
-    }
-
-    .cert-item h3 {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-    }
-
-    .cert-item .institucion {
-      color: var(--text-secondary);
-      font-size: 1rem;
-      margin-bottom: 15px;
-      font-weight: 500;
-    }
-
-    .badge-year {
-      display: inline-block;
-      background: rgba(0, 255, 157, 0.1);
-      color: var(--accent);
-      padding: 5px 12px;
-      border-radius: 50px;
-      font-size: 0.8rem;
-      margin-top: 10px;
-    }
-
-    .cita-biblica {
-      background: linear-gradient(135deg, rgba(0,255,157,0.05), rgba(0,0,0,0.3));
-      border-left: 4px solid var(--accent);
-      border-radius: 20px;
-      padding: 40px;
-      margin-top: 60px;
-      text-align: center;
-    }
-
-    .cita-biblica p {
-      font-size: 1.3rem;
-      font-style: italic;
-      color: var(--text-secondary);
-      margin-bottom: 15px;
-    }
-
-    .cita-biblica .referencia {
-      font-size: 1rem;
-      color: var(--accent);
-      letter-spacing: 1px;
-    }
-
-    /* Ajuste para que el navbar tenga el mismo estilo */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 5%;
-    }
-    .logo a {
-      font-family: 'Courier New', monospace;
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: var(--accent, #00ff9d);
-      text-decoration: none;
-      letter-spacing: 2px;
-      transition: text-shadow 0.3s ease;
-    }
-    .logo a:hover {
-      text-shadow: 0 0 8px var(--accent-glow, rgba(0,255,157,0.4));
-    }
-    .footer-logo {
-      font-family: 'Courier New', monospace;
-      font-size: 1.2rem;
-      color: var(--accent, #00ff9d);
-      margin-bottom: 15px;
-      letter-spacing: 2px;
-      opacity: 0.7;
-      transition: opacity 0.3s;
-    }
-    .footer-logo:hover {
-      opacity: 1;
-    }
-    @media (max-width: 768px) {
-      .navbar {
-        flex-direction: column;
-        padding: 10px 0;
-      }
-      .logo {
-        margin-bottom: 10px;
-      }
-      .logo a {
-        font-size: 1.5rem;
-      }
-      .nav-links {
-        gap: 15px;
-      }
-    }
-  </style>
 </head>
-<body>
-  <!-- LOADER (opcional, se oculta rápido) -->
-  <div class="loader-wrapper" id="loader" style="transition: none;">
+<body class="internal-lucas-page titles-page">
+  <a class="skip-link" href="#main-content">Saltar al contenido</a>
+  <div class="loader-wrapper" id="loader">
     <div class="loader"></div>
   </div>
 
-  <!-- HEADER con navbar y logo -->
   <header>
     <nav class="navbar" id="navbar">
-      <div class="logo"><a href="index.html" class="brand-logo" aria-label="Inicio - Abraham Hernández"><img src="assets/jah-logo.png" alt="Logo JAH de Abraham Hernández" width="180" height="120" loading="eager" decoding="async"></a></div>
+      <div class="logo">
+        <a href="index.html" class="brand-logo" aria-label="Inicio - Josué Abraham Hernández">
+          <img src="assets/jah-logo.png" alt="Logo JAH de Josué Abraham Hernández" width="180" height="120" loading="eager" decoding="async">
+        </a>
+      </div>
       <div class="nav-links">
         <a href="index.html" class="nav-link">Inicio</a>
         <a href="servicios/" class="nav-link">Servicios</a>
         <a href="proyectos/" class="nav-link">Proyectos</a>
         <a href="sobre-mi/" class="nav-link">Sobre mí</a>
+        <a href="titulos.html" class="nav-link active" aria-current="page">Títulos</a>
         <a href="recursos/" class="nav-link">Recursos</a>
         <a href="contacto.html" class="nav-link">Contacto</a>
       </div>
     </nav>
   </header>
 
-  <!-- BOTÓN VOLVER ARRIBA -->
-  <div class="back-to-top" id="backToTop">
+  <div class="back-to-top" id="backToTop" aria-label="Volver arriba">
     <i class="fas fa-arrow-up"></i>
   </div>
-
-  <!-- Cursor personalizado -->
   <div class="custom-cursor"></div>
 
-  <main>
-    <div class="container content-section">
-      <h1 class="page-title">Títulos académicos y certificaciones</h1>
-      <h2>Títulos Académicos</h2>
-      <div class="skills-grid" style="margin-bottom: 60px;">
-        <div class="skill-card">
-          <div class="skill-icon"><i class="fas fa-university"></i></div>
-          <h3>Ingeniero en Sistema de Informática</h3>
-          <p>Universidad Nacional Héroes de San José de las Mulas</p>
-          <span class="badge-year">Título de grado</span>
+  <main id="main-content">
+    <section class="page-hero titles-hero" aria-labelledby="titles-hero-title">
+      <div class="container page-hero-grid">
+        <div class="titles-hero-copy">
+          <nav class="breadcrumbs" aria-label="Migas de pan">
+            <a href="index.html">Inicio</a><span>/</span><span>Títulos y experiencia</span>
+          </nav>
+          <span class="hero-kicker">Formación profesional</span>
+          <h1 id="titles-hero-title">Títulos, formación y experiencia aplicada</h1>
+          <p class="hero-lede">
+            Perfil académico y técnico de Josué Abraham Hernández, Ingeniero en Sistemas con formación en desarrollo con IA, ciberseguridad, Power BI, Data Science, SEO y marketing digital con inteligencia artificial.
+          </p>
+          <div class="hero-actions">
+            <a href="cv.pdf" download class="btn btn-primary"><i class="fas fa-file-download"></i> Descargar CV</a>
+            <a href="contacto.html" class="btn btn-outline"><i class="fas fa-paper-plane"></i> Contactar</a>
+          </div>
         </div>
+        <aside class="hero-panel titles-profile-card" aria-label="Resumen profesional">
+          <span class="profile-label">Resumen</span>
+          <h2>Ingeniero en Sistemas</h2>
+          <p>Formación orientada a desarrollo web, software, bases de datos, ciberseguridad e inteligencia artificial.</p>
+          <div class="profile-tags" aria-label="Áreas destacadas">
+            <span>Desarrollo web</span>
+            <span>IA</span>
+            <span>Ciberseguridad</span>
+            <span>Datos</span>
+            <span>SEO</span>
+          </div>
+        </aside>
       </div>
+    </section>
 
-      <h2>Maestrías</h2>
-      <div class="skills-grid" style="margin-bottom: 60px;">
-        <div class="skill-card">
-          <div class="skill-icon"><i class="fas fa-graduation-cap"></i></div>
-          <h3>Máster en Desarrollo con IA</h3>
-          <p>Big School</p>
-          <span class="badge-year">En curso / Finalizado</span>
+    <section class="page-section credentials-section" aria-labelledby="academic-heading">
+      <div class="container">
+        <div class="section-heading center">
+          <span class="section-kicker">Base académica</span>
+          <h2 id="academic-heading">Títulos académicos</h2>
+          <p class="section-lede">La formación principal que sostiene mi perfil como profesional de sistemas y tecnología.</p>
         </div>
-        <div class="skill-card">
-          <div class="skill-icon"><i class="fas fa-shield-alt"></i></div>
-          <h3>Máster en Ciberseguridad</h3>
-          <p>UNIR / UNAN MANAGUA</p>
-          <span class="badge-year">Especialización</span>
-        </div>
-      </div>
 
-      <h2>Certificaciones</h2>
-      <div class="grid-certificaciones">
-        <div class="cert-item">
-          <div class="cert-icon"><i class="fas fa-robot"></i></div>
-          <h3>Desarrollo con IA</h3>
-          <div class="institucion">Big School</div>
-          <span class="badge-year">Certificación</span>
-        </div>
-        <div class="cert-item">
-          <div class="cert-icon"><i class="fas fa-chart-pie"></i></div>
-          <h3>Power BI</h3>
-          <div class="institucion">DATLY Educación</div>
-          <span class="badge-year">Certificación</span>
-        </div>
-        <div class="cert-item">
-          <div class="cert-icon"><i class="fas fa-lock"></i></div>
-          <h3>Ciberseguridad y Hacking Ético</h3>
-          <div class="institucion">Big School</div>
-          <span class="badge-year">Certificación</span>
-        </div>
-        <div class="cert-item">
-          <div class="cert-icon"><i class="fas fa-chart-line"></i></div>
-          <h3>Marketing Digital con IA</h3>
-          <div class="institucion">Big School</div>
-          <span class="badge-year">Certificación</span>
-        </div>
-        <div class="cert-item">
-          <div class="cert-icon"><i class="fas fa-search"></i></div>
-          <h3>SEO para IA y Google</h3>
-          <div class="institucion">Big School</div>
-          <span class="badge-year">Certificación</span>
-        </div>
-        <div class="cert-item">
-          <div class="cert-icon"><i class="fas fa-database"></i></div>
-          <h3>Data Science</h3>
-          <div class="institucion">Big School</div>
-          <span class="badge-year">Certificación</span>
+        <div class="credential-grid credential-grid-primary">
+          <article class="credential-card credential-card-featured">
+            <div class="credential-icon"><i class="fas fa-university"></i></div>
+            <div>
+              <span class="badge-year">Título de grado</span>
+              <h3>Ingeniero en Sistema de Informática</h3>
+              <p>Universidad Nacional Héroes de San José de las Mulas</p>
+            </div>
+          </article>
         </div>
       </div>
+    </section>
 
-      <!-- Cita bíblica -->
-      <div class="cita-biblica">
-        <p>“Mira que te mando que te esfuerces y seas valiente; no temas ni desmayes, porque Jehová tu Dios estará contigo en dondequiera que vayas”</p>
-        <div class="referencia">— Josué 1:9</div>
+    <section class="page-section alt" aria-labelledby="masters-heading">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-kicker">Especialización</span>
+          <h2 id="masters-heading">Maestrías</h2>
+          <p class="section-lede">Preparación avanzada enfocada en dos áreas clave para soluciones digitales modernas: inteligencia artificial y seguridad.</p>
+        </div>
+
+        <div class="credential-grid">
+          <article class="credential-card">
+            <div class="credential-icon"><i class="fas fa-brain"></i></div>
+            <span class="badge-year">Maestría</span>
+            <h3>Máster en Desarrollo con IA</h3>
+            <p>Big School</p>
+          </article>
+          <article class="credential-card">
+            <div class="credential-icon"><i class="fas fa-shield-alt"></i></div>
+            <span class="badge-year">Maestría</span>
+            <h3>Máster en Ciberseguridad</h3>
+            <p>UNIR / UNAN MANAGUA</p>
+          </article>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <section class="page-section formation-section" aria-labelledby="formation-heading">
+      <div class="container">
+        <div class="section-heading center">
+          <span class="section-kicker">Formación complementaria</span>
+          <h2 id="formation-heading">Áreas que fortalecen mi trabajo técnico</h2>
+          <p class="section-lede">Conocimientos que conectan desarrollo, datos, seguridad, automatización, posicionamiento y estrategia digital.</p>
+        </div>
+
+        <div class="formation-grid">
+          <article class="formation-card">
+            <i class="fas fa-robot"></i>
+            <h3>Desarrollo con IA</h3>
+            <p>Big School</p>
+            <span>Formación</span>
+          </article>
+          <article class="formation-card">
+            <i class="fas fa-chart-pie"></i>
+            <h3>Power BI</h3>
+            <p>DATLY Educación</p>
+            <span>Formación</span>
+          </article>
+          <article class="formation-card">
+            <i class="fas fa-lock"></i>
+            <h3>Ciberseguridad y Hacking Ético</h3>
+            <p>Big School</p>
+            <span>Formación</span>
+          </article>
+          <article class="formation-card">
+            <i class="fas fa-chart-line"></i>
+            <h3>Marketing Digital con IA</h3>
+            <p>Big School</p>
+            <span>Formación</span>
+          </article>
+          <article class="formation-card">
+            <i class="fas fa-search"></i>
+            <h3>SEO para IA y Google</h3>
+            <p>Big School</p>
+            <span>Formación</span>
+          </article>
+          <article class="formation-card">
+            <i class="fas fa-database"></i>
+            <h3>Data Science</h3>
+            <p>Big School</p>
+            <span>Formación</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section alt experience-section" aria-labelledby="experience-heading">
+      <div class="container split-layout">
+        <div>
+          <span class="section-kicker">Experiencia aplicada</span>
+          <h2 id="experience-heading">Cómo se traduce esta formación en soluciones reales</h2>
+          <p class="section-lede">
+            Mi experiencia se enfoca en convertir necesidades de negocio en productos web, automatizaciones, paneles de datos y sistemas conectados con una base técnica sólida.
+          </p>
+          <div class="section-actions">
+            <a href="proyectos/" class="btn btn-primary"><i class="fas fa-folder-open"></i> Ver proyectos</a>
+            <a href="servicios/" class="btn btn-outline"><i class="fas fa-laptop-code"></i> Ver servicios</a>
+          </div>
+        </div>
+
+        <div class="experience-track">
+          <article class="experience-item">
+            <span>01</span>
+            <div>
+              <h3>Desarrollo web y software</h3>
+              <p>Sitios profesionales, sistemas a medida, frontend React/Vue e integración con datos reales.</p>
+            </div>
+          </article>
+          <article class="experience-item">
+            <span>02</span>
+            <div>
+              <h3>Datos, Power BI y automatización</h3>
+              <p>Dashboards, reportes, bases de datos, procesos con Python y flujos conectados por APIs.</p>
+            </div>
+          </article>
+          <article class="experience-item">
+            <span>03</span>
+            <div>
+              <h3>Ciberseguridad e inteligencia artificial</h3>
+              <p>Formación aplicada a soluciones más confiables, automatizadas y preparadas para entornos digitales modernos.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section indicators-section" aria-labelledby="indicators-heading">
+      <div class="container">
+        <div class="section-heading center">
+          <span class="section-kicker">Indicadores reales</span>
+          <h2 id="indicators-heading">Perfil técnico en contexto</h2>
+          <p class="section-lede">Estos indicadores se mantienen alineados con la información real presentada en el portafolio principal.</p>
+        </div>
+
+        <div class="indicator-grid">
+          <article class="indicator-card">
+            <strong>5</strong>
+            <span>Años de práctica técnica</span>
+          </article>
+          <article class="indicator-card">
+            <strong>15</strong>
+            <span>Proyectos y demos</span>
+          </article>
+          <article class="indicator-card">
+            <strong>5</strong>
+            <span>Áreas de servicio</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section quote-section" aria-labelledby="quote-heading">
+      <div class="container">
+        <div class="cita-biblica titles-quote">
+          <span class="section-kicker" id="quote-heading">Principio personal</span>
+          <p>“Mira que te mando que te esfuerces y seas valiente; no temas ni desmayes, porque Jehová tu Dios estará contigo en dondequiera que vayas”</p>
+          <div class="referencia">Josué 1:9</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section alt" aria-labelledby="cta-heading">
+      <div class="container">
+        <div class="cta-band titles-cta">
+          <div>
+            <span class="section-kicker">Siguiente paso</span>
+            <h2 id="cta-heading">¿Quieres revisar mi perfil completo?</h2>
+            <p class="section-lede">Puedes descargar mi CV, ver proyectos reales o escribirme para evaluar una solución digital.</p>
+          </div>
+          <div class="cta-actions">
+            <a href="cv.pdf" download class="btn btn-primary"><i class="fas fa-file-download"></i> Descargar CV</a>
+            <a href="contacto.html" class="btn btn-outline"><i class="fas fa-paper-plane"></i> Contacto</a>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- FOOTER con logo -->
   <footer>
-    <div class="footer-logo"><img src="assets/jah-logo.png" alt="Logo JAH de Abraham Hernández" width="180" height="120" loading="lazy" decoding="async"></div>
+    <div class="footer-logo">
+      <img src="assets/jah-logo.png" alt="Logo JAH de Josué Abraham Hernández" width="180" height="120" loading="lazy" decoding="async">
+    </div>
     <div class="site-footer-links">
       <a href="dashboards-tiempo-real/">Dashboards</a>
       <a href="automatizacion-procesos-python/">Automatización</a>
@@ -274,11 +329,9 @@
       <a href="proyectos/">Proyectos</a>
       <a href="contacto.html">Contacto</a>
     </div>
-    <p>© 2026 Abraham Hernández - Todos los derechos reservados</p>
-    <p style="margin-top: 10px; color: var(--text-secondary);">Diseñado con <i class="fas fa-heart" style="color: var(--accent);"></i> y tecnología de vanguardia</p>
+    <p>© 2026 Josué Abraham Hernández. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- Scripts (en orden correcto: GSAP ya está arriba, luego estos) -->
   <script src="js/animation.js"></script>
   <script src="js/script.js"></script>
 </body>

@@ -294,6 +294,10 @@
     rgba(255, 255, 255, 0.04);
 }
 
+.case-grid + .cta-band {
+  margin-top: 28px;
+}
+
 .cta-band h2,
 .cta-band h3 {
   margin-bottom: 12px;
