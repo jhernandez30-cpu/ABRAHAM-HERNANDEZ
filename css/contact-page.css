@@ -85,11 +85,51 @@ body.internal-lucas-page #contact-page .section-subtitle {
   color: #4dd8ff;
 }
 
+.contact-need-label {
+  margin: 26px 0 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-weight: 900;
+}
+
+.contact-need-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(140px, 1fr));
+  gap: 10px;
+  max-width: 1120px;
+  margin: 12px auto 0;
+}
+
+.contact-need-list span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 58px;
+  padding: 12px 14px;
+  border: 1px solid rgba(77, 216, 255, 0.28);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.contact-need-list i {
+  color: #4dd8ff;
+}
+
 body.internal-lucas-page .contact-grid {
   max-width: 1180px;
   grid-template-columns: minmax(0, 1.14fr) minmax(320px, 0.82fr);
   gap: 28px;
   align-items: stretch;
+}
+
+.contact-form-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 body.internal-lucas-page .form-card,
@@ -102,6 +142,7 @@ body.internal-lucas-page .info-card {
 }
 
 body.internal-lucas-page .form-card {
+  height: auto;
   padding: clamp(28px, 4vw, 42px) !important;
 }
 
@@ -120,6 +161,33 @@ body.internal-lucas-page .form-card {
   margin: 0;
   color: #5d6a72 !important;
   line-height: 1.7;
+}
+
+.contact-help-list {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-help-list li {
+  position: relative;
+  padding-left: 22px;
+  color: #5d6a72;
+  line-height: 1.6;
+}
+
+.contact-help-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.75em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4dd8ff;
+  box-shadow: 0 0 10px rgba(77, 216, 255, 0.38);
 }
 
 .form-row {
@@ -169,6 +237,13 @@ body.internal-lucas-page .form-group select {
 body.internal-lucas-page .form-group select option {
   color: #101820;
   background: #fff;
+}
+
+.form-submit-note {
+  margin: -4px 0 16px;
+  color: #31434d;
+  font-weight: 800;
+  line-height: 1.55;
 }
 
 body.internal-lucas-page .btn-submit {
@@ -284,6 +359,26 @@ body.internal-lucas-page .availability-note i {
   color: #009ac6;
 }
 
+.contact-followup-card {
+  border: 1px solid #d7edf5;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 18px 46px rgba(6, 32, 47, 0.12);
+  padding: clamp(24px, 3vw, 32px);
+}
+
+.contact-followup-card h3 {
+  margin: 0 0 10px;
+  color: #101820;
+  font-size: clamp(1.35rem, 2.2vw, 1.78rem);
+}
+
+.contact-followup-card p {
+  margin: 0;
+  color: #5d6a72;
+  line-height: 1.7;
+}
+
 .contact-direct-actions {
   display: grid;
   grid-template-columns: 1fr;
@@ -329,7 +424,8 @@ body.internal-lucas-page .form-feedback {
   }
 
   body.internal-lucas-page .contact-grid,
-  .form-row {
+  .form-row,
+  .contact-need-list {
     grid-template-columns: 1fr !important;
   }
 }

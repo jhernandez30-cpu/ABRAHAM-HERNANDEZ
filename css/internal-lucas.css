@@ -164,6 +164,12 @@ body.internal-lucas-page .section-kicker {
   letter-spacing: 1.4px;
 }
 
+body.internal-lucas-page .page-section .section-kicker,
+body.internal-lucas-page .content-section .section-kicker,
+body.internal-lucas-page .section:not(:first-of-type) .section-kicker {
+  color: #007fa8 !important;
+}
+
 body.internal-lucas-page h1,
 body.internal-lucas-page .page-title,
 body.internal-lucas-page #contact-page .section-title {
@@ -353,7 +359,7 @@ body.internal-lucas-page .intent-tags span,
 body.internal-lucas-page .seo-pill,
 body.internal-lucas-page .badge-year {
   border: 1px solid rgba(77, 216, 255, 0.42) !important;
-  color: #009ac6 !important;
+  color: #007fa8 !important;
   background: rgba(77, 216, 255, 0.1) !important;
   border-radius: 999px !important;
   font-weight: 800;
@@ -406,6 +412,15 @@ body.internal-lucas-page .btn-outline:hover,
 body.internal-lucas-page .btn-submit:hover {
   transform: translateY(-2px);
   box-shadow: 0 18px 36px rgba(77, 216, 255, 0.22);
+}
+
+body.internal-lucas-page .page-section .service-card a:not(.btn),
+body.internal-lucas-page .page-section .case-card a:not(.btn),
+body.internal-lucas-page .content-section .service-card a:not(.btn),
+body.internal-lucas-page .content-section .case-card a:not(.btn),
+body.internal-lucas-page .section:not(:first-of-type) .service-card a:not(.btn),
+body.internal-lucas-page .section:not(:first-of-type) .case-card a:not(.btn) {
+  color: #007fa8 !important;
 }
 
 body.internal-lucas-page .cta-band,
@@ -537,6 +552,43 @@ body.internal-lucas-page .comparison-row.header > div {
 
 body.internal-lucas-page .comparison-row.header > div:first-child {
   color: var(--accent) !important;
+}
+
+body.internal-lucas-page .content-list {
+  display: grid;
+  gap: 16px;
+}
+
+body.internal-lucas-page .content-list a {
+  display: block;
+  border: 1px solid var(--line) !important;
+  border-radius: 8px !important;
+  padding: 22px 24px !important;
+  background: #fff !important;
+  color: var(--ink) !important;
+  text-decoration: none;
+  box-shadow: 0 18px 46px rgba(24, 80, 110, 0.09);
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+body.internal-lucas-page .content-list a:hover {
+  transform: translateY(-3px);
+  border-color: rgba(77, 216, 255, 0.72) !important;
+  box-shadow: 0 26px 64px rgba(24, 80, 110, 0.16);
+}
+
+body.internal-lucas-page .content-list strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--ink) !important;
+  font-size: 1.08rem;
+  line-height: 1.35;
+}
+
+body.internal-lucas-page .content-list span {
+  display: block;
+  color: var(--muted) !important;
+  line-height: 1.65;
 }
 
 body.internal-lucas-page .back-to-top {

@@ -181,34 +181,39 @@ function initPortfolioChatbot() {
   const youtubeUrl = 'https://www.youtube.com/@abrhamdev';
   const jahAvatarUrl = pageUrl('assets/img/jah-avatar.png');
   const fallbackAnswer = {
-    text: `Puedo guiarte por el sitio. Elige una ruta: <a href="${pageUrl('servicios/')}">servicios</a>, <a href="${pageUrl('proyectos/')}">casos de estudio</a>, <a href="${pageUrl('recursos/')}">blog/recursos</a>, <a href="${pageUrl('sobre-mi/')}">perfil profesional</a> o <a href="${pageUrl('contacto.html')}">contacto</a>. Si me dices tu problema, te recomiendo la página correcta.`,
-    suggestions: ['Mapa del sitio', 'Servicios', 'Proyectos', 'Contacto']
+    text: `Puedo orientarte según lo que necesita tu empresa: una web profesional, automatizar procesos, crear dashboards, integrar APIs, implementar un chatbot o mejorar el frontend. Puedes ir a <a href="${pageUrl('servicios/')}">Servicios</a>, revisar <a href="${pageUrl('desarrollador-web-nicaragua/')}">Desarrollador web en Nicaragua</a> o pedir una orientación en <a href="${pageUrl('contacto.html')}">Contacto</a>.`,
+    suggestions: ['Guíame', 'Servicios', 'Presupuesto', 'Contacto']
   };
   const answers = [
     {
       keys: ['hola', 'buenas', 'hey', 'saludos', 'inicio', 'empezar', 'ayuda'],
-      text: `Hola, soy JAH, el asistente virtual de Abraham. Puedo ayudarte a navegar el sitio, elegir un servicio, revisar proyectos, conocer títulos y experiencia, ver recursos o pedir presupuesto. Si no sabes por dónde empezar, dime qué quieres mejorar: ventas, datos, reportes, procesos manuales, APIs, atención al cliente o tu sitio web.`,
-      suggestions: ['Guíame', 'Servicios', 'Proyectos', 'Contacto']
+      text: `Hola, soy JAH, el asistente virtual de Abraham. Puedo ayudarte a elegir una solución para tu empresa: desarrollo web, automatización, dashboards, integración de APIs, chatbots o frontend profesional. Si no sabes por dónde empezar, dime qué problema quieres resolver: procesos manuales, datos dispersos, herramientas desconectadas, captación desde la web o atención de clientes.`,
+      suggestions: ['Guíame', 'Servicios', 'Presupuesto', 'Proyectos']
     },
     {
       keys: ['jah', 'joshue', 'josue', 'josué', 'abraham hernandez', 'abraham hernández', 'quien es', 'quién es', 'perfil profesional', 'ingeniero en sistemas'],
-      text: `Josué Abraham Hernández es Ingeniero en Sistemas y desarrollador web en Nicaragua. Su perfil combina desarrollo web, software, bases de datos, ciberseguridad e inteligencia artificial para crear soluciones digitales empresariales: sitios profesionales, dashboards, automatizaciones, APIs y chatbots.`,
+      text: `Josué Abraham Hernández es Ingeniero en Sistemas y desarrollador web en Nicaragua. Trabaja con empresas que necesitan soluciones digitales a medida: webs profesionales, automatización de procesos, dashboards en tiempo real, integración de APIs, chatbots y frontend orientado a experiencia de usuario.`,
       suggestions: ['Sobre mí', 'Servicios', 'Títulos', 'Contacto']
     },
     {
       keys: ['guia', 'guiame', 'orientame', 'recomienda', 'recomendacion', 'no se', 'no sé', 'que necesito', 'necesito ayuda', 'ruta'],
-      text: `Te guío rápido: si necesitas visibilidad de datos, ve a <a href="${pageUrl('dashboards-tiempo-real/')}">dashboards</a>. Si repites tareas o reportes, ve a <a href="${pageUrl('automatizacion-procesos-python/')}">automatización con Python</a>. Si quieres una web o sistema interno, ve a <a href="${pageUrl('desarrollo-web-a-medida/')}">desarrollo web a medida</a>. Si quieres conectar herramientas, ve a <a href="${pageUrl('integracion-apis/')}">APIs</a>. Si quieres responder leads, ve a <a href="${pageUrl('chatbots-para-web/')}">chatbots</a>.`,
-      suggestions: ['Dashboards', 'Automatización', 'Web a medida', 'Contacto']
+      text: `Te guío rápido: si tu empresa pierde tiempo en tareas repetitivas, revisa <a href="${pageUrl('automatizacion-procesos-python/')}">automatización con Python</a>. Si no ve métricas claras, revisa <a href="${pageUrl('dashboards-tiempo-real/')}">dashboards</a>. Si necesita captar mejor, revisa <a href="${pageUrl('desarrollo-web-a-medida/')}">desarrollo web a medida</a>. Si las herramientas no se comunican, revisa <a href="${pageUrl('integracion-apis/')}">APIs</a>. Si recibe consultas frecuentes, revisa <a href="${pageUrl('chatbots-para-web/')}">chatbots</a>.`,
+      suggestions: ['Problemas', 'Servicios', 'Presupuesto', 'Contacto']
+    },
+    {
+      keys: ['problema', 'problemas', 'resolver', 'manuales', 'herramientas desconectadas', 'no convierten', 'visibilidad', 'datos dispersos'],
+      text: `Abraham ayuda a resolver problemas como tareas repetitivas que consumen horas, sistemas que no se comunican, falta de dashboards para decidir, webs o formularios que no convierten y procesos internos que necesitan una solución digital a medida.`,
+      suggestions: ['Automatización', 'Dashboards', 'Web a medida', 'Contacto']
     },
     {
       keys: ['mapa', 'navegar', 'sitio', 'secciones', 'paginas', 'páginas', 'menu', 'todo el sitio'],
-      text: `Mapa del sitio: <a href="${pageUrl('index.html')}">Inicio</a>, <a href="${pageUrl('desarrollador-web-nicaragua/')}">desarrollador web en Nicaragua</a>, <a href="${pageUrl('servicios/')}">servicios</a>, <a href="${pageUrl('proyectos/')}">proyectos</a>, <a href="${pageUrl('recursos/')}">blog/recursos</a>, <a href="${pageUrl('sobre-mi/')}">sobre mí</a>, <a href="${pageUrl('titulos.html')}">títulos y experiencia</a>, <a href="${pageUrl('interactua.html')}">herramientas IA</a>, <a href="${pageUrl('asistente-programacion.html')}">asistente de programación</a>, <a href="${pageUrl('jah/')}">Marca JAH</a> y <a href="${pageUrl('contacto.html')}">contacto</a>.`,
+      text: `Mapa del sitio: <a href="${pageUrl('index.html')}">Inicio</a>, <a href="${pageUrl('servicios/')}">servicios</a>, <a href="${pageUrl('desarrollador-web-nicaragua/')}">desarrollador web en Nicaragua</a>, <a href="${pageUrl('proyectos/')}">proyectos</a>, <a href="${pageUrl('recursos/')}">recursos</a>, <a href="${pageUrl('sobre-mi/')}">sobre mí</a>, <a href="${pageUrl('titulos.html')}">títulos y experiencia</a>, <a href="${pageUrl('interactua.html')}">herramientas IA</a>, <a href="${pageUrl('asistente-programacion.html')}">asistente de programación</a>, <a href="${pageUrl('jah/')}">Marca JAH</a> y <a href="${pageUrl('contacto.html')}">contacto</a>.`,
       suggestions: ['Servicios', 'Proyectos', 'Recursos', 'Contacto']
     },
     {
       keys: ['servicio', 'servicios', 'haces', 'ofreces', 'oferta', 'desarrollo', 'web profesional'],
-      text: `Abraham ofrece <a href="${pageUrl('servicios/')}">servicios digitales B2B</a>: <a href="${pageUrl('dashboards-tiempo-real/')}">dashboards en tiempo real</a>, <a href="${pageUrl('automatizacion-procesos-python/')}">automatización con Python</a>, <a href="${pageUrl('desarrollo-web-a-medida/')}">desarrollo web a medida</a>, <a href="${pageUrl('desarrollo-frontend-react-vue/')}">frontend React/Vue</a>, <a href="${pageUrl('integracion-apis/')}">integración de APIs</a> y <a href="${pageUrl('chatbots-para-web/')}">chatbots para web</a>.`,
-      suggestions: ['Dashboards', 'Automatización', 'APIs', 'Chatbot']
+      text: `Servicios principales: <a href="${pageUrl('desarrollo-web-a-medida/')}">desarrollo web a medida</a>, <a href="${pageUrl('dashboards-tiempo-real/')}">dashboards en tiempo real</a>, <a href="${pageUrl('automatizacion-procesos-python/')}">automatización con Python</a>, <a href="${pageUrl('integracion-apis/')}">integración de APIs</a>, <a href="${pageUrl('chatbots-para-web/')}">chatbots y asistentes</a>, y <a href="${pageUrl('desarrollo-frontend-react-vue/')}">frontend profesional</a>. Todos están pensados para empresas que necesitan resolver necesidades concretas, no solo usar tecnología por usarla.`,
+      suggestions: ['Para quién', 'Proceso', 'Presupuesto', 'Contacto']
     },
     {
       keys: ['habilidades', 'skills', 'html', 'css', 'javascript', 'python', 'c#', 'c sharp', 'sql', 'power bi', 'ciberseguridad', 'bases de datos', 'desarrollo web', 'inteligencia artificial'],
@@ -217,8 +222,18 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['desarrollador web nicaragua', 'nicaragua', 'local', 'perfil local', 'desarrollador web en nicaragua'],
-      text: `La página principal para búsqueda local es <a href="${pageUrl('desarrollador-web-nicaragua/')}">Desarrollador web en Nicaragua</a>. Ahí se explica qué puede construir Abraham, cuándo contratarlo, proceso de trabajo, casos de estudio y formas de contacto.`,
-      suggestions: ['Servicios', 'Sobre mí', 'CV', 'Contacto']
+      text: `La página <a href="${pageUrl('desarrollador-web-nicaragua/')}">Desarrollador web en Nicaragua</a> está orientada a empresas que necesitan algo más que una web básica: presencia profesional, captación, automatizaciones, dashboards, integración de formularios, APIs o herramientas internas a medida.`,
+      suggestions: ['Servicios', 'Proceso', 'Presupuesto', 'Contacto']
+    },
+    {
+      keys: ['para quien', 'para quién', 'tipo de empresa', 'empresa', 'pymes', 'negocio', 'encaja'],
+      text: `Este servicio encaja especialmente con empresas que necesitan una web profesional, quieren optimizar procesos manuales, buscan centralizar información, necesitan conectar herramientas, formularios, CRMs o APIs, o prefieren una solución a medida en lugar de sistemas rígidos.`,
+      suggestions: ['Servicios', 'Proceso', 'Contacto', 'Presupuesto']
+    },
+    {
+      keys: ['proceso', 'como trabaja', 'cómo trabaja', 'metodologia', 'metodología', 'pasos', 'forma de trabajo'],
+      text: `El proceso de trabajo es claro: primero se entiende el problema, luego se define una solución con alcance y prioridades, después se desarrolla e integra, y finalmente se entrega con ajustes para uso real y próximos pasos si hacen falta.`,
+      suggestions: ['Servicios', 'Contacto', 'Presupuesto', 'Sobre mí']
     },
     {
       keys: ['dashboard', 'dashboards', 'datos', 'metricas', 'métricas', 'kpi', 'reporte', 'reportes', 'tiempo real', 'alertas', 'websocket', 'socket'],
@@ -317,7 +332,7 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['indicadores', 'años', 'anos', 'practica tecnica', 'práctica técnica', 'areas de servicio', 'demos'],
-      text: `La home muestra indicadores reales: 5 años de práctica técnica, 15 proyectos y demos, y 5 áreas de servicio. No se usan estadísticas falsas de clientes, premios o ventas.`,
+      text: `La home muestra indicadores reales con un diseño renovado: 5 años de práctica técnica, 15 proyectos y demos, y 5 áreas de servicio. Son datos de base profesional, no cifras inventadas de clientes, premios o ventas.`,
       suggestions: ['Proyectos', 'Servicios', 'Sobre mí', 'Contacto']
     },
     {
@@ -332,7 +347,7 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['contacto', 'correo', 'email', 'cotizar', 'contratar', 'precio', 'costo', 'presupuesto', 'disponible', 'disponibilidad', 'freelance', 'trabajo'],
-      text: `Para solicitar presupuesto, escribe por <a href="${whatsappBudget}" target="_blank" rel="noopener">WhatsApp al +505 8987 1374</a> o completa el formulario en <a href="${pageUrl('contacto.html')}">Contacto</a>. Incluye objetivo, proceso actual, herramientas existentes, fecha ideal, presupuesto aproximado y ejemplos de referencia.`,
+      text: `Para solicitar presupuesto, entra a <a href="${pageUrl('contacto.html')}">Contacto</a> o escribe por <a href="${whatsappBudget}" target="_blank" rel="noopener">WhatsApp al +505 8987 1374</a>. Ayuda incluir qué necesitas desarrollar, qué problema quieres resolver, si ya tienes una web o sistema, plazo aproximado y cualquier detalle relevante del proyecto.`,
       suggestions: ['WhatsApp', 'Servicios', 'Proyectos', 'CV']
     },
     {
@@ -342,12 +357,12 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['faq', 'preguntas frecuentes', 'google', 'chatgpt', 'seo'],
-      text: `La home incluye una sección FAQ para Google y ChatGPT con respuestas sobre servicios, dashboards, automatización, chatbots y presupuesto. También está el archivo <a href="${pageUrl('llms.txt')}">llms.txt</a> para resumir el sitio a sistemas de IA.`,
+      text: `El sitio está reforzado para SEO con títulos, metadescripciones, enlaces internos, landing local de <a href="${pageUrl('desarrollador-web-nicaragua/')}">desarrollador web en Nicaragua</a>, FAQs en servicios y contenido orientado a búsquedas como desarrollo web para empresas, automatización de procesos, dashboards, APIs y chatbots.`,
       suggestions: ['Recursos', 'Servicios', 'Mapa del sitio', 'Contacto']
     }
   ];
 
-  const quickReplies = ['Mapa del sitio', 'Servicios', 'Proyectos', 'Títulos', 'Contacto'];
+  const quickReplies = ['Guíame', 'Servicios', 'Presupuesto', 'Proyectos', 'Contacto'];
   const widget = document.createElement('div');
   widget.className = 'chatbot-widget';
   widget.innerHTML = `
@@ -559,5 +574,5 @@ function initPortfolioChatbot() {
     sendQuestion(input.value);
   });
 
-  addMessage('Hola, soy JAH, el asistente virtual de Abraham. Puedo guiarte por todo el sitio: servicios, proyectos, recursos, perfil, títulos, experiencia, CV, redes o presupuesto. Escribe tu necesidad o abre el menú desplegable.', 'bot');
+  addMessage('Hola, soy JAH, el asistente virtual de Abraham. Puedo ayudarte a elegir entre desarrollo web, automatización, dashboards, APIs, chatbots, frontend o presupuesto. Escribe tu necesidad o abre el menú desplegable.', 'bot');
 }
