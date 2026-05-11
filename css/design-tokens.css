@@ -1,0 +1,451 @@
+/* Visual tokens adapted from "Midnight Stage Presence" (nuevo diseno). */
+:root {
+  /* MasterClass reference aliases from masterclass.html */
+  --black: #0d0d0d;
+  --dark: #141414;
+  --dark2: #1a1a1a;
+  --gold: #4dd8ff;
+  --gold-lt: #8ee7ff;
+  --gold-dim: rgba(77, 216, 255, 0.18);
+  --white: #f5f0e8;
+  --white-dim: rgba(245, 240, 232, 0.55);
+  --white-faint: rgba(245, 240, 232, 0.18);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "Didact Gothic", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Source palette */
+  --color-pitch-black: #000000;
+  --color-charcoal-canvas: #222326;
+  --color-graphite-base: #0d0d0e;
+  --color-deep-slate: #272c33;
+  --color-subtle-ash: #191c21;
+  --color-muted-stone: #211d0d;
+  --color-iron-gray: #43454c;
+  --color-silver-mist: #9ea0a9;
+  --color-light-steel: #d4d5d9;
+  --color-pure-white: #ffffff;
+  --color-ghostly-gray: #f4f4f5;
+  --color-action-raspberry: #e32652;
+  --color-interactive-lime: #dcff00;
+  --color-highlight-gold: #eed37f;
+  --color-subtle-cadet: #596170;
+
+  /* Portfolio aliases */
+  --portfolio-bg: var(--color-pitch-black);
+  --portfolio-bg-soft: var(--color-subtle-ash);
+  --portfolio-surface: var(--color-charcoal-canvas);
+  --portfolio-surface-2: var(--color-deep-slate);
+  --portfolio-surface-3: var(--color-graphite-base);
+  --portfolio-text: var(--color-pure-white);
+  --portfolio-text-soft: var(--color-light-steel);
+  --portfolio-muted: var(--color-silver-mist);
+  --portfolio-line: rgba(244, 244, 245, 0.14);
+  --portfolio-line-strong: rgba(244, 244, 245, 0.34);
+  --portfolio-accent: var(--color-action-raspberry);
+  --portfolio-accent-hover: #ff3f6d;
+  --portfolio-accent-rgb: 227, 38, 82;
+  --portfolio-master-gold: var(--portfolio-cyan);
+  --portfolio-master-gold-hover: #8ee7ff;
+  --portfolio-lime: var(--color-interactive-lime);
+  --portfolio-gold: var(--color-highlight-gold);
+  --portfolio-cyan: #4dd8ff;
+  --portfolio-violet: #8b5cf6;
+
+  /* Typography */
+  --font-sohne: "Inter", "Open Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sohne-schmal: "Source Sans 3", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-ivar-display-condensed: "Source Sans 3", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --text-caption: 12px;
+  --leading-caption: 1.45;
+  --text-body-sm: 14px;
+  --leading-body-sm: 1.45;
+  --text-body: 16px;
+  --leading-body: 1.45;
+  --text-body-lg: 20px;
+  --leading-body-lg: 1.45;
+  --text-heading-sm: 22px;
+  --leading-heading-sm: 1.45;
+  --text-heading: 24px;
+  --leading-heading: 1.3;
+  --text-heading-lg: 32px;
+  --leading-heading-lg: 1.3;
+  --text-display-sm: 48px;
+  --leading-display-sm: 1.3;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  /* Spacing */
+  --spacing-unit: 4px;
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-20: 20px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-80: 80px;
+  --spacing-96: 96px;
+  --spacing-112: 112px;
+
+  /* Layout and shape */
+  --section-gap: 64px;
+  --card-padding: 48px;
+  --element-gap: 16px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-2xl-2: 20px;
+  --radius-full: 48px;
+  --radius-cards: 8px;
+  --radius-links: 8px;
+  --radius-badges: 20px;
+  --radius-images: 4px;
+  --radius-inputs: 0;
+  --radius-buttons: 8px;
+
+  /* Elevation */
+  --shadow-subtle: rgb(148, 154, 164) 0 0 0 2px inset;
+  --shadow-subtle-2: rgb(39, 44, 51) 0 0 0 1px inset;
+  --shadow-subtle-3: rgb(67, 69, 76) 0 0 0 2px inset;
+  --shadow-subtle-4: rgb(148, 154, 164) 0 0 0 1px inset;
+  --shadow-premium-card: 0 28px 70px rgba(0, 0, 0, 0.38);
+  --shadow-premium-hover: 0 36px 90px rgba(0, 0, 0, 0.48);
+
+  /* Surfaces */
+  --surface-pitch-black-base: var(--color-pitch-black);
+  --surface-charcoal-canvas: var(--color-charcoal-canvas);
+  --surface-deep-slate-cards: var(--color-deep-slate);
+  --surface-graphite-modules: var(--color-graphite-base);
+
+  /* Motion */
+  --motion-fast: 160ms ease;
+  --motion-medium: 260ms ease;
+}
+
+body.masterclass-integrated {
+  --portfolio-bg: var(--black);
+  --portfolio-bg-soft: var(--dark);
+  --portfolio-surface: var(--dark2);
+  --portfolio-surface-2: #202020;
+  --portfolio-surface-3: #101010;
+  --portfolio-text: var(--white);
+  --portfolio-text-soft: rgba(245, 240, 232, 0.82);
+  --portfolio-muted: var(--white-dim);
+  --portfolio-line: var(--white-faint);
+  --portfolio-line-strong: rgba(245, 240, 232, 0.36);
+  --portfolio-accent: var(--portfolio-cyan);
+  --portfolio-accent-hover: #8ee7ff;
+  --portfolio-accent-rgb: 77, 216, 255;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body.masterclass-integrated .reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s ease,
+    filter 0.8s ease;
+  will-change: opacity, transform;
+}
+
+body.masterclass-integrated .reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.masterclass-integrated .reveal-d1 {
+  transition-delay: 0.08s;
+}
+
+body.masterclass-integrated .reveal-d2 {
+  transition-delay: 0.16s;
+}
+
+body.masterclass-integrated .reveal-d3 {
+  transition-delay: 0.24s;
+}
+
+body.masterclass-integrated .reveal-d4 {
+  transition-delay: 0.32s;
+}
+
+body.masterclass-integrated .premium-interactive {
+  --spotlight-x: 50%;
+  --spotlight-y: 0%;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+body.masterclass-integrated .premium-interactive::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at var(--spotlight-x) var(--spotlight-y),
+      rgba(var(--portfolio-accent-rgb), 0.16),
+      transparent 38%
+    );
+  opacity: 0;
+  transition: opacity var(--motion-medium);
+}
+
+body.masterclass-integrated .premium-interactive:hover::after {
+  opacity: 1;
+}
+
+body.masterclass-integrated .premium-section-shell {
+  position: relative;
+}
+
+body.masterclass-integrated .premium-section-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(var(--portfolio-accent-rgb), 0.55), transparent);
+  opacity: 0.68;
+}
+
+body.masterclass-integrated .masterclass-hero-host > :not(.masterclass-hero-mosaic):not(.portfolio-scroll-indicator) {
+  position: relative;
+  z-index: 2;
+}
+
+body.masterclass-integrated .masterclass-hero-mosaic {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  pointer-events: none;
+  opacity: 0.24;
+  overflow: hidden;
+  mix-blend-mode: screen;
+}
+
+body.masterclass-integrated .masterclass-hero-mosaic::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(13, 13, 13, 0.92), rgba(13, 13, 13, 0.2) 52%, rgba(13, 13, 13, 0.9)),
+    linear-gradient(180deg, rgba(13, 13, 13, 0.1), var(--portfolio-bg) 94%);
+}
+
+body.masterclass-integrated .masterclass-mosaic-col {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  border-right: 1px solid rgba(245, 240, 232, 0.035);
+}
+
+body.masterclass-integrated .masterclass-mosaic-col:nth-child(odd) {
+  transform: translateY(-36px);
+}
+
+body.masterclass-integrated .masterclass-mosaic-cell {
+  flex: 1;
+  min-height: 210px;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 74%, rgba(var(--portfolio-accent-rgb), 0.22), transparent 48%),
+    linear-gradient(160deg, var(--mosaic-a), var(--mosaic-b) 48%, var(--portfolio-bg));
+}
+
+body.masterclass-integrated .masterclass-mosaic-cell::before {
+  content: "";
+  position: absolute;
+  bottom: 14%;
+  left: 50%;
+  width: 54%;
+  aspect-ratio: 0.72;
+  transform: translateX(-50%);
+  border-radius: 50% 50% 45% 45% / 55% 55% 45% 45%;
+  background: radial-gradient(ellipse, rgba(var(--portfolio-accent-rgb), 0.34), transparent 68%);
+  filter: blur(1px);
+  opacity: 0.42;
+}
+
+body.masterclass-integrated .masterclass-mosaic-cell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(13, 13, 13, 0.18), transparent 32%, rgba(13, 13, 13, 0.65));
+}
+
+body.masterclass-integrated .masterclass-mosaic-cell:nth-child(1) {
+  --mosaic-a: #06121a;
+  --mosaic-b: #12334a;
+}
+
+body.masterclass-integrated .masterclass-mosaic-cell:nth-child(2) {
+  --mosaic-a: #071a1e;
+  --mosaic-b: #0e3a44;
+}
+
+body.masterclass-integrated .masterclass-mosaic-cell:nth-child(3) {
+  --mosaic-a: #0e1220;
+  --mosaic-b: #1c2b4a;
+}
+
+body.masterclass-integrated .portfolio-scroll-indicator {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(24px, 5vw, 46px);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transform: translateX(-50%);
+  color: var(--portfolio-muted);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0;
+  animation: portfolioFadeIn 1s 1s forwards;
+}
+
+body.masterclass-integrated .portfolio-scroll-indicator::before {
+  content: "";
+  width: 1px;
+  height: 48px;
+  background: linear-gradient(to bottom, var(--portfolio-accent), transparent);
+  animation: portfolioScrollDrop 2s ease-in-out infinite;
+}
+
+body.masterclass-integrated .portfolio-marquee-bar {
+  position: relative;
+  z-index: 5;
+  max-width: 100%;
+  overflow: hidden;
+  border-top: 1px solid rgba(var(--portfolio-accent-rgb), 0.22);
+  border-bottom: 1px solid rgba(var(--portfolio-accent-rgb), 0.22);
+  background: rgba(var(--portfolio-accent-rgb), 0.035);
+  color: var(--portfolio-muted);
+}
+
+body.masterclass-integrated .portfolio-marquee-track {
+  width: max-content;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: portfolioMarqueeScroll 30s linear infinite;
+}
+
+body.masterclass-integrated .portfolio-marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.35rem;
+  padding: 1rem 2rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+body.masterclass-integrated .portfolio-marquee-dot {
+  color: var(--portfolio-accent);
+  font-size: 0.52rem;
+}
+
+body.masterclass-integrated .portfolio-platform-grid {
+  display: grid;
+  gap: 1px;
+  background: rgba(245, 240, 232, 0.055);
+  border: 1px solid rgba(245, 240, 232, 0.055);
+}
+
+body.masterclass-integrated .portfolio-platform-grid > * {
+  background: var(--portfolio-surface);
+}
+
+@keyframes portfolioMarqueeScroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes portfolioScrollDrop {
+  0%,
+  100% {
+    transform: scaleY(1);
+    opacity: 0.72;
+  }
+
+  50% {
+    transform: scaleY(0.55) translateY(10px);
+    opacity: 0.32;
+  }
+}
+
+@keyframes portfolioFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+body.masterclass-integrated .premium-nav-solid header,
+body.masterclass-integrated.premium-nav-solid header,
+body.masterclass-integrated.premium-nav-solid #header .header-wrap,
+body.masterclass-integrated #navbar.solid {
+  background: rgba(13, 13, 13, 0.96) !important;
+  border-bottom-color: rgba(245, 240, 232, 0.12) !important;
+  box-shadow: 0 18px 56px rgba(0, 0, 0, 0.36);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.masterclass-integrated .reveal,
+  body.masterclass-integrated .reveal.in-view {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  body.masterclass-integrated .portfolio-marquee-track,
+  body.masterclass-integrated .portfolio-scroll-indicator,
+  body.masterclass-integrated .portfolio-scroll-indicator::before {
+    animation: none;
+  }
+}
+
+@media (max-width: 768px) {
+  body.masterclass-integrated .masterclass-hero-mosaic {
+    grid-template-columns: repeat(3, 1fr);
+    opacity: 0.14;
+  }
+
+  body.masterclass-integrated .masterclass-mosaic-col:nth-child(n + 4) {
+    display: none;
+  }
+
+  body.masterclass-integrated .portfolio-scroll-indicator {
+    display: none;
+  }
+
+  body.masterclass-integrated .portfolio-marquee-item {
+    padding: 0.86rem 1.35rem;
+    font-size: 0.64rem;
+  }
+}

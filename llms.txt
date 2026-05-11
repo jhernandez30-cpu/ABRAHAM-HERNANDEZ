@@ -41,8 +41,9 @@ Ubicación principal: Nicaragua.
 ## Casos de estudio
 
 - ITSA Segurity: dashboard con alertas en tiempo real.
-- Dashboard Analytics: visualización de datos para decisiones de marketing.
-- AI Chatbot: asistente virtual para responder consultas frecuentes y escalar a humano.
+- Mural Interactivo Sandino: experiencia educativa interactiva.
+- Benjamín Zeledón: página educativa interactiva sobre soberanía nacional.
+- Variedades Nora: tienda online responsive.
 
 ## Contacto
 

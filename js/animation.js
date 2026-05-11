@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.registerPlugin(ScrollTrigger);
   }
 
+  initMasterclassIntegration(reduceMotion);
+
   if (!reduceMotion) {
     const heroRan = runAnimeHero(animeAnimate, animeStagger);
     const pageIntroRan = runAnimePageIntro(animeAnimate, animeStagger);
@@ -23,6 +25,259 @@ document.addEventListener('DOMContentLoaded', () => {
   animateSkillBars(reduceMotion);
   animateCounters(reduceMotion);
 });
+
+function initMasterclassIntegration(reduceMotion) {
+  if (shouldSkipMasterclassIntegration()) return;
+
+  document.body.classList.add('masterclass-integrated');
+  initMasterclassNavState();
+  initMasterclassHeroArchitecture();
+  initMasterclassMarquee();
+  initMasterclassReveals(reduceMotion);
+  initMasterclassCardSpotlight(reduceMotion);
+}
+
+function shouldSkipMasterclassIntegration() {
+  const path = window.location.pathname.toLowerCase();
+  return (
+    path.includes('/jah/') ||
+    path.endsWith('/jah') ||
+    path.endsWith('/asistente-programacion.html') ||
+    document.body.classList.contains('programming-app-page')
+  );
+}
+
+function initMasterclassNavState() {
+  const nav = document.getElementById('navbar');
+  const headerWrap = document.querySelector('#header .header-wrap');
+  const targets = [nav, headerWrap].filter(Boolean);
+  if (!targets.length) return;
+
+  function updateNavState() {
+    const solid = window.scrollY > 80;
+    document.body.classList.toggle('premium-nav-solid', solid);
+    targets.forEach((target) => target.classList.toggle('solid', solid));
+  }
+
+  updateNavState();
+  window.addEventListener('scroll', updateNavState, { passive: true });
+}
+
+function initMasterclassHeroArchitecture() {
+  const hero = findMasterclassHero();
+  if (!hero || hero.querySelector('.masterclass-hero-mosaic')) return;
+
+  hero.classList.add('masterclass-hero-host');
+  if (getComputedStyle(hero).position === 'static') {
+    hero.style.position = 'relative';
+  }
+
+  const mosaic = document.createElement('div');
+  mosaic.className = 'masterclass-hero-mosaic';
+  mosaic.setAttribute('aria-hidden', 'true');
+
+  for (let col = 0; col < 5; col += 1) {
+    const column = document.createElement('div');
+    column.className = 'masterclass-mosaic-col';
+    for (let cell = 0; cell < 2; cell += 1) {
+      const tile = document.createElement('div');
+      tile.className = 'masterclass-mosaic-cell';
+      column.appendChild(tile);
+    }
+    mosaic.appendChild(column);
+  }
+
+  hero.prepend(mosaic);
+
+  if (!hero.querySelector('.portfolio-scroll-indicator')) {
+    const scrollIndicator = document.createElement('div');
+    scrollIndicator.className = 'portfolio-scroll-indicator';
+    scrollIndicator.setAttribute('aria-hidden', 'true');
+    scrollIndicator.append(document.createTextNode('Scroll'));
+    hero.appendChild(scrollIndicator);
+  }
+}
+
+function findMasterclassHero() {
+  return (
+    document.querySelector('#billboard') ||
+    document.querySelector('.titles-hero') ||
+    document.querySelector('.page-hero') ||
+    document.querySelector('#contact-page') ||
+    document.querySelector('main > .section:first-of-type') ||
+    document.querySelector('main > section:first-of-type')
+  );
+}
+
+function initMasterclassMarquee() {
+  if (document.querySelector('.portfolio-marquee-bar')) return;
+
+  const hero = findMasterclassHero();
+  if (!hero || !hero.parentNode) return;
+
+  const items = [
+    'Desarrollo web',
+    'Automatización',
+    'Dashboards',
+    'APIs',
+    'Ciberseguridad',
+    'Inteligencia artificial',
+    'Soluciones digitales',
+    'Tecnología empresarial'
+  ];
+
+  const marquee = document.createElement('div');
+  marquee.className = 'portfolio-marquee-bar';
+  marquee.setAttribute('aria-label', 'Áreas profesionales destacadas');
+
+  const track = document.createElement('div');
+  track.className = 'portfolio-marquee-track';
+
+  [...items, ...items].forEach((item) => {
+    const label = document.createElement('span');
+    label.className = 'portfolio-marquee-item';
+    label.append(document.createTextNode(item));
+
+    const dot = document.createElement('span');
+    dot.className = 'portfolio-marquee-dot';
+    dot.setAttribute('aria-hidden', 'true');
+    dot.textContent = '◆';
+    label.appendChild(dot);
+
+    track.appendChild(label);
+  });
+
+  marquee.appendChild(track);
+  hero.insertAdjacentElement('afterend', marquee);
+}
+
+function initMasterclassReveals(reduceMotion) {
+  const selectors = [
+    '#billboard .banner-content > *',
+    '#billboard .socila-links a',
+    '.page-hero .container > *',
+    '.titles-hero .container > *',
+    '#contact-page .container > *',
+    '.section-header',
+    '.section-heading',
+    '.section-title',
+    '.section-description',
+    '.section-subtitle',
+    '.section-lede',
+    '.hero-lede',
+    '.hero-actions',
+    '.hero-panel',
+    '.home-copy-section .container > *',
+    '.site-link-card',
+    '#services .column',
+    '.value-card',
+    '.cta-band',
+    '.tab-content .tab-element',
+    '.technology-item',
+    '#about-profile .review-item',
+    '.seo-card',
+    '.service-card',
+    '.case-card',
+    '.metric-card',
+    '.step-card',
+    '.faq-card',
+    '.card',
+    '.skill-card',
+    '.cert-item',
+    '.credential-card',
+    '.formation-card',
+    '.experience-item',
+    '.indicator-card',
+    '.info-card',
+    '.form-card',
+    '.contact-item',
+    '.contact-option',
+    '.contact-followup-card',
+    '.social-btn',
+    'footer .footer-logo',
+    'footer .site-footer-links',
+    'footer p'
+  ];
+
+  const elements = collectUniqueElements(selectors).filter((element) => {
+    return (
+      element instanceof HTMLElement &&
+      !element.closest('.chatbot-widget') &&
+      !element.closest('script, style, noscript')
+    );
+  });
+
+  elements.forEach((element, index) => {
+    element.classList.add('reveal');
+    element.dataset.masterclassReveal = 'true';
+
+    if (!/(^|\s)reveal-d[1-4](\s|$)/.test(element.className)) {
+      const delay = index % 5;
+      if (delay) element.classList.add(`reveal-d${delay}`);
+    }
+  });
+
+  document.querySelectorAll('main section, .page-section, .content-section, #contact-page, #achievement').forEach((section) => {
+    if (section instanceof HTMLElement && !section.closest('.chatbot-widget')) {
+      section.classList.add('premium-section-shell');
+    }
+  });
+
+  if (reduceMotion || typeof IntersectionObserver === 'undefined') {
+    elements.forEach((element) => element.classList.add('in-view'));
+    return;
+  }
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('in-view');
+      revealObserver.unobserve(entry.target);
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+
+  elements.forEach((element) => revealObserver.observe(element));
+}
+
+function initMasterclassCardSpotlight(reduceMotion) {
+  if (reduceMotion || !window.matchMedia('(pointer: fine)').matches) return;
+
+  const selectors = [
+    '.site-link-card',
+    '#services .column',
+    '.tab-content .tab-element figure',
+    '.seo-card',
+    '.service-card',
+    '.case-card',
+    '.metric-card',
+    '.step-card',
+    '.faq-card',
+    '.card',
+    '.skill-card',
+    '.cert-item',
+    '.credential-card',
+    '.formation-card',
+    '.experience-item',
+    '.indicator-card',
+    '.info-card',
+    '.form-card',
+    '.contact-option',
+    '.contact-followup-card'
+  ];
+
+  collectUniqueElements(selectors).forEach((card) => {
+    if (!(card instanceof HTMLElement) || card.closest('.chatbot-widget')) return;
+    card.classList.add('premium-interactive');
+
+    card.addEventListener('pointermove', (event) => {
+      const rect = card.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width) * 100;
+      const y = ((event.clientY - rect.top) / rect.height) * 100;
+      card.style.setProperty('--spotlight-x', `${x.toFixed(2)}%`);
+      card.style.setProperty('--spotlight-y', `${y.toFixed(2)}%`);
+    });
+  });
+}
 
 function runAnimeHero(animate, stagger) {
   if (!animate) return false;
@@ -87,7 +342,7 @@ function runAnimePageIntro(animate, stagger) {
     '#contact-page .section-subtitle',
     '#contact-page .form-card',
     '#contact-page .info-card'
-  ]);
+  ]).filter((element) => !element.dataset.masterclassReveal);
 
   if (!targets.length) return false;
 
@@ -161,7 +416,7 @@ function runGsapScrollReveals() {
   const revealed = new Set();
   selectors.forEach((selector) => {
     gsap.utils.toArray(selector).forEach((element) => {
-      if (revealed.has(element) || element.dataset.animeIntro === 'true') return;
+      if (revealed.has(element) || element.dataset.animeIntro === 'true' || element.dataset.masterclassReveal === 'true') return;
       revealed.add(element);
 
       const animation = {

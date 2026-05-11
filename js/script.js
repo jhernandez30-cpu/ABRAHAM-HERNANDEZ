@@ -217,8 +217,8 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['habilidades', 'skills', 'html', 'css', 'javascript', 'python', 'c#', 'c sharp', 'sql', 'power bi', 'ciberseguridad', 'bases de datos', 'desarrollo web', 'inteligencia artificial'],
-      text: `Habilidades destacadas del sitio: HTML, CSS, JavaScript, Python, C#, SQL, Power BI, bases de datos, desarrollo web, APIs, automatización, ciberseguridad e inteligencia artificial. En la home también aparece la sección de tecnologías y áreas de especialidad.`,
-      suggestions: ['Tecnologías', 'Servicios', 'Proyectos', 'Títulos']
+      text: `Habilidades destacadas del sitio: HTML, CSS, JavaScript, Python, C#, SQL, Power BI, bases de datos, desarrollo web, APIs, automatización, ciberseguridad e inteligencia artificial.`,
+      suggestions: ['Servicios', 'Proyectos', 'Títulos', 'Contacto']
     },
     {
       keys: ['desarrollador web nicaragua', 'nicaragua', 'local', 'perfil local', 'desarrollador web en nicaragua'],
@@ -253,7 +253,7 @@ function initPortfolioChatbot() {
     {
       keys: ['frontend', 'react', 'vue', 'interfaz', 'interfaces', 'ui', 'producto digital', 'saas', 'panel administrativo'],
       text: `Para interfaces modernas, paneles administrativos, productos digitales o frontend conectado a APIs, revisa <a href="${pageUrl('desarrollo-frontend-react-vue/')}">frontend React y Vue</a>. Abraham trabaja con componentes, responsive, accesibilidad e integración con datos reales.`,
-      suggestions: ['APIs', 'Proyectos', 'Tecnologías', 'Contacto']
+      suggestions: ['APIs', 'Proyectos', 'Servicios', 'Contacto']
     },
     {
       keys: ['api', 'apis', 'integracion', 'integración', 'webhook', 'conectar', 'sincronizar', 'crm', 'formularios', 'sistemas'],
@@ -262,12 +262,12 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['chatbot', 'bot', 'whatsapp', 'leads', 'cliente', 'clientes', 'atencion', 'atención', 'preguntas frecuentes', 'soporte'],
-      text: `Si quieres atender consultas, captar leads o derivar usuarios a WhatsApp, revisa <a href="${pageUrl('chatbots-para-web/')}">chatbots para web</a>. Puedes ver el caso <a href="${pageUrl('proyectos/ai-chatbot/')}">AI Chatbot</a> para entender el enfoque.`,
-      suggestions: ['AI Chatbot', 'Contacto', 'Servicios', 'IA']
+      text: `Si quieres atender consultas, captar leads o derivar usuarios a WhatsApp, revisa <a href="${pageUrl('chatbots-para-web/')}">chatbots para web</a>.`,
+      suggestions: ['Contacto', 'Servicios', 'IA', 'Presupuesto']
     },
     {
       keys: ['proyecto', 'proyectos', 'portfolio', 'portafolio', 'demo', 'caso', 'casos', 'trabajos'],
-      text: `En <a href="${pageUrl('proyectos/')}">Proyectos</a> aparecen proyectos reales como <a href="https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino.html" target="_blank" rel="noopener">Mural Interactivo Sandino</a>, <a href="${pageUrl('proyectos/dashboard-analytics/')}">Dashboard Analytics</a>, <a href="${pageUrl('proyectos/ai-chatbot/')}">AI Chatbot</a>, <a href="${pageUrl('jah/')}">Marca JAH</a> y <a href="https://jhernandez30-cpu.github.io/Variedades-Nora/" target="_blank" rel="noopener">Variedades Nora</a>. <a href="${pageUrl('proyectos/itsa-segurity/')}">ITSA Segurity</a> queda conectado como mi empresa, no como proyecto de portafolio.`,
+      text: `En <a href="${pageUrl('proyectos/')}">Proyectos</a> aparecen proyectos reales como <a href="https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino.html" target="_blank" rel="noopener">Mural Interactivo Sandino</a>, <a href="${pageUrl('jah/')}">Marca JAH</a> y <a href="https://jhernandez30-cpu.github.io/Variedades-Nora/" target="_blank" rel="noopener">Variedades Nora</a>. <a href="${pageUrl('proyectos/itsa-segurity/')}">ITSA Segurity</a> queda conectado como mi empresa, no como proyecto de portafolio.`,
       suggestions: ['Sandino', 'Variedades Nora', 'ITSA Segurity', 'Servicios']
     },
     {
@@ -277,7 +277,7 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['analytics', 'marketing', 'dashboard analytics', 'analitica', 'analítica', 'visualizacion', 'visualización'],
-      text: `<a href="${pageUrl('proyectos/dashboard-analytics/')}">Dashboard Analytics</a> muestra cómo convertir datos dispersos en un panel con filtros y KPIs para tomar decisiones de marketing más rápido.`,
+      text: `Para paneles y KPIs, revisa el servicio de <a href="${pageUrl('dashboards-tiempo-real/')}">dashboards en tiempo real</a> o la guía de recursos sobre reportes y datos vivos.`,
       suggestions: ['Dashboards', 'Proyectos', 'Recursos', 'Contacto']
     },
     {
@@ -297,8 +297,8 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['ai chatbot', 'asistente virtual', 'nlp', 'rasa'],
-      text: `<a href="${pageUrl('proyectos/ai-chatbot/')}">AI Chatbot</a> es un caso de asistente virtual para responder consultas frecuentes, clasificar solicitudes y escalar a atención humana cuando hace falta.`,
-      suggestions: ['Chatbot', 'IA', 'Contacto', 'Proyectos']
+      text: `Para asistentes virtuales, revisa el servicio de <a href="${pageUrl('chatbots-para-web/')}">chatbots para web</a>, orientado a preguntas frecuentes, captación y derivación a WhatsApp.`,
+      suggestions: ['Chatbot', 'IA', 'Contacto', 'Servicios']
     },
     {
       keys: ['recurso', 'recursos', 'blog', 'guia', 'guía', 'articulo', 'artículo', 'leer', 'aprender'],
@@ -323,12 +323,12 @@ function initPortfolioChatbot() {
     {
       keys: ['sobre mi', 'sobre mí', 'perfil', 'abraham', 'quien eres', 'quién eres', 'experiencia', 'forma de trabajo'],
       text: `En <a href="${pageUrl('sobre-mi/')}">Sobre mí</a> está el perfil profesional de Abraham: especialización, forma de trabajo, tecnologías, áreas donde aporta criterio y CTA para revisar un proyecto.`,
-      suggestions: ['CV', 'Títulos', 'Tecnologías', 'Contacto']
+      suggestions: ['CV', 'Títulos', 'Servicios', 'Contacto']
     },
     {
       keys: ['titulo', 'titulos', 'título', 'títulos', 'certificacion', 'certificaciones', 'estudios', 'maestria', 'maestría', 'cv', 'curriculum', 'currículum'],
       text: `Puedes ver <a href="${pageUrl('titulos.html')}">Títulos, formación y experiencia</a>: Ingeniero en Sistema de Informática por la Universidad Nacional Héroes de San José de las Mulas, Máster en Desarrollo con IA, Máster en Ciberseguridad, Power BI, Data Science, Marketing Digital con IA y SEO para IA y Google. También puedes descargar el <a href="${pageUrl('cv.pdf')}">CV en PDF</a>.`,
-      suggestions: ['Sobre mí', 'CV', 'Contacto', 'Tecnologías']
+      suggestions: ['Sobre mí', 'CV', 'Contacto', 'Servicios']
     },
     {
       keys: ['indicadores', 'años', 'anos', 'practica tecnica', 'práctica técnica', 'areas de servicio', 'demos'],

@@ -73,24 +73,6 @@ Reducción del tiempo de respuesta ante incidentes.
 
 ---
 
-### 📊 Dashboard Analytics
-
-Dashboard interactivo para visualizar datos dispersos y facilitar la toma de decisiones.
-
-**Stack:**  
-Vue, D3.js, Express, PostgreSQL.
-
----
-
-### 🤖 AI Chatbot
-
-Chatbot orientado a atención al cliente 24/7 con capacidad de responder consultas comunes y escalar a un agente humano.
-
-**Stack:**  
-React, Python, Flask, Rasa, MongoDB.
-
----
-
 ## 🎯 Objetivo del proyecto
 
 El objetivo de esta página web es funcionar como una presentación profesional para:

@@ -290,3 +290,107 @@ body.titles-page .indicator-card:hover {
     font-size: 0.76rem;
   }
 }
+
+/* Titles page alignment with the premium dark token system. */
+body.titles-page .titles-hero {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.91) 52%, rgba(0, 0, 0, 0.72) 100%),
+    radial-gradient(circle at 78% 20%, rgba(227, 38, 82, 0.2), transparent 32rem),
+    var(--portfolio-bg) !important;
+}
+
+body.titles-page .profile-label,
+body.titles-page .credential-icon,
+body.titles-page .formation-card i,
+body.titles-page .indicator-card strong,
+body.titles-page .titles-quote .referencia,
+body.titles-page .experience-item > span {
+  color: var(--portfolio-accent) !important;
+}
+
+body.titles-page .profile-tags span,
+body.titles-page .formation-card span {
+  border: 1px solid var(--portfolio-line) !important;
+  background: var(--portfolio-text) !important;
+  color: var(--portfolio-bg) !important;
+}
+
+body.titles-page .credential-card,
+body.titles-page .formation-card,
+body.titles-page .experience-item,
+body.titles-page .indicator-card {
+  border: 1px solid var(--portfolio-line) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.024)),
+    var(--portfolio-surface) !important;
+  box-shadow: var(--shadow-premium-card) !important;
+}
+
+body.titles-page .credential-card::before,
+body.titles-page .formation-card::before {
+  background: var(--portfolio-accent);
+}
+
+body.titles-page .credential-card h3,
+body.titles-page .formation-card h3,
+body.titles-page .experience-item h3,
+body.titles-page .indicator-card span,
+body.titles-page .titles-quote p {
+  color: var(--portfolio-text) !important;
+}
+
+body.titles-page .credential-card p,
+body.titles-page .formation-card p,
+body.titles-page .experience-item p {
+  color: var(--portfolio-muted) !important;
+}
+
+body.titles-page .credential-icon,
+body.titles-page .formation-card i {
+  border: 1px solid var(--portfolio-line);
+  border-radius: var(--radius-md);
+  background: var(--portfolio-surface-3);
+}
+
+body.titles-page .experience-item > span {
+  border-radius: var(--radius-md);
+  background: var(--portfolio-surface-3);
+}
+
+body.titles-page .credential-card:hover,
+body.titles-page .formation-card:hover,
+body.titles-page .experience-item:hover,
+body.titles-page .indicator-card:hover {
+  border-color: rgba(227, 38, 82, 0.62) !important;
+  box-shadow: var(--shadow-premium-hover), var(--shadow-subtle-3) !important;
+}
+
+/* MasterClass reference alignment for titles and experience page. */
+body.masterclass-integrated.titles-page .titles-hero {
+  background:
+    linear-gradient(90deg, rgba(13, 13, 13, 0.99) 0%, rgba(13, 13, 13, 0.92) 54%, rgba(13, 13, 13, 0.72) 100%),
+    radial-gradient(ellipse 68% 46% at 78% 20%, rgba(var(--portfolio-accent-rgb), 0.16), transparent 60%),
+    var(--portfolio-bg) !important;
+}
+
+body.masterclass-integrated.titles-page .profile-label,
+body.masterclass-integrated.titles-page .credential-icon,
+body.masterclass-integrated.titles-page .formation-card i,
+body.masterclass-integrated.titles-page .indicator-card strong,
+body.masterclass-integrated.titles-page .titles-quote .referencia,
+body.masterclass-integrated.titles-page .experience-item > span {
+  color: var(--portfolio-accent) !important;
+}
+
+body.masterclass-integrated.titles-page .credential-card::before,
+body.masterclass-integrated.titles-page .formation-card::before {
+  background: var(--portfolio-accent) !important;
+}
+
+body.masterclass-integrated.titles-page .credential-card:hover,
+body.masterclass-integrated.titles-page .formation-card:hover,
+body.masterclass-integrated.titles-page .experience-item:hover,
+body.masterclass-integrated.titles-page .indicator-card:hover {
+  border-color: rgba(var(--portfolio-accent-rgb), 0.62) !important;
+  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.54), 0 0 0 1px rgba(var(--portfolio-accent-rgb), 0.2) inset !important;
+}
