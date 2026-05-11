@@ -2286,3 +2286,105 @@ section,
     line-height: 1.05;
   }
 }
+
+/* Refined centered metrics section. */
+#achievement {
+  padding: clamp(82px, 9vw, 118px) 0 !important;
+}
+
+#achievement .container {
+  max-width: 1240px;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: clamp(22px, 4vw, 48px);
+  padding-left: clamp(22px, 4vw, 48px);
+}
+
+#achievement .inner-content {
+  max-width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+#achievement .achievement-heading {
+  max-width: 760px;
+  margin-right: auto;
+  margin-bottom: clamp(48px, 6vw, 72px);
+  margin-left: auto;
+  text-align: center;
+}
+
+#achievement .section-title {
+  font-family: var(--font-sohne-schmal);
+  font-size: clamp(2.75rem, 5.6vw, 4.9rem) !important;
+  line-height: 0.98;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+#achievement .achievement-heading p {
+  max-width: 650px;
+  font-size: clamp(1rem, 1.4vw, 1.18rem);
+}
+
+#achievement .achievement-grid {
+  max-width: 1120px;
+  margin-right: auto;
+  margin-left: auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(34px, 5vw, 72px);
+}
+
+#achievement .achieve-item,
+body.masterclass-integrated #achievement .achieve-item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+#achievement .achieve-icon,
+body.masterclass-integrated #achievement .achieve-icon {
+  margin-bottom: 16px;
+  font-size: clamp(1.15rem, 1.5vw, 1.45rem);
+}
+
+#achievement .achieve-count,
+body.masterclass-integrated #achievement .achieve-count {
+  margin-bottom: 18px;
+  font-size: clamp(3.8rem, 6.8vw, 5.8rem);
+  line-height: 0.9;
+}
+
+#achievement .achieve-title,
+body.masterclass-integrated #achievement .achieve-title {
+  max-width: 320px;
+  margin-right: auto;
+  margin-left: auto;
+  font-size: clamp(1.12rem, 1.45vw, 1.38rem);
+}
+
+#achievement .achieve-item p,
+body.masterclass-integrated #achievement .achieve-item p {
+  max-width: 320px;
+  margin-right: auto;
+  margin-left: auto;
+  font-size: clamp(0.96rem, 1.1vw, 1.08rem);
+}
+
+@media screen and (max-width: 768px) {
+  #achievement .achievement-grid {
+    grid-template-columns: 1fr;
+    gap: 42px;
+  }
+
+  #achievement .section-title {
+    font-size: clamp(2.3rem, 12vw, 3.35rem) !important;
+  }
+
+  #achievement .achieve-count,
+  body.masterclass-integrated #achievement .achieve-count {
+    font-size: clamp(3.6rem, 18vw, 5rem);
+  }
+}
