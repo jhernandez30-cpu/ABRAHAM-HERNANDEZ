@@ -2288,16 +2288,45 @@ section,
 }
 
 /* Refined centered metrics section. */
+:root {
+  --site-gutter: clamp(22px, 4vw, 52px);
+  --site-max-width: 1280px;
+}
+
+body.masterclass-integrated main > section > .container,
+body.masterclass-integrated #footer-bottom > .container {
+  width: min(calc(100% - var(--site-gutter) - var(--site-gutter)), var(--site-max-width));
+  max-width: var(--site-max-width);
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+body.masterclass-integrated main > section > .container > .row,
+body.masterclass-integrated #footer-bottom > .container > .row {
+  width: 100%;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+body.masterclass-integrated main > section > .container > .row > .inner-content,
+body.masterclass-integrated #footer-bottom > .container > .row > .inner-content {
+  padding-right: 0;
+  padding-left: 0;
+}
+
 #achievement {
   padding: clamp(82px, 9vw, 118px) 0 !important;
 }
 
 #achievement .container {
+  width: min(calc(100% - var(--site-gutter) - var(--site-gutter)), 1240px);
   max-width: 1240px;
   margin-right: auto;
   margin-left: auto;
-  padding-right: clamp(22px, 4vw, 48px);
-  padding-left: clamp(22px, 4vw, 48px);
+  padding-right: 0;
+  padding-left: 0;
 }
 
 #achievement .inner-content {
