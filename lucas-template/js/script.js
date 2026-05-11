@@ -14,28 +14,37 @@
  $(document).ready(function(){
 
   if ($.fn.slick && $('.service-slider').length) {
-	  $('.service-slider').slick({
-      slidesToShow: 3,
-      slidesToScroll: 1,
-      autoplaySpeed: 2000,
-      dots: true,
-      responsive: [
-        {
-          breakpoint: 1500,
-          settings: {
-            slidesToShow: 2,
-            slidesToScroll: 2,
+    $('.service-slider').each(function() {
+      var $slider = $(this);
+      var $shell = $slider.closest('.service-carousel-shell');
+
+      $slider.slick({
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        autoplaySpeed: 2000,
+        dots: true,
+        prevArrow: $shell.find('.service-carousel-prev'),
+        nextArrow: $shell.find('.service-carousel-next'),
+        responsive: [
+          {
+            breakpoint: 1500,
+            settings: {
+              slidesToShow: 2,
+              slidesToScroll: 2,
+            }
+          },
+          {
+            breakpoint: 800,
+            settings: {
+              slidesToShow: 1,
+              slidesToScroll: 1,
+              arrows: false,
+            }
           }
-        },
-        {
-          breakpoint: 800,
-          settings: {
-            slidesToShow: 1,
-            slidesToScroll: 1,
-            arrows: false,
-          }
-        }
-      ]
+        ]
+      });
+
+      $shell.addClass('is-carousel-ready');
     });
   }
 
