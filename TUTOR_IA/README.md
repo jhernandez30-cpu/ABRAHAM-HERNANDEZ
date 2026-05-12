@@ -18,7 +18,7 @@ Tambien acepta aliases compatibles con el `BrainConnector` central creado en la 
 
 GitHub Pages solo sirve archivos estaticos. No ejecuta Python. Para que el asistente responda con el cerebro real, este puente debe estar corriendo en tu PC o en un servidor propio.
 
-No subas `brain_db/`, `tutor_ia.db`, `users.db`, `.venv/` ni logs al repositorio. La carpeta `brain_db` puede contener tus fuentes privadas y `tutor_ia.db` contiene usuarios e historial del Asistente de Programacion.
+No subas `vectores/brain_db/`, `database/users.db`, `tutor_ia.db`, `.venv/` ni logs al repositorio. La carpeta `vectores/brain_db` puede contener tus fuentes privadas y `tutor_ia.db` contiene usuarios e historial del Asistente de Programacion.
 
 ## Uso local
 
@@ -26,7 +26,7 @@ Desde la carpeta `TUTOR_IA`:
 
 ```powershell
 python -m pip install -r requirements.txt
-.\start_bridge.ps1 -Python python -BrainDb "C:\Users\herna\Documents\tutor_ia\brain_db"
+.\start_bridge.ps1 -Python python -BrainDb "C:\Users\herna\Documents\tutor_ia\vectores\brain_db"
 ```
 
 Para usar la interfaz Streamlit con login, registro, Google OAuth e historial por usuario:
@@ -40,12 +40,12 @@ La app crea `tutor_ia.db` automaticamente con estas tablas: `users`, `chat_sessi
 Si usas el entorno virtual de tu TUTOR_IA local:
 
 ```powershell
-.\start_bridge.ps1 -Python "C:\Users\herna\Documents\tutor_ia\.venv\Scripts\python.exe" -BrainDb "C:\Users\herna\Documents\tutor_ia\brain_db"
+.\start_bridge.ps1 -Python "C:\Users\herna\Documents\tutor_ia\.venv\Scripts\python.exe" -BrainDb "C:\Users\herna\Documents\tutor_ia\vectores\brain_db"
 ```
 
-El puente tambien autodetecta `C:\Users\herna\Documents\tutor_ia`: usa su `brain_db`, importa `agency_brain.py` desde esa carpeta y lee el vault Obsidian `Tutor_IA` como contexto vivo.
+El puente tambien autodetecta `C:\Users\herna\Documents\tutor_ia`: usa `vectores/brain_db`, importa los modulos desde `backend/` y lee `conocimiento/` como contexto vivo.
 
-Tambien importa `connected_brain.py`, `programming_skills.py`, `project_workspace.py`, `jarvis_brain.py` y `local_model_router.py` desde la instalacion local cuando existen. Asi la pagina no usa un cerebro paralelo: usa el mismo contrato de contexto que TUTOR_IA.
+Tambien importa `connected_brain.py`, `programming_skills.py`, `project_workspace.py`, `jarvis_brain.py` y `local_model_router.py` desde `C:\Users\herna\Documents\tutor_ia\backend` cuando existen. Asi la pagina no usa un cerebro paralelo: usa el mismo contrato de contexto que TUTOR_IA.
 
 La capa modular del repo vive en:
 
@@ -62,9 +62,9 @@ Cuando este bridge corre dentro de `ABRAHAM-HERNANDEZ-main`, usa `BrainConnector
 
 `TUTOR_IA_ROOT`: raiz de la instalacion local. Por defecto intenta `C:\Users\herna\Documents\tutor_ia`.
 
-`TUTOR_IA_PERSIST_DIR`: ruta de `brain_db`.
+`TUTOR_IA_PERSIST_DIR`: ruta de `vectores/brain_db`.
 
-`TUTOR_IA_OBSIDIAN_DIR`: ruta del vault Obsidian. Por defecto `C:\Users\herna\Documents\tutor_ia\Tutor_IA`.
+`TUTOR_IA_OBSIDIAN_DIR`: ruta de la base de conocimiento. Por defecto `C:\Users\herna\Documents\tutor_ia\conocimiento`.
 
 `TUTOR_IA_OBSIDIAN_ENABLED`: activa o desactiva el contexto Obsidian. Por defecto `1`.
 

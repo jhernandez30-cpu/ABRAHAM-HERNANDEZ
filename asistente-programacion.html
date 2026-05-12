@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/seo-pages.css">
-  <link rel="stylesheet" href="css/programming-assistant.css">
+  <link rel="stylesheet" href="css/programming-assistant.css?v=auth-20260511">
   <link rel="stylesheet" href="css/jarvis.css">
 </head>
 <body class="programming-app-page">
@@ -120,9 +120,53 @@
           </div>
         </div>
 
+        <div id="assistantAuthArea" class="assistant-auth-bar" data-auth-state="guest">
+          <div id="guestAuthActions" class="guest-auth-actions">
+            <button id="openLoginBtn" class="auth-pill auth-pill-dark" type="button">Iniciar sesi&oacute;n</button>
+            <button id="openRegisterBtn" class="auth-pill auth-pill-light" type="button">Registrarse gratuitamente</button>
+          </div>
+
+          <div id="userAccountArea" class="user-account-area" hidden>
+            <button id="userMenuBtn" class="user-account-button" type="button" aria-haspopup="true" aria-expanded="false">
+              <span id="userAvatar" class="user-avatar" aria-hidden="true">U</span>
+              <span id="userDisplayName" class="user-display-name">Usuario</span>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+
+            <div id="userMenu" class="user-menu" role="menu" hidden>
+              <button type="button" role="menuitem" data-account-action="upgrade">
+                <i class="fas fa-arrow-up-right-dots" aria-hidden="true"></i>
+                <span>Upgrade plan</span>
+              </button>
+              <button type="button" role="menuitem" data-account-action="personalization">
+                <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
+                <span>Personalizaci&oacute;n</span>
+              </button>
+              <button type="button" role="menuitem" data-account-action="profile">
+                <i class="fas fa-user" aria-hidden="true"></i>
+                <span>Perfil</span>
+              </button>
+              <button type="button" role="menuitem" data-account-action="settings">
+                <i class="fas fa-gear" aria-hidden="true"></i>
+                <span>Configuraci&oacute;n</span>
+              </button>
+              <button type="button" role="menuitem" data-account-action="help">
+                <i class="fas fa-circle-question" aria-hidden="true"></i>
+                <span>Ayuda</span>
+              </button>
+              <span class="user-menu-divider" aria-hidden="true"></span>
+              <button type="button" role="menuitem" data-account-action="logout">
+                <i class="fas fa-right-from-bracket" aria-hidden="true"></i>
+                <span>Cerrar sesi&oacute;n</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div id="coachMessages" class="chat-messages" aria-live="polite">
           <div id="emptyChatState" class="empty-chat-state">
             <h1 id="assistantTitle">JAH AI</h1>
+            <button id="loginSoftInvite" class="login-soft-invite" type="button">Inicia sesi&oacute;n para guardar perfil, preferencias e historial entre dispositivos.</button>
           </div>
         </div>
 
@@ -149,7 +193,7 @@
                 <label class="attach-chip" for="fileInput" aria-label="Subir archivos e imágenes">
                   <i class="fas fa-paperclip" aria-hidden="true"></i>
                 </label>
-                <input id="fileInput" class="file-input" name="files" type="file" multiple accept=".png,.jpg,.jpeg,.webp,.pdf,.docx,.txt,.py,.js,.html,.css,.json,.md,.sql,.cs,image/png,image/jpeg,image/webp,application/pdf,text/plain">
+                <input id="fileInput" class="file-input" name="files" type="file" multiple accept=".png,.jpg,.jpeg,.webp,.pdf,.docx,.txt,.md,.csv,.json,.py,.js,.html,.css,.sql,.cs,image/png,image/jpeg,image/webp,application/pdf,text/plain,text/csv">
               </div>
 
               <div class="composer-actions">
@@ -182,10 +226,38 @@
     </section>
   </main>
 
+  <div id="authOverlay" class="auth-overlay" hidden>
+    <section class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+      <button id="closeAuthModalBtn" class="auth-close-btn" type="button" aria-label="Cerrar">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+      <div id="authModalContent" class="auth-modal-content"></div>
+    </section>
+  </div>
+
+  <div id="accountPanelOverlay" class="auth-overlay account-panel-overlay" hidden>
+    <section class="account-panel" role="dialog" aria-modal="true" aria-labelledby="accountPanelTitle">
+      <button id="closeAccountPanelBtn" class="auth-close-btn" type="button" aria-label="Cerrar">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+      <div id="accountPanelContent" class="account-panel-content"></div>
+    </section>
+  </div>
+
   <script>
-    window.TUTOR_IA_PROJECT_PATH = 'C:\\Users\\herna\\Documents\\ABRAHAM-HERNANDEZ-main';
-    window.TUTOR_IA_BRIDGE_URL = 'http://127.0.0.1:8787';
+    window.TUTOR_IA_PROJECT_PATH = window.TUTOR_IA_PROJECT_PATH || (
+      navigator.platform.toLowerCase().includes('win')
+        ? 'C:\\Users\\herna\\Documents\\ABRAHAM-HERNANDEZ-main'
+        : '/home/abraham/Documentos/ABRAHAM-HERNANDEZ-main'
+    );
+    window.TUTOR_IA_BRAIN_ROOT = window.TUTOR_IA_BRAIN_ROOT || (
+      navigator.platform.toLowerCase().includes('win')
+        ? 'C:\\Users\\herna\\Documents\\tutor_ia'
+        : '/home/abraham/Documentos/tutor_ia'
+    );
+    window.TUTOR_IA_BRIDGE_URL = window.TUTOR_IA_BRIDGE_URL || 'http://127.0.0.1:8787';
     window.JARVIS_READ_RESPONSES = true;
+    window.JARVIS_ADVANCED_PROVIDER = 'mark_xxxix';
     window.TUTOR_IA_ENDPOINTS = [
       'http://127.0.0.1:8787/api/chat',
       'http://127.0.0.1:8787/api/ask',
@@ -194,7 +266,8 @@
       'http://localhost:8787/api/ask'
     ];
   </script>
-  <script src="js/jarvis-assistant.js"></script>
-  <script src="js/programming-assistant.js"></script>
+  <script src="js/jarvis-assistant.js?v=mark-xxxix-20260511"></script>
+  <script src="js/programming-assistant.js?v=mark-xxxix-20260511"></script>
+  <script src="js/programming-auth.js?v=auth-20260511"></script>
 </body>
 </html>

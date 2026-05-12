@@ -12,11 +12,20 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 if ($TutorRoot -and (Test-Path -LiteralPath $TutorRoot)) {
   $env:TUTOR_IA_ROOT = $TutorRoot
-  $env:PYTHONPATH = if ($env:PYTHONPATH) { "$TutorRoot;$env:PYTHONPATH" } else { $TutorRoot }
+  $TutorBackend = Join-Path $TutorRoot "backend"
+  $pythonPaths = @($TutorRoot)
+  if (Test-Path -LiteralPath $TutorBackend) {
+    $pythonPaths += $TutorBackend
+  }
+  $pythonPathText = $pythonPaths -join ";"
+  $env:PYTHONPATH = if ($env:PYTHONPATH) { "$pythonPathText;$env:PYTHONPATH" } else { $pythonPathText }
 }
 
 if (-not $BrainDb -and $TutorRoot) {
-  $candidateBrainDb = Join-Path $TutorRoot "brain_db"
+  $candidateBrainDb = Join-Path $TutorRoot "vectores\brain_db"
+  if (-not (Test-Path -LiteralPath $candidateBrainDb)) {
+    $candidateBrainDb = Join-Path $TutorRoot "brain_db"
+  }
   if (Test-Path -LiteralPath $candidateBrainDb) {
     $BrainDb = $candidateBrainDb
   }
@@ -27,7 +36,10 @@ if ($BrainDb) {
 }
 
 if (-not $ObsidianVault -and $TutorRoot) {
-  $candidateVault = Join-Path $TutorRoot "Tutor_IA"
+  $candidateVault = Join-Path $TutorRoot "conocimiento"
+  if (-not (Test-Path -LiteralPath $candidateVault)) {
+    $candidateVault = Join-Path $TutorRoot "Tutor_IA"
+  }
   if (Test-Path -LiteralPath $candidateVault) {
     $ObsidianVault = $candidateVault
   }

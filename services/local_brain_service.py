@@ -11,7 +11,19 @@ BRAIN_ROOT = Path(os.getenv("BRAIN_ROOT", r"C:\Users\herna\Documents\tutor_ia"))
 
 USEFUL_EXTENSIONS = {".py", ".md", ".txt", ".json", ".yaml", ".yml", ".toml", ".html", ".css", ".js"}
 USEFUL_FILENAMES = {".env.example", "env.example"}
-IGNORED_DIRS = {".env", ".venv", "venv", "__pycache__", "node_modules", ".git", ".notebooklm", ".cache"}
+IGNORED_DIRS = {
+    ".env",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "node_modules",
+    ".git",
+    ".notebooklm",
+    ".cache",
+    "vectores",
+    "database",
+    "_pdfs",
+}
 IGNORED_FILES = {".env", "storage_state.json"}
 MAX_SCAN_FILES = int(os.getenv("LOCAL_BRAIN_MAX_FILES", "1600"))
 MAX_FILE_BYTES = int(os.getenv("LOCAL_BRAIN_MAX_FILE_BYTES", "350000"))

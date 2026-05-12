@@ -15,3 +15,10 @@ TUTOR_IA/users.db
 TUTOR_IA/tutor_ia.db
 TUTOR_IA/web_bridge*.log
 TUTOR_IA/streamlit*.log
+bridge_api/uploads/
+bridge_api/app/storage/*.tmp
+bridge_api/app/storage/*.json
+bridge_api/**/*.log
+bridge_api/**/__pycache__/
+bridge_api/**/*.pyc
+_backups/

@@ -14,20 +14,26 @@
       rate: 1,
       pitch: 0.9,
       volume: 1,
+      maxChars: 1300,
       codeNotice: 'La respuesta incluye código. Te recomiendo revisarlo en pantalla.'
     },
     messages: {
       listening: 'Jarvis escuchando...',
+      recognizing: 'Reconociendo voz...',
+      detected: 'Texto detectado...',
+      sending: 'Enviando al cerebro tutor_ia...',
+      processing: 'Jarvis procesando...',
+      speaking: 'Jarvis hablando...',
       ready: 'Listo.',
       noSpeech: 'No escuché nada. Intenta de nuevo.',
-      micBlocked: 'Permiso de micrófono bloqueado.',
+      micBlocked: 'Permiso de micrófono denegado.',
       micMissing: 'No detecté micrófono conectado.',
-      unsupported: 'Tu navegador no soporta voz. Usa Chrome o Edge.',
+      unsupported: 'Tu navegador no soporta reconocimiento de voz. Probá con Google Chrome o Microsoft Edge.',
       network: 'Jarvis no pudo escuchar. Puedes escribir tu mensaje.',
       retry: 'Jarvis no pudo escuchar. Intenta nuevamente.',
-      localServer: 'Abre el asistente desde un servidor local, no como archivo directo.',
+      localServer: 'Para usar el micrófono, abre el asistente con Live Server o http://localhost.',
       busy: 'Espera a que termine la respuesta actual.',
-      thinking: 'Jarvis está pensando...',
+      thinking: 'Jarvis procesando...',
       unavailable: 'Esa función todavía no está disponible.',
       help: 'Di: limpia el chat, adjuntar archivo, activa búsqueda inteligente o detén la voz.'
     }
@@ -70,6 +76,9 @@
     return String(text || '')
       .replace(/```[\s\S]*?```/g, ' bloque de código disponible en pantalla. ')
       .replace(/`([^`]+)`/g, '$1')
+      .replace(/(?:Fuentes usadas|Fuentes consultadas|Sources used|Sources consulted):[\s\S]*$/i, ' ')
+      .replace(/https?:\/\/\S+/g, ' enlace disponible en pantalla ')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
       .replace(/[#*_>\[\]{}()]/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
@@ -142,15 +151,22 @@
     }
 
     function speak(text) {
-      if (!readResponses || !window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
+      if (!readResponses || !window.speechSynthesis || !window.SpeechSynthesisUtterance) {
+        showStatus(config.messages.ready, 'success');
+        return;
+      }
 
       const speechText = hasLongCode(text)
         ? config.tts.codeNotice
         : cleanTextForSpeech(text);
-      if (!speechText) return;
+      if (!speechText) {
+        showStatus(config.messages.ready, 'success');
+        return;
+      }
 
+      const maxChars = Number(config.tts.maxChars || 1300);
       const utterance = new SpeechSynthesisUtterance(
-        speechText.length > 1500 ? `${speechText.slice(0, 1500).trim()}. La respuesta completa está en pantalla.` : speechText
+        speechText.length > maxChars ? `${speechText.slice(0, maxChars).trim()}. La respuesta completa está en pantalla.` : speechText
       );
       const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
       const preferredVoice = config.tts.langFallbacks
@@ -167,6 +183,9 @@
       utterance.rate = config.tts.rate;
       utterance.pitch = config.tts.pitch;
       utterance.volume = config.tts.volume;
+      utterance.onstart = () => showStatus(config.messages.speaking, 'info', 0);
+      utterance.onend = () => showStatus(config.messages.ready, 'success');
+      utterance.onerror = () => showStatus(config.messages.ready, 'warning');
       stopSpeech();
       window.speechSynthesis.speak(utterance);
     }
@@ -253,6 +272,14 @@
         return true;
       }
 
+      if (
+        (command.includes('mark') || command.includes('xxxix') || command.includes('39'))
+        && (command.includes('activa') || command.includes('activar') || command.includes('abre') || command.includes('inicia') || command.includes('usa'))
+      ) {
+        executeAction('launchMarkVoice', 'Mark XXXIX no está configurado todavía.');
+        return true;
+      }
+
       showStatus(config.messages.help, 'info', 6000);
       return true;
     }
@@ -270,7 +297,7 @@
         if (typeof callbacks.autosizeInput === 'function') callbacks.autosizeInput();
         input.focus();
       }
-      showStatus(`Entendido: ${shorten(text)}`, 'success');
+      showStatus(`${config.messages.detected} ${shorten(text)}`, 'success', 1500);
 
       if (handleCommand(text)) return;
       sendMessageFromJarvis(text);
@@ -283,10 +310,14 @@
       }
       input.value = String(text || '').trim();
       if (typeof callbacks.autosizeInput === 'function') callbacks.autosizeInput();
-      showStatus(config.messages.thinking, 'info', 0);
+      showStatus(config.messages.sending, 'info', 0);
 
       if (typeof callbacks.sendMessage === 'function') {
-        return callbacks.sendMessage(input.value);
+        const result = callbacks.sendMessage(input.value);
+        if (result && typeof result.then === 'function') {
+          result.catch(() => showStatus('Error al usar el microfono.', 'error'));
+        }
+        return result;
       }
 
       showStatus('No encontré la función de enviar mensaje.', 'error');
@@ -339,6 +370,7 @@
       };
 
       voiceRecognition.onresult = event => {
+        showStatus(config.messages.recognizing, 'info', 0);
         const result = event.results && event.results[0] && event.results[0][0];
         handleVoiceResult(result ? result.transcript : '');
       };

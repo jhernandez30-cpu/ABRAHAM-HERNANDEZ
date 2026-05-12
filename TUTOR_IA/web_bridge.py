@@ -54,7 +54,10 @@ def find_tutor_root():
         except OSError:
             continue
         if (
-            (candidate / "brain_db").exists()
+            (candidate / "vectores" / "brain_db").exists()
+            or (candidate / "conocimiento").exists()
+            or (candidate / "backend" / "agency_brain.py").exists()
+            or (candidate / "brain_db").exists()
             or (candidate / "Tutor_IA").exists()
             or (candidate / "agency_brain.py").exists()
         ):
@@ -63,8 +66,11 @@ def find_tutor_root():
 
 
 TUTOR_ROOT = find_tutor_root()
+TUTOR_BACKEND_ROOT = TUTOR_ROOT / "backend"
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
+if TUTOR_BACKEND_ROOT.exists() and str(TUTOR_BACKEND_ROOT) not in sys.path:
+    sys.path.insert(0, str(TUTOR_BACKEND_ROOT))
 if str(TUTOR_ROOT) not in sys.path:
     sys.path.append(str(TUTOR_ROOT))
 
@@ -114,8 +120,8 @@ except Exception:
     get_model_plan = None
 
 
-PERSIST_DIR = os.getenv("TUTOR_IA_PERSIST_DIR", str(TUTOR_ROOT / "brain_db"))
-OBSIDIAN_VAULT_DIR = os.getenv("TUTOR_IA_OBSIDIAN_DIR", str(TUTOR_ROOT / "Tutor_IA"))
+PERSIST_DIR = os.getenv("TUTOR_IA_PERSIST_DIR", str(TUTOR_ROOT / "vectores" / "brain_db"))
+OBSIDIAN_VAULT_DIR = os.getenv("TUTOR_IA_OBSIDIAN_DIR", str(TUTOR_ROOT / "conocimiento"))
 COLLECTION_NAME = os.getenv("TUTOR_IA_COLLECTION", "conocimiento_fast")
 LLM_MODEL = os.getenv("TUTOR_IA_LLM_MODEL", "llama3.2:1b")
 RECOMMENDED_OLLAMA_MODEL = os.getenv("TUTOR_IA_RECOMMENDED_MODEL", "llama3.2:1b")
@@ -1513,7 +1519,7 @@ Capa Jarvis/OpenJarvis:
     )
     assistant_profile_text = (
         "Perfil conectado: Asistente de Programacion de ABRAHAM-HERNANDEZ-MAIN.\n"
-        "Contexto conectado: ChromaDB brain_db y vault Obsidian Tutor_IA.\n"
+        "Contexto conectado: ChromaDB vectores/brain_db y base conocimiento.\n"
         if assistant_profile
         else ""
     )

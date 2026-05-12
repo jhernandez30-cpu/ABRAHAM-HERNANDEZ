@@ -7,15 +7,21 @@
 
 const STORAGE_KEY = 'tutorIaChatHistory';
 const ACTIVE_CHAT_KEY = 'tutorIaActiveChatId';
+const SESSION_KEY = 'jah_ai_session_id';
 const DEFAULT_MODE = 'Cerebro Unificado';
 const PROJECT_PATH = window.TUTOR_IA_PROJECT_PATH || '';
+const BRAIN_ROOT = window.TUTOR_IA_BRAIN_ROOT || '';
 const BRIDGE_URL = (window.TUTOR_IA_BRIDGE_URL || 'http://127.0.0.1:8787').replace(/\/$/, '');
+const CHAT_ENDPOINT = `${BRIDGE_URL}/api/chat`;
+const UPLOAD_ENDPOINT = `${BRIDGE_URL}/api/upload`;
+const JARVIS_MARK_STATUS_ENDPOINT = `${BRIDGE_URL}/api/jarvis/mark/status`;
+const JARVIS_MARK_LAUNCH_ENDPOINT = `${BRIDGE_URL}/api/jarvis/mark/launch`;
 const CHAT_TIMEOUT_MS = 120000;
 const JARVIS_READ_RESPONSES = window.JARVIS_READ_RESPONSES === undefined
   ? true
   : window.JARVIS_READ_RESPONSES === true || window.JARVIS_READ_RESPONSES === 'true';
 const ALLOWED_FILE_EXTENSIONS = new Set([
-  'png', 'jpg', 'jpeg', 'webp', 'pdf', 'docx', 'txt', 'py', 'js', 'html', 'css', 'json', 'md', 'sql', 'cs'
+  'png', 'jpg', 'jpeg', 'webp', 'pdf', 'docx', 'txt', 'md', 'csv', 'json', 'py', 'js', 'html', 'css', 'sql', 'cs'
 ]);
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -54,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let jarvisAssistant = null;
   let chats = loadChats();
   let activeChatId = loadActiveChatId();
+  let currentSessionId = loadOrCreateSessionId();
 
   window.tutorIAEnabled = tutorIAEnabled;
   window.smartSearchEnabled = smartSearchEnabled;
@@ -94,6 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
       `${base}/api/unified-brain/health`,
       `${base}/api/unified-brain/status`
     ];
+  }
+
+  function ragHealthUrl() {
+    return `${BRIDGE_URL}/api/health`;
   }
 
   function endpointHostKey(endpoint) {
@@ -171,8 +182,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function loadOrCreateSessionId() {
+    try {
+      const existing = localStorage.getItem(SESSION_KEY);
+      if (existing) return existing;
+      const nextId = window.crypto && typeof window.crypto.randomUUID === 'function'
+        ? window.crypto.randomUUID()
+        : createId();
+      localStorage.setItem(SESSION_KEY, nextId);
+      return nextId;
+    } catch (error) {
+      return createId();
+    }
+  }
+
   function persist() {
     try {
+      if (!shouldPersistChatHistory()) {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.setItem(ACTIVE_CHAT_KEY, activeChatId);
+        return;
+      }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(chats));
       localStorage.setItem(ACTIVE_CHAT_KEY, activeChatId);
     } catch (error) {
@@ -187,6 +217,30 @@ document.addEventListener('DOMContentLoaded', () => {
       return false;
     }
     return true;
+  }
+
+  function getAuthContext() {
+    if (!window.JAHAuth || typeof window.JAHAuth.getContext !== 'function') {
+      return { loggedIn: false, user: null, preferences: {} };
+    }
+    return window.JAHAuth.getContext();
+  }
+
+  function getAuthPreferences() {
+    const context = getAuthContext();
+    return context.preferences || {};
+  }
+
+  function shouldPersistChatHistory() {
+    const preferences = getAuthPreferences();
+    return preferences.chat_history_enabled !== false;
+  }
+
+  function syncAssistantPreferences(patch) {
+    if (!window.JAHAuth || typeof window.JAHAuth.savePreferences !== 'function') return;
+    window.JAHAuth.savePreferences(patch).catch(() => {
+      setBrainStatus('offline', 'Preferencias guardadas localmente');
+    });
   }
 
   function getActiveChat() {
@@ -247,6 +301,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function buildChatFormData(question, chatId, source = 'typed_chat') {
+    const authContext = getAuthContext();
+    const preferences = authContext.preferences || {};
     const formData = new FormData();
     formData.append('message', question);
     formData.append('question', question);
@@ -257,6 +313,19 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('client', 'abraham-programming-assistant');
     formData.append('source', source);
     formData.append('input_source', source);
+    if (authContext.user) {
+      formData.append('user_id', String(authContext.user.id || ''));
+      formData.append('user_email', authContext.user.email || '');
+      formData.append('user_name', authContext.user.name || '');
+    }
+    if (Object.keys(preferences).length) {
+      formData.append('user_preferences', JSON.stringify(preferences));
+      formData.append('response_style', preferences.response_style || '');
+      formData.append('assistant_preference', preferences.assistant_preference || '');
+      formData.append('visible_name', preferences.visible_name || '');
+      formData.append('direct_answers', String(Boolean(preferences.direct_answers)));
+      formData.append('chat_history_enabled', String(preferences.chat_history_enabled !== false));
+    }
     formData.append('response_profile', 'web_fast');
     formData.append('local_first', 'true');
     formData.append('fast_mode', String(!deepThinkingEnabled));
@@ -264,7 +333,9 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('bridge_api', 'true');
     formData.append('bridge_api_url', BRIDGE_URL);
     formData.append('anthropic', 'true');
-    formData.append('brain_root', 'C:\\Users\\herna\\Documents\\tutor_ia');
+    if (BRAIN_ROOT) {
+      formData.append('brain_root', BRAIN_ROOT);
+    }
     formData.append('include_obsidian', String(tutorIAEnabled));
     formData.append('agency_enabled', String(tutorIAEnabled));
     formData.append('jarvis_profile', 'unified');
@@ -280,59 +351,119 @@ document.addEventListener('DOMContentLoaded', () => {
     return formData;
   }
 
-  async function askTutorBrain(question, chatId, source = 'typed_chat') {
-    const endpoints = activeTutorEndpoint
-      ? [activeTutorEndpoint]
-      : endpointCandidates;
-    let lastError = null;
-    const triedHosts = new Set();
+  async function verifyBackendHealth() {
+    try {
+      const response = await fetchWithTimeout(ragHealthUrl(), { method: 'GET' }, 4500);
+      if (!response.ok) return false;
+      const data = await response.json();
+      return Boolean(data.ok || data.success);
+    } catch (error) {
+      return false;
+    }
+  }
 
-    for (const endpoint of endpoints) {
-      const hostKey = endpointHostKey(endpoint);
-      if (triedHosts.has(hostKey)) continue;
-      triedHosts.add(hostKey);
-      try {
-        setBrainStatus('checking', `TUTOR_IA pensando (max ${Math.round(CHAT_TIMEOUT_MS / 1000)}s)`);
-        const response = await fetchWithTimeout(endpoint, {
-          method: 'POST',
-          body: buildChatFormData(question, chatId, source)
-        }, CHAT_TIMEOUT_MS);
+  function backendConnectionError() {
+    const error = new Error('No se pudo conectar con el cerebro tutor_ia. Verificá que el backend esté activo en http://127.0.0.1:8787.');
+    error.code = 'BACKEND_CONNECTION';
+    return error;
+  }
 
-        if (!response.ok) {
-          let detail = '';
-          try {
-            const errorPayload = await response.json();
-            detail = errorPayload && errorPayload.error ? `: ${errorPayload.error}` : '';
-          } catch (error) {
-            detail = '';
-          }
-          throw new Error(`HTTP ${response.status}${detail}`);
-        }
+  function chatLoadingText() {
+    if (smartSearchEnabled) return 'Buscando información actualizada...';
+    if (tutorIAEnabled || deepThinkingEnabled) return 'Consultando cerebro tutor_ia...';
+    return 'Pensando...';
+  }
 
-        const data = await response.json();
-        if (data && data.ok === false) {
-          throw new Error(data.error || 'TUTOR_IA respondio con error.');
-        }
-        activeTutorEndpoint = endpoint;
-        const sourceNames = Array.isArray(data.sources_used) && data.sources_used.length
-          ? data.sources_used.slice(0, 4)
-          : [];
-        const brainParts = Array.isArray(data.brain_parts) && data.brain_parts.length
-          ? ` - ${data.brain_parts.slice(0, 4).join(' + ')}`
-          : sourceNames.length
-            ? ` - ${sourceNames.join(' + ')}`
-          : '';
-        setBrainStatus('ready', `TUTOR_IA conectado${brainParts}`);
-        return data;
-      } catch (error) {
-        lastError = error;
-        if (error && error.name === 'AbortError') break;
-      }
+  function buildChatPayload(question, chatId, source = 'typed_chat') {
+    const authContext = getAuthContext();
+    const preferences = authContext.preferences || {};
+    return {
+      message: question,
+      question,
+      mode: DEFAULT_MODE,
+      use_rag: Boolean(tutorIAEnabled),
+      use_web: Boolean(smartSearchEnabled),
+      deep_thinking: Boolean(tutorIAEnabled || deepThinkingEnabled),
+      use_jarvis: source === 'jarvis_voice',
+      session_id: currentSessionId || chatId,
+      chat_id: chatId,
+      client: 'abraham-programming-assistant',
+      source,
+      input_source: source,
+      response_profile: tutorIAEnabled || deepThinkingEnabled ? 'balanced' : 'web_fast',
+      local_first: true,
+      fast_mode: !(tutorIAEnabled || deepThinkingEnabled),
+      bridge_api: true,
+      bridge_api_url: BRIDGE_URL,
+      anthropic: true,
+      brain_root: BRAIN_ROOT,
+      project_path: PROJECT_PATH,
+      workspace_path: PROJECT_PATH,
+      user_id: authContext.user ? String(authContext.user.id || '') : '',
+      user_email: authContext.user ? authContext.user.email || '' : '',
+      user_name: authContext.user ? authContext.user.name || '' : '',
+      user_preferences: preferences,
+      response_style: preferences.response_style || '',
+      assistant_preference: preferences.assistant_preference || '',
+      visible_name: preferences.visible_name || '',
+      direct_answers: Boolean(preferences.direct_answers),
+      chat_history_enabled: preferences.chat_history_enabled !== false,
+      show_sources: Boolean(tutorIAEnabled),
+      k: 4,
+      top_k: 3,
+      obsidian_top_k: 2,
+      include_obsidian: Boolean(tutorIAEnabled),
+      agency_enabled: Boolean(tutorIAEnabled),
+      jarvis_profile: 'unified'
+    };
+  }
+
+  async function askBackendChat(question, chatId, source = 'typed_chat') {
+    setBrainStatus('checking', chatLoadingText());
+    const healthy = await verifyBackendHealth();
+    if (!healthy) {
+      setBrainStatus('error', 'Backend tutor_ia no disponible');
+      throw backendConnectionError();
     }
 
-    const timedOut = lastError && lastError.name === 'AbortError';
-    setBrainStatus(timedOut ? 'error' : 'offline', timedOut ? 'TUTOR_IA no respondio a tiempo' : 'TUTOR_IA sin conexion local');
-    throw lastError || new Error('No se pudo conectar con TUTOR_IA.');
+    const authHeaders = window.JAHAuth && typeof window.JAHAuth.getAuthHeaders === 'function'
+      ? window.JAHAuth.getAuthHeaders()
+      : {};
+    const response = await fetchWithTimeout(CHAT_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders
+      },
+      body: JSON.stringify(buildChatPayload(question, chatId, source))
+    }, CHAT_TIMEOUT_MS);
+
+    let data = {};
+    try {
+      data = await response.json();
+    } catch (error) {
+      data = {};
+    }
+
+    if (!response.ok) {
+      throw new Error(data.detail || data.error || `HTTP ${response.status}`);
+    }
+    if (data && data.ok === false) {
+      throw new Error(data.error || data.answer || 'El cerebro tutor_ia respondió con error.');
+    }
+
+    const sourcesCount = Array.isArray(data.sources) ? data.sources.length : 0;
+    setBrainStatus('ready', sourcesCount ? `Respuesta recibida - ${sourcesCount} fuentes` : 'Respuesta recibida');
+    return {
+      ...data,
+      show_sources: sourcesCount > 0,
+      brain_parts: data.brain_parts || (tutorIAEnabled ? ['tutor_ia'] : ['chat']),
+      usedTutorIA: true
+    };
+  }
+
+  async function askTutorBrain(question, chatId, source = 'typed_chat') {
+    return askBackendChat(question, chatId, source);
   }
 
   function escapeHtml(text) {
@@ -397,19 +528,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function sourceTitle(source) {
     const metadata = source && source.metadata ? source.metadata : {};
-    return metadata.title || metadata.source || '';
+    return source.title || source.file || metadata.title || metadata.source || source.url || '';
+  }
+
+  function sourceChunk(source) {
+    return source.chunk || source.snippet || source.text || '';
+  }
+
+  function sourceScore(source) {
+    const value = source.score ?? source.relevance ?? '';
+    if (value === '' || value === null || value === undefined) return '';
+    const number = Number(value);
+    if (Number.isNaN(number)) return String(value);
+    return number <= 1 ? number.toFixed(2) : String(number);
   }
 
   function renderSourceSummary(sources, showSources = false) {
     if (!showSources) return '';
-    const titles = (sources || [])
-      .map(sourceTitle)
+    const cleanSources = (sources || [])
       .filter(Boolean)
-      .slice(0, 3);
+      .slice(0, 4);
+    if (!cleanSources.length) return '';
 
-    if (!titles.length) return '';
+    const sourceItems = cleanSources.map(source => {
+      const title = sourceTitle(source) || 'Documento';
+      const chunk = sourceChunk(source);
+      const score = sourceScore(source);
+      const url = source.url || (source.metadata && source.metadata.url) || '';
+      return `
+        <li class="message-source-item">
+          <strong>${escapeHtml(title)}</strong>
+          ${score ? `<span>Relevancia: ${escapeHtml(score)}</span>` : ''}
+          ${url ? `<span>${escapeHtml(url)}</span>` : ''}
+          ${chunk ? `<p>${escapeHtml(chunk)}</p>` : ''}
+        </li>
+      `;
+    }).join('');
 
-    return `<div class="message-sources"><strong>Contexto:</strong> ${titles.map(escapeHtml).join(' - ')}</div>`;
+    return `
+      <div class="message-sources">
+        <strong>Fuentes usadas:</strong>
+        <ul class="message-source-list">${sourceItems}</ul>
+      </div>
+    `;
   }
 
   function fileMeta(file) {
@@ -635,6 +796,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (error && error.name === 'AbortError') {
       return `El modelo local/Ollama no respondio dentro de ${Math.round(CHAT_TIMEOUT_MS / 1000)} segundos. ${fileStatus}\n\nPosibles soluciones:\n- Revisa que Ollama no tenga otra generacion en curso.\n- Usa un modelo ligero como llama3.2:1b para la interfaz web.\n- Reinicia el puente TUTOR_IA si el proceso quedo ocupado.\n- Si el archivo es grande, intenta una peticion mas concreta sobre una parte del archivo.`;
     }
+    if (error && error.code === 'BACKEND_CONNECTION') {
+      return error.message;
+    }
     const detail = error && error.message ? ` Detalle: ${error.message}` : '';
     return `No pude completar la consulta con TUTOR_IA. ${fileStatus}${detail} Verifica el puente local en ${BRIDGE_URL}/health o ${BRIDGE_URL}/api/health.`;
   }
@@ -654,18 +818,27 @@ document.addEventListener('DOMContentLoaded', () => {
     sidebarBackdrop.hidden = true;
   }
 
-  function setTutorIA(enabled) {
+  function setTutorIA(enabled, options = {}) {
     tutorIAEnabled = Boolean(enabled);
     window.tutorIAEnabled = tutorIAEnabled;
     tutorIABtn.classList.toggle('is-active', tutorIAEnabled);
     tutorIABtn.setAttribute('aria-pressed', String(tutorIAEnabled));
+    if (options.sync !== false) {
+      syncAssistantPreferences({
+        use_rag: tutorIAEnabled,
+        deep_thinking: Boolean(tutorIAEnabled || deepThinkingEnabled)
+      });
+    }
   }
 
-  function setSmartSearch(enabled) {
+  function setSmartSearch(enabled, options = {}) {
     smartSearchEnabled = Boolean(enabled);
     window.smartSearchEnabled = smartSearchEnabled;
     smartSearchBtn.classList.toggle('is-active', smartSearchEnabled);
     smartSearchBtn.setAttribute('aria-pressed', String(smartSearchEnabled));
+    if (options.sync !== false) {
+      syncAssistantPreferences({ use_web: smartSearchEnabled });
+    }
   }
 
   function extensionForFile(file) {
@@ -713,6 +886,55 @@ document.addEventListener('DOMContentLoaded', () => {
     if (fileInput) fileInput.value = '';
   }
 
+  async function uploadSelectedFiles(files) {
+    const uploadFiles = Array.from(files || []).filter(isAllowedFile);
+    if (!uploadFiles.length) return;
+
+    setBrainStatus('checking', 'Subiendo archivo al cerebro tutor_ia...');
+    let uploaded = 0;
+    let failed = 0;
+
+    for (const file of uploadFiles) {
+      const formData = new FormData();
+      formData.append('file', file, file.name);
+      const authHeaders = window.JAHAuth && typeof window.JAHAuth.getAuthHeaders === 'function'
+        ? window.JAHAuth.getAuthHeaders()
+        : {};
+      try {
+        const response = await fetchWithTimeout(UPLOAD_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            ...authHeaders,
+            'X-Session-Id': currentSessionId
+          },
+          body: formData
+        }, 60000);
+        if (!response.ok) {
+          failed += 1;
+          continue;
+        }
+        uploaded += 1;
+      } catch (error) {
+        failed += 1;
+      }
+    }
+
+    const chatId = activeChatId;
+    if (uploaded) {
+      const message = uploaded === 1
+        ? 'Archivo cargado correctamente al cerebro tutor_ia.'
+        : `${uploaded} archivos cargados correctamente al cerebro tutor_ia.`;
+      addMessageToChat(chatId, { role: 'assistant', content: message });
+      setBrainStatus('ready', message);
+    }
+    if (failed) {
+      const message = 'No se pudo subir el archivo. Verificá que el backend esté activo.';
+      addMessageToChat(chatId, { role: 'assistant', content: message });
+      setBrainStatus('error', 'Error al subir archivo');
+    }
+    renderChat();
+  }
+
   async function sendCurrentMessage(options = {}) {
     if (isSubmitting) return false;
 
@@ -720,6 +942,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const typedQuestion = coachInput.value.trim();
     const question = typedQuestion || (selectedFiles.length ? 'Analiza los archivos adjuntos.' : '');
     if (!question) return false;
+
+    if (jarvisAssistant && typeof jarvisAssistant.stopSpeech === 'function') {
+      jarvisAssistant.stopSpeech();
+    }
 
     isSubmitting = true;
     const filesForMessage = selectedFiles.map(fileMeta);
@@ -733,7 +959,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingMessage = {
       id: createId(),
       role: 'assistant',
-      content: 'Pensando...',
+      content: chatLoadingText(),
       createdAt: nowIso(),
       loading: true
     };
@@ -744,9 +970,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderChat();
 
     try {
+      if (source === 'jarvis_voice' && jarvisAssistant) {
+        jarvisAssistant.showStatus('Jarvis procesando...', 'info', 0);
+      }
       const result = await askTutorBrain(question, chatId, source);
       const answer = result.answer || result.response || 'TUTOR_IA respondiÃ³ sin texto.';
-      const showSources = Boolean(result.show_sources);
+      const showSources = Boolean(result.show_sources || (Array.isArray(result.sources) && result.sources.length));
       updateMessageInChat(chatId, loadingMessage.id, {
         content: answer,
         sources: showSources ? result.sources || [] : [],
@@ -794,6 +1023,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!deepThinkingControl) {
       deepThinkingEnabled = Boolean(enable);
       window.deepThinkingEnabled = deepThinkingEnabled;
+      syncAssistantPreferences({ deep_thinking: deepThinkingEnabled });
       return true;
     }
 
@@ -807,6 +1037,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     deepThinkingEnabled = Boolean(enable);
     window.deepThinkingEnabled = deepThinkingEnabled;
+    syncAssistantPreferences({ deep_thinking: deepThinkingEnabled });
     return true;
   }
 
@@ -821,8 +1052,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function notifyJarvisResponse(answer, ok = true) {
     if (!jarvisAssistant) return;
-    jarvisAssistant.showStatus(ok ? 'Listo.' : 'Jarvis no pudo responder. Puedes escribir tu mensaje.', ok ? 'success' : 'error');
-    jarvisAssistant.speakResponse(answer);
+    jarvisAssistant.showStatus(ok ? 'Jarvis listo.' : 'Jarvis no pudo responder. Puedes escribir tu mensaje.', ok ? 'success' : 'error');
+    if (ok) {
+      jarvisAssistant.speakResponse(answer);
+    }
+  }
+
+  async function refreshMarkVoiceStatus(showWhenReady = false) {
+    if (!jarvisAssistant) return null;
+    try {
+      const response = await fetchWithTimeout(JARVIS_MARK_STATUS_ENDPOINT, { method: 'GET' }, 5000);
+      if (!response.ok) return null;
+      const data = await response.json();
+      const mark = data.mark_xxxix || data;
+      if (mark.launch_ready && showWhenReady) {
+        jarvisAssistant.showStatus('Mark XXXIX disponible: voz Charon lista.', 'success', 5000);
+      }
+      if (!mark.launch_ready && showWhenReady) {
+        const note = Array.isArray(mark.notes) && mark.notes.length ? mark.notes[0] : 'Mark XXXIX requiere configuración.';
+        jarvisAssistant.showStatus(note, 'warning', 7000);
+      }
+      return mark;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async function launchMarkVoice() {
+    if (!jarvisAssistant) return false;
+    jarvisAssistant.showStatus('Preparando Mark XXXIX...', 'info', 0);
+    try {
+      const response = await fetchWithTimeout(JARVIS_MARK_LAUNCH_ENDPOINT, { method: 'POST' }, 10000);
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) {
+        const note = data.message
+          || data.detail
+          || 'Mark XXXIX no está configurado. Se usará voz del navegador.';
+        jarvisAssistant.showStatus(note, 'warning', 8000);
+        return false;
+      }
+      jarvisAssistant.showStatus(data.already_running ? 'Mark XXXIX ya está activo.' : 'Mark XXXIX iniciado con voz Charon.', 'success', 7000);
+      return true;
+    } catch (error) {
+      jarvisAssistant.showStatus('No se pudo iniciar Mark XXXIX. Se usará voz del navegador.', 'error', 7000);
+      return false;
+    }
   }
 
   function initJarvisIntegration() {
@@ -835,7 +1109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         jarvisVoiceBtn.title = 'Voz no disponible en este navegador.';
       }
       if (jarvisStatus) {
-        jarvisStatus.textContent = 'Tu navegador no soporta voz. Usa Chrome o Edge.';
+        jarvisStatus.textContent = 'Tu navegador no soporta reconocimiento de voz. Probá con Google Chrome o Microsoft Edge.';
         jarvisStatus.className = 'jarvis-status warning';
       }
       return;
@@ -857,7 +1131,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         tts: {
           provider: 'speech-synthesis',
-          codeNotice: 'La respuesta incluye cÃ³digo. Te recomiendo revisarlo en pantalla.'
+          maxChars: 1300,
+          codeNotice: 'La respuesta incluye código. Te recomiendo revisarlo en pantalla.'
         }
       },
       state: {
@@ -866,6 +1141,7 @@ document.addEventListener('DOMContentLoaded', () => {
       callbacks: {
         autosizeInput,
         sendMessage: text => {
+          syncAssistantPreferences({ jarvis_voice: true });
           coachInput.value = String(text || '').trim();
           autosizeInput();
           return sendCurrentMessage({ source: 'jarvis_voice' });
@@ -882,6 +1158,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return true;
         },
         setDeepThinking: setDeepThinkingFromJarvis,
+        launchMarkVoice,
         openFilePicker: () => {
           if (!fileInput || fileInput.disabled) return false;
           fileInput.click();
@@ -891,6 +1168,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
     window.jarvisAssistant = jarvisAssistant;
+    refreshMarkVoiceStatus(false);
   }
 
   newChatBtn.addEventListener('click', startNewChat);
@@ -917,8 +1195,10 @@ document.addEventListener('DOMContentLoaded', () => {
     coachInput.focus();
   });
 
-  fileInput.addEventListener('change', event => {
-    setSelectedFiles(event.target.files);
+  fileInput.addEventListener('change', async event => {
+    const files = Array.from(event.target.files || []);
+    setSelectedFiles(files);
+    await uploadSelectedFiles(files);
     coachInput.focus();
   });
 
@@ -954,9 +1234,32 @@ document.addEventListener('DOMContentLoaded', () => {
     await sendCurrentMessage({ source: 'typed_chat' });
   });
 
+  window.addEventListener('jah-auth-preferences-changed', event => {
+    const preferences = event.detail || {};
+    if (Object.prototype.hasOwnProperty.call(preferences, 'use_rag')) {
+      setTutorIA(Boolean(preferences.use_rag), { sync: false });
+    }
+    if (Object.prototype.hasOwnProperty.call(preferences, 'use_web')) {
+      setSmartSearch(Boolean(preferences.use_web), { sync: false });
+    }
+    if (Object.prototype.hasOwnProperty.call(preferences, 'deep_thinking')) {
+      deepThinkingEnabled = Boolean(preferences.deep_thinking);
+      window.deepThinkingEnabled = deepThinkingEnabled;
+    }
+  });
+
+  window.addEventListener('jah-auth-logout', () => {
+    deepThinkingEnabled = false;
+    window.deepThinkingEnabled = false;
+    if (getActiveChat() && getActiveChat().messages.length) {
+      startNewChat();
+    }
+    coachInput.focus();
+  });
+
   sortChats();
-  setTutorIA(true);
-  setSmartSearch(false);
+  setTutorIA(true, { sync: false });
+  setSmartSearch(false, { sync: false });
   initJarvisIntegration();
   renderAttachments();
   renderChat();
