@@ -37,7 +37,7 @@ def line(label: str, ok: bool, detail: str = "") -> None:
 
 
 def main() -> int:
-    brain_root = Path(os.getenv("BRAIN_ROOT", r"C:\Users\herna\Documents\tutor_ia"))
+    brain_root = Path(os.getenv("BRAIN_ROOT", str(Path.home() / "Documents" / "tutor_ia")))
     streamlit_url = os.getenv("STREAMLIT_URL", "http://127.0.0.1:8501")
     bridge_url = os.getenv("BRIDGE_API_URL", "http://127.0.0.1:8787")
 

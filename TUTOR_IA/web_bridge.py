@@ -177,6 +177,52 @@ AGENCY_QUERY_RE = re.compile(
     r"\b(agente|agency|especialista|estrategia|plan|arquitectura|auditoria|review|revision)\b",
     re.IGNORECASE,
 )
+DOCUMENT_GROUNDED_QUERY_RE = re.compile(
+    r"\b(que dice|segun|basado en|con base en|revisa|consulta|lee|usa|busca en|recupera).{0,80}"
+    r"(documento|documentos|archivo|archivos|pdf|notas|obsidian|vault|tutor_ia|tutoria|base de conocimiento|memoria)\b|"
+    r"\b(documento cargado|documentos cargados|mis notas|mis documentos|mi vault|contenido de tutor_ia|segun tutoria|"
+    r"solo con|unicamente con|estrictamente con|cita fuentes|evidencia documental)\b",
+    re.IGNORECASE,
+)
+
+
+def direct_chat_intent(message):
+    text = unicodedata.normalize("NFKD", str(message or "").strip().lower())
+    text = "".join(char for char in text if not unicodedata.combining(char))
+    text = re.sub(r"\s+", " ", text)
+    compact = re.sub(r"[!?.;,\s]+$", "", text).strip()
+    greetings = {
+        "hola",
+        "buenos dias",
+        "buenas tardes",
+        "buenas noches",
+        "hey",
+        "hello",
+        "hi",
+        "que tal",
+        "como estas",
+        "como va",
+    }
+    social = {
+        "gracias",
+        "muchas gracias",
+        "ok",
+        "okay",
+        "perfecto",
+        "entendido",
+        "excelente",
+        "genial",
+        "listo",
+        "vale",
+        "de acuerdo",
+    }
+    if compact in greetings or (len(compact.split()) <= 4 and any(compact.startswith(item) for item in greetings)):
+        return "GREETING"
+    if compact in social or (len(compact.split()) <= 4 and any(compact.startswith(item) for item in social)):
+        return "SOCIAL_RESPONSE"
+    return ""
+
+
 ALLOWED_UPLOAD_EXTENSIONS = {
     ".png",
     ".jpg",
@@ -207,6 +253,10 @@ WEB_FAST_MODEL = os.getenv("TUTOR_IA_WEB_FAST_MODEL", "llama3.2:1b")
 WEB_FAST_K = int(os.getenv("TUTOR_IA_WEB_FAST_K", "4"))
 WEB_FAST_TOP_K = int(os.getenv("TUTOR_IA_WEB_FAST_TOP_K", "1"))
 WEB_FAST_OBSIDIAN_TOP_K = int(os.getenv("TUTOR_IA_WEB_FAST_OBSIDIAN_TOP_K", "1"))
+RAG_SCORE_THRESHOLD = float(os.getenv("RAG_SCORE_THRESHOLD", "0.72"))
+TUTOR_IA_SCORE_THRESHOLD = float(os.getenv("TUTOR_IA_SCORE_THRESHOLD", "0.72"))
+OBSIDIAN_SCORE_THRESHOLD = float(os.getenv("OBSIDIAN_SCORE_THRESHOLD", "0.78"))
+RAG_MAX_CONTEXT_CHUNKS = int(os.getenv("RAG_MAX_CONTEXT_CHUNKS", "5"))
 WEB_FAST_DOC_CHARS = int(os.getenv("TUTOR_IA_WEB_FAST_DOC_CHARS", "220"))
 WEB_FAST_BRAIN_CHARS = int(os.getenv("TUTOR_IA_WEB_FAST_BRAIN_CHARS", "650"))
 WEB_FAST_AGENCY_CHARS = int(os.getenv("TUTOR_IA_WEB_FAST_AGENCY_CHARS", "350"))
@@ -1306,15 +1356,19 @@ def retrieve_obsidian(question, top_k=None):
 
     scored.sort(key=lambda item: item[0], reverse=True)
     results = []
-    for score, note in scored[: max(top_k, 0)]:
-        if score <= 0:
+    for score, note in scored[: max(top_k * 3, top_k, 0)]:
+        if score < OBSIDIAN_SCORE_THRESHOLD:
             continue
+        metadata = dict(note["metadata"])
+        metadata["score"] = round(float(score), 4)
         results.append(
             {
                 "text": note["text"],
-                "metadata": note["metadata"],
+                "metadata": metadata,
             }
         )
+        if len(results) >= min(top_k, RAG_MAX_CONTEXT_CHUNKS):
+            break
     return results
 
 
@@ -1411,14 +1465,46 @@ def retrieve(question, user_groups=None, k=None, top_k=None, selected_sources=No
     docs = []
     if result.get("documents"):
         for index, doc_text in enumerate(result["documents"][0]):
-            metadata = result["metadatas"][0][index]
+            metadata = dict(result["metadatas"][0][index])
+            distance = None
+            if result.get("distances") and result["distances"] and index < len(result["distances"][0]):
+                distance = result["distances"][0][index]
+            try:
+                score = max(0.0, min(1.0, 1.0 - float(distance))) if distance is not None else 0.0
+            except (TypeError, ValueError):
+                score = 0.0
+            if score < max(RAG_SCORE_THRESHOLD, TUTOR_IA_SCORE_THRESHOLD):
+                continue
+            if not source_matches_query(metadata, question):
+                continue
+            metadata["score"] = round(score, 4)
             doc_group = metadata.get("access_group", "public")
             source = metadata.get("source", "")
             source_allowed = selected_sources is None or source in selected_sources
             if source_allowed and (doc_group in user_groups or "admin" in user_groups):
                 docs.append({"text": doc_text, "metadata": metadata})
 
-    return docs[:top_k]
+    return docs[: min(top_k, RAG_MAX_CONTEXT_CHUNKS)]
+
+
+def source_matches_query(metadata, question):
+    query_text = normalized_query_text(question)
+    source_text = normalized_query_text(
+        " ".join(str(metadata.get(key, "")) for key in ("source", "title", "path", "category", "tags", "type"))
+    )
+    wants_database = any(term in query_text for term in ["sql server", "t-sql", "tutoria", "ssms", "session", "sesion", "memoria persistente"])
+    wants_marketing = any(term in query_text for term in ["marketing", "seo", "campana", "campaña", "ventas", "copy"])
+    wants_mysql = "mysql" in query_text
+    wants_postgres = any(term in query_text for term in ["postgres", "postgresql", "plpgsql", "pl/pgsql"])
+
+    if not wants_marketing and any(term in source_text for term in ["marketing_digital", "marketing digital", "marketing"]):
+        return False
+    if wants_database:
+        if "mysql" in source_text and not wants_mysql:
+            return False
+        if any(term in source_text for term in ["postgresql", "postgres", "plpgsql", "pl/pgsql"]) and not wants_postgres:
+            return False
+    return True
 
 
 def add_memory_turn(memory, question, answer, max_turns=12):
@@ -1441,6 +1527,7 @@ def generate_answer(
     assistant_profile="",
     max_doc_chars=None,
     fast_profile=False,
+    grounded_required=False,
 ):
     mode = get_interaction_mode(interaction_mode)
     model_name = choose_llm_model(
@@ -1460,8 +1547,11 @@ def generate_answer(
             add_memory_turn(memory, question, response)
         return response
 
-    if not docs and not agency_context and not brain_context:
-        response = clean_answer_text("No encontre informacion relevante en la base de conocimiento para responder esa pregunta.")
+    if grounded_required and not docs and not agency_context and not brain_context:
+        response = clean_answer_text(
+            "No encontre evidencia suficiente en los documentos consultados para afirmarlo con seguridad. "
+            "Puedo volver a buscar si me indicas el archivo, nota, carpeta o tema exacto."
+        )
         if memory is not None:
             add_memory_turn(memory, question, response)
         return response
@@ -1761,6 +1851,54 @@ def answer_from_brain(payload, uploaded_files=None):
     show_sources = payload_bool(payload, "show_sources", False) or source_requested(question)
     tutor_ia_enabled = payload_bool(payload, "tutorIA", payload_bool(payload, "tutor_ia", True))
     smart_search_enabled = payload_bool(payload, "smartSearch", payload_bool(payload, "smart_search", False))
+    direct_intent = direct_chat_intent(question)
+    if direct_intent:
+        answer = (
+            "Hola, Abraham. Continuamos con ULTRON o con el asistente de programacion?"
+            if direct_intent == "GREETING"
+            else "Con gusto. Continuamos cuando quieras."
+        )
+        add_memory_turn(memory, question, answer)
+        log_bridge(
+            f"retrieval_orchestration intent={direct_intent} rag_used=false sources_called=[] reason=direct_conversation"
+        )
+        return {
+            "ok": True,
+            "success": True,
+            "answer": answer,
+            "mode": str(raw_mode),
+            "brain_mode": get_interaction_mode(interaction_mode)["label"],
+            "tutorIA": tutor_ia_enabled,
+            "smartSearch": smart_search_enabled,
+            "usedTutorIA": False,
+            "usedSmartSearch": False,
+            "smart_search": None,
+            "show_sources": False,
+            "used_sources_count": 0,
+            "model": "direct-conversation",
+            "response_profile": "web_fast" if fast_profile else "full",
+            "latency_ms": int((time.perf_counter() - started_at) * 1000),
+            "brain_error": "",
+            "tutor_ia_connection": {},
+            "tutor_ia_root": str(TUTOR_ROOT),
+            "tutor_ia_connected": False,
+            "obsidian_used_count": 0,
+            "workspace_used_count": 0,
+            "quick_code_used": False,
+            "jarvis_profile": "",
+            "brain_parts": ["intent_classifier", "direct_response"],
+            "sources_used": [],
+            "brain_connector": None,
+            "sources": [],
+            "uploadedFiles": [],
+            "agency_agents": [],
+            "workflow": {
+                "pattern": "plan_act_evaluate",
+                "intent": direct_intent,
+                "rag_used": False,
+                "sources_called": [],
+            },
+        }
     uploaded_files = uploaded_files or []
     indexed_upload_chunks = index_uploaded_files(uploaded_files, session_id=session_id) if uploaded_files else 0
     file_docs = build_uploaded_file_docs(uploaded_files, question=question)
@@ -1827,6 +1965,7 @@ def answer_from_brain(payload, uploaded_files=None):
     project_path = str(payload.get("project_path") or payload.get("workspace_path") or "").strip()
     quick_code_context = str(payload.get("quick_code_context") or payload.get("code_context") or "")[:6000].strip()
     normalized_question = normalized_query_text(question)
+    grounded_required = bool(DOCUMENT_GROUNDED_QUERY_RE.search(normalized_question))
     light_chat = bool(fast_profile and len(normalized_question) <= 80 and LIGHT_CHAT_RE.search(normalized_question))
     use_private_knowledge = bool(
         tutor_ia_enabled
@@ -2093,6 +2232,16 @@ def answer_from_brain(payload, uploaded_files=None):
     if fast_profile and brain_context:
         brain_context = trim_prompt_text(brain_context, WEB_FAST_BRAIN_CHARS)
 
+    retrieval_sources_called = []
+    if use_private_knowledge:
+        retrieval_sources_called.append("tutor_ia")
+    if obsidian_docs:
+        retrieval_sources_called.append("obsidian")
+    if workspace_docs:
+        retrieval_sources_called.append("workspace")
+    log_bridge(
+        f"retrieval_orchestration intent=TECHNICAL_OR_DOCUMENT rag_used={bool(docs)} sources_called={retrieval_sources_called} accepted_chunks={len(docs)} threshold={RAG_SCORE_THRESHOLD}"
+    )
     log_bridge(
         f"tutor_ia context loaded docs={len(docs)} obsidian={len(obsidian_docs)} workspace={len(workspace_docs)} brain_chars={len(brain_context)}"
     )
@@ -2113,6 +2262,7 @@ def answer_from_brain(payload, uploaded_files=None):
             assistant_profile=client_name,
             max_doc_chars=WEB_FAST_DOC_CHARS if fast_profile else MAX_DOC_CONTEXT_CHARS,
             fast_profile=fast_profile,
+            grounded_required=grounded_required,
         )
     else:
         answer = generate_general_answer(

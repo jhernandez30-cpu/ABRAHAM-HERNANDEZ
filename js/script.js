@@ -181,19 +181,19 @@ function initPortfolioChatbot() {
   const youtubeUrl = 'https://www.youtube.com/@abrhamdev';
   const jahAvatarUrl = pageUrl('assets/img/jah-avatar.png');
   const fallbackAnswer = {
-    text: `Puedo orientarte según lo que necesita tu empresa: una web profesional, automatizar procesos, crear dashboards, integrar APIs, implementar un chatbot o mejorar el frontend. Puedes ir a <a href="${pageUrl('servicios/')}">Servicios</a>, revisar <a href="${pageUrl('desarrollador-web-nicaragua/')}">Desarrollador web en Nicaragua</a> o pedir una orientación en <a href="${pageUrl('contacto.html')}">Contacto</a>.`,
-    suggestions: ['Guíame', 'Servicios', 'Presupuesto', 'Contacto']
+    text: `Puedo orientarte según lo que necesita tu empresa: una web profesional, automatizar procesos, crear dashboards, integrar APIs, implementar un chatbot, explorar <a href="${pageUrl('ultron.html')}">ULTRON</a> o abrir <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>. También puedes ir a <a href="${pageUrl('servicios/')}">Servicios</a> o pedir una orientación en <a href="${pageUrl('contacto.html')}">Contacto</a>.`,
+    suggestions: ['Guíame', 'Servicios', 'ULTRON', 'JAH IA']
   };
   const answers = [
     {
       keys: ['hola', 'buenas', 'hey', 'saludos', 'inicio', 'empezar', 'ayuda'],
-      text: `Hola, soy JAH, el asistente virtual de Abraham. Puedo ayudarte a elegir una solución para tu empresa: desarrollo web, automatización, dashboards, integración de APIs, chatbots o frontend profesional. Si no sabes por dónde empezar, dime qué problema quieres resolver: procesos manuales, datos dispersos, herramientas desconectadas, captación desde la web o atención de clientes.`,
-      suggestions: ['Guíame', 'Servicios', 'Presupuesto', 'Proyectos']
+      text: `Hola, soy JAH, el asistente virtual de Abraham. Puedo ayudarte a elegir una solución para tu empresa, explorar <a href="${pageUrl('ultron.html')}">ULTRON</a>, abrir <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a> o revisar servicios como desarrollo web, automatización, dashboards, APIs y chatbots. Si no sabes por dónde empezar, dime qué problema quieres resolver.`,
+      suggestions: ['Guíame', 'Servicios', 'ULTRON', 'JAH IA']
     },
     {
       keys: ['jah', 'joshue', 'josue', 'josué', 'abraham hernandez', 'abraham hernández', 'quien es', 'quién es', 'perfil profesional', 'ingeniero en sistemas'],
       text: `Josué Abraham Hernández es Ingeniero en Sistemas y desarrollador web en Nicaragua. Trabaja con empresas que necesitan soluciones digitales a medida: webs profesionales, automatización de procesos, dashboards en tiempo real, integración de APIs, chatbots y frontend orientado a experiencia de usuario.`,
-      suggestions: ['Sobre mí', 'Servicios', 'Títulos', 'Contacto']
+      suggestions: ['Sobre mí', 'Servicios', 'Proyectos', 'Contacto']
     },
     {
       keys: ['guia', 'guiame', 'orientame', 'recomienda', 'recomendacion', 'no se', 'no sé', 'que necesito', 'necesito ayuda', 'ruta'],
@@ -207,8 +207,8 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['mapa', 'navegar', 'sitio', 'secciones', 'paginas', 'páginas', 'menu', 'todo el sitio'],
-      text: `Mapa del sitio: <a href="${pageUrl('index.html')}">Inicio</a>, <a href="${pageUrl('servicios/')}">servicios</a>, <a href="${pageUrl('desarrollador-web-nicaragua/')}">desarrollador web en Nicaragua</a>, <a href="${pageUrl('proyectos/')}">proyectos</a>, <a href="${pageUrl('recursos/')}">recursos</a>, <a href="${pageUrl('sobre-mi/')}">sobre mí</a>, <a href="${pageUrl('titulos.html')}">títulos y experiencia</a>, <a href="${pageUrl('interactua.html')}">herramientas IA</a>, <a href="${pageUrl('asistente-programacion.html')}">asistente de programación</a>, <a href="${pageUrl('jah/')}">Marca JAH</a> y <a href="${pageUrl('contacto.html')}">contacto</a>.`,
-      suggestions: ['Servicios', 'Proyectos', 'Recursos', 'Contacto']
+      text: `Mapa del sitio: <a href="${pageUrl('index.html')}">Inicio</a>, <a href="${pageUrl('servicios/')}">servicios</a>, <a href="${pageUrl('desarrollador-web-nicaragua/')}">desarrollador web en Nicaragua</a>, <a href="${pageUrl('proyectos/')}">proyectos</a>, <a href="${pageUrl('ultron.html')}">ULTRON</a>, <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>, <a href="${pageUrl('recursos/')}">recursos</a>, <a href="${pageUrl('sobre-mi/')}">sobre mí</a>, <a href="${pageUrl('interactua.html')}">herramientas IA</a>, <a href="${pageUrl('jah/')}">Marca JAH</a> y <a href="${pageUrl('contacto.html')}">contacto</a>.`,
+      suggestions: ['ULTRON', 'JAH IA', 'Servicios', 'Contacto']
     },
     {
       keys: ['servicio', 'servicios', 'haces', 'ofreces', 'oferta', 'desarrollo', 'web profesional'],
@@ -218,7 +218,7 @@ function initPortfolioChatbot() {
     {
       keys: ['habilidades', 'skills', 'html', 'css', 'javascript', 'python', 'c#', 'c sharp', 'sql', 'power bi', 'ciberseguridad', 'bases de datos', 'desarrollo web', 'inteligencia artificial'],
       text: `Habilidades destacadas del sitio: HTML, CSS, JavaScript, Python, C#, SQL, Power BI, bases de datos, desarrollo web, APIs, automatización, ciberseguridad e inteligencia artificial.`,
-      suggestions: ['Servicios', 'Proyectos', 'Títulos', 'Contacto']
+      suggestions: ['Servicios', 'Proyectos', 'Recursos', 'Contacto']
     },
     {
       keys: ['desarrollador web nicaragua', 'nicaragua', 'local', 'perfil local', 'desarrollador web en nicaragua'],
@@ -267,8 +267,8 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['proyecto', 'proyectos', 'portfolio', 'portafolio', 'demo', 'caso', 'casos', 'trabajos'],
-      text: `En <a href="${pageUrl('proyectos/')}">Proyectos</a> aparecen proyectos reales como <a href="https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino.html" target="_blank" rel="noopener">Mural Interactivo Sandino</a>, <a href="${pageUrl('jah/')}">Marca JAH</a> y <a href="https://jhernandez30-cpu.github.io/Variedades-Nora/" target="_blank" rel="noopener">Variedades Nora</a>. <a href="${pageUrl('proyectos/itsa-segurity/')}">ITSA Segurity</a> queda conectado como mi empresa, no como proyecto de portafolio.`,
-      suggestions: ['Sandino', 'Variedades Nora', 'ITSA Segurity', 'Servicios']
+      text: `En <a href="${pageUrl('proyectos/')}">Proyectos</a> aparecen proyectos reales como <a href="https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino.html" target="_blank" rel="noopener">Mural Interactivo Sandino</a>, <a href="${pageUrl('jah/')}">Marca JAH</a> y <a href="https://jhernandez30-cpu.github.io/Variedades-Nora/" target="_blank" rel="noopener">Variedades Nora</a>. También puedes abrir <a href="${pageUrl('ultron.html')}">ULTRON</a> como presentación del asistente inteligente y <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a> como asistente de programación.`,
+      suggestions: ['ULTRON', 'JAH IA', 'Proyectos', 'Servicios']
     },
     {
       keys: ['itsa', 'segurity', 'seguridad', 'monitoreo', 'incidentes', 'empresa', 'mi empresa'],
@@ -301,6 +301,11 @@ function initPortfolioChatbot() {
       suggestions: ['Chatbot', 'IA', 'Contacto', 'Servicios']
     },
     {
+      keys: ['ultron', 'ultron ia', 'asistente ultron', 'sistema ultron', 'asistente inteligente', 'windows', 'ubuntu', 'android', 'descargas'],
+      text: `<a href="${pageUrl('ultron.html')}">ULTRON</a> es la página oficial de presentación del asistente inteligente: una experiencia futurista para PC y dispositivos móviles, con enfoque en voz, memoria contextual, automatización, productividad y presencia digital. Desde ahí puedes ver su visión, capacidades, arquitectura conceptual y próximas descargas para Microsoft, Ubuntu y Google Play.`,
+      suggestions: ['JAH IA', 'Servicios', 'Proyectos', 'Contacto']
+    },
+    {
       keys: ['recurso', 'recursos', 'blog', 'guia', 'guía', 'articulo', 'artículo', 'leer', 'aprender'],
       text: `En <a href="${pageUrl('recursos/')}">Recursos</a> hay guías sobre automatización con Python, dashboards en tiempo real vs informes automáticos y API REST vs webhook. Es la mejor ruta si todavía estás evaluando qué solución necesitas.`,
       suggestions: ['Python guía', 'Dashboard vs reporte', 'API vs webhook', 'Servicios']
@@ -323,12 +328,7 @@ function initPortfolioChatbot() {
     {
       keys: ['sobre mi', 'sobre mí', 'perfil', 'abraham', 'quien eres', 'quién eres', 'experiencia', 'forma de trabajo'],
       text: `En <a href="${pageUrl('sobre-mi/')}">Sobre mí</a> está el perfil profesional de Abraham: especialización, forma de trabajo, tecnologías, áreas donde aporta criterio y CTA para revisar un proyecto.`,
-      suggestions: ['CV', 'Títulos', 'Servicios', 'Contacto']
-    },
-    {
-      keys: ['titulo', 'titulos', 'título', 'títulos', 'certificacion', 'certificaciones', 'estudios', 'maestria', 'maestría', 'cv', 'curriculum', 'currículum'],
-      text: `Puedes ver <a href="${pageUrl('titulos.html')}">Títulos, formación y experiencia</a>: Ingeniero en Sistema de Informática por la Universidad Nacional Héroes de San José de las Mulas, Máster en Desarrollo con IA, Máster en Ciberseguridad, Power BI, Data Science, Marketing Digital con IA y SEO para IA y Google. También puedes descargar el <a href="${pageUrl('cv.pdf')}">CV en PDF</a>.`,
-      suggestions: ['Sobre mí', 'CV', 'Contacto', 'Servicios']
+      suggestions: ['CV', 'Recursos', 'Servicios', 'Contacto']
     },
     {
       keys: ['indicadores', 'años', 'anos', 'practica tecnica', 'práctica técnica', 'areas de servicio', 'demos'],
@@ -336,14 +336,14 @@ function initPortfolioChatbot() {
       suggestions: ['Proyectos', 'Servicios', 'Sobre mí', 'Contacto']
     },
     {
-      keys: ['ia', 'ai', 'inteligencia artificial', 'agente', 'agentes', 'herramientas ia', 'notebooklm', 'interactua'],
-      text: `En <a href="${pageUrl('interactua.html')}">Interactúa</a> hay herramientas IA para captación de cliente, análisis de competencia, estrategia, seguridad, desarrollo, bases de datos y C#. También incluye libros NotebookLM de programación, Python, C#, bases de datos, Power BI, ciberseguridad y agente N8N. Para practicar código, abre <a href="${pageUrl('asistente-programacion.html')}">Asistente de Programación</a>.`,
-      suggestions: ['Asistente programación', 'Chatbot', 'Recursos', 'Contacto']
+      keys: ['jah ia', 'asistente programacion', 'asistente programación', 'aprender programacion', 'aprender programación', 'programar', 'curso', 'ejercicios'],
+      text: `<a href="${pageUrl('asistente-programacion.html')}">JAH IA</a> es el asistente de programación del portafolio. Tiene rutas, preguntas, ejercicios, quiz y libros base para aprender programación de forma guiada.`,
+      suggestions: ['ULTRON', 'Interactúa', 'Recursos', 'Inicio']
     },
     {
-      keys: ['asistente programacion', 'asistente programación', 'aprender programacion', 'aprender programación', 'programar', 'curso', 'ejercicios'],
-      text: `El <a href="${pageUrl('asistente-programacion.html')}">Asistente de Programación</a> tiene rutas, preguntas, ejercicios, quiz y libros base para aprender programación de forma guiada.`,
-      suggestions: ['Interactúa', 'Títulos', 'Recursos', 'Inicio']
+      keys: ['ia', 'ai', 'inteligencia artificial', 'agente', 'agentes', 'herramientas ia', 'notebooklm', 'interactua'],
+      text: `En <a href="${pageUrl('interactua.html')}">Interactúa</a> hay herramientas IA para captación de cliente, análisis de competencia, estrategia, seguridad, desarrollo, bases de datos y C#. Para practicar código, abre <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>. Si quieres ver la visión del asistente inteligente futurista, abre <a href="${pageUrl('ultron.html')}">ULTRON</a>.`,
+      suggestions: ['JAH IA', 'ULTRON', 'Recursos', 'Contacto']
     },
     {
       keys: ['contacto', 'correo', 'email', 'cotizar', 'contratar', 'precio', 'costo', 'presupuesto', 'disponible', 'disponibilidad', 'freelance', 'trabajo'],
@@ -357,12 +357,12 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['faq', 'preguntas frecuentes', 'google', 'chatgpt', 'seo'],
-      text: `El sitio está reforzado para SEO con títulos, metadescripciones, enlaces internos, landing local de <a href="${pageUrl('desarrollador-web-nicaragua/')}">desarrollador web en Nicaragua</a>, FAQs en servicios y contenido orientado a búsquedas como desarrollo web para empresas, automatización de procesos, dashboards, APIs y chatbots.`,
+      text: `El sitio está reforzado para SEO con metadatos, descripciones, enlaces internos, landing local de <a href="${pageUrl('desarrollador-web-nicaragua/')}">desarrollador web en Nicaragua</a>, FAQs en servicios y contenido orientado a búsquedas como desarrollo web para empresas, automatización de procesos, dashboards, APIs y chatbots.`,
       suggestions: ['Recursos', 'Servicios', 'Mapa del sitio', 'Contacto']
     }
   ];
 
-  const quickReplies = ['Guíame', 'Servicios', 'Presupuesto', 'Proyectos', 'Contacto'];
+  const quickReplies = ['Guíame', 'Servicios', 'ULTRON', 'JAH IA', 'Contacto'];
   const widget = document.createElement('div');
   widget.className = 'chatbot-widget';
   widget.innerHTML = `
@@ -396,10 +396,10 @@ function initPortfolioChatbot() {
             <a href="${pageUrl('sobre-mi/')}" class="chatbot-menu-link">Sobre mí</a>
             <a href="${pageUrl('servicios/')}" class="chatbot-menu-link">Servicios</a>
             <a href="${pageUrl('proyectos/')}" class="chatbot-menu-link">Proyectos</a>
+            <a href="${pageUrl('ultron.html')}" class="chatbot-menu-link">ULTRON</a>
+            <a href="${pageUrl('asistente-programacion.html')}" class="chatbot-menu-link">JAH IA</a>
             <a href="${pageUrl('recursos/')}" class="chatbot-menu-link">Recursos</a>
-            <a href="${pageUrl('titulos.html')}" class="chatbot-menu-link">Títulos y experiencia</a>
             <a href="${pageUrl('interactua.html')}" class="chatbot-menu-link">Interactúa</a>
-            <a href="${pageUrl('asistente-programacion.html')}" class="chatbot-menu-link">Asistente programación</a>
             <a href="${pageUrl('cv.pdf')}" class="chatbot-menu-link" download>Descargar CV</a>
             <a href="${pageUrl('contacto.html')}" class="chatbot-menu-link">Contacto</a>
             <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20un%20presupuesto%20para%20un%20proyecto" target="_blank" rel="noopener" class="chatbot-menu-link">WhatsApp</a>
@@ -574,5 +574,5 @@ function initPortfolioChatbot() {
     sendQuestion(input.value);
   });
 
-  addMessage('Hola, soy JAH, el asistente virtual de Abraham. Puedo ayudarte a elegir entre desarrollo web, automatización, dashboards, APIs, chatbots, frontend o presupuesto. Escribe tu necesidad o abre el menú desplegable.', 'bot');
+  addMessage('Hola, soy JAH, el asistente virtual de Abraham. Puedo ayudarte con servicios, presupuesto, proyectos, ULTRON o JAH IA. Escribe tu necesidad o abre el menú desplegable.', 'bot');
 }

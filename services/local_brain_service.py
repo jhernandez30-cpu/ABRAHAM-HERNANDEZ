@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 
-BRAIN_ROOT = Path(os.getenv("BRAIN_ROOT", r"C:\Users\herna\Documents\tutor_ia"))
+BRAIN_ROOT = Path(os.getenv("BRAIN_ROOT", str(Path.home() / "Documents" / "tutor_ia")))
 
 USEFUL_EXTENSIONS = {".py", ".md", ".txt", ".json", ".yaml", ".yml", ".toml", ".html", ".css", ".js"}
 USEFUL_FILENAMES = {".env.example", "env.example"}
