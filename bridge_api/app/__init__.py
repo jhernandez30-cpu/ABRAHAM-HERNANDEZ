@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import settings
-from app.routes import chat, health, history, index, search, sources, upload
+from app.routes import auth, chat, health, history, index, search, sources, upload
 
 
 def create_app() -> FastAPI:
@@ -33,6 +33,7 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(health.router)
+    app.include_router(auth.router)
     app.include_router(chat.router)
     app.include_router(index.router)
     app.include_router(search.router)

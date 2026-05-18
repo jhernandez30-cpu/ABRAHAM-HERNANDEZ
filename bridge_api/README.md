@@ -1,6 +1,6 @@
 # JAH AI Bridge API + Cerebro RAG
 
-Backend local FastAPI para conectar `asistente-programacion.html` con el cerebro documental de JAH AI en `C:\Users\herna\Documents\tutor_ia`.
+Backend local FastAPI para conectar `asistente-programacion.html` con el cerebro documental de JAH AI configurado en `TUTOR_IA_ROOT`.
 
 El RAG lee documentos de `tutor_ia\conocimiento`, los divide en fragmentos, genera embeddings locales y guarda la base vectorial en ChromaDB.
 
@@ -35,27 +35,27 @@ bridge_api/
 ## Instalar dependencias
 
 ```powershell
-cd C:\Users\herna\Documents\ABRAHAM-HERNANDEZ-main\bridge_api
+cd C:\ruta\a\ABRAHAM-HERNANDEZ-main\bridge_api
 pip install -r requirements.txt
 ```
 
 Con el entorno virtual de TUTOR_IA:
 
 ```powershell
-C:\Users\herna\Documents\tutor_ia\.venv\Scripts\python.exe -m pip install -r requirements.txt
+C:\ruta\a\tutor_ia\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
 ## Ejecutar la API
 
 ```powershell
-cd C:\Users\herna\Documents\ABRAHAM-HERNANDEZ-main\bridge_api
+cd C:\ruta\a\ABRAHAM-HERNANDEZ-main\bridge_api
 uvicorn main:app --host 127.0.0.1 --port 8787 --reload
 ```
 
 Con el entorno virtual de TUTOR_IA:
 
 ```powershell
-C:\Users\herna\Documents\tutor_ia\.venv\Scripts\uvicorn.exe main:app --host 127.0.0.1 --port 8787 --reload
+C:\ruta\a\tutor_ia\.venv\Scripts\uvicorn.exe main:app --host 127.0.0.1 --port 8787 --reload
 ```
 
 Servidor esperado:
@@ -69,7 +69,7 @@ http://127.0.0.1:8787
 Guarda documentos en:
 
 ```text
-C:\Users\herna\Documents\tutor_ia\conocimiento
+C:\ruta\a\tutor_ia\conocimiento
 ```
 
 Formatos soportados:
@@ -140,11 +140,18 @@ La respuesta incluye:
   "answer": "Respuesta generada con contexto documental",
   "sources": [],
   "session_id": "usuario_123",
-  "model": "llama3.2:1b"
+  "model": "llama3.2:1b",
+  "brain_parts": ["fastapi_bridge", "history_json", "workflow_orchestrator", "chat_summarization", "rag_chromadb"],
+  "workflow": {
+    "pattern": "plan_act_evaluate",
+    "intent": "TECHNICAL_QUERY",
+    "rag_sources": 4,
+    "web_sources": 0
+  }
 }
 ```
 
-Si no hay contexto suficiente, JAH AI responde claramente:
+Si la consulta exige evidencia documental y no hay contexto suficiente, JAH AI responde claramente:
 
 ```text
 No encontre suficiente informacion en los documentos cargados para responder con seguridad.
@@ -153,6 +160,19 @@ No encontre suficiente informacion en los documentos cargados para responder con
 ## Rutas disponibles
 
 - `GET /api/health`
+- `GET /api/status`
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `GET /api/auth/google/start`
+- `GET /api/auth/google/callback`
+- `GET /api/auth/apple/start`
+- `POST /api/auth/apple/callback`
+- `GET /api/auth/session`
+- `GET /api/auth/me`
+- `POST /api/auth/logout`
+- `GET /api/user/profile`
+- `PUT /api/user/profile`
+- `PUT /api/user/preferences`
 - `POST /api/index`
 - `GET /api/sources`
 - `POST /api/search`
@@ -168,6 +188,36 @@ Alias de compatibilidad:
 - `GET /api/status`
 - `POST /ask`
 - `POST /api/ask`
+
+## Autenticacion y TUTORIA
+
+`programming-auth.js` usa el bridge para iniciar sesion, registrar usuarios y arrancar OAuth con Google o Apple sin cambiar la visualizacion del asistente.
+
+Variables principales:
+
+```text
+AUTH_FRONTEND_URL=http://127.0.0.1:5500/asistente-programacion.html
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_REDIRECT_URI=http://127.0.0.1:8787/api/auth/google/callback
+APPLE_CLIENT_ID=
+APPLE_CLIENT_SECRET=
+APPLE_REDIRECT_URI=http://127.0.0.1:8787/api/auth/apple/callback
+```
+
+Para enlazar usuarios con SQL Server / TUTORIA, activa la conexion solo en `.env` local:
+
+```text
+SQLSERVER_ENABLED=true
+SQLSERVER_HOST=localhost\SQLEXPRESS
+SQLSERVER_PORT=
+SQLSERVER_DATABASE=TUTORIA
+SQLSERVER_TRUSTED_CONNECTION=true
+SQLSERVER_ENCRYPT=true
+SQLSERVER_TRUST_SERVER_CERTIFICATE=true
+```
+
+El bridge intenta sincronizar el usuario autenticado con una tabla compatible de usuarios en TUTORIA si el esquema lo permite. Si SQL Server no esta disponible o el esquema no tiene columnas compatibles, la sesion sigue funcionando en modo local JSON y el chat no se bloquea. El RAG no participa en el flujo de autenticacion.
 
 ## Conectar con asistente-programacion.html
 
@@ -201,7 +251,55 @@ Flujo recomendado:
 2. Ejecuta `POST /api/index`.
 3. El frontend llama `POST /api/chat`.
 4. El backend busca contexto en ChromaDB.
-5. JAH AI responde con fuentes consultadas.
+5. El backend compacta el historial con `chat_summarization` para conservar preferencias y progreso.
+6. JAH AI responde con fuentes consultadas y metadatos de workflow.
+
+## Memoria contextual y workflow
+
+La API mantiene dos capas de memoria:
+
+- `app/storage/history.json`: turnos recientes por sesion/chat.
+- `app/storage/context_summaries.json`: resumen compacto persistente con preferencias, progreso, temas y fuentes recientes.
+
+El frontend envia `session_id`, `chat_id`, preferencias y un `client_context_summary` invisible para conservar continuidad sin cambiar la visualizacion de `asistente-programacion.html`.
+
+El workflow sigue este orden:
+
+1. `intent_classification`: detecta si el mensaje es saludo, social, continuidad, memoria, tecnico, documental o externo.
+2. `chat_summarization`: combina preferencias, resumen persistente y ultimos turnos solo cuando ayuda.
+3. `query_planning`: genera consultas enfocadas si la intencion justifica RAG.
+4. `rag_retrieval`: recupera fragmentos de `tutor_ia/conocimiento` en ChromaDB y descarta chunks bajo threshold.
+5. `web_search`: consulta fuentes externas solo ante intencion de conocimiento externo.
+6. `answer_synthesis`: genera la respuesta con Ollama o fallback local.
+
+Para saludos como `Hola` o respuestas sociales como `Gracias`, el bridge responde directo y no consulta RAG, Obsidian ni busqueda web.
+
+El RAG tiene tres modos:
+
+- `RAG_NONE`: saludos y respuestas sociales.
+- `RAG_OPTIONAL`: ayuda tecnica general, bases de datos generales, generacion de codigo, tareas creativas y planificacion de proyectos. Si no hay chunks fuertes, el asistente responde igualmente con conocimiento general.
+- `RAG_REQUIRED`: preguntas basadas explicitamente en documentos, memoria, Obsidian, tutor_ia o TUTORIA. Solo aqui se muestra una limitacion documental si no hay evidencia suficiente.
+
+Variables utiles:
+
+```text
+JAH_AI_CONTEXT_SUMMARY_MAX_CHARS=2800
+JAH_AI_RECENT_CONTEXT_TURNS=4
+JAH_AI_RAG_MAX_QUERIES=3
+RAG_SCORE_THRESHOLD=0.72
+RAG_TOP_K=5
+RAG_MIN_RELEVANT_CHUNKS=1
+RAG_MAX_CONTEXT_CHUNKS=5
+TUTOR_IA_SCORE_THRESHOLD=0.72
+OBSIDIAN_SCORE_THRESHOLD=0.78
+OFFICIAL_SOURCES_SCORE_THRESHOLD=0.80
+WEB_SEARCH_PROVIDER=tavily
+WEB_SEARCH_MAX_RESULTS=5
+TAVILY_API_KEY=
+SERPAPI_API_KEY=
+BRAVE_API_KEY=
+BING_SEARCH_API_KEY=
+```
 
 ## Embeddings locales
 
@@ -219,4 +317,5 @@ JAH_AI_EMBEDDING_MODEL=paraphrase-multilingual-MiniLM-L12-v2
 JAH_AI_CHUNK_SIZE=1200
 JAH_AI_CHUNK_OVERLAP=180
 JAH_AI_MIN_RELEVANCE_SCORE=0.18
+RAG_SCORE_THRESHOLD=0.72
 ```

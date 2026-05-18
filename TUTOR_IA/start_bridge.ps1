@@ -2,7 +2,7 @@ param(
   [string]$Python = "python",
   [string]$Port = "8787",
   [string]$BrainDb = "",
-  [string]$TutorRoot = "C:\Users\herna\Documents\tutor_ia",
+  [string]$TutorRoot = (Join-Path $env:USERPROFILE "Documents\tutor_ia"),
   [string]$ObsidianVault = ""
 )
 

@@ -1299,3 +1299,268 @@ body.masterclass-integrated.internal-lucas-page .cita-biblica {
     linear-gradient(135deg, rgba(var(--portfolio-accent-rgb), 0.18), rgba(245, 240, 232, 0.04)),
     var(--portfolio-surface-2) !important;
 }
+
+/* Device refinements for internal pages. */
+body.internal-lucas-page,
+body.internal-lucas-page main {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body.internal-lucas-page img,
+body.internal-lucas-page video,
+body.internal-lucas-page iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+body.internal-lucas-page .page-hero,
+body.internal-lucas-page .page-section,
+body.internal-lucas-page .section,
+body.internal-lucas-page #contact-page,
+body.internal-lucas-page .content-section {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+
+body.internal-lucas-page .page-hero-grid > *,
+body.internal-lucas-page .contact-grid > *,
+body.internal-lucas-page .split-layout > *,
+body.internal-lucas-page .seo-grid > *,
+body.internal-lucas-page .service-grid > *,
+body.internal-lucas-page .case-grid > *,
+body.internal-lucas-page .metric-grid > *,
+body.internal-lucas-page .steps-grid > *,
+body.internal-lucas-page .faq-grid > *,
+body.internal-lucas-page .cards-grid > *,
+body.internal-lucas-page .skills-grid > *,
+body.internal-lucas-page .grid-formacion > * {
+  min-width: 0;
+}
+
+@media (max-width: 1180px) {
+  body.internal-lucas-page .navbar {
+    gap: 16px;
+    padding-right: clamp(14px, 3vw, 34px) !important;
+    padding-left: clamp(14px, 3vw, 34px) !important;
+  }
+
+  body.internal-lucas-page .nav-links {
+    gap: 10px;
+  }
+
+  body.internal-lucas-page .nav-links a,
+  body.internal-lucas-page .nav-link {
+    min-height: 42px;
+    padding: 9px 10px;
+    border: 1px solid rgba(245, 240, 232, 0.12);
+    border-radius: var(--radius-links, 999px);
+    background: rgba(245, 240, 232, 0.045);
+    font-size: 0.9rem;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 980px) {
+  body.internal-lucas-page .navbar {
+    min-height: 86px;
+    flex-direction: row;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  body.internal-lucas-page .logo img {
+    width: clamp(108px, 17vw, 132px);
+  }
+
+  body.internal-lucas-page .nav-links {
+    width: 100%;
+    min-width: 0;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    padding: 8px 2px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  body.internal-lucas-page .nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  body.internal-lucas-page .nav-links a,
+  body.internal-lucas-page .nav-link {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  body.internal-lucas-page .page-hero,
+  body.internal-lucas-page #contact-page,
+  body.internal-lucas-page .content-section,
+  body.internal-lucas-page .section:first-of-type {
+    min-height: auto;
+    padding-top: 128px !important;
+    padding-bottom: 84px !important;
+  }
+
+  body.internal-lucas-page .page-hero-grid,
+  body.internal-lucas-page .contact-grid,
+  body.internal-lucas-page .split-layout {
+    gap: 32px;
+  }
+
+  body.internal-lucas-page h1,
+  body.internal-lucas-page .page-title,
+  body.internal-lucas-page #contact-page .section-title {
+    max-width: 760px;
+    font-size: clamp(2.45rem, 8vw, 4.2rem) !important;
+    line-height: 0.98;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+
+  body.internal-lucas-page .hero-panel {
+    max-width: 680px;
+  }
+}
+
+@media (max-width: 700px) {
+  body.internal-lucas-page .navbar {
+    min-height: 118px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding-top: 10px !important;
+    padding-bottom: 8px !important;
+  }
+
+  body.internal-lucas-page .logo {
+    align-self: center;
+  }
+
+  body.internal-lucas-page .logo img {
+    width: 108px;
+  }
+
+  body.internal-lucas-page .nav-links {
+    margin-right: -14px;
+    margin-left: -14px;
+    padding: 4px 14px 8px;
+  }
+
+  body.internal-lucas-page .page-hero,
+  body.internal-lucas-page #contact-page,
+  body.internal-lucas-page .content-section,
+  body.internal-lucas-page .section:first-of-type {
+    padding-top: 152px !important;
+    padding-bottom: 70px !important;
+  }
+
+  body.internal-lucas-page .container {
+    width: min(100% - 28px, 1180px);
+  }
+
+  body.internal-lucas-page .breadcrumbs {
+    gap: 8px;
+    font-size: 0.88rem;
+  }
+
+  body.internal-lucas-page .hero-kicker,
+  body.internal-lucas-page .section-kicker,
+  body.internal-lucas-page .hero-lede,
+  body.internal-lucas-page .page-hero p,
+  body.internal-lucas-page .section-description,
+  body.internal-lucas-page .section-lede {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+
+  body.internal-lucas-page .hero-actions,
+  body.internal-lucas-page .section-actions,
+  body.internal-lucas-page .card-actions,
+  body.internal-lucas-page .contact-direct-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  body.internal-lucas-page .hero-actions .btn,
+  body.internal-lucas-page .section-actions .btn,
+  body.internal-lucas-page .card-actions .btn,
+  body.internal-lucas-page .contact-direct-actions a {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+    text-align: center;
+    white-space: normal;
+  }
+
+  body.internal-lucas-page .seo-card,
+  body.internal-lucas-page .service-card,
+  body.internal-lucas-page .case-card,
+  body.internal-lucas-page .metric-card,
+  body.internal-lucas-page .step-card,
+  body.internal-lucas-page .faq-card,
+  body.internal-lucas-page .card,
+  body.internal-lucas-page .skill-card,
+  body.internal-lucas-page .cert-item,
+  body.internal-lucas-page .info-card,
+  body.internal-lucas-page .form-card,
+  body.internal-lucas-page .credential-card,
+  body.internal-lucas-page .formation-card,
+  body.internal-lucas-page .experience-item,
+  body.internal-lucas-page .indicator-card,
+  body.internal-lucas-page .cta-band {
+    padding: clamp(20px, 6vw, 28px) !important;
+    border-radius: 8px !important;
+  }
+
+  body.internal-lucas-page .stack-tags,
+  body.internal-lucas-page .intent-tags,
+  body.internal-lucas-page .profile-tags {
+    gap: 8px;
+  }
+
+  body.internal-lucas-page .stack-tags span,
+  body.internal-lucas-page .intent-tags span,
+  body.internal-lucas-page .seo-pill,
+  body.internal-lucas-page .badge-year,
+  body.internal-lucas-page .profile-tags span,
+  body.internal-lucas-page .formation-card span {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  body.internal-lucas-page .comparison-table {
+    overflow: hidden;
+  }
+
+  body.internal-lucas-page .comparison-row > div {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 430px) {
+  body.internal-lucas-page .container {
+    width: min(100% - 24px, 1180px);
+  }
+
+  body.internal-lucas-page .nav-links a,
+  body.internal-lucas-page .nav-link {
+    min-height: 40px;
+    padding: 8px 10px;
+    font-size: 0.82rem;
+  }
+
+  body.internal-lucas-page h1,
+  body.internal-lucas-page .page-title,
+  body.internal-lucas-page #contact-page .section-title {
+    font-size: clamp(1.75rem, 7.5vw, 2rem) !important;
+    line-height: 1.04;
+  }
+}

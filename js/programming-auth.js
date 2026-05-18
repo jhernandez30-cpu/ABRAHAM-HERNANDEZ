@@ -42,11 +42,16 @@
   document.addEventListener('DOMContentLoaded', initAuth);
 
   function initAuth() {
+    const authCallback = readAuthCallback();
     cacheElements();
     bindBaseEvents();
     applyPreferences(state.preferences, false);
     renderAuthState();
-    refreshSession();
+    if (authCallback.error) {
+      openAuthModal('login');
+      setAuthStatus(authErrorMessage(authCallback.error, authCallback.provider), 'error');
+    }
+    refreshSession(authCallback.code);
   }
 
   function cacheElements() {
@@ -173,8 +178,8 @@
       });
     });
 
-    document.getElementById('googleLoginBtn')?.addEventListener('click', handleGoogleLogin);
-    document.getElementById('appleLoginBtn')?.addEventListener('click', handleAppleLogin);
+    document.getElementById('googleLoginBtn')?.addEventListener('click', handleGoogleAuth);
+    document.getElementById('appleLoginBtn')?.addEventListener('click', handleAppleAuth);
     document.getElementById('phoneLoginBtn')?.addEventListener('click', handlePhoneLogin);
     document.getElementById('authEmailForm')?.addEventListener('submit', event => {
       event.preventDefault();
@@ -339,12 +344,27 @@
     }
   }
 
+  function handleGoogleAuth() {
+    startProviderAuth('google');
+  }
+
+  function handleAppleAuth() {
+    startProviderAuth('apple');
+  }
+
   function handleGoogleLogin() {
-    setAuthStatus('Inicio de sesi\u00f3n con Google pendiente de configurar en el backend.');
+    handleGoogleAuth();
   }
 
   function handleAppleLogin() {
-    setAuthStatus('Inicio de sesi\u00f3n con Apple pendiente de configurar.');
+    handleAppleAuth();
+  }
+
+  function startProviderAuth(provider) {
+    const providerLabel = provider === 'apple' ? 'Apple' : 'Google';
+    setAuthStatus(`Conectando con ${providerLabel}...`);
+    const returnTo = currentReturnUrl();
+    window.location.assign(`${BRIDGE_URL}/api/auth/${provider}/start?return_to=${encodeURIComponent(returnTo)}`);
   }
 
   function handlePhoneLogin() {
@@ -378,6 +398,8 @@
 
   window.handleGoogleLogin = handleGoogleLogin;
   window.handleAppleLogin = handleAppleLogin;
+  window.handleGoogleAuth = handleGoogleAuth;
+  window.handleAppleAuth = handleAppleAuth;
   window.handlePhoneLogin = handlePhoneLogin;
 
   function acceptSession(data) {
@@ -389,23 +411,49 @@
     writeJsonStorage(AUTH_PREFS_KEY, state.preferences);
     applyPreferences(state.preferences);
     renderAuthState();
+    window.dispatchEvent(new CustomEvent('jah-auth-session-changed', {
+      detail: {
+        context: getContext(),
+        memory: data.memory || {},
+        persistence: data.persistence || {},
+        sqlserver: data.sqlserver || {}
+      }
+    }));
+    if (state.user) {
+      window.dispatchEvent(new CustomEvent('jah-auth-login', {
+        detail: {
+          user: { ...state.user },
+          memory: data.memory || {},
+          persistence: data.persistence || {}
+        }
+      }));
+    }
   }
 
-  async function refreshSession() {
-    if (!state.token) return;
+  async function refreshSession(authCode = '') {
+    if (!state.token && !authCode) return;
     try {
-      const data = await authFetch('/api/auth/me', { method: 'GET' });
-      if (data.user) {
-        state.user = data.user;
-        state.preferences = normalizePreferences(data.preferences || state.preferences);
-        writeJsonStorage(AUTH_USER_KEY, state.user);
-        writeJsonStorage(AUTH_PREFS_KEY, state.preferences);
-        applyPreferences(state.preferences);
-        renderAuthState();
+      const path = authCode
+        ? `/api/auth/session?code=${encodeURIComponent(authCode)}`
+        : '/api/auth/session';
+      const data = await authFetch(path, { method: 'GET' });
+      if (data.authenticated && data.user) {
+        acceptSession(data);
+        if (authCode) {
+          openAuthModal('login');
+          setAuthStatus('Sesion iniciada correctamente.', 'success');
+          window.setTimeout(closeAuthModal, 500);
+        }
+      } else if (authCode) {
+        openAuthModal('login');
+        setAuthStatus('No se pudo recuperar la sesion del proveedor.', 'error');
       }
     } catch (error) {
       if (error.status === 401 || error.status === 403) {
         clearSession(false);
+      } else if (authCode) {
+        openAuthModal('login');
+        setAuthStatus(error.message || 'No se pudo completar la autenticacion.', 'error');
       }
     }
   }
@@ -758,6 +806,49 @@
       throw error;
     }
     return data;
+  }
+
+  function readAuthCallback() {
+    const result = { code: '', error: '', provider: '' };
+    try {
+      const url = new URL(window.location.href);
+      result.code = url.searchParams.get('auth_code') || '';
+      result.error = url.searchParams.get('auth_error') || '';
+      result.provider = url.searchParams.get('provider') || '';
+      const hasAuthParams = ['auth_status', 'auth_code', 'auth_error', 'provider'].some(param => url.searchParams.has(param));
+      if (hasAuthParams) {
+        ['auth_status', 'auth_code', 'auth_error', 'provider'].forEach(param => url.searchParams.delete(param));
+        window.history.replaceState({}, document.title, url.toString());
+      }
+    } catch (error) {
+      return result;
+    }
+    return result;
+  }
+
+  function currentReturnUrl() {
+    try {
+      const url = new URL(window.location.href);
+      ['auth_status', 'auth_code', 'auth_error', 'provider'].forEach(param => url.searchParams.delete(param));
+      return url.toString();
+    } catch (error) {
+      return window.location.href;
+    }
+  }
+
+  function authErrorMessage(errorCode, provider) {
+    const providerLabel = provider === 'apple' ? 'Apple' : provider === 'google' ? 'Google' : 'autenticacion';
+    const normalized = String(errorCode || '').toLowerCase();
+    if (normalized.includes('google_not_configured')) {
+      return 'Google OAuth no esta configurado en el backend. Revisa GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET y GOOGLE_REDIRECT_URI.';
+    }
+    if (normalized.includes('apple_not_configured')) {
+      return 'Apple OAuth no esta configurado en el backend. Revisa APPLE_CLIENT_ID, APPLE_CLIENT_SECRET y APPLE_REDIRECT_URI.';
+    }
+    if (normalized.includes('access_denied')) {
+      return `Inicio con ${providerLabel} cancelado.`;
+    }
+    return `No se pudo iniciar sesion con ${providerLabel}. ${errorCode || ''}`.trim();
   }
 
   function normalizePreferences(value) {

@@ -21,5 +21,6 @@ async def save_history(payload: HistorySaveRequest) -> HistoryResponse:
         user_message=payload.user_message,
         ai_response=payload.ai_response,
         sources=payload.sources,
+        metadata=payload.metadata,
     )
     return HistoryResponse(session_id=payload.session_id, history=history_service.get_history(payload.session_id))

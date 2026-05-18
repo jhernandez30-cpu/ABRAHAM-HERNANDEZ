@@ -17,6 +17,8 @@ const UPLOAD_ENDPOINT = `${BRIDGE_URL}/api/upload`;
 const JARVIS_MARK_STATUS_ENDPOINT = `${BRIDGE_URL}/api/jarvis/mark/status`;
 const JARVIS_MARK_LAUNCH_ENDPOINT = `${BRIDGE_URL}/api/jarvis/mark/launch`;
 const CHAT_TIMEOUT_MS = 120000;
+const CLIENT_CONTEXT_TURNS = 6;
+const CLIENT_CONTEXT_MAX_CHARS = 2400;
 const JARVIS_READ_RESPONSES = window.JARVIS_READ_RESPONSES === undefined
   ? true
   : window.JARVIS_READ_RESPONSES === true || window.JARVIS_READ_RESPONSES === 'true';
@@ -310,6 +312,8 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('tutorIA', String(tutorIAEnabled));
     formData.append('smartSearch', String(smartSearchEnabled));
     formData.append('session_id', chatId);
+    formData.append('chat_id', chatId);
+    formData.append('client_context_summary', buildClientContextSummary(getActiveChat()));
     formData.append('client', 'abraham-programming-assistant');
     formData.append('source', source);
     formData.append('input_source', source);
@@ -351,6 +355,23 @@ document.addEventListener('DOMContentLoaded', () => {
     return formData;
   }
 
+  function compactForContext(text, maxChars = 360) {
+    const clean = String(text || '').replace(/\s+/g, ' ').trim();
+    return clean.length > maxChars ? `${clean.slice(0, maxChars - 1).trim()}...` : clean;
+  }
+
+  function buildClientContextSummary(chat) {
+    if (!chat || !Array.isArray(chat.messages) || !chat.messages.length) return '';
+    const completedMessages = chat.messages
+      .filter(message => message && !message.loading && message.content)
+      .slice(-CLIENT_CONTEXT_TURNS * 2);
+    const lines = completedMessages.map(message => {
+      const role = message.role === 'user' ? 'Usuario' : 'JAH AI';
+      return `${role}: ${compactForContext(message.content, message.role === 'user' ? 260 : 420)}`;
+    });
+    return compactForContext(lines.join('\n'), CLIENT_CONTEXT_MAX_CHARS);
+  }
+
   async function verifyBackendHealth() {
     try {
       const response = await fetchWithTimeout(ragHealthUrl(), { method: 'GET' }, 4500);
@@ -377,12 +398,15 @@ document.addEventListener('DOMContentLoaded', () => {
   function buildChatPayload(question, chatId, source = 'typed_chat') {
     const authContext = getAuthContext();
     const preferences = authContext.preferences || {};
+    const chat = getActiveChat();
     return {
       message: question,
       question,
       mode: DEFAULT_MODE,
       use_rag: Boolean(tutorIAEnabled),
       use_web: Boolean(smartSearchEnabled),
+      smartSearch: Boolean(smartSearchEnabled),
+      smart_search: Boolean(smartSearchEnabled),
       deep_thinking: Boolean(tutorIAEnabled || deepThinkingEnabled),
       use_jarvis: source === 'jarvis_voice',
       session_id: currentSessionId || chatId,
@@ -403,6 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
       user_email: authContext.user ? authContext.user.email || '' : '',
       user_name: authContext.user ? authContext.user.name || '' : '',
       user_preferences: preferences,
+      client_context_summary: buildClientContextSummary(chat),
       response_style: preferences.response_style || '',
       assistant_preference: preferences.assistant_preference || '',
       visible_name: preferences.visible_name || '',

@@ -50,6 +50,20 @@ class EmbeddingService:
                 return
             requested = settings.embedding_backend.strip().lower()
             errors: list[str] = []
+            existing_backend = self._existing_collection_backend() if requested == "auto" else ""
+            if existing_backend == "sentence-transformers":
+                if self._try_sentence_transformers(errors):
+                    return
+            if existing_backend == "chroma-default":
+                if self._try_chroma_default(errors):
+                    return
+            if existing_backend == "hash-local":
+                self.backend = "hash-local"
+                self.model_name = "hashing-vectorizer"
+                self.dimension = settings.embed_dim
+                self._embedder = self._hash_embedding
+                LOGGER.info("Embedding backend ready from existing collection: %s", self.backend)
+                return
             if requested in {"auto", "sentence-transformers", "sentence_transformers"}:
                 if self._try_sentence_transformers(errors):
                     return
@@ -62,6 +76,32 @@ class EmbeddingService:
             self._embedder = self._hash_embedding
             if errors:
                 LOGGER.warning("Using hash embeddings after failures: %s", " | ".join(errors))
+
+    def _existing_collection_backend(self) -> str:
+        try:
+            import chromadb
+            from chromadb.config import Settings as ChromaSettings
+
+            client = chromadb.PersistentClient(
+                path=str(settings.rag_persist_dir),
+                settings=ChromaSettings(anonymized_telemetry=False),
+            )
+            candidates = {
+                f"{settings.rag_collection_name}_chroma_default": "chroma-default",
+                f"{settings.rag_collection_name}_sentence_transformers": "sentence-transformers",
+                f"{settings.rag_collection_name}_hash_local": "hash-local",
+            }
+            counts: dict[str, int] = {}
+            for collection in client.list_collections():
+                if collection.name in candidates:
+                    counts[candidates[collection.name]] = int(collection.count())
+            for backend in ("chroma-default", "sentence-transformers", "hash-local"):
+                if counts.get(backend, 0) > 0:
+                    LOGGER.info("Detected existing non-empty RAG collection for backend: %s", backend)
+                    return backend
+        except Exception as exc:
+            LOGGER.debug("Could not inspect existing RAG collections: %s", exc)
+        return ""
 
     def _try_sentence_transformers(self, errors: list[str]) -> bool:
         try:

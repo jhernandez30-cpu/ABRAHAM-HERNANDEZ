@@ -2535,3 +2535,246 @@ body.masterclass-integrated #achievement .achieve-item p {
     font-size: clamp(3.6rem, 18vw, 5rem);
   }
 }
+
+/* Device refinements for phones and tablets. */
+@media screen and (max-width: 1080px) {
+  #header .header-wrap {
+    min-height: clamp(72px, 9vw, 86px);
+    padding: 10px clamp(14px, 3vw, 28px);
+  }
+
+  .main-logo img {
+    width: clamp(104px, 18vw, 138px);
+  }
+
+  .top-menu .bar-icon {
+    top: max(16px, env(safe-area-inset-top));
+    right: max(16px, env(safe-area-inset-right));
+  }
+
+  .header-wrap .top-menu.menu-bar .menu-list {
+    width: 100vw;
+    height: 100dvh;
+    display: grid !important;
+    align-content: start;
+    gap: clamp(10px, 2vw, 16px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: clamp(88px, 11vw, 118px) max(20px, env(safe-area-inset-right)) 34px max(20px, env(safe-area-inset-left));
+  }
+
+  .header-wrap .top-menu.menu-bar .menu-list li {
+    margin: 0;
+  }
+
+  .header-wrap .top-menu.menu-bar .menu-list a {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+    padding: 8px 0;
+    font-size: clamp(1.45rem, 5.2vw, 2.35rem);
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1080px) {
+  #billboard {
+    min-height: 820px;
+  }
+
+  #billboard .banner-content {
+    width: min(680px, 64vw);
+    margin-top: clamp(132px, 18vh, 178px);
+    margin-left: clamp(22px, 6vw, 76px);
+  }
+
+  #billboard .banner-header {
+    width: 100%;
+    margin-bottom: 42px;
+  }
+
+  .banner-content h1 {
+    font-size: clamp(3rem, 7vw, 4.7rem);
+  }
+
+  .banner-content p {
+    max-width: 600px;
+  }
+
+  #billboard img.banner-image {
+    width: min(56vw, 630px);
+    object-position: right bottom;
+    opacity: 0.48;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  #billboard {
+    min-height: auto !important;
+    margin-bottom: 0;
+    padding: calc(96px + env(safe-area-inset-top)) 0 72px;
+    display: flex;
+    align-items: center;
+  }
+
+  #billboard::before {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.96) 0%, rgba(0, 0, 0, 0.84) 48%, rgba(0, 0, 0, 0.94) 100%) !important;
+  }
+
+  #billboard img.banner-image {
+    inset: 0 0 0 auto;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    object-fit: cover;
+    object-position: 68% bottom;
+    opacity: 0.18 !important;
+    transform: none !important;
+  }
+
+  #billboard .banner-content {
+    position: relative !important;
+    inset: auto !important;
+    width: min(calc(100% - 36px), 620px) !important;
+    max-width: none;
+    margin: 0 auto !important;
+    padding-top: 28px;
+  }
+
+  #billboard .banner-header {
+    width: 100% !important;
+    max-width: 100%;
+    margin-bottom: 28px !important;
+  }
+
+  .banner-content h1 {
+    font-size: clamp(2rem, 9.2vw, 2.9rem) !important;
+    line-height: 0.98;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+
+  .banner-content p {
+    width: 100%;
+    max-width: none;
+    padding-bottom: 20px;
+    font-size: clamp(1rem, 4vw, 1.12rem);
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+
+  #billboard .hero-kicker {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+
+  #billboard .btn-wrap,
+  .banner-header .btn-wrap {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  #billboard .btn-wrap a,
+  .banner-header .btn-wrap a {
+    width: 100%;
+    min-height: 48px;
+    padding: 14px 16px !important;
+    text-align: center;
+  }
+
+  #billboard .socila-links ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+  }
+
+  #billboard .socila-links li {
+    padding-right: 0;
+  }
+
+  #services,
+  #portfolio,
+  #technologies,
+  #site-map,
+  #achievement,
+  .home-copy-section {
+    padding: clamp(72px, 16vw, 92px) 0;
+  }
+
+  .home-copy-section .section-header p,
+  #services .section-header p,
+  .portfolio-lede,
+  #technologies .section-header p,
+  #contact p {
+    width: 100%;
+    max-width: 640px;
+  }
+
+  .site-link-card,
+  .tab-content .tab-element figure,
+  #services .column {
+    min-width: 0;
+  }
+
+  .tabs {
+    overflow-x: auto;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    padding: 8px;
+    scrollbar-width: none;
+  }
+
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabs .tab {
+    flex: 0 0 auto;
+    min-height: 42px;
+    white-space: nowrap;
+  }
+
+  #technologies .technology-item {
+    width: 100%;
+  }
+
+  .portfolio-scroll-indicator {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #header .header-wrap {
+    min-height: 72px;
+  }
+
+  .header-wrap .top-menu.menu-bar .menu-list {
+    padding-top: 86px;
+  }
+
+  .header-wrap .top-menu.menu-bar .menu-list a {
+    font-size: clamp(1.28rem, 9.5vw, 2rem);
+  }
+
+  #billboard {
+    padding-bottom: 58px;
+  }
+
+  #billboard .banner-content {
+    width: min(calc(100% - 28px), 620px) !important;
+  }
+
+  .banner-content h1 {
+    font-size: clamp(1.85rem, 8.2vw, 2.35rem) !important;
+    line-height: 1.02;
+  }
+}

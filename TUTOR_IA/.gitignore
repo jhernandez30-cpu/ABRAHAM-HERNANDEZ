@@ -3,6 +3,8 @@
 __pycache__/
 *.pyc
 *.log
+logs/
+ultron_runtime/
 brain_db/
 users.db
 vectores/
