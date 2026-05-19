@@ -2,7 +2,11 @@
   const AUTH_TOKEN_KEY = 'jahAiAuthToken';
   const AUTH_USER_KEY = 'jahAiCurrentUser';
   const AUTH_PREFS_KEY = 'jahAiUserPreferences';
-  const BRIDGE_URL = (window.TUTOR_IA_BRIDGE_URL || 'http://127.0.0.1:8787').replace(/\/$/, '');
+  const API_BASE_URL = String(
+    window.APP_CONFIG?.API_BASE_URL
+    || window.TUTOR_IA_BRIDGE_URL
+    || ''
+  ).replace(/\/$/, '');
 
   const DEFAULT_PREFERENCES = {
     theme: 'system',
@@ -27,6 +31,8 @@
   const els = {};
   let authFlow = 'register';
   let activeEmail = '';
+  let authChecked = false;
+  let authHydrating = false;
 
   window.JAHAuth = {
     getToken: () => state.token,
@@ -34,6 +40,10 @@
     getPreferences: () => ({ ...state.preferences }),
     getAuthHeaders,
     getContext,
+    isReady: () => authChecked,
+    isHydrating: () => authHydrating,
+    isAdmin: () => isAdminUser(state.user),
+    getApiBaseUrl: () => API_BASE_URL,
     savePreferences: savePreferencesPatch,
     openAuth: openAuthModal,
     logout
@@ -41,7 +51,8 @@
 
   document.addEventListener('DOMContentLoaded', initAuth);
 
-  function initAuth() {
+  async function initAuth() {
+    authHydrating = true;
     const authCallback = readAuthCallback();
     cacheElements();
     bindBaseEvents();
@@ -51,7 +62,18 @@
       openAuthModal('login');
       setAuthStatus(authErrorMessage(authCallback.error, authCallback.provider), 'error');
     }
-    refreshSession(authCallback.code);
+    try {
+      await refreshSession(authCallback.code);
+    } finally {
+      authHydrating = false;
+      authChecked = true;
+      window.dispatchEvent(new CustomEvent('jah-auth-ready', {
+        detail: {
+          context: getContext(),
+          callback: Boolean(authCallback.code || authCallback.error)
+        }
+      }));
+    }
   }
 
   function cacheElements() {
@@ -360,11 +382,13 @@
     handleAppleAuth();
   }
 
-  function startProviderAuth(provider) {
+  async function startProviderAuth(provider) {
     const providerLabel = provider === 'apple' ? 'Apple' : 'Google';
     setAuthStatus(`Conectando con ${providerLabel}...`);
+    const backendReady = await ensureAuthBackendAvailable();
+    if (!backendReady) return;
     const returnTo = currentReturnUrl();
-    window.location.assign(`${BRIDGE_URL}/api/auth/${provider}/start?return_to=${encodeURIComponent(returnTo)}`);
+    window.location.assign(`${API_BASE_URL}/api/auth/${provider}/start?return_to=${encodeURIComponent(returnTo)}`);
   }
 
   function handlePhoneLogin() {
@@ -403,6 +427,7 @@
   window.handlePhoneLogin = handlePhoneLogin;
 
   function acceptSession(data) {
+    const previousUserKey = state.user ? String(state.user.id || state.user.email || '') : '';
     state.token = data.token || data.access_token || '';
     state.user = data.user || null;
     state.preferences = normalizePreferences(data.preferences || state.preferences);
@@ -419,7 +444,8 @@
         sqlserver: data.sqlserver || {}
       }
     }));
-    if (state.user) {
+    const nextUserKey = state.user ? String(state.user.id || state.user.email || '') : '';
+    if (state.user && nextUserKey !== previousUserKey) {
       window.dispatchEvent(new CustomEvent('jah-auth-login', {
         detail: {
           user: { ...state.user },
@@ -460,12 +486,18 @@
 
   function renderAuthState() {
     const loggedIn = Boolean(state.token && state.user);
+    const showGuestAuth = !loggedIn && authChecked && !authHydrating;
+    const authState = loggedIn
+      ? 'logged-in'
+      : showGuestAuth
+        ? 'guest'
+        : 'checking';
     if (els.assistantAuthArea) {
-      els.assistantAuthArea.dataset.authState = loggedIn ? 'logged-in' : 'guest';
+      els.assistantAuthArea.dataset.authState = authState;
     }
-    if (els.guestAuthActions) els.guestAuthActions.hidden = loggedIn;
+    if (els.guestAuthActions) els.guestAuthActions.hidden = !showGuestAuth;
     if (els.userAccountArea) els.userAccountArea.hidden = !loggedIn;
-    if (els.loginSoftInvite) els.loginSoftInvite.hidden = loggedIn;
+    if (els.loginSoftInvite) els.loginSoftInvite.hidden = !showGuestAuth;
     if (!loggedIn) return;
 
     const label = displayName();
@@ -775,6 +807,7 @@
       token: state.token,
       user: state.user ? { ...state.user } : null,
       preferences: { ...state.preferences },
+      isAdmin: isAdminUser(state.user),
       loggedIn: Boolean(state.token && state.user)
     };
   }
@@ -784,15 +817,34 @@
   }
 
   async function authFetch(path, options = {}) {
+    if (!API_BASE_URL) {
+      const error = new Error('El backend de autenticacion no esta configurado. Define window.APP_CONFIG.API_BASE_URL para produccion o abre el asistente en modo local con el backend activo.');
+      error.status = 0;
+      error.code = 'AUTH_BACKEND_NOT_CONFIGURED';
+      throw error;
+    }
     const headers = {
       ...(options.body ? { 'Content-Type': 'application/json' } : {}),
       ...getAuthHeaders(),
       ...(options.headers || {})
     };
-    const response = await fetch(`${BRIDGE_URL}${path}`, {
-      ...options,
-      headers
-    });
+    const requestUrl = `${API_BASE_URL}${path}`;
+    let response;
+    try {
+      response = await fetchWithTimeout(requestUrl, {
+        ...options,
+        headers
+      }, options.timeoutMs || 9000);
+    } catch (error) {
+      const friendly = buildAuthNetworkError(error, requestUrl, path);
+      console.warn('[JAHAuth] No se pudo conectar con autenticacion.', {
+        path,
+        apiBaseUrl: API_BASE_URL,
+        errorName: error?.name || '',
+        errorMessage: error?.message || ''
+      });
+      throw friendly;
+    }
     let data = {};
     try {
       data = await response.json();
@@ -800,12 +852,95 @@
       data = {};
     }
     if (!response.ok || data.ok === false) {
-      const message = data.detail || data.error || data.message || `HTTP ${response.status}`;
+      const message = authHttpErrorMessage(response.status, path, data);
       const error = new Error(message);
       error.status = response.status;
+      error.code = data.code || data.error_code || '';
       throw error;
     }
     return data;
+  }
+
+  function buildAuthNetworkError(error, requestUrl, path) {
+    const friendly = new Error(authNetworkErrorMessage(error, requestUrl, path));
+    friendly.status = 0;
+    friendly.code = error?.name === 'AbortError'
+      ? 'AUTH_BACKEND_TIMEOUT'
+      : 'AUTH_BACKEND_UNREACHABLE';
+    friendly.cause = error;
+    return friendly;
+  }
+
+  function authNetworkErrorMessage(error, requestUrl, path) {
+    const target = path.includes('/register')
+      ? 'registro'
+      : path.includes('/login')
+        ? 'inicio de sesion'
+        : 'autenticacion';
+    if (error?.name === 'AbortError') {
+      return `El backend de ${target} no respondio a tiempo en ${API_BASE_URL}. Verifica que bridge_api este activo en el puerto 8787.`;
+    }
+    return `El backend de ${target} no esta disponible en ${API_BASE_URL}. Inicia bridge_api o revisa que API_BASE_URL apunte al servidor correcto.`;
+  }
+
+  function authHttpErrorMessage(status, path, data = {}) {
+    if (status === 404) {
+      if (path.includes('/register')) return 'La ruta de registro no esta configurada correctamente en el backend.';
+      if (path.includes('/login')) return 'La ruta de inicio de sesion no esta configurada correctamente en el backend.';
+      return 'La ruta de autenticacion no esta configurada correctamente en el backend.';
+    }
+    if (status === 405) {
+      return 'La ruta de autenticacion existe, pero el metodo HTTP no coincide con el backend.';
+    }
+    return backendErrorMessage(data) || `Error HTTP ${status} en autenticacion.`;
+  }
+
+  function backendErrorMessage(data = {}) {
+    const candidates = [data.detail, data.error, data.message];
+    for (const candidate of candidates) {
+      const message = normalizeBackendMessage(candidate);
+      if (message) return message;
+    }
+    return '';
+  }
+
+  function normalizeBackendMessage(value) {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    if (Array.isArray(value)) {
+      return value.map(normalizeBackendMessage).filter(Boolean).join(' ');
+    }
+    if (typeof value === 'object') {
+      if (value.msg) return String(value.msg);
+      if (value.message) return String(value.message);
+      if (value.detail) return normalizeBackendMessage(value.detail);
+      try {
+        return JSON.stringify(value);
+      } catch (error) {
+        return '';
+      }
+    }
+    return String(value);
+  }
+
+  async function ensureAuthBackendAvailable() {
+    try {
+      await authFetch('/api/health', { method: 'GET', timeoutMs: 4500 });
+      return true;
+    } catch (error) {
+      setAuthStatus(error.message || 'El servicio de autenticacion no esta disponible en este momento.', 'error');
+      return false;
+    }
+  }
+
+  async function fetchWithTimeout(url, options = {}, timeoutMs = 9000) {
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+      window.clearTimeout(timeout);
+    }
   }
 
   function readAuthCallback() {
@@ -877,6 +1012,11 @@
 
   function isValidEmail(value) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
+  }
+
+  function isAdminUser(user) {
+    if (!user) return false;
+    return user.is_admin === true || user.isAdmin === true;
   }
 
   function clearAuthErrors() {

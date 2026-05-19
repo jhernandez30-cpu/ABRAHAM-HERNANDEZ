@@ -1,21 +1,20 @@
-﻿const DEFAULT_ENDPOINTS = [
-  'http://127.0.0.1:8787/api/chat',
-  'http://127.0.0.1:8787/api/ask',
-  'http://127.0.0.1:8787/ask',
-  'http://localhost:8787/api/chat'
-];
-
 const STORAGE_KEY = 'tutorIaChatHistory';
 const ACTIVE_CHAT_KEY = 'tutorIaActiveChatId';
 const SESSION_KEY = 'jah_ai_session_id';
+const TUTOR_IA_ENABLED_KEY = 'tutorIaEnabled';
 const DEFAULT_MODE = 'Cerebro Unificado';
 const PROJECT_PATH = window.TUTOR_IA_PROJECT_PATH || '';
 const BRAIN_ROOT = window.TUTOR_IA_BRAIN_ROOT || '';
-const BRIDGE_URL = (window.TUTOR_IA_BRIDGE_URL || 'http://127.0.0.1:8787').replace(/\/$/, '');
-const CHAT_ENDPOINT = `${BRIDGE_URL}/api/chat`;
-const UPLOAD_ENDPOINT = `${BRIDGE_URL}/api/upload`;
-const JARVIS_MARK_STATUS_ENDPOINT = `${BRIDGE_URL}/api/jarvis/mark/status`;
-const JARVIS_MARK_LAUNCH_ENDPOINT = `${BRIDGE_URL}/api/jarvis/mark/launch`;
+const BRIDGE_URL = String(
+  window.APP_CONFIG?.API_BASE_URL
+  || window.TUTOR_IA_BRIDGE_URL
+  || ''
+).replace(/\/$/, '');
+const DEFAULT_ENDPOINTS = BRIDGE_URL ? [`${BRIDGE_URL}/api/chat`] : [];
+const CHAT_ENDPOINT = BRIDGE_URL ? `${BRIDGE_URL}/api/chat` : '';
+const UPLOAD_ENDPOINT = BRIDGE_URL ? `${BRIDGE_URL}/api/upload` : '';
+const JARVIS_MARK_STATUS_ENDPOINT = BRIDGE_URL ? `${BRIDGE_URL}/api/jarvis/mark/status` : '';
+const JARVIS_MARK_LAUNCH_ENDPOINT = BRIDGE_URL ? `${BRIDGE_URL}/api/jarvis/mark/launch` : '';
 const CHAT_TIMEOUT_MS = 120000;
 const CLIENT_CONTEXT_TURNS = 6;
 const CLIENT_CONTEXT_MAX_CHARS = 2400;
@@ -34,6 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const coachInput = document.getElementById('coachInput');
   const brainStatus = document.getElementById('brainStatus');
   const brainStatusText = document.getElementById('brainStatusText');
+  const adminOnlyElements = document.querySelectorAll('[data-admin-only]');
+  const quickContextCard = document.querySelector('.quick-context-card');
   const newChatBtn = document.getElementById('newChatBtn');
   const chatSearchInput = document.getElementById('chatSearchInput');
   const chatHistoryList = document.getElementById('chatHistoryList');
@@ -53,32 +54,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const endpointCandidates = normalizeEndpoints(window.TUTOR_IA_ENDPOINTS || DEFAULT_ENDPOINTS);
 
   let activeTutorEndpoint = '';
-  let tutorIAEnabled = true;
+  let adminSystemStatusVisible = false;
+  let tutorIAEnabled = readTutorIaPreference(true);
+  let tutorConnectionStatus = 'UNKNOWN';
+  let tutorConnectionLabel = 'Sin verificar';
   let smartSearchEnabled = false;
   let deepThinkingEnabled = false;
   let selectedFiles = [];
   let isSubmitting = false;
   let jarvisSupported = false;
   let jarvisAssistant = null;
-  let chats = loadChats();
-  let activeChatId = loadActiveChatId();
-  let currentSessionId = loadOrCreateSessionId();
+  let chats = [];
+  let activeChatId = '';
+  let currentSessionId = '';
+  let activeStorageScope = '';
+  let authChecked = false;
+  let appInitialized = false;
+  let historyLoaded = false;
+  let isHydrating = true;
 
   window.tutorIAEnabled = tutorIAEnabled;
   window.smartSearchEnabled = smartSearchEnabled;
   window.deepThinkingEnabled = deepThinkingEnabled;
-
-  if (!chats.length) {
-    const initialChat = createChat();
-    chats = [initialChat];
-    activeChatId = initialChat.id;
-    persist();
-  }
-
-  if (!chats.some(chat => chat.id === activeChatId)) {
-    activeChatId = chats[0].id;
-    persistActiveChat();
-  }
 
   function normalizeEndpoints(endpoints) {
     return [...new Set(endpoints.filter(Boolean).map(endpoint => endpoint.replace(/\/$/, '')))];
@@ -107,6 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function ragHealthUrl() {
     return `${BRIDGE_URL}/api/health`;
+  }
+
+  function adminStatusUrl() {
+    return `${BRIDGE_URL}/api/admin/system-status`;
   }
 
   function endpointHostKey(endpoint) {
@@ -167,9 +168,84 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  function flowLog(event, detail = {}) {
+    if (!window.APP_CONFIG?.DEBUG_APP_FLOW) return;
+    console.debug('[JAH AI flow]', event, {
+      authChecked,
+      appInitialized,
+      historyLoaded,
+      isHydrating,
+      activeStorageScope,
+      ...detail
+    });
+  }
+
+  function getAuthStorageScope() {
+    const context = getAuthContext();
+    const user = context.user || {};
+    const rawKey = user.id || user.email || '';
+    if (!context.loggedIn || !rawKey) return 'guest';
+    return `user:${String(rawKey).trim().toLowerCase()}`;
+  }
+
+  function scopedStorageKey(base, scope = activeStorageScope) {
+    return scope && scope !== 'guest'
+      ? `${base}:${scope}`
+      : base;
+  }
+
+  function readStorageValue(key, fallback = '') {
+    try {
+      return localStorage.getItem(key) || fallback;
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function writeStorageValue(key, value) {
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function readTutorIaPreference(fallback = true) {
+    try {
+      const stored = localStorage.getItem(TUTOR_IA_ENABLED_KEY);
+      if (stored === 'true') return true;
+      if (stored === 'false') return false;
+    } catch (error) {
+      return fallback;
+    }
+    return fallback;
+  }
+
+  function hasTutorIaPreference() {
+    try {
+      const stored = localStorage.getItem(TUTOR_IA_ENABLED_KEY);
+      return stored === 'true' || stored === 'false';
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function persistTutorIaPreference(enabled) {
+    return writeStorageValue(TUTOR_IA_ENABLED_KEY, String(Boolean(enabled)));
+  }
+
   function loadChats() {
     try {
-      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      const scopedKey = scopedStorageKey(STORAGE_KEY);
+      let raw = readStorageValue(scopedKey);
+      if (!raw) {
+        raw = readStorageValue(STORAGE_KEY) || '[]';
+        if (activeStorageScope && activeStorageScope !== 'guest' && raw !== '[]') {
+          writeStorageValue(scopedKey, raw);
+        }
+      }
+      const parsed = JSON.parse(raw);
       return Array.isArray(parsed) ? parsed.filter(chat => chat && chat.id) : [];
     } catch (error) {
       return [];
@@ -178,7 +254,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function loadActiveChatId() {
     try {
-      return localStorage.getItem(ACTIVE_CHAT_KEY) || '';
+      const scopedKey = scopedStorageKey(ACTIVE_CHAT_KEY);
+      let value = readStorageValue(scopedKey);
+      if (!value) {
+        value = readStorageValue(ACTIVE_CHAT_KEY) || '';
+        if (activeStorageScope && activeStorageScope !== 'guest' && value) {
+          writeStorageValue(scopedKey, value);
+        }
+      }
+      return value;
     } catch (error) {
       return '';
     }
@@ -186,12 +270,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function loadOrCreateSessionId() {
     try {
-      const existing = localStorage.getItem(SESSION_KEY);
+      const sessionKey = scopedStorageKey(SESSION_KEY);
+      const scopedExisting = readStorageValue(sessionKey);
+      const existing = scopedExisting || readStorageValue(SESSION_KEY);
+      if (!scopedExisting && existing && activeStorageScope && activeStorageScope !== 'guest') {
+        writeStorageValue(sessionKey, existing);
+      }
       if (existing) return existing;
       const nextId = window.crypto && typeof window.crypto.randomUUID === 'function'
         ? window.crypto.randomUUID()
         : createId();
-      localStorage.setItem(SESSION_KEY, nextId);
+      writeStorageValue(sessionKey, nextId);
       return nextId;
     } catch (error) {
       return createId();
@@ -201,12 +290,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function persist() {
     try {
       if (!shouldPersistChatHistory()) {
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.setItem(ACTIVE_CHAT_KEY, activeChatId);
+        localStorage.removeItem(scopedStorageKey(STORAGE_KEY));
+        writeStorageValue(scopedStorageKey(ACTIVE_CHAT_KEY), activeChatId);
         return;
       }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(chats));
-      localStorage.setItem(ACTIVE_CHAT_KEY, activeChatId);
+      writeStorageValue(scopedStorageKey(STORAGE_KEY), JSON.stringify(chats));
+      writeStorageValue(scopedStorageKey(ACTIVE_CHAT_KEY), activeChatId);
     } catch (error) {
       setBrainStatus('error', 'No se pudo guardar historial');
     }
@@ -214,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function persistActiveChat() {
     try {
-      localStorage.setItem(ACTIVE_CHAT_KEY, activeChatId);
+      writeStorageValue(scopedStorageKey(ACTIVE_CHAT_KEY), activeChatId);
     } catch (error) {
       return false;
     }
@@ -238,6 +327,64 @@ document.addEventListener('DOMContentLoaded', () => {
     return preferences.chat_history_enabled !== false;
   }
 
+  function initializeChatState(reason = 'initial') {
+    const nextScope = getAuthStorageScope();
+    if (historyLoaded && nextScope === activeStorageScope) {
+      flowLog('history-skip', { reason, nextScope });
+      return;
+    }
+
+    activeStorageScope = nextScope;
+    chats = loadChats();
+    activeChatId = loadActiveChatId();
+    currentSessionId = loadOrCreateSessionId();
+
+    if (!chats.length) {
+      const initialChat = createChat();
+      chats = [initialChat];
+      activeChatId = initialChat.id;
+      persist();
+    }
+
+    if (!chats.some(chat => chat.id === activeChatId)) {
+      activeChatId = chats[0].id;
+      persistActiveChat();
+    }
+
+    sortChats();
+    historyLoaded = true;
+    flowLog('history-loaded', {
+      reason,
+      chatCount: chats.length,
+      activeChatId
+    });
+  }
+
+  function completeAppHydration(reason = 'auth-ready') {
+    authChecked = true;
+    initializeChatState(reason);
+    appInitialized = true;
+    isHydrating = false;
+    renderChat();
+    refreshAdminTechnicalState();
+    flowLog('app-ready', { reason });
+  }
+
+  function waitForAuthBeforeRender() {
+    const authApi = window.JAHAuth;
+    if (!authApi || typeof authApi.isReady !== 'function') {
+      completeAppHydration('auth-api-unavailable');
+      return;
+    }
+    if (authApi.isReady()) {
+      completeAppHydration('auth-already-ready');
+      return;
+    }
+    window.addEventListener('jah-auth-ready', () => {
+      completeAppHydration('auth-ready-event');
+    }, { once: true });
+  }
+
   function syncAssistantPreferences(patch) {
     if (!window.JAHAuth || typeof window.JAHAuth.savePreferences !== 'function') return;
     window.JAHAuth.savePreferences(patch).catch(() => {
@@ -255,6 +402,80 @@ document.addEventListener('DOMContentLoaded', () => {
     brainStatusText.textContent = text;
   }
 
+  function tutorConnectionStateLabel(status = tutorConnectionStatus) {
+    const normalized = String(status || 'UNKNOWN').toUpperCase();
+    if (normalized === 'CONNECTED') return 'Conectado';
+    if (normalized === 'RECOVERING') return 'Recuperando conexion';
+    if (normalized === 'BACKEND_UNAVAILABLE') return 'Sin conexion';
+    if (normalized === 'DISCONNECTED') return 'Sin conexion';
+    if (normalized === 'DEGRADED') return 'Degradado';
+    return 'Sin verificar';
+  }
+
+  function tutorConnectionUiState(status = tutorConnectionStatus) {
+    const normalized = String(status || 'UNKNOWN').toUpperCase();
+    if (!tutorIAEnabled) return 'offline';
+    if (normalized === 'CONNECTED') return 'ready';
+    if (normalized === 'RECOVERING' || normalized === 'UNKNOWN') return 'checking';
+    return 'offline';
+  }
+
+  function updateTutorButtonState() {
+    if (!tutorIABtn) return;
+    tutorIABtn.classList.toggle('is-active', tutorIAEnabled);
+    tutorIABtn.setAttribute('aria-pressed', String(tutorIAEnabled));
+    tutorIABtn.dataset.preference = tutorIAEnabled ? 'enabled' : 'disabled';
+    tutorIABtn.dataset.connection = tutorConnectionStatus;
+    tutorIABtn.title = tutorIAEnabled
+      ? `Cerebro tutor_ia: Activado · ${tutorConnectionLabel}`
+      : 'Cerebro tutor_ia: Desactivado';
+  }
+
+  function renderTutorTechnicalStatus() {
+    updateTutorButtonState();
+    if (!adminSystemStatusVisible) return;
+    if (!tutorIAEnabled) {
+      setBrainStatus('offline', 'Cerebro tutor_ia: Desactivado');
+      return;
+    }
+    setBrainStatus(
+      tutorConnectionUiState(),
+      `Cerebro tutor_ia: Activado · ${tutorConnectionLabel}`
+    );
+  }
+
+  function setTutorConnectionStatus(status, label = '') {
+    tutorConnectionStatus = String(status || 'UNKNOWN').toUpperCase();
+    tutorConnectionLabel = label || tutorConnectionStateLabel(tutorConnectionStatus);
+    renderTutorTechnicalStatus();
+  }
+
+  function isAdminUser() {
+    const authContext = getAuthContext();
+    return Boolean(
+      authContext.isAdmin
+      || authContext.user?.is_admin === true
+      || authContext.user?.isAdmin === true
+    );
+  }
+
+  function setAdminTechnicalVisibility(visible) {
+    adminSystemStatusVisible = Boolean(visible);
+    adminOnlyElements.forEach(element => {
+      element.hidden = !adminSystemStatusVisible;
+      if (element === quickContextCard) {
+        element.setAttribute('aria-hidden', String(!adminSystemStatusVisible));
+      }
+    });
+    renderTutorTechnicalStatus();
+  }
+
+  function refreshAdminTechnicalState() {
+    const visible = isAdminUser();
+    setAdminTechnicalVisibility(visible);
+    if (visible && tutorIAEnabled) detectTutorBrain();
+  }
+
   async function fetchWithTimeout(url, options = {}, timeoutMs = 12000) {
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
@@ -266,40 +487,54 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function detectTutorBrain() {
+    if (!adminSystemStatusVisible) return;
+    if (!tutorIAEnabled) {
+      setTutorConnectionStatus('UNKNOWN', 'Desactivado');
+      return;
+    }
+    if (!BRIDGE_URL) {
+      setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Sin conexion');
+      return;
+    }
     if (!endpointCandidates.length) {
-      setBrainStatus('offline', 'TUTOR_IA sin endpoint');
+      setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Sin endpoint');
       return;
     }
 
-    setBrainStatus('checking', 'Conectando con TUTOR_IA');
+    setTutorConnectionStatus('RECOVERING', 'Recuperando conexion');
 
-    for (const endpoint of endpointCandidates) {
-      for (const healthUrl of endpointHealthUrls(endpoint)) {
-        try {
-          const response = await fetchWithTimeout(healthUrl, { method: 'GET' }, 3500);
-          if (!response.ok) continue;
-          const data = await response.json();
-          const health = normalizeHealthPayload(data);
-          if (!health.ok) continue;
-          activeTutorEndpoint = endpoint;
+    try {
+      const authHeaders = window.JAHAuth && typeof window.JAHAuth.getAuthHeaders === 'function'
+        ? window.JAHAuth.getAuthHeaders()
+        : {};
+      const response = await fetchWithTimeout(adminStatusUrl(), {
+        method: 'GET',
+        headers: authHeaders
+      }, 5000);
 
-          const contextParts = [`${health.fragments} fragmentos`];
-          if (health.tutorConnected) contextParts.unshift('tutor_ia OK');
-          if (health.obsidianNotes) contextParts.push(`${health.obsidianNotes} notas Obsidian`);
-          if (health.agencyAgents) contextParts.push(`${health.agencyAgents} agentes`);
-          if (health.jarvisProfiles) contextParts.push(`${health.jarvisProfiles} perfiles Jarvis`);
-          if (health.anthropicConfigured) contextParts.push('Claude listo');
-          const modelText = health.model ? ` - ${health.model}` : '';
-
-          setBrainStatus('ready', `TUTOR_IA conectado - ${contextParts.join(' + ')}${modelText}`);
-          return;
-        } catch (error) {
-          continue;
-        }
+      if (response.status === 401 || response.status === 403) {
+        setAdminTechnicalVisibility(false);
+        return;
       }
-    }
+      if (!response.ok) {
+        setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Sin conexion');
+        return;
+      }
 
-    setBrainStatus('offline', 'TUTOR_IA sin conexion local');
+      const data = await response.json();
+      activeTutorEndpoint = endpointCandidates[0] || CHAT_ENDPOINT;
+      const tutorStatus = String(data.tutor_ia_status || data.tutor_status || 'DISCONNECTED').toUpperCase();
+      const label = tutorStatus === 'CONNECTED'
+        ? 'Conectado'
+        : tutorStatus === 'RECOVERING'
+          ? 'Recuperando conexion'
+          : tutorStatus === 'DEGRADED'
+            ? 'Degradado'
+            : 'Sin conexion';
+      setTutorConnectionStatus(tutorStatus, label);
+    } catch (error) {
+      setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Sin conexion');
+    }
   }
 
   function buildChatFormData(question, chatId, source = 'typed_chat') {
@@ -373,6 +608,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function verifyBackendHealth() {
+    if (!BRIDGE_URL) return false;
     try {
       const response = await fetchWithTimeout(ragHealthUrl(), { method: 'GET' }, 4500);
       if (!response.ok) return false;
@@ -384,7 +620,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function backendConnectionError() {
-    const error = new Error('No se pudo conectar con el cerebro tutor_ia. Verificá que el backend esté activo en http://127.0.0.1:8787.');
+    const target = BRIDGE_URL || 'API_BASE_URL';
+    const error = new Error(`No se pudo conectar con el backend de JAH AI. Verifica que el servicio este activo o que ${target} este configurado correctamente.`);
     error.code = 'BACKEND_CONNECTION';
     return error;
   }
@@ -444,10 +681,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function askBackendChat(question, chatId, source = 'typed_chat') {
-    setBrainStatus('checking', chatLoadingText());
+    if (adminSystemStatusVisible) setBrainStatus('checking', chatLoadingText());
     const healthy = await verifyBackendHealth();
     if (!healthy) {
-      setBrainStatus('error', 'Backend tutor_ia no disponible');
+      if (adminSystemStatusVisible) setBrainStatus('error', 'Backend tutor_ia no disponible');
       throw backendConnectionError();
     }
 
@@ -478,7 +715,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const sourcesCount = Array.isArray(data.sources) ? data.sources.length : 0;
-    setBrainStatus('ready', sourcesCount ? `Respuesta recibida - ${sourcesCount} fuentes` : 'Respuesta recibida');
+    if (adminSystemStatusVisible) {
+      setBrainStatus('ready', sourcesCount ? `Respuesta recibida - ${sourcesCount} fuentes` : 'Respuesta recibida');
+    }
     return {
       ...data,
       show_sources: sourcesCount > 0,
@@ -665,6 +904,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderChat() {
+    if (isHydrating || !historyLoaded) {
+      flowLog('render-deferred');
+      return;
+    }
     const chat = getActiveChat();
     if (!chat) return;
 
@@ -846,8 +1089,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function setTutorIA(enabled, options = {}) {
     tutorIAEnabled = Boolean(enabled);
     window.tutorIAEnabled = tutorIAEnabled;
-    tutorIABtn.classList.toggle('is-active', tutorIAEnabled);
-    tutorIABtn.setAttribute('aria-pressed', String(tutorIAEnabled));
+    if (options.persist !== false) {
+      persistTutorIaPreference(tutorIAEnabled);
+    }
+    updateTutorButtonState();
+    if (!tutorIAEnabled) {
+      renderTutorTechnicalStatus();
+    } else if (options.checkConnection !== false && adminSystemStatusVisible) {
+      detectTutorBrain();
+    } else {
+      renderTutorTechnicalStatus();
+    }
     if (options.sync !== false) {
       syncAssistantPreferences({
         use_rag: tutorIAEnabled,
@@ -914,8 +1166,16 @@ document.addEventListener('DOMContentLoaded', () => {
   async function uploadSelectedFiles(files) {
     const uploadFiles = Array.from(files || []).filter(isAllowedFile);
     if (!uploadFiles.length) return;
+    if (!UPLOAD_ENDPOINT) {
+      addMessageToChat(activeChatId, {
+        role: 'assistant',
+        content: 'El backend de archivos no esta configurado. Define API_BASE_URL o ejecuta el backend local antes de subir archivos.'
+      });
+      renderChat();
+      return;
+    }
 
-    setBrainStatus('checking', 'Subiendo archivo al cerebro tutor_ia...');
+    if (adminSystemStatusVisible) setBrainStatus('checking', 'Subiendo archivo al cerebro tutor_ia...');
     let uploaded = 0;
     let failed = 0;
 
@@ -950,12 +1210,12 @@ document.addEventListener('DOMContentLoaded', () => {
         ? 'Archivo cargado correctamente al cerebro tutor_ia.'
         : `${uploaded} archivos cargados correctamente al cerebro tutor_ia.`;
       addMessageToChat(chatId, { role: 'assistant', content: message });
-      setBrainStatus('ready', message);
+      if (adminSystemStatusVisible) setBrainStatus('ready', message);
     }
     if (failed) {
       const message = 'No se pudo subir el archivo. Verificá que el backend esté activo.';
       addMessageToChat(chatId, { role: 'assistant', content: message });
-      setBrainStatus('error', 'Error al subir archivo');
+      if (adminSystemStatusVisible) setBrainStatus('error', 'Error al subir archivo');
     }
     renderChat();
   }
@@ -1085,6 +1345,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function refreshMarkVoiceStatus(showWhenReady = false) {
     if (!jarvisAssistant) return null;
+    if (!JARVIS_MARK_STATUS_ENDPOINT) return null;
     try {
       const response = await fetchWithTimeout(JARVIS_MARK_STATUS_ENDPOINT, { method: 'GET' }, 5000);
       if (!response.ok) return null;
@@ -1105,6 +1366,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function launchMarkVoice() {
     if (!jarvisAssistant) return false;
+    if (!JARVIS_MARK_LAUNCH_ENDPOINT) return false;
     jarvisAssistant.showStatus('Preparando Mark XXXIX...', 'info', 0);
     try {
       const response = await fetchWithTimeout(JARVIS_MARK_LAUNCH_ENDPOINT, { method: 'POST' }, 10000);
@@ -1262,7 +1524,14 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('jah-auth-preferences-changed', event => {
     const preferences = event.detail || {};
     if (Object.prototype.hasOwnProperty.call(preferences, 'use_rag')) {
-      setTutorIA(Boolean(preferences.use_rag), { sync: false });
+      const preferredTutorState = hasTutorIaPreference()
+        ? readTutorIaPreference(Boolean(preferences.use_rag))
+        : Boolean(preferences.use_rag);
+      setTutorIA(preferredTutorState, {
+        sync: false,
+        persist: !hasTutorIaPreference(),
+        checkConnection: false
+      });
     }
     if (Object.prototype.hasOwnProperty.call(preferences, 'use_web')) {
       setSmartSearch(Boolean(preferences.use_web), { sync: false });
@@ -1273,21 +1542,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  window.addEventListener('jah-auth-session-changed', () => {
+    initializeChatState('auth-session-changed');
+    if (appInitialized) renderChat();
+    refreshAdminTechnicalState();
+  });
+
+  window.addEventListener('jah-auth-login', () => {
+    refreshAdminTechnicalState();
+  });
+
   window.addEventListener('jah-auth-logout', () => {
+    setAdminTechnicalVisibility(false);
     deepThinkingEnabled = false;
     window.deepThinkingEnabled = false;
-    if (getActiveChat() && getActiveChat().messages.length) {
-      startNewChat();
-    }
+    historyLoaded = false;
+    initializeChatState('auth-logout');
+    if (appInitialized) renderChat();
     coachInput.focus();
   });
 
-  sortChats();
-  setTutorIA(true, { sync: false });
+  setTutorIA(readTutorIaPreference(true), { sync: false, persist: false, checkConnection: false });
   setSmartSearch(false, { sync: false });
   initJarvisIntegration();
   renderAttachments();
-  renderChat();
   autosizeInput();
-  detectTutorBrain();
+  waitForAuthBeforeRender();
 });

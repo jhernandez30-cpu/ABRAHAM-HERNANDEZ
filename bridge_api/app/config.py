@@ -26,6 +26,10 @@ def _csv_env(name: str, default: str) -> list[str]:
     return [item.strip().rstrip("/") for item in os.getenv(name, default).split(",") if item.strip()]
 
 
+def _email_csv_env(name: str, default: str = "") -> list[str]:
+    return [item.strip().lower() for item in os.getenv(name, default).split(",") if item.strip()]
+
+
 @dataclass(frozen=True)
 class Settings:
     host: str = os.getenv("JAH_AI_HOST", "127.0.0.1")
@@ -103,6 +107,15 @@ class Settings:
         "http://127.0.0.1:5500/asistente-programacion.html",
     )
     auth_session_ttl_hours: int = int(os.getenv("AUTH_SESSION_TTL_HOURS", "168"))
+    owner_email: str = os.getenv("OWNER_EMAIL", "").strip().lower()
+    admin_emails: list[str] = field(
+        default_factory=lambda: sorted(
+            {
+                *_email_csv_env("ADMIN_EMAILS", ""),
+                *([os.getenv("OWNER_EMAIL", "").strip().lower()] if os.getenv("OWNER_EMAIL", "").strip() else []),
+            }
+        )
+    )
     auth_allow_file_return: bool = os.getenv("AUTH_ALLOW_FILE_RETURN", "true").strip().lower() in {
         "1",
         "true",
@@ -165,7 +178,7 @@ class Settings:
     allowed_origins: list[str] = field(
         default_factory=lambda: _csv_env(
             "JAH_AI_ALLOWED_ORIGINS",
-            "http://localhost,http://127.0.0.1,http://localhost:5500,http://127.0.0.1:5500,https://jhernandez30-cpu.github.io",
+            "null,http://localhost,http://127.0.0.1,http://localhost:5500,http://127.0.0.1:5500,https://jhernandez30-cpu.github.io",
         )
     )
     allowed_origin_regex: str | None = os.getenv(

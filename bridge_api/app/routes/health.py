@@ -2,25 +2,74 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Request
 
 from app.config import settings
+from app.services.auth_service import AuthServiceError, auth_service
 from app.services.brain_service import brain_service
 
 
 router = APIRouter(tags=["health"])
 
 
-def health_payload() -> dict:
-    brain = brain_service.health()
+def _bearer_token(request: Request) -> str:
+    header = request.headers.get("authorization", "")
+    prefix = "bearer "
+    if header.lower().startswith(prefix):
+        return header[len(prefix) :].strip()
+    return ""
+
+
+def _require_admin(request: Request) -> dict:
+    try:
+        session = auth_service.session_from_token(_bearer_token(request))
+    except AuthServiceError as exc:
+        raise HTTPException(status_code=401, detail="Sesion no autenticada.") from exc
+    if not session.get("authenticated"):
+        raise HTTPException(status_code=401, detail="Sesion no autenticada.")
+    user = session.get("user") or {}
+    if not user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Estado tecnico disponible solo para administrador.")
+    return session
+
+
+def _tutor_status_from_brain(brain: dict) -> tuple[bool, str]:
     brain_fragments = int(brain.get("fragments", 0) or 0)
     tutor_connected = bool(brain.get("root_exists")) and bool(brain.get("chroma_connected")) and brain_fragments > 0
     tutor_status = "CONNECTED" if tutor_connected else "DEGRADED" if brain.get("root_exists") else "DISCONNECTED"
+    return tutor_connected, tutor_status
+
+
+def health_payload() -> dict:
     last_healthcheck = datetime.now(timezone.utc).isoformat()
     return {
         "ok": True,
         "success": True,
-        "status": tutor_status,
+        "status": "ok",
+        "bridge_status": "ok",
+        "message": "JAH AI Bridge API funcionando correctamente",
+        "mode": "local-fastapi-bridge",
+        "timestamp": last_healthcheck,
+        "last_healthcheck": last_healthcheck,
+    }
+
+
+def admin_system_status_payload() -> dict:
+    brain = brain_service.health()
+    brain_fragments = int(brain.get("fragments", 0) or 0)
+    tutor_connected, tutor_status = _tutor_status_from_brain(brain)
+    last_healthcheck = datetime.now(timezone.utc).isoformat()
+    sqlserver_health = auth_service.sqlserver.health()
+    sqlserver_status = str(sqlserver_health.get("status") or "DISABLED")
+    return {
+        "ok": True,
+        "success": True,
+        "status": "SYSTEM_READY" if tutor_connected else "DEGRADED",
+        "system_status": "SYSTEM_READY" if tutor_connected else "TUTOR_IA_DISCONNECTED",
+        "tutor_ia_status": tutor_status,
+        "sqlserver_status": sqlserver_status,
+        "memory_status": "LOADED",
+        "rag_status": "READY" if brain_fragments > 0 else "RAG_DEGRADED",
         "bridge_status": "ok",
         "message": "JAH AI Bridge API funcionando correctamente",
         "mode": "local-fastapi-bridge",
@@ -28,7 +77,10 @@ def health_payload() -> dict:
         "fragments": brain_fragments,
         "tutor_connected": tutor_connected,
         "tutor_ia_connected": tutor_connected,
+        "database": sqlserver_status,
+        "sqlserver": sqlserver_health,
         "memory_persistence": True,
+        "timestamp": last_healthcheck,
         "last_healthcheck": last_healthcheck,
         "root_dir": str(settings.tutor_ia_root),
         "brain": {
@@ -108,3 +160,9 @@ async def api_status() -> dict:
 @router.get("/status")
 async def root_status() -> dict:
     return health_payload()
+
+
+@router.get("/api/admin/system-status")
+async def admin_system_status(request: Request) -> dict:
+    _require_admin(request)
+    return admin_system_status_payload()
