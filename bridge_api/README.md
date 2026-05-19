@@ -193,10 +193,45 @@ Alias de compatibilidad:
 
 `programming-auth.js` usa el bridge para iniciar sesion, registrar usuarios y arrancar OAuth con Google o Apple sin cambiar la visualizacion del asistente.
 
+El frontend usa una configuracion centralizada en `js/app-config.js`, cargada antes de `programming-auth.js` y `programming-assistant.js`:
+
+```js
+window.APP_CONFIG = {
+  API_BASE_URL: "http://127.0.0.1:8787" // desarrollo local
+};
+```
+
+En GitHub Pages o produccion no uses `127.0.0.1` para usuarios reales. Debes desplegar el backend en una URL publica y cambiar `API_BASE_URL`, por ejemplo:
+
+```js
+window.APP_CONFIG = {
+  API_BASE_URL: "https://api.tu-dominio.com"
+};
+```
+
+Si `API_BASE_URL` no esta configurado en produccion, los botones de login muestran un error controlado y no redirigen a una pagina `ERR_CONNECTION_REFUSED`.
+
+Para desarrollo local, levanta el backend antes de registrar o iniciar sesion:
+
+```powershell
+cd C:\Users\herna\Documents\ABRAHAM-HERNANDEZ-main\bridge_api
+.\venv\Scripts\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8787
+```
+
+Verifica que responda:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8787/api/health
+```
+
+Si abres `asistente-programacion.html` directamente como archivo local, el backend permite el origen `null` mediante CORS para desarrollo.
+
 Variables principales:
 
 ```text
 AUTH_FRONTEND_URL=http://127.0.0.1:5500/asistente-programacion.html
+OWNER_EMAIL=admin@tu-dominio.com
+ADMIN_EMAILS=admin@tu-dominio.com
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 GOOGLE_REDIRECT_URI=http://127.0.0.1:8787/api/auth/google/callback
@@ -218,6 +253,33 @@ SQLSERVER_TRUST_SERVER_CERTIFICATE=true
 ```
 
 El bridge intenta sincronizar el usuario autenticado con una tabla compatible de usuarios en TUTORIA si el esquema lo permite. Si SQL Server no esta disponible o el esquema no tiene columnas compatibles, la sesion sigue funcionando en modo local JSON y el chat no se bloquea. El RAG no participa en el flujo de autenticacion.
+
+## Estado del cerebro solo para administrador
+
+El estado tecnico de `tutor_ia`, SQL Server, memoria y RAG no se expone a visitantes ni usuarios normales.
+
+Endpoints:
+
+- `GET /api/health`: salud publica minima del backend. Sirve para saber si el bridge responde.
+- `GET /api/admin/system-status`: estado tecnico completo. Requiere `Authorization: Bearer <token>` de un usuario administrador.
+
+Autorizacion:
+
+- Define `OWNER_EMAIL` o `ADMIN_EMAILS` en `.env`.
+- El correo autenticado que coincida con esas variables recibira `is_admin: true` en `/api/auth/session`.
+- El frontend solo muestra el chip/panel tecnico del cerebro si `is_admin` es verdadero.
+- Usuarios normales reciben `403` si intentan abrir `/api/admin/system-status`.
+
+Pruebas rapidas:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8787/api/health
+
+# Despues de iniciar sesion como admin:
+Invoke-RestMethod http://127.0.0.1:8787/api/admin/system-status -Headers @{
+  Authorization = "Bearer TU_TOKEN_ADMIN"
+}
+```
 
 ## Conectar con asistente-programacion.html
 

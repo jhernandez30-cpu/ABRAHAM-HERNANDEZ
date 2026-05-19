@@ -63,9 +63,9 @@
           <input id="chatSearchInput" type="search" placeholder="Buscar" autocomplete="off">
         </label>
 
-        <div class="brain-status sidebar-nav-item" id="brainStatus" data-state="checking">
+        <div class="brain-status sidebar-nav-item" id="brainStatus" data-state="checking" data-admin-only hidden>
           <span class="brain-status-dot" aria-hidden="true"></span>
-          <strong id="brainStatusText">Conectando con TUTOR_IA</strong>
+          <strong id="brainStatusText">Estado del sistema</strong>
         </div>
 
         <nav class="sidebar-nav" aria-label="Navegación de JAH AI">
@@ -120,8 +120,8 @@
           </div>
         </div>
 
-        <div id="assistantAuthArea" class="assistant-auth-bar" data-auth-state="guest">
-          <div id="guestAuthActions" class="guest-auth-actions">
+        <div id="assistantAuthArea" class="assistant-auth-bar" data-auth-state="checking">
+          <div id="guestAuthActions" class="guest-auth-actions" hidden>
             <button id="openLoginBtn" class="auth-pill auth-pill-dark" type="button">Iniciar sesi&oacute;n</button>
             <button id="openRegisterBtn" class="auth-pill auth-pill-light" type="button">Registrarse gratuitamente</button>
           </div>
@@ -166,7 +166,7 @@
         <div id="coachMessages" class="chat-messages" aria-live="polite">
           <div id="emptyChatState" class="empty-chat-state">
             <h1 id="assistantTitle">JAH AI</h1>
-            <button id="loginSoftInvite" class="login-soft-invite" type="button">Inicia sesi&oacute;n para guardar perfil, preferencias e historial entre dispositivos.</button>
+            <button id="loginSoftInvite" class="login-soft-invite" type="button" hidden>Inicia sesi&oacute;n para guardar perfil, preferencias e historial entre dispositivos.</button>
           </div>
         </div>
 
@@ -180,7 +180,7 @@
 
             <div class="composer-toolbar">
               <div class="composer-tools" aria-label="Herramientas del asistente">
-                <button id="tutorIABtn" class="tool-chip is-active" type="button" aria-pressed="true">
+                <button id="tutorIABtn" class="tool-chip is-active" type="button" aria-pressed="true" data-admin-only hidden>
                   <i class="fas fa-brain" aria-hidden="true"></i>
                   <span>Cerebro tutor_ia</span>
                 </button>
@@ -210,7 +210,7 @@
           </div>
         </form>
 
-        <div class="quick-context-card" aria-hidden="true">
+        <div class="quick-context-card" data-admin-only hidden aria-hidden="true">
           <div class="quick-context-title">
             <i class="fas fa-computer" aria-hidden="true"></i>
             <span>Cerebro JAH AI</span>
@@ -244,30 +244,9 @@
     </section>
   </div>
 
-  <script>
-    window.TUTOR_IA_PROJECT_PATH = window.TUTOR_IA_PROJECT_PATH || (
-      navigator.platform.toLowerCase().includes('win')
-        ? 'C:\\Users\\herna\\Documents\\ABRAHAM-HERNANDEZ-main'
-        : '/home/abraham/Documentos/ABRAHAM-HERNANDEZ-main'
-    );
-    window.TUTOR_IA_BRAIN_ROOT = window.TUTOR_IA_BRAIN_ROOT || (
-      navigator.platform.toLowerCase().includes('win')
-        ? 'C:\\Users\\herna\\Documents\\tutor_ia'
-        : '/home/abraham/Documentos/tutor_ia'
-    );
-    window.TUTOR_IA_BRIDGE_URL = window.TUTOR_IA_BRIDGE_URL || 'http://127.0.0.1:8787';
-    window.JARVIS_READ_RESPONSES = true;
-    window.JARVIS_ADVANCED_PROVIDER = 'mark_xxxix';
-    window.TUTOR_IA_ENDPOINTS = [
-      'http://127.0.0.1:8787/api/chat',
-      'http://127.0.0.1:8787/api/ask',
-      'http://127.0.0.1:8787/ask',
-      'http://localhost:8787/api/chat',
-      'http://localhost:8787/api/ask'
-    ];
-  </script>
+  <script src="js/app-config.js?v=auth-config-20260518"></script>
   <script src="js/jarvis-assistant.js?v=mark-xxxix-20260511"></script>
-  <script src="js/programming-assistant.js?v=rag-memory-20260517"></script>
-  <script src="js/programming-auth.js?v=auth-20260517"></script>
+  <script src="js/programming-assistant.js?v=tutor-state-20260518"></script>
+  <script src="js/programming-auth.js?v=auth-guest-gate-20260518"></script>
 </body>
 </html>

@@ -5,8 +5,10 @@ import hashlib
 import hmac
 import json
 import logging
+import os
 import secrets
 import threading
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -26,6 +28,7 @@ GOOGLE_USERINFO_URL = "https://openidconnect.googleapis.com/v1/userinfo"
 APPLE_AUTH_URL = "https://appleid.apple.com/auth/authorize"
 APPLE_TOKEN_URL = "https://appleid.apple.com/auth/token"
 PBKDF2_ITERATIONS = 260000
+SESSION_TOUCH_INTERVAL_SECONDS = 300
 
 DEFAULT_PREFERENCES: dict[str, Any] = {
     "theme": "system",
@@ -474,9 +477,16 @@ class AuthService:
                 sessions.pop(token, None)
                 self._write_json(self.sessions_path, sessions)
                 return self._guest_session()
-            session["last_seen_at"] = utc_now()
-            sessions[token] = session
-            self._write_json(self.sessions_path, sessions)
+            last_seen_at = _parse_datetime(str(session.get("last_seen_at") or ""))
+            if last_seen_at and last_seen_at.tzinfo is None:
+                last_seen_at = last_seen_at.replace(tzinfo=timezone.utc)
+            should_touch = not last_seen_at or (
+                datetime.now(timezone.utc) - last_seen_at
+            ).total_seconds() >= SESSION_TOUCH_INTERVAL_SECONDS
+            if should_touch:
+                session["last_seen_at"] = utc_now()
+                sessions[token] = session
+                self._write_json(self.sessions_path, sessions)
             user = self._get_user_by_id(str(session.get("user_id") or ""))
         if not user:
             return self._guest_session()
@@ -741,11 +751,18 @@ class AuthService:
         }
 
     def _public_user(self, user: dict[str, Any]) -> dict[str, Any]:
+        email = normalize_email(str(user.get("email") or ""))
+        configured_admins = {normalize_email(email_value) for email_value in settings.admin_emails}
+        raw_role = str(user.get("role") or "").strip().lower()
+        is_admin = bool(email and email in configured_admins)
+        public_role = "admin" if is_admin else raw_role if raw_role and raw_role != "admin" else "user"
         return {
             "id": str(user.get("id") or ""),
             "name": user.get("name") or "",
-            "email": user.get("email") or "",
+            "email": email,
             "auth_provider": user.get("auth_provider") or "local",
+            "role": public_role,
+            "is_admin": is_admin,
             "profile_picture": user.get("profile_picture") or "",
             "created_at": user.get("created_at") or "",
             "updated_at": user.get("updated_at") or "",
@@ -815,9 +832,29 @@ class AuthService:
             return {}
 
     def _write_json(self, path: Path, data: dict[str, Any]) -> None:
-        tmp_path = path.with_suffix(".tmp")
-        tmp_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-        tmp_path.replace(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        payload = json.dumps(data, ensure_ascii=False, indent=2)
+        tmp_path = path.with_name(f".{path.name}.{os.getpid()}.{threading.get_ident()}.tmp")
+        tmp_path.write_text(payload, encoding="utf-8")
+        last_error: OSError | None = None
+        for attempt in range(5):
+            try:
+                tmp_path.replace(path)
+                return
+            except PermissionError as exc:
+                last_error = exc
+                time.sleep(0.05 * (attempt + 1))
+        try:
+            path.write_text(payload, encoding="utf-8")
+        except OSError as exc:
+            if last_error:
+                LOGGER.warning("Could not atomically write %s after retries: %s", path, last_error)
+            raise exc
+        finally:
+            try:
+                tmp_path.unlink(missing_ok=True)
+            except OSError:
+                pass
 
 
 auth_service = AuthService(settings.auth_users_path, settings.auth_sessions_path, settings.auth_state_path)
