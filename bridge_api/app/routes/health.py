@@ -40,13 +40,44 @@ def _tutor_status_from_brain(brain: dict) -> tuple[bool, str]:
     return tutor_connected, tutor_status
 
 
+def _public_path_status(exists: bool) -> str:
+    return "available" if exists else "missing"
+
+
 def health_payload() -> dict:
     last_healthcheck = datetime.now(timezone.utc).isoformat()
+    tutor_connected = False
+    tutor_status = "DISCONNECTED"
+    fragments = 0
+    root_exists = False
+    knowledge_dir_exists = False
+    persist_dir_exists = False
+    try:
+        brain = brain_service.health()
+        fragments = int(brain.get("fragments", 0) or 0)
+        tutor_connected, tutor_status = _tutor_status_from_brain(brain)
+        root_exists = bool(brain.get("root_exists"))
+        knowledge_dir_exists = bool(brain.get("knowledge_dir_exists"))
+        persist_dir_exists = bool(brain.get("persist_dir_exists"))
+    except Exception:
+        tutor_status = "BACKEND_UNAVAILABLE"
+    service_status = "ok" if tutor_connected else "degraded"
+
     return {
         "ok": True,
         "success": True,
-        "status": "ok",
+        "status": service_status,
+        "service": "tutor_ia",
         "bridge_status": "ok",
+        "environment": settings.app_env,
+        "tutor_ia_status": tutor_status,
+        "tutor_ia_connected": tutor_connected,
+        "tutor_status": tutor_status,
+        "fragments": fragments,
+        "tutor_ia_root": _public_path_status(root_exists),
+        "tutor_ia_root_available": root_exists,
+        "knowledge_dir_available": knowledge_dir_exists,
+        "rag_persist_dir_available": persist_dir_exists,
         "message": "JAH AI Bridge API funcionando correctamente",
         "mode": "local-fastapi-bridge",
         "timestamp": last_healthcheck,
