@@ -9,7 +9,7 @@
 uvicorn main:app --app-dir bridge_api --host 0.0.0.0 --port $PORT
 ```
 
-- El build desde la raiz del proyecto usa `requirements.txt`, que referencia `bridge_api/requirements.txt`.
+- El build desde la raiz del proyecto usa Railpack y `requirements.txt`, que referencia `bridge_api/requirements.txt`.
 - `bridge_api/app/config.py` ahora soporta `APP_ENV`, `API_BASE_URL`, `PORT` y rutas derivadas de `TUTOR_IA_ROOT`.
 - En produccion ya no depende de `/home/abraham/Documentos/tutor_ia`; por defecto usa `/app/tutor_ia`.
 - CORS permite GitHub Pages y localhost, sin wildcard `*`.
@@ -46,6 +46,12 @@ JAH_AI_ALLOWED_ORIGINS=http://localhost,http://127.0.0.1,http://localhost:5500,h
 JAH_AI_ALLOWED_ORIGIN_REGEX=^https://jhernandez30-cpu\.github\.io$|^http://(localhost|127\.0\.0\.1)(:\d+)?$
 AUTH_FRONTEND_URL=https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/asistente-programacion.html
 SQLSERVER_ENABLED=false
+AUTH_PROVIDER=supabase
+SUPABASE_URL=https://TU-PROYECTO.supabase.co
+SUPABASE_ANON_KEY=...
+SUPABASE_GOOGLE_ENABLED=true
+SUPABASE_APPLE_ENABLED=true
+DATABASE_URL=postgresql://...
 ```
 
 Cuando Railway genere el dominio, puedes agregar tambien:
@@ -113,23 +119,19 @@ Cuando Railway genere el dominio, abre:
 js/app-config.js
 ```
 
-Busca este bloque al inicio:
+Configura `js/app-config.production.js` desde la plantilla:
 
 ```js
-const PRODUCTION_APP_CONFIG = {
-  API_BASE_URL: ''
+window.APP_CONFIG = {
+  API_BASE_URL: 'https://URL_PUBLICA_DE_RAILWAY',
+  SUPABASE_URL: 'https://TU-PROYECTO.supabase.co',
+  SUPABASE_ANON_KEY: 'TU_SUPABASE_ANON_KEY_PUBLICA',
+  SUPABASE_GOOGLE_ENABLED: true,
+  SUPABASE_APPLE_ENABLED: true
 };
 ```
 
-Reemplazalo por:
-
-```js
-const PRODUCTION_APP_CONFIG = {
-  API_BASE_URL: 'https://URL_PUBLICA_DE_RAILWAY'
-};
-```
-
-No inventes la URL. Usa la URL HTTPS real generada por Railway.
+No inventes la URL. Usa la URL HTTPS real generada por Railway y las claves reales de Supabase. No pongas `DATABASE_URL` ni `SUPABASE_SERVICE_ROLE_KEY` en frontend.
 
 ## Publicar GitHub Pages despues
 

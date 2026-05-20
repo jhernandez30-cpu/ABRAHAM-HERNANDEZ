@@ -61,6 +61,10 @@ def _int_env(name: str, default: int) -> int:
     return int(value)
 
 
+def _bool_env(name: str, default: str = "false") -> bool:
+    return os.getenv(name, default).strip().lower() in {"1", "true", "yes", "on", "si", "sí"}
+
+
 APP_ENV = _current_app_env()
 DEFAULT_TUTOR_IA_ROOT = _path_from_env("TUTOR_IA_ROOT", _default_tutor_root())
 DEFAULT_ALLOWED_ORIGINS = (
@@ -149,9 +153,10 @@ class Settings:
     web_search_max_results: int = int(os.getenv("WEB_SEARCH_MAX_RESULTS", "5"))
     web_search_timeout_seconds: float = float(os.getenv("WEB_SEARCH_TIMEOUT_SECONDS", "12"))
 
+    auth_provider: str = os.getenv("AUTH_PROVIDER", "local").strip().lower() or "local"
     auth_frontend_url: str = os.getenv(
         "AUTH_FRONTEND_URL",
-        "http://127.0.0.1:5500/asistente-programacion.html",
+        os.getenv("FRONTEND_URL", "http://127.0.0.1:5500/asistente-programacion.html"),
     )
     auth_session_ttl_hours: int = int(os.getenv("AUTH_SESSION_TTL_HOURS", "168"))
     owner_email: str = os.getenv("OWNER_EMAIL", "").strip().lower()
@@ -183,6 +188,14 @@ class Settings:
         "http://127.0.0.1:8787/api/auth/apple/callback",
     )
     apple_oauth_scope: str = os.getenv("APPLE_OAUTH_SCOPE", "name email")
+
+    supabase_url: str = os.getenv("SUPABASE_URL", "").strip().rstrip("/")
+    supabase_anon_key: str = os.getenv("SUPABASE_ANON_KEY", "").strip()
+    supabase_service_role_key: str = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip()
+    supabase_google_enabled: bool = _bool_env("SUPABASE_GOOGLE_ENABLED", "false")
+    supabase_apple_enabled: bool = _bool_env("SUPABASE_APPLE_ENABLED", "false")
+    database_url: str = os.getenv("DATABASE_URL", "").strip()
+    postgres_connect_timeout_seconds: int = int(os.getenv("POSTGRES_CONNECT_TIMEOUT_SECONDS", "8"))
 
     sqlserver_enabled: bool = os.getenv("SQLSERVER_ENABLED", "false").strip().lower() in {"1", "true", "yes", "on"}
     sqlserver_host: str = os.getenv("SQLSERVER_HOST", "")
@@ -225,7 +238,7 @@ class Settings:
     allowed_origins: list[str] = field(
         default_factory=lambda: _csv_env(
             "JAH_AI_ALLOWED_ORIGINS",
-            DEFAULT_ALLOWED_ORIGINS,
+            os.getenv("CORS_ALLOWED_ORIGINS", DEFAULT_ALLOWED_ORIGINS),
         )
     )
     allowed_origin_regex: str | None = os.getenv(

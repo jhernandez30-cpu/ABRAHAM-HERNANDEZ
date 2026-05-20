@@ -17,7 +17,9 @@ from urllib.parse import urlencode
 import requests
 
 from app.config import settings
+from app.services.auth_defaults import DEFAULT_PREFERENCES
 from app.services.history_service import history_service
+from app.services.supabase_service import SupabaseServiceError, supabase_service
 
 
 LOGGER = logging.getLogger(__name__)
@@ -29,21 +31,6 @@ APPLE_AUTH_URL = "https://appleid.apple.com/auth/authorize"
 APPLE_TOKEN_URL = "https://appleid.apple.com/auth/token"
 PBKDF2_ITERATIONS = 260000
 SESSION_TOUCH_INTERVAL_SECONDS = 300
-
-DEFAULT_PREFERENCES: dict[str, Any] = {
-    "theme": "system",
-    "language": "es",
-    "response_style": "explicativo",
-    "assistant_preference": "respuestas_completas",
-    "visible_name": "",
-    "use_rag": True,
-    "use_web": False,
-    "jarvis_voice": False,
-    "direct_answers": False,
-    "deep_thinking": False,
-    "chat_history_enabled": True,
-}
-
 
 class AuthServiceError(Exception):
     def __init__(self, message: str, status_code: int = 400) -> None:
@@ -370,6 +357,11 @@ class AuthService:
             raise AuthServiceError("Escribe un correo electronico valido.")
         if len(password or "") < 8:
             raise AuthServiceError("La contrasena debe tener minimo 8 caracteres.")
+        if settings.auth_provider == "supabase":
+            try:
+                return supabase_service.sign_up(clean_name, clean_email, password)
+            except SupabaseServiceError as exc:
+                raise AuthServiceError(str(exc), exc.status_code) from exc
 
         with self._lock:
             data = self._read_users()
@@ -399,6 +391,12 @@ class AuthService:
         return self._issue_session(user, sync)
 
     def login_local(self, email: str, password: str) -> dict[str, Any]:
+        if settings.auth_provider == "supabase":
+            try:
+                return supabase_service.sign_in(email, password)
+            except SupabaseServiceError as exc:
+                raise AuthServiceError(str(exc), exc.status_code) from exc
+
         with self._lock:
             data = self._read_users()
             user = self._find_user_by_email(data, normalize_email(email))
@@ -471,6 +469,13 @@ class AuthService:
             sessions = self._read_sessions()
             session = sessions.get(token)
             if not session:
+                if settings.auth_provider == "supabase" or supabase_service.configured():
+                    try:
+                        return supabase_service.session_from_token(token)
+                    except SupabaseServiceError as exc:
+                        if settings.auth_provider == "supabase" and exc.status_code not in {401, 403}:
+                            raise AuthServiceError(str(exc), exc.status_code) from exc
+                        return self._guest_session()
                 return self._guest_session()
             expires_at = _parse_datetime(str(session.get("expires_at") or ""))
             if expires_at and expires_at < datetime.now(timezone.utc):
@@ -506,6 +511,7 @@ class AuthService:
         return self.session_from_token(str(handoff.get("token") or ""))
 
     def logout(self, token: str | None) -> dict[str, Any]:
+        supabase_service.logout(token)
         if token:
             with self._lock:
                 sessions = self._read_sessions()
@@ -517,6 +523,8 @@ class AuthService:
         session = self.session_from_token(token)
         if not session.get("authenticated"):
             raise AuthServiceError("Sesion no autenticada.", 401)
+        if session.get("auth_source") == "supabase":
+            return supabase_service.update_preferences(str(token or ""), session["user"], preferences)
         user_id = str(session["user"]["id"])
         allowed = set(DEFAULT_PREFERENCES)
         with self._lock:
@@ -541,6 +549,8 @@ class AuthService:
         clean_name = (name or "").strip()
         if len(clean_name) < 2:
             raise AuthServiceError("Escribe un nombre valido.")
+        if session.get("auth_source") == "supabase":
+            return supabase_service.update_profile(str(token or ""), session["user"], clean_name)
         user_id = str(session["user"]["id"])
         with self._lock:
             data = self._read_users()
@@ -600,6 +610,8 @@ class AuthService:
         return code
 
     def google_configured(self) -> bool:
+        if settings.auth_provider == "supabase":
+            return supabase_service.provider_enabled("google")
         return bool(settings.google_client_id and settings.google_client_secret)
 
     def build_google_auth_url(self, state_value: str) -> str:
@@ -645,6 +657,8 @@ class AuthService:
         return self.upsert_oauth_user("google", profile_response.json())
 
     def apple_configured(self) -> bool:
+        if settings.auth_provider == "supabase":
+            return supabase_service.provider_enabled("apple")
         return bool(settings.apple_client_id and settings.apple_client_secret)
 
     def build_apple_auth_url(self, state_value: str) -> str:
@@ -735,6 +749,7 @@ class AuthService:
             },
             "persistence": persistence or {"status": "LOCAL_JSON"},
             "sqlserver": self.sqlserver.health(),
+            "auth_source": "local",
         }
 
     def _guest_session(self) -> dict[str, Any]:
@@ -748,6 +763,7 @@ class AuthService:
             "memory": {"status": "GUEST_MODE"},
             "persistence": {"status": "GUEST_MODE"},
             "sqlserver": self.sqlserver.health(),
+            "auth_source": "guest",
         }
 
     def _public_user(self, user: dict[str, Any]) -> dict[str, Any]:

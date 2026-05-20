@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field
 
 from app.config import settings
 from app.services.auth_service import AuthServiceError, auth_service
+from app.services.supabase_service import SupabaseServiceError, supabase_service
 
 
 LOGGER = logging.getLogger(__name__)
@@ -81,11 +82,15 @@ def _auth_error(exc: AuthServiceError) -> HTTPException:
 
 @router.get("/api/auth/providers")
 async def auth_providers() -> dict[str, Any]:
+    supabase_payload = supabase_service.providers_payload()
     return {
         "ok": True,
+        **supabase_payload,
         "google": auth_service.google_configured(),
         "apple": auth_service.apple_configured(),
-        "local": True,
+        "local": settings.auth_provider != "supabase",
+        "email_password": True,
+        "auth_provider": settings.auth_provider,
     }
 
 
@@ -128,6 +133,18 @@ async def logout(request: Request) -> dict[str, Any]:
 @router.get("/api/auth/google/start")
 async def google_start(return_to: str = Query(default="")) -> RedirectResponse:
     safe_return = _safe_return_to(return_to)
+    if settings.auth_provider == "supabase":
+        try:
+            return RedirectResponse(supabase_service.build_oauth_url("google", safe_return), status_code=302)
+        except SupabaseServiceError as exc:
+            return _redirect_with_params(
+                safe_return,
+                {
+                    "auth_status": "error",
+                    "auth_error": str(exc),
+                    "provider": "google",
+                },
+            )
     if not auth_service.google_configured():
         return _redirect_with_params(
             safe_return,
@@ -180,6 +197,18 @@ async def google_callback(
 @router.get("/api/auth/apple/start")
 async def apple_start(return_to: str = Query(default="")) -> RedirectResponse:
     safe_return = _safe_return_to(return_to)
+    if settings.auth_provider == "supabase":
+        try:
+            return RedirectResponse(supabase_service.build_oauth_url("apple", safe_return), status_code=302)
+        except SupabaseServiceError as exc:
+            return _redirect_with_params(
+                safe_return,
+                {
+                    "auth_status": "error",
+                    "auth_error": str(exc),
+                    "provider": "apple",
+                },
+            )
     if not auth_service.apple_configured():
         return _redirect_with_params(
             safe_return,

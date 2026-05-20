@@ -14,6 +14,41 @@
     ).trim().replace(/\/$/, '');
   }
 
+  function supabaseConfig() {
+    return {
+      url: String(window.APP_CONFIG?.SUPABASE_URL || '').trim().replace(/\/$/, ''),
+      anonKey: String(window.APP_CONFIG?.SUPABASE_ANON_KEY || '').trim()
+    };
+  }
+
+  function isSupabaseConfigured() {
+    const config = supabaseConfig();
+    return Boolean(config.url && config.anonKey);
+  }
+
+  function isSupabaseProviderEnabled(provider) {
+    if (!isSupabaseConfigured()) return false;
+    const key = provider === 'apple'
+      ? 'SUPABASE_APPLE_ENABLED'
+      : 'SUPABASE_GOOGLE_ENABLED';
+    return window.APP_CONFIG?.[key] === true;
+  }
+
+  function getSupabaseClient() {
+    if (!isSupabaseConfigured()) return null;
+    if (supabaseClient) return supabaseClient;
+    if (!window.supabase || typeof window.supabase.createClient !== 'function') return null;
+    const config = supabaseConfig();
+    supabaseClient = window.supabase.createClient(config.url, config.anonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
+    return supabaseClient;
+  }
+
   const DEFAULT_PREFERENCES = {
     theme: 'system',
     language: 'es',
@@ -39,7 +74,8 @@
   let activeEmail = '';
   let authChecked = false;
   let authHydrating = false;
-  let authProviders = { google: false, apple: false, local: true };
+  let authProviders = { google: false, apple: false, local: true, supabase: false };
+  let supabaseClient = null;
 
   window.JAHAuth = {
     getToken: () => state.token,
@@ -51,6 +87,7 @@
     isHydrating: () => authHydrating,
     isAdmin: () => isAdminUser(state.user),
     getApiBaseUrl: resolveApiBaseUrl,
+    getSupabaseClient,
     savePreferences: savePreferencesPatch,
     openAuth: openAuthModal,
     logout
@@ -66,6 +103,7 @@
     applyPreferences(state.preferences, false);
     renderAuthState();
     await loadAuthProviders();
+    await bootstrapSupabaseSession();
     if (authCallback.error) {
       openAuthModal('login');
       setAuthStatus(authErrorMessage(authCallback.error, authCallback.provider), 'error');
@@ -168,8 +206,15 @@
 
   async function loadAuthProviders() {
     const apiBaseUrl = resolveApiBaseUrl();
+    const fallbackProviders = {
+      google: isSupabaseProviderEnabled('google'),
+      apple: isSupabaseProviderEnabled('apple'),
+      local: true,
+      supabase: isSupabaseConfigured(),
+      email_password: true
+    };
     if (!apiBaseUrl) {
-      authProviders = { google: false, apple: false, local: true };
+      authProviders = fallbackProviders;
       return authProviders;
     }
     try {
@@ -177,13 +222,16 @@
       if (response.ok) {
         const data = await response.json();
         authProviders = {
-          google: Boolean(data.google),
-          apple: Boolean(data.apple),
+          google: Boolean(data.google) || fallbackProviders.google,
+          apple: Boolean(data.apple) || fallbackProviders.apple,
           local: data.local !== false
+            || (Boolean(data.supabase) && data.email_password !== false),
+          supabase: Boolean(data.supabase) || fallbackProviders.supabase,
+          email_password: data.email_password !== false
         };
       }
     } catch (error) {
-      authProviders = { google: false, apple: false, local: true };
+      authProviders = fallbackProviders;
     }
     return authProviders;
   }
@@ -352,6 +400,10 @@
     if (hasError) return;
 
     setAuthStatus('Creando cuenta...');
+    if (isSupabaseConfigured()) {
+      await submitSupabaseRegister(payload);
+      return;
+    }
     const backendReady = await ensureAuthBackendAvailable();
     if (!backendReady) return;
     try {
@@ -391,6 +443,10 @@
     if (hasError) return;
 
     setAuthStatus('Iniciando sesi&oacute;n...');
+    if (isSupabaseConfigured()) {
+      await submitSupabaseLogin(payload);
+      return;
+    }
     const backendReady = await ensureAuthBackendAvailable();
     if (!backendReady) return;
     try {
@@ -404,6 +460,130 @@
     } catch (error) {
       setAuthStatus(error.message || 'Credenciales incorrectas.', 'error');
     }
+  }
+
+  async function submitSupabaseRegister(payload) {
+    try {
+      const client = getSupabaseClient();
+      if (!client) throw new Error('Supabase Auth no está configurado.');
+      const { data, error } = await client.auth.signUp({
+        email: payload.email,
+        password: payload.password,
+        options: {
+          data: {
+            name: payload.name,
+            full_name: payload.name,
+            display_name: payload.name
+          },
+          emailRedirectTo: currentReturnUrl()
+        }
+      });
+      if (error) throw error;
+      if (!data?.session?.access_token) {
+        setAuthStatus('Cuenta creada. Revisa tu correo si Supabase exige confirmación antes de iniciar sesión.', 'success');
+        return;
+      }
+      await acceptSupabaseSession(data.session, data.user);
+      setAuthStatus('Cuenta creada correctamente.', 'success');
+      window.setTimeout(closeAuthModal, 450);
+    } catch (error) {
+      setAuthStatus(supabaseErrorMessage(error, 'No se pudo crear la cuenta.'), 'error');
+    }
+  }
+
+  async function submitSupabaseLogin(payload) {
+    try {
+      const client = getSupabaseClient();
+      if (!client) throw new Error('Supabase Auth no está configurado.');
+      const { data, error } = await client.auth.signInWithPassword({
+        email: payload.email,
+        password: payload.password
+      });
+      if (error) throw error;
+      await acceptSupabaseSession(data.session, data.user);
+      setAuthStatus('Sesi&oacute;n iniciada.', 'success');
+      window.setTimeout(closeAuthModal, 450);
+    } catch (error) {
+      setAuthStatus(supabaseErrorMessage(error, 'Credenciales incorrectas.'), 'error');
+    }
+  }
+
+  async function bootstrapSupabaseSession() {
+    if (!isSupabaseConfigured()) return false;
+    try {
+      const client = getSupabaseClient();
+      if (!client) return false;
+      const { data, error } = await client.auth.getSession();
+      if (error) throw error;
+      const session = data?.session;
+      if (!session?.access_token) return false;
+      acceptSupabaseFallbackSession(session, session.user);
+      return true;
+    } catch (error) {
+      console.warn('[JAHAuth] No se pudo restaurar sesión Supabase.', error);
+      return false;
+    }
+  }
+
+  async function acceptSupabaseSession(session, user) {
+    if (!session?.access_token) {
+      throw new Error('Supabase no devolvió una sesión activa.');
+    }
+    acceptSupabaseFallbackSession(session, user || session.user);
+    try {
+      const data = await authFetch('/api/auth/session', { method: 'GET' });
+      if (data.authenticated && data.user) {
+        acceptSession(data);
+      }
+      return data;
+    } catch (error) {
+      console.warn('[JAHAuth] Sesión Supabase activa sin sincronización backend.', error);
+      return {
+        ok: true,
+        authenticated: true,
+        user: state.user,
+        preferences: state.preferences,
+        persistence: { status: 'SUPABASE_FRONTEND_ONLY' }
+      };
+    }
+  }
+
+  function acceptSupabaseFallbackSession(session, user) {
+    state.token = session?.access_token || '';
+    state.user = supabasePublicUser(user || session?.user || {});
+    state.preferences = normalizePreferences(state.preferences);
+    writeStorage(AUTH_TOKEN_KEY, state.token);
+    writeJsonStorage(AUTH_USER_KEY, state.user);
+    writeJsonStorage(AUTH_PREFS_KEY, state.preferences);
+    applyPreferences(state.preferences);
+    renderAuthState();
+    window.dispatchEvent(new CustomEvent('jah-auth-session-changed', {
+      detail: {
+        context: getContext(),
+        persistence: { status: 'SUPABASE_FRONTEND_SESSION' }
+      }
+    }));
+  }
+
+  function supabasePublicUser(user = {}) {
+    const metadata = user.user_metadata && typeof user.user_metadata === 'object'
+      ? user.user_metadata
+      : {};
+    const email = String(user.email || metadata.email || '').trim().toLowerCase();
+    const name = metadata.name || metadata.full_name || metadata.display_name || email.split('@')[0] || 'Usuario';
+    return {
+      id: String(user.id || ''),
+      name,
+      email,
+      auth_provider: 'supabase',
+      role: 'user',
+      is_admin: false,
+      profile_picture: metadata.avatar_url || metadata.picture || '',
+      created_at: user.created_at || '',
+      updated_at: user.updated_at || '',
+      last_login: user.last_sign_in_at || '',
+      plan: metadata.plan || 'Gratis'
+    };
   }
 
   function handleGoogleAuth() {
@@ -429,20 +609,48 @@
       googleBtn.disabled = !authProviders.google;
       googleBtn.title = authProviders.google
         ? 'Continuar con Google'
-        : 'Google no configurado en el backend (GOOGLE_CLIENT_ID y GOOGLE_CLIENT_SECRET en bridge_api/.env)';
+        : 'Google no configurado. Activa Google en Supabase Auth y define SUPABASE_GOOGLE_ENABLED=true en Railway.';
       googleBtn.classList.toggle('is-disabled', !authProviders.google);
     }
     if (appleBtn) {
       appleBtn.disabled = !authProviders.apple;
       appleBtn.title = authProviders.apple
         ? 'Continuar con Apple'
-        : 'Apple no configurado en el backend (APPLE_CLIENT_ID y APPLE_CLIENT_SECRET en bridge_api/.env)';
+        : 'Apple no configurado. Activa Apple en Supabase Auth y define SUPABASE_APPLE_ENABLED=true en Railway.';
       appleBtn.classList.toggle('is-disabled', !authProviders.apple);
     }
   }
 
   async function startProviderAuth(provider) {
     const providerLabel = provider === 'apple' ? 'Apple' : 'Google';
+    if (isSupabaseConfigured()) {
+      await loadAuthProviders();
+      if (!authProviders[provider]) {
+        setAuthStatus(
+          provider === 'google'
+            ? 'Google Login pendiente de configurar en Supabase Auth.'
+            : 'Apple Login pendiente de configurar en Supabase Auth.',
+          'error'
+        );
+        return;
+      }
+      try {
+        const client = getSupabaseClient();
+        if (!client) throw new Error('Supabase no está disponible en esta página.');
+        setAuthStatus(`Conectando con ${providerLabel}...`);
+        const { error } = await client.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo: currentReturnUrl(),
+            queryParams: provider === 'google' ? { prompt: 'select_account' } : {}
+          }
+        });
+        if (error) throw error;
+      } catch (error) {
+        setAuthStatus(error.message || `No se pudo iniciar sesión con ${providerLabel}.`, 'error');
+      }
+      return;
+    }
     const apiBaseUrl = resolveApiBaseUrl();
     if (!apiBaseUrl) {
       setAuthStatus(`No se puede conectar con ${providerLabel}: el backend de autenticación no está configurado. Inicia bridge_api en http://127.0.0.1:8787.`, 'error');
@@ -842,6 +1050,13 @@
   }
 
   async function logout() {
+    if (isSupabaseConfigured()) {
+      try {
+        await getSupabaseClient()?.auth.signOut();
+      } catch (error) {
+        // La sesion visual se cierra aunque Supabase no responda.
+      }
+    }
     if (state.token) {
       try {
         await authFetch('/api/auth/logout', { method: 'POST' });
@@ -1084,6 +1299,21 @@
       return `Inicio con ${providerLabel} cancelado.`;
     }
     return `No se pudo iniciar sesión con ${providerLabel}. ${errorCode || ''}`.trim();
+  }
+
+  function supabaseErrorMessage(error, fallback) {
+    const raw = String(error?.message || error?.error_description || error || '').trim();
+    const normalized = raw.toLowerCase();
+    if (normalized.includes('already') || normalized.includes('registered')) {
+      return 'Ya existe una cuenta con ese correo electrónico.';
+    }
+    if (normalized.includes('invalid login') || normalized.includes('invalid credentials')) {
+      return 'Correo o contraseña incorrectos.';
+    }
+    if (normalized.includes('email not confirmed')) {
+      return 'Debes confirmar tu correo antes de iniciar sesión.';
+    }
+    return raw || fallback;
   }
 
   function normalizePreferences(value) {

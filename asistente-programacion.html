@@ -12,9 +12,11 @@
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#faf8f5">
   <meta name="application-name" content="JAH AI">
-  <!-- local: usa bridge en 127.0.0.1:8787 | production: define jah-api-base-url y jah-run-mode -->
-  <meta name="jah-run-mode" content="local">
+  <!-- local se detecta en localhost/file; produccion usa jah-api-base-url o js/app-config.production.js -->
+  <meta name="jah-run-mode" content="">
   <meta name="jah-api-base-url" content="">
+  <meta name="supabase-url" content="">
+  <meta name="supabase-anon-key" content="">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="JAH AI">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -250,6 +252,7 @@
   <script src="js/app-config.js?v=auth-fix-20260520"></script>
   <!-- Produccion: descomenta y crea js/app-config.production.js desde app-config.production.example.js -->
   <!-- <script src="js/app-config.production.js?v=auth-prod-20260519"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/jarvis-assistant.js?v=mark-xxxix-20260511"></script>
   <script src="js/programming-assistant.js?v=brain-connect-20260519"></script>
   <script src="js/programming-auth.js?v=auth-fix-20260520"></script>

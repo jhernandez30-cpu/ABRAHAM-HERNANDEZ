@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import re
 import threading
 from datetime import datetime, timezone
@@ -9,8 +10,10 @@ from typing import Any
 
 from app.config import settings
 from app.models.schemas import HistoryRecord
+from app.services.supabase_service import supabase_service
 
 
+LOGGER = logging.getLogger(__name__)
 MEMORY_FACT_RE = re.compile(
     r"\b(prefiero|recuerda|ll[aá]mame|mi nombre|me gusta|quiero que|estoy trabajando|"
     r"vamos a trabajar|sin romper|mant[eé]n|no cambies|progreso|objetivo)\b",
@@ -64,6 +67,9 @@ class HistoryService:
             data[session_id] = session_records[-80:]
             self._write(data)
             self._write_summary(session_id, data[session_id])
+        persistence = supabase_service.save_chat_turn(record.model_dump(mode="json"))
+        if persistence.get("status") == "SUPABASE_POSTGRES_ERROR":
+            LOGGER.warning("Postgres history persistence failed: %s", persistence.get("error", "unknown"))
         return record
 
     def recent_context(self, session_id: str, max_turns: int = 4) -> str:

@@ -12,6 +12,14 @@
     return readMeta('jah-api-base-url');
   }
 
+  function readMetaSupabaseUrl() {
+    return readMeta('supabase-url');
+  }
+
+  function readMetaSupabaseAnonKey() {
+    return readMeta('supabase-anon-key');
+  }
+
   function readMetaRunMode() {
     const value = readMeta('jah-run-mode').toLowerCase();
     if (value === 'production' || value === 'local') return value;
@@ -74,7 +82,8 @@
     const productionUrl = readMetaApiBaseUrl() || readQueryApiBaseUrl();
     if (productionUrl) return 'production';
 
-    if (detectLocalMode() || isGitHubPagesHost()) return 'local';
+    if (detectLocalMode()) return 'local';
+    if (isGitHubPagesHost()) return 'production';
     return 'production';
   }
 
@@ -101,11 +110,18 @@
 
   const runMode = resolveRunMode();
   const configuredApiBaseUrl = resolveApiBaseUrl();
+  const supabaseUrl = String(readMetaSupabaseUrl() || currentConfig.SUPABASE_URL || '').trim().replace(/\/$/, '');
+  const supabaseAnonKey = String(readMetaSupabaseAnonKey() || currentConfig.SUPABASE_ANON_KEY || '').trim();
 
   window.APP_CONFIG = {
     ...currentConfig,
     RUN_MODE: runMode,
     API_BASE_URL: configuredApiBaseUrl,
+    SUPABASE_URL: supabaseUrl,
+    SUPABASE_ANON_KEY: supabaseAnonKey,
+    SUPABASE_AUTH_ENABLED: Boolean(supabaseUrl && supabaseAnonKey),
+    SUPABASE_GOOGLE_ENABLED: currentConfig.SUPABASE_GOOGLE_ENABLED === true,
+    SUPABASE_APPLE_ENABLED: currentConfig.SUPABASE_APPLE_ENABLED === true,
     LOCAL_API_BASE_URL,
     IS_LOCAL_MODE: detectLocalMode(),
     IS_GITHUB_PAGES: isGitHubPagesHost(),
