@@ -4,7 +4,7 @@
   const STORAGE_KEY = "jah_cookie_consent";
   const PREFS_KEY = "jah_cookie_preferences";
   const path = window.location.pathname.split("/").pop() || "index.html";
-  const isPreviewHome = path === "index-preview.html" || path === "index.html";
+  const isPreviewHome = path === "index.html";
 
   if (!isPreviewHome) return;
   if (window.localStorage.getItem(STORAGE_KEY)) return;

@@ -51,16 +51,16 @@
     header.innerHTML = `
       <nav class="navbar" id="navbar" aria-label="Navegacion legal">
         <div class="logo">
-          <a href="${base}index-preview.html" class="brand-logo" aria-label="Inicio - Abraham Hernandez">
+          <a href="${base}index.html" class="brand-logo" aria-label="Inicio - Abraham Hernandez">
             <img src="${base}assets/jah-logo.png" alt="Logo JAH de Abraham Hernandez" width="180" height="120" loading="eager" decoding="async">
           </a>
         </div>
         <div class="nav-links">
-          <a href="${base}index-preview.html" class="nav-link">Inicio</a>
-          <a href="${base}index-preview.html#servicios" class="nav-link">Servicios</a>
-          <a href="${base}index-preview.html#proyectos" class="nav-link">Proyectos</a>
-          <a href="${base}index-preview.html#recursos" class="nav-link">Recursos</a>
-          <a href="${base}index-preview.html#contacto" class="nav-link">Contacto</a>
+          <a href="${base}index.html" class="nav-link">Inicio</a>
+          <a href="${base}index.html#servicios" class="nav-link">Servicios</a>
+          <a href="${base}index.html#proyectos" class="nav-link">Proyectos</a>
+          <a href="${base}index.html#recursos" class="nav-link">Recursos</a>
+          <a href="${base}index.html#contacto" class="nav-link">Contacto</a>
         </div>
       </nav>
     `;
@@ -72,10 +72,10 @@
         <img src="${base}assets/jah-logo.png" alt="Logo JAH de Abraham Hernandez" width="180" height="120" loading="lazy" decoding="async">
       </div>
       <div class="site-footer-links">
-        <a href="${base}index-preview.html#servicios">Servicios</a>
-        <a href="${base}index-preview.html#proyectos">Proyectos</a>
-        <a href="${base}index-preview.html#recursos">Recursos</a>
-        <a href="${base}index-preview.html#contacto">Contacto</a>
+        <a href="${base}index.html#servicios">Servicios</a>
+        <a href="${base}index.html#proyectos">Proyectos</a>
+        <a href="${base}index.html#recursos">Recursos</a>
+        <a href="${base}index.html#contacto">Contacto</a>
       </div>
       <p>© 2026 Abraham Hernandez - Todos los derechos reservados</p>
     `;
