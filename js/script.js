@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
         navLinks.forEach(link => {
           link.classList.remove('active');
           const href = link.getAttribute('href');
-          if (href === `#${current}` || href === `index-preview.html#${current}`) {
+          if (href === `#${current}` || href === `index.html#${current}`) {
             link.classList.add('active');
           }
         });
@@ -133,11 +133,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const isInternal = href === '#hero' || href === '#about' || href === '#services' || href === '#skills' || 
                            href === '#projects' || href === '#value' || href === '#contact' ||
-                           href.startsWith('index-preview.html#');
+                           href.startsWith('index.html#');
         
         if (isInternal) {
           let targetId = href;
-          if (href.startsWith('index-preview.html#')) {
+          if (href.startsWith('index.html#')) {
             targetId = href.split('#')[1];
           } else {
             targetId = href.substring(1);
@@ -174,7 +174,7 @@ function initPortfolioChatbot() {
 
   const relativeBase = document.querySelector('meta[name="relative-base"]')?.getAttribute('content') || '';
   const pageUrl = (path) => `${relativeBase}${path}`;
-  const homeUrl = pageUrl('index-preview.html');
+  const homeUrl = pageUrl('index.html');
   const homeSectionUrl = (id) => `${homeUrl}#${id}`;
   const projectUrls = {
     muralSandino: 'https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino.html',
@@ -196,7 +196,7 @@ function initPortfolioChatbot() {
   const answers = [
     {
       keys: ['hola', 'buenas', 'hey', 'saludos', 'inicio', 'empezar', 'ayuda'],
-      text: `Hola, soy JAH, el asistente virtual de Abraham. El sitio ahora usa la nueva experiencia visual de <a href="${homeUrl}">index-preview.html</a>. Puedo ayudarte a elegir una solución, explorar <a href="${pageUrl('ultron.html')}">ULTRON</a>, abrir <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>, entrar a <a href="${projectUrls.jahStore}">THE JAH STORE</a> o revisar proyectos y servicios.`,
+      text: `Hola, soy JAH, el asistente virtual de Abraham. El sitio ahora usa la nueva experiencia visual de <a href="${homeUrl}">index.html</a>. Puedo ayudarte a elegir una solución, explorar <a href="${pageUrl('ultron.html')}">ULTRON</a>, abrir <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>, entrar a <a href="${projectUrls.jahStore}">THE JAH STORE</a> o revisar proyectos y servicios.`,
       suggestions: ['Guíame', 'Servicios', 'ULTRON', 'JAH IA']
     },
     {
@@ -346,7 +346,7 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['indicadores', 'años', 'anos', 'practica tecnica', 'práctica técnica', 'areas de servicio', 'demos'],
-      text: `La home actual es <a href="${homeUrl}">index-preview.html</a> y usa el diseño premium del template: hero animado, secciones visuales, proyectos reales, accesos a JAH IA, ULTRON, ITSA Segurity y THE JAH STORE.`,
+      text: `La home actual es <a href="${homeUrl}">index.html</a> y usa el diseño premium del template: hero animado, secciones visuales, proyectos reales, accesos a JAH IA, ULTRON, ITSA Segurity y THE JAH STORE.`,
       suggestions: ['Proyectos', 'Servicios', 'Sobre mí', 'Contacto']
     },
     {

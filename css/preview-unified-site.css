@@ -1751,7 +1751,7 @@ body.jah-preview-surface .chatbot-window {
   }
 }
 
-/* Ajuste solicitado: fondo claro igual al index-preview.html de referencia. */
+/* Ajuste solicitado: fondo claro igual al index.html de referencia. */
 body.jah-preview-surface {
   --jah-bg: #f5efe6;
   --jah-bg-2: #eadfce;
