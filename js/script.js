@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
         navLinks.forEach(link => {
           link.classList.remove('active');
           const href = link.getAttribute('href');
-          if (href === `#${current}` || href === `index.html#${current}`) {
+          if (href === `#${current}` || href === `index-preview.html#${current}`) {
             link.classList.add('active');
           }
         });
@@ -133,11 +133,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const isInternal = href === '#hero' || href === '#about' || href === '#services' || href === '#skills' || 
                            href === '#projects' || href === '#value' || href === '#contact' ||
-                           href.startsWith('index.html#');
+                           href.startsWith('index-preview.html#');
         
         if (isInternal) {
           let targetId = href;
-          if (href.startsWith('index.html#')) {
+          if (href.startsWith('index-preview.html#')) {
             targetId = href.split('#')[1];
           } else {
             targetId = href.substring(1);
@@ -174,6 +174,15 @@ function initPortfolioChatbot() {
 
   const relativeBase = document.querySelector('meta[name="relative-base"]')?.getAttribute('content') || '';
   const pageUrl = (path) => `${relativeBase}${path}`;
+  const homeUrl = pageUrl('index-preview.html');
+  const homeSectionUrl = (id) => `${homeUrl}#${id}`;
+  const projectUrls = {
+    muralSandino: 'https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino.html',
+    benjaminZeledon: 'https://jhernandez30-cpu.github.io/ciencia-sociales/interactiva-benjamin/index.html',
+    variedadesNora: 'https://jhernandez30-cpu.github.io/Variedades-Nora/',
+    jahStore: pageUrl('jah/index.html'),
+    itsaSegurity: 'https://jhernandez30-cpu.github.io/ITSA-Segurity/'
+  };
   const whatsappBudget = 'https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20un%20presupuesto%20para%20un%20proyecto';
   const linkedinUrl = 'https://www.linkedin.com/in/abrhamdev/';
   const githubUrl = 'https://github.com/jhernandez30-cpu';
@@ -181,18 +190,18 @@ function initPortfolioChatbot() {
   const youtubeUrl = 'https://www.youtube.com/@abrhamdev';
   const jahAvatarUrl = pageUrl('assets/img/jah-avatar.png');
   const fallbackAnswer = {
-    text: `Puedo orientarte según lo que necesita tu empresa: una web profesional, automatizar procesos, crear dashboards, integrar APIs, implementar un chatbot, explorar <a href="${pageUrl('ultron.html')}">ULTRON</a> o abrir <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>. También puedes ir a <a href="${pageUrl('servicios/')}">Servicios</a> o pedir una orientación en <a href="${pageUrl('contacto.html')}">Contacto</a>.`,
+    text: `Puedo orientarte con el sitio actualizado: servicios, proyectos, THE JAH STORE, ULTRON, JAH IA, recursos o contacto. También puedes volver al <a href="${homeUrl}">inicio nuevo</a>, revisar <a href="${homeSectionUrl('proyectos')}">proyectos</a> o pedir una orientación en <a href="${pageUrl('contacto.html')}">Contacto</a>.`,
     suggestions: ['Guíame', 'Servicios', 'ULTRON', 'JAH IA']
   };
   const answers = [
     {
       keys: ['hola', 'buenas', 'hey', 'saludos', 'inicio', 'empezar', 'ayuda'],
-      text: `Hola, soy JAH, el asistente virtual de Abraham. Puedo ayudarte a elegir una solución para tu empresa, explorar <a href="${pageUrl('ultron.html')}">ULTRON</a>, abrir <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a> o revisar servicios como desarrollo web, automatización, dashboards, APIs y chatbots. Si no sabes por dónde empezar, dime qué problema quieres resolver.`,
+      text: `Hola, soy JAH, el asistente virtual de Abraham. El sitio ahora usa la nueva experiencia visual de <a href="${homeUrl}">index-preview.html</a>. Puedo ayudarte a elegir una solución, explorar <a href="${pageUrl('ultron.html')}">ULTRON</a>, abrir <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>, entrar a <a href="${projectUrls.jahStore}">THE JAH STORE</a> o revisar proyectos y servicios.`,
       suggestions: ['Guíame', 'Servicios', 'ULTRON', 'JAH IA']
     },
     {
-      keys: ['jah', 'joshue', 'josue', 'josué', 'abraham hernandez', 'abraham hernández', 'quien es', 'quién es', 'perfil profesional', 'ingeniero en sistemas'],
-      text: `Josué Abraham Hernández es Ingeniero en Sistemas y desarrollador web en Nicaragua. Trabaja con empresas que necesitan soluciones digitales a medida: webs profesionales, automatización de procesos, dashboards en tiempo real, integración de APIs, chatbots y frontend orientado a experiencia de usuario.`,
+      keys: ['jah', 'joshue', 'josue', 'josué', 'abraham hernandez', 'abraham hernández', 'quien es', 'quién es', 'perfil profesional', 'ingeniero en sistemas', 'desarrollador web'],
+      text: `Josué Abraham Hernández es Desarrollador Web e Ingeniero en Sistemas en Nicaragua. Su sitio nuevo presenta servicios, proyectos reales, automatización, dashboards, APIs, chatbots, JAH IA, ULTRON y THE JAH STORE con una experiencia visual más premium.`,
       suggestions: ['Sobre mí', 'Servicios', 'Proyectos', 'Contacto']
     },
     {
@@ -207,7 +216,7 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['mapa', 'navegar', 'sitio', 'secciones', 'paginas', 'páginas', 'menu', 'todo el sitio'],
-      text: `Mapa del sitio: <a href="${pageUrl('index.html')}">Inicio</a>, <a href="${pageUrl('servicios/')}">servicios</a>, <a href="${pageUrl('desarrollador-web-nicaragua/')}">desarrollador web en Nicaragua</a>, <a href="${pageUrl('proyectos/')}">proyectos</a>, <a href="${pageUrl('ultron.html')}">ULTRON</a>, <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>, <a href="${pageUrl('recursos/')}">recursos</a>, <a href="${pageUrl('sobre-mi/')}">sobre mí</a>, <a href="${pageUrl('interactua.html')}">herramientas IA</a>, <a href="${pageUrl('jah/')}">Marca JAH</a> y <a href="${pageUrl('contacto.html')}">contacto</a>.`,
+      text: `Mapa del sitio actualizado: <a href="${homeUrl}">inicio nuevo</a>, <a href="${homeSectionUrl('servicios')}">servicios</a>, <a href="${homeSectionUrl('proyectos')}">proyectos destacados</a>, <a href="${homeSectionUrl('sobre-mi')}">sobre mí</a>, <a href="${pageUrl('ultron.html')}">ULTRON</a>, <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>, <a href="${pageUrl('interactua.html')}">herramientas IA</a>, <a href="${projectUrls.jahStore}">THE JAH STORE</a>, <a href="${pageUrl('recursos/')}">recursos</a> y <a href="${pageUrl('contacto.html')}">contacto</a>.`,
       suggestions: ['ULTRON', 'JAH IA', 'Servicios', 'Contacto']
     },
     {
@@ -267,12 +276,12 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['proyecto', 'proyectos', 'portfolio', 'portafolio', 'demo', 'caso', 'casos', 'trabajos'],
-      text: `En <a href="${pageUrl('proyectos/')}">Proyectos</a> aparecen proyectos reales como <a href="https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino.html" target="_blank" rel="noopener">Mural Interactivo Sandino</a>, <a href="${pageUrl('jah/')}">Marca JAH</a> y <a href="https://jhernandez30-cpu.github.io/Variedades-Nora/" target="_blank" rel="noopener">Variedades Nora</a>. También puedes abrir <a href="${pageUrl('ultron.html')}">ULTRON</a> como presentación del asistente inteligente y <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a> como asistente de programación.`,
-      suggestions: ['ULTRON', 'JAH IA', 'Proyectos', 'Servicios']
+      text: `Los proyectos destacados del nuevo sitio son: <a href="${projectUrls.muralSandino}" target="_blank" rel="noopener">Mural Sandino</a>, <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener">Benjamín Zeledón</a>, <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener">Variedades Nora</a> y <a href="${projectUrls.jahStore}">THE JAH STORE</a>. También puedes abrir <a href="${pageUrl('ultron.html')}">ULTRON</a> y <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>.`,
+      suggestions: ['Mural Sandino', 'Benjamín Zeledón', 'Variedades Nora', 'THE JAH STORE']
     },
     {
       keys: ['itsa', 'segurity', 'seguridad', 'monitoreo', 'incidentes', 'empresa', 'mi empresa'],
-      text: `<a href="${pageUrl('proyectos/itsa-segurity/')}">ITSA Segurity</a> es mi empresa, conectada al portafolio como marca empresarial orientada a seguridad, monitoreo, tecnología y soluciones digitales. También puedes abrir el <a href="https://jhernandez30-cpu.github.io/ITSA-Segurity/" target="_blank" rel="noopener">sitio público de ITSA Segurity</a> o escribirme para hablar de una solución relacionada.`,
+      text: `<a href="${projectUrls.itsaSegurity}" target="_blank" rel="noopener">ITSA Segurity</a> es la marca empresarial orientada a seguridad, monitoreo, tecnología y soluciones digitales. En el nuevo menú aparece como acceso externo directo, separado de las tarjetas principales de proyectos.`,
       suggestions: ['Dashboards', 'Empresa', 'Contacto', 'Servicios']
     },
     {
@@ -282,17 +291,22 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['sandino', 'mural sandino', 'museo sandino', 'museo digital', 'ciencia sociales', 'ciencias sociales', 'augusto sandino'],
-      text: `El <a href="https://jhernandez30-cpu.github.io/ciencia-sociales/museo-sandino.html" target="_blank" rel="noopener">Mural Interactivo Sandino</a> es un proyecto educativo/museo digital sobre el General Augusto Nicolás Calderón Sandino. Está integrado en el portafolio como proyecto real con enlace público.`,
+      text: `El proyecto <a href="${projectUrls.muralSandino}" target="_blank" rel="noopener">Mural Sandino</a> abre exactamente en el museo digital educativo que me indicaste. Es una experiencia interactiva de ciencias sociales e historia.`,
       suggestions: ['Proyectos', 'Recursos', 'Servicios', 'Contacto']
     },
     {
+      keys: ['benjamin', 'benjamín', 'zeledon', 'zeledón', 'interactiva benjamin', 'benjamin zeledon'],
+      text: `<a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener">Benjamín Zeledón</a> abre en la experiencia educativa interactiva correcta: ciencia sociales / interactiva-benjamin. Está conectado como proyecto real del portafolio nuevo.`,
+      suggestions: ['Mural Sandino', 'Variedades Nora', 'THE JAH STORE', 'Proyectos']
+    },
+    {
       keys: ['variedades nora', 'nora', 'ecommerce', 'e-commerce', 'tienda', 'tienda online'],
-      text: `<a href="https://jhernandez30-cpu.github.io/Variedades-Nora/" target="_blank" rel="noopener">Variedades Nora</a> aparece como proyecto de e-commerce/tienda online dentro del portafolio. Puedes verlo desde la sección de proyectos de la home.`,
+      text: `<a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener">Variedades Nora</a> abre en la tienda online correcta. Es el proyecto comercial/e-commerce conectado desde la sección de proyectos del nuevo sitio.`,
       suggestions: ['Proyectos', 'Web a medida', 'Contacto', 'Servicios']
     },
     {
-      keys: ['marca jah', 'jah marca', 'logo jah', 'ropa jah', 'tienda jah', 'marca'],
-      text: `<a href="${pageUrl('jah/')}">Marca JAH</a> es una página visual de marca con estética deportiva/premium. En el portafolio aparece como proyecto de marca y experiencia visual.`,
+      keys: ['marca jah', 'jah marca', 'logo jah', 'ropa jah', 'tienda jah', 'marca', 'the jah store', 'jah store', 'store'],
+      text: `<a href="${projectUrls.jahStore}">THE JAH STORE</a> es la página local de marca/tienda con estética deportiva y premium. En el nuevo portafolio debe abrir en <strong>jah/index.html</strong>.`,
       suggestions: ['Proyectos', 'Inicio', 'Contacto', 'Servicios']
     },
     {
@@ -327,12 +341,12 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['sobre mi', 'sobre mí', 'perfil', 'abraham', 'quien eres', 'quién eres', 'experiencia', 'forma de trabajo'],
-      text: `En <a href="${pageUrl('sobre-mi/')}">Sobre mí</a> está el perfil profesional de Abraham: especialización, forma de trabajo, tecnologías, áreas donde aporta criterio y CTA para revisar un proyecto.`,
+      text: `En la nueva home puedes ir a <a href="${homeSectionUrl('sobre-mi')}">Sobre mí</a> para ver el perfil de Abraham como Desarrollador Web e Ingeniero en Sistemas. También se conserva la página ampliada <a href="${pageUrl('sobre-mi/')}">Sobre mí</a> con más contexto profesional.`,
       suggestions: ['CV', 'Recursos', 'Servicios', 'Contacto']
     },
     {
       keys: ['indicadores', 'años', 'anos', 'practica tecnica', 'práctica técnica', 'areas de servicio', 'demos'],
-      text: `La home muestra indicadores reales con un diseño renovado: 5 años de práctica técnica, 15 proyectos y demos, y 5 áreas de servicio. Son datos de base profesional, no cifras inventadas de clientes, premios o ventas.`,
+      text: `La home actual es <a href="${homeUrl}">index-preview.html</a> y usa el diseño premium del template: hero animado, secciones visuales, proyectos reales, accesos a JAH IA, ULTRON, ITSA Segurity y THE JAH STORE.`,
       suggestions: ['Proyectos', 'Servicios', 'Sobre mí', 'Contacto']
     },
     {
@@ -362,7 +376,7 @@ function initPortfolioChatbot() {
     }
   ];
 
-  const quickReplies = ['Guíame', 'Servicios', 'ULTRON', 'JAH IA', 'Contacto'];
+  const quickReplies = ['Guíame', 'Proyectos', 'THE JAH STORE', 'ULTRON', 'JAH IA'];
   const widget = document.createElement('div');
   widget.className = 'chatbot-widget';
   widget.innerHTML = `
@@ -392,12 +406,17 @@ function initPortfolioChatbot() {
           </div>
           <div class="chatbot-menu-section">
             <span class="chatbot-menu-label">Enlaces rápidos</span>
-            <a href="${pageUrl('index.html')}" class="chatbot-menu-link">Inicio</a>
+            <a href="${homeUrl}" class="chatbot-menu-link">Inicio nuevo</a>
             <a href="${pageUrl('sobre-mi/')}" class="chatbot-menu-link">Sobre mí</a>
             <a href="${pageUrl('servicios/')}" class="chatbot-menu-link">Servicios</a>
-            <a href="${pageUrl('proyectos/')}" class="chatbot-menu-link">Proyectos</a>
+            <a href="${homeSectionUrl('proyectos')}" class="chatbot-menu-link">Proyectos destacados</a>
+            <a href="${projectUrls.muralSandino}" target="_blank" rel="noopener" class="chatbot-menu-link">Mural Sandino</a>
+            <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener" class="chatbot-menu-link">Benjamín Zeledón</a>
+            <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener" class="chatbot-menu-link">Variedades Nora</a>
+            <a href="${projectUrls.jahStore}" class="chatbot-menu-link">THE JAH STORE</a>
             <a href="${pageUrl('ultron.html')}" class="chatbot-menu-link">ULTRON</a>
             <a href="${pageUrl('asistente-programacion.html')}" class="chatbot-menu-link">JAH IA</a>
+            <a href="${projectUrls.itsaSegurity}" target="_blank" rel="noopener" class="chatbot-menu-link">ITSA Segurity</a>
             <a href="${pageUrl('recursos/')}" class="chatbot-menu-link">Recursos</a>
             <a href="${pageUrl('interactua.html')}" class="chatbot-menu-link">Interactúa</a>
             <a href="${pageUrl('cv.pdf')}" class="chatbot-menu-link" download>Descargar CV</a>
@@ -574,5 +593,5 @@ function initPortfolioChatbot() {
     sendQuestion(input.value);
   });
 
-  addMessage('Hola, soy JAH, el asistente virtual de Abraham. Puedo ayudarte con servicios, presupuesto, proyectos, ULTRON o JAH IA. Escribe tu necesidad o abre el menú desplegable.', 'bot');
+  addMessage('Hola, soy JAH. Ya estoy actualizado con la nueva home, proyectos reales, THE JAH STORE, ULTRON, JAH IA e ITSA Segurity. Escribe lo que quieres ver o abre el menú desplegable.', 'bot');
 }

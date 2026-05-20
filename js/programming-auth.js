@@ -2,11 +2,17 @@
   const AUTH_TOKEN_KEY = 'jahAiAuthToken';
   const AUTH_USER_KEY = 'jahAiCurrentUser';
   const AUTH_PREFS_KEY = 'jahAiUserPreferences';
-  const API_BASE_URL = String(
-    window.APP_CONFIG?.API_BASE_URL
-    || window.TUTOR_IA_BRIDGE_URL
-    || ''
-  ).replace(/\/$/, '');
+  function resolveApiBaseUrl() {
+    if (typeof window.APP_CONFIG?.resolveApiBaseUrl === 'function') {
+      return window.APP_CONFIG.resolveApiBaseUrl();
+    }
+    return String(
+      window.APP_CONFIG?.API_BASE_URL
+      || window.TUTOR_IA_BRIDGE_URL
+      || window.APP_CONFIG?.LOCAL_API_BASE_URL
+      || ''
+    ).trim().replace(/\/$/, '');
+  }
 
   const DEFAULT_PREFERENCES = {
     theme: 'system',
@@ -43,7 +49,7 @@
     isReady: () => authChecked,
     isHydrating: () => authHydrating,
     isAdmin: () => isAdminUser(state.user),
-    getApiBaseUrl: () => API_BASE_URL,
+    getApiBaseUrl: resolveApiBaseUrl,
     savePreferences: savePreferencesPatch,
     openAuth: openAuthModal,
     logout
@@ -388,7 +394,7 @@
     const backendReady = await ensureAuthBackendAvailable();
     if (!backendReady) return;
     const returnTo = currentReturnUrl();
-    window.location.assign(`${API_BASE_URL}/api/auth/${provider}/start?return_to=${encodeURIComponent(returnTo)}`);
+    window.location.assign(`${resolveApiBaseUrl()}/api/auth/${provider}/start?return_to=${encodeURIComponent(returnTo)}`);
   }
 
   function handlePhoneLogin() {
@@ -817,8 +823,9 @@
   }
 
   async function authFetch(path, options = {}) {
-    if (!API_BASE_URL) {
-      const error = new Error('El backend de autenticacion no esta configurado. Define window.APP_CONFIG.API_BASE_URL para produccion o abre el asistente en modo local con el backend activo.');
+    const apiBaseUrl = resolveApiBaseUrl();
+    if (!apiBaseUrl) {
+      const error = new Error('El backend de autenticación no está configurado. Define window.APP_CONFIG.API_BASE_URL para producción o abre el asistente en modo local con el backend activo.');
       error.status = 0;
       error.code = 'AUTH_BACKEND_NOT_CONFIGURED';
       throw error;
@@ -828,7 +835,7 @@
       ...getAuthHeaders(),
       ...(options.headers || {})
     };
-    const requestUrl = `${API_BASE_URL}${path}`;
+    const requestUrl = `${apiBaseUrl}${path}`;
     let response;
     try {
       response = await fetchWithTimeout(requestUrl, {
@@ -839,7 +846,7 @@
       const friendly = buildAuthNetworkError(error, requestUrl, path);
       console.warn('[JAHAuth] No se pudo conectar con autenticacion.', {
         path,
-        apiBaseUrl: API_BASE_URL,
+        apiBaseUrl,
         errorName: error?.name || '',
         errorMessage: error?.message || ''
       });
@@ -872,15 +879,12 @@
   }
 
   function authNetworkErrorMessage(error, requestUrl, path) {
-    const target = path.includes('/register')
-      ? 'registro'
-      : path.includes('/login')
-        ? 'inicio de sesion'
-        : 'autenticacion';
+    void requestUrl;
+    void path;
     if (error?.name === 'AbortError') {
-      return `El backend de ${target} no respondio a tiempo en ${API_BASE_URL}. Verifica que bridge_api este activo en el puerto 8787.`;
+      return 'El backend de autenticación no está disponible en este momento.';
     }
-    return `El backend de ${target} no esta disponible en ${API_BASE_URL}. Inicia bridge_api o revisa que API_BASE_URL apunte al servidor correcto.`;
+    return 'El backend de autenticación no está disponible en este momento.';
   }
 
   function authHttpErrorMessage(status, path, data = {}) {
@@ -928,7 +932,7 @@
       await authFetch('/api/health', { method: 'GET', timeoutMs: 4500 });
       return true;
     } catch (error) {
-      setAuthStatus(error.message || 'El servicio de autenticacion no esta disponible en este momento.', 'error');
+      setAuthStatus(error.message || 'El backend de autenticación no está disponible en este momento.', 'error');
       return false;
     }
   }

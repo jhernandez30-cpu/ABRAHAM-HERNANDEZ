@@ -5,16 +5,42 @@ const TUTOR_IA_ENABLED_KEY = 'tutorIaEnabled';
 const DEFAULT_MODE = 'Cerebro Unificado';
 const PROJECT_PATH = window.TUTOR_IA_PROJECT_PATH || '';
 const BRAIN_ROOT = window.TUTOR_IA_BRAIN_ROOT || '';
-const BRIDGE_URL = String(
-  window.APP_CONFIG?.API_BASE_URL
-  || window.TUTOR_IA_BRIDGE_URL
-  || ''
-).replace(/\/$/, '');
-const DEFAULT_ENDPOINTS = BRIDGE_URL ? [`${BRIDGE_URL}/api/chat`] : [];
-const CHAT_ENDPOINT = BRIDGE_URL ? `${BRIDGE_URL}/api/chat` : '';
-const UPLOAD_ENDPOINT = BRIDGE_URL ? `${BRIDGE_URL}/api/upload` : '';
-const JARVIS_MARK_STATUS_ENDPOINT = BRIDGE_URL ? `${BRIDGE_URL}/api/jarvis/mark/status` : '';
-const JARVIS_MARK_LAUNCH_ENDPOINT = BRIDGE_URL ? `${BRIDGE_URL}/api/jarvis/mark/launch` : '';
+function getBridgeUrl() {
+  if (typeof window.APP_CONFIG?.resolveApiBaseUrl === 'function') {
+    return window.APP_CONFIG.resolveApiBaseUrl();
+  }
+  return String(
+    window.APP_CONFIG?.API_BASE_URL
+    || window.TUTOR_IA_BRIDGE_URL
+    || window.APP_CONFIG?.LOCAL_API_BASE_URL
+    || ''
+  ).trim().replace(/\/$/, '');
+}
+
+function getChatEndpoint() {
+  const bridgeUrl = getBridgeUrl();
+  return bridgeUrl ? `${bridgeUrl}/api/chat` : '';
+}
+
+function getUploadEndpoint() {
+  const bridgeUrl = getBridgeUrl();
+  return bridgeUrl ? `${bridgeUrl}/api/upload` : '';
+}
+
+function getJarvisMarkStatusEndpoint() {
+  const bridgeUrl = getBridgeUrl();
+  return bridgeUrl ? `${bridgeUrl}/api/jarvis/mark/status` : '';
+}
+
+function getJarvisMarkLaunchEndpoint() {
+  const bridgeUrl = getBridgeUrl();
+  return bridgeUrl ? `${bridgeUrl}/api/jarvis/mark/launch` : '';
+}
+
+function getDefaultEndpoints() {
+  const bridgeUrl = getBridgeUrl();
+  return bridgeUrl ? [`${bridgeUrl}/api/chat`] : [];
+}
 const CHAT_TIMEOUT_MS = 120000;
 const CLIENT_CONTEXT_TURNS = 6;
 const CLIENT_CONTEXT_MAX_CHARS = 2400;
@@ -51,7 +77,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const sendButton = coachForm ? coachForm.querySelector('.send-orb') : null;
   const jarvisVoiceBtn = document.getElementById('jarvisVoiceBtn');
   const jarvisStatus = document.getElementById('jarvisStatus');
-  const endpointCandidates = normalizeEndpoints(window.TUTOR_IA_ENDPOINTS || DEFAULT_ENDPOINTS);
+  function getEndpointCandidates() {
+    return normalizeEndpoints(window.TUTOR_IA_ENDPOINTS || getDefaultEndpoints());
+  }
 
   let activeTutorEndpoint = '';
   let adminSystemStatusVisible = false;
@@ -86,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const url = new URL(endpoint);
       return `${url.protocol}//${url.hostname}${url.port ? `:${url.port}` : ''}`;
     } catch (error) {
-      return BRIDGE_URL;
+      return getBridgeUrl();
     }
   }
 
@@ -103,11 +131,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function ragHealthUrl() {
-    return `${BRIDGE_URL}/api/health`;
+    return `${getBridgeUrl()}/api/health`;
   }
 
   function adminStatusUrl() {
-    return `${BRIDGE_URL}/api/admin/system-status`;
+    return `${getBridgeUrl()}/api/admin/system-status`;
   }
 
   function endpointHostKey(endpoint) {
@@ -405,9 +433,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function tutorConnectionStateLabel(status = tutorConnectionStatus) {
     const normalized = String(status || 'UNKNOWN').toUpperCase();
     if (normalized === 'CONNECTED') return 'Conectado';
+    if (normalized === 'CHECKING') return 'Comprobando conexion';
     if (normalized === 'RECOVERING') return 'Recuperando conexion';
-    if (normalized === 'BACKEND_UNAVAILABLE') return 'Sin conexion';
-    if (normalized === 'DISCONNECTED') return 'Sin conexion';
+    if (normalized === 'BACKEND_UNAVAILABLE') return 'Backend local no disponible';
+    if (normalized === 'DISCONNECTED') return 'Backend local no disponible';
     if (normalized === 'DEGRADED') return 'Degradado';
     return 'Sin verificar';
   }
@@ -416,8 +445,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const normalized = String(status || 'UNKNOWN').toUpperCase();
     if (!tutorIAEnabled) return 'offline';
     if (normalized === 'CONNECTED') return 'ready';
-    if (normalized === 'RECOVERING' || normalized === 'UNKNOWN') return 'checking';
-    return 'offline';
+    if (normalized === 'CHECKING' || normalized === 'RECOVERING' || normalized === 'UNKNOWN') return 'checking';
+    return 'error';
+  }
+
+  function deriveTutorStatusFromHealth(data = {}) {
+    const explicit = String(data.tutor_ia_status || data.tutor_status || '').toUpperCase();
+    if (explicit) return explicit;
+    const fragments = Number(data.fragments || data.brain?.fragments || 0);
+    const bridgeOk = Boolean(data.ok || data.success || data.status === 'ok');
+    if (!bridgeOk) return 'BACKEND_UNAVAILABLE';
+    if (fragments > 0 || data.tutor_ia_connected === true) return 'CONNECTED';
+    if (data.brain_error) return 'DEGRADED';
+    return 'DEGRADED';
   }
 
   function updateTutorButtonState() {
@@ -492,48 +532,58 @@ document.addEventListener('DOMContentLoaded', () => {
       setTutorConnectionStatus('UNKNOWN', 'Desactivado');
       return;
     }
-    if (!BRIDGE_URL) {
-      setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Sin conexion');
+
+    const bridgeUrl = getBridgeUrl();
+    const endpointCandidates = getEndpointCandidates();
+    if (!bridgeUrl) {
+      setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Backend local no configurado');
       return;
     }
     if (!endpointCandidates.length) {
-      setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Sin endpoint');
+      setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Backend local no configurado');
       return;
     }
 
-    setTutorConnectionStatus('RECOVERING', 'Recuperando conexion');
+    setTutorConnectionStatus('CHECKING', 'Comprobando conexion');
 
     try {
-      const authHeaders = window.JAHAuth && typeof window.JAHAuth.getAuthHeaders === 'function'
-        ? window.JAHAuth.getAuthHeaders()
-        : {};
-      const response = await fetchWithTimeout(adminStatusUrl(), {
-        method: 'GET',
-        headers: authHeaders
-      }, 5000);
-
-      if (response.status === 401 || response.status === 403) {
-        setAdminTechnicalVisibility(false);
-        return;
-      }
+      const response = await fetchWithTimeout(ragHealthUrl(), { method: 'GET' }, 5000);
       if (!response.ok) {
-        setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Sin conexion');
+        setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Backend local no disponible');
         return;
       }
 
       const data = await response.json();
-      activeTutorEndpoint = endpointCandidates[0] || CHAT_ENDPOINT;
-      const tutorStatus = String(data.tutor_ia_status || data.tutor_status || 'DISCONNECTED').toUpperCase();
-      const label = tutorStatus === 'CONNECTED'
-        ? 'Conectado'
-        : tutorStatus === 'RECOVERING'
-          ? 'Recuperando conexion'
-          : tutorStatus === 'DEGRADED'
-            ? 'Degradado'
-            : 'Sin conexion';
+      activeTutorEndpoint = endpointCandidates[0] || getChatEndpoint();
+      let tutorStatus = deriveTutorStatusFromHealth(data);
+      let label = tutorConnectionStateLabel(tutorStatus);
+
+      const authHeaders = window.JAHAuth && typeof window.JAHAuth.getAuthHeaders === 'function'
+        ? window.JAHAuth.getAuthHeaders()
+        : {};
+      if (authHeaders.Authorization) {
+        try {
+          const adminResponse = await fetchWithTimeout(adminStatusUrl(), {
+            method: 'GET',
+            headers: authHeaders
+          }, 5000);
+          if (adminResponse.status === 401 || adminResponse.status === 403) {
+            setAdminTechnicalVisibility(false);
+            return;
+          }
+          if (adminResponse.ok) {
+            const adminData = await adminResponse.json();
+            tutorStatus = String(adminData.tutor_ia_status || adminData.tutor_status || tutorStatus).toUpperCase();
+            label = tutorConnectionStateLabel(tutorStatus);
+          }
+        } catch (error) {
+          // Mantener el resultado del health publico.
+        }
+      }
+
       setTutorConnectionStatus(tutorStatus, label);
     } catch (error) {
-      setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Sin conexion');
+      setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Backend local no disponible');
     }
   }
 
@@ -570,7 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('fast_mode', String(!deepThinkingEnabled));
     formData.append('deep_thinking', String(deepThinkingEnabled));
     formData.append('bridge_api', 'true');
-    formData.append('bridge_api_url', BRIDGE_URL);
+    formData.append('bridge_api_url', getBridgeUrl());
     formData.append('anthropic', 'true');
     if (BRAIN_ROOT) {
       formData.append('brain_root', BRAIN_ROOT);
@@ -608,7 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function verifyBackendHealth() {
-    if (!BRIDGE_URL) return false;
+    if (!getBridgeUrl()) return false;
     try {
       const response = await fetchWithTimeout(ragHealthUrl(), { method: 'GET' }, 4500);
       if (!response.ok) return false;
@@ -620,7 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function backendConnectionError() {
-    const target = BRIDGE_URL || 'API_BASE_URL';
+    const target = getBridgeUrl() || 'API_BASE_URL';
     const error = new Error(`No se pudo conectar con el backend de JAH AI. Verifica que el servicio este activo o que ${target} este configurado correctamente.`);
     error.code = 'BACKEND_CONNECTION';
     return error;
@@ -655,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
       local_first: true,
       fast_mode: !(tutorIAEnabled || deepThinkingEnabled),
       bridge_api: true,
-      bridge_api_url: BRIDGE_URL,
+      bridge_api_url: getBridgeUrl(),
       anthropic: true,
       brain_root: BRAIN_ROOT,
       project_path: PROJECT_PATH,
@@ -691,7 +741,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const authHeaders = window.JAHAuth && typeof window.JAHAuth.getAuthHeaders === 'function'
       ? window.JAHAuth.getAuthHeaders()
       : {};
-    const response = await fetchWithTimeout(CHAT_ENDPOINT, {
+    const response = await fetchWithTimeout(getChatEndpoint(), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1068,7 +1118,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return error.message;
     }
     const detail = error && error.message ? ` Detalle: ${error.message}` : '';
-    return `No pude completar la consulta con TUTOR_IA. ${fileStatus}${detail} Verifica el puente local en ${BRIDGE_URL}/health o ${BRIDGE_URL}/api/health.`;
+    const bridgeUrl = getBridgeUrl();
+    return `No pude completar la consulta con TUTOR_IA. ${fileStatus}${detail} Verifica el puente local en ${bridgeUrl}/health o ${bridgeUrl}/api/health.`;
   }
 
   function autosizeInput() {
@@ -1166,7 +1217,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function uploadSelectedFiles(files) {
     const uploadFiles = Array.from(files || []).filter(isAllowedFile);
     if (!uploadFiles.length) return;
-    if (!UPLOAD_ENDPOINT) {
+    if (!getUploadEndpoint()) {
       addMessageToChat(activeChatId, {
         role: 'assistant',
         content: 'El backend de archivos no esta configurado. Define API_BASE_URL o ejecuta el backend local antes de subir archivos.'
@@ -1186,7 +1237,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ? window.JAHAuth.getAuthHeaders()
         : {};
       try {
-        const response = await fetchWithTimeout(UPLOAD_ENDPOINT, {
+        const response = await fetchWithTimeout(getUploadEndpoint(), {
           method: 'POST',
           headers: {
             ...authHeaders,
@@ -1345,9 +1396,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function refreshMarkVoiceStatus(showWhenReady = false) {
     if (!jarvisAssistant) return null;
-    if (!JARVIS_MARK_STATUS_ENDPOINT) return null;
+    if (!getJarvisMarkStatusEndpoint()) return null;
     try {
-      const response = await fetchWithTimeout(JARVIS_MARK_STATUS_ENDPOINT, { method: 'GET' }, 5000);
+      const response = await fetchWithTimeout(getJarvisMarkStatusEndpoint(), { method: 'GET' }, 5000);
       if (!response.ok) return null;
       const data = await response.json();
       const mark = data.mark_xxxix || data;
@@ -1366,10 +1417,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function launchMarkVoice() {
     if (!jarvisAssistant) return false;
-    if (!JARVIS_MARK_LAUNCH_ENDPOINT) return false;
+    if (!getJarvisMarkLaunchEndpoint()) return false;
     jarvisAssistant.showStatus('Preparando Mark XXXIX...', 'info', 0);
     try {
-      const response = await fetchWithTimeout(JARVIS_MARK_LAUNCH_ENDPOINT, { method: 'POST' }, 10000);
+      const response = await fetchWithTimeout(getJarvisMarkLaunchEndpoint(), { method: 'POST' }, 10000);
       const data = await response.json().catch(() => ({}));
       if (!response.ok || data.ok === false) {
         const note = data.message

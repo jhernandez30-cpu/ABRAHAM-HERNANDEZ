@@ -12,6 +12,9 @@
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#faf8f5">
   <meta name="application-name" content="JAH AI">
+  <!-- local: usa bridge en 127.0.0.1:8787 | production: define jah-api-base-url y jah-run-mode -->
+  <meta name="jah-run-mode" content="local">
+  <meta name="jah-api-base-url" content="">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="JAH AI">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -244,9 +247,11 @@
     </section>
   </div>
 
-  <script src="js/app-config.js?v=auth-config-20260518"></script>
+  <script src="js/app-config.js?v=brain-connect-20260519"></script>
+  <!-- Produccion: descomenta y crea js/app-config.production.js desde app-config.production.example.js -->
+  <!-- <script src="js/app-config.production.js?v=auth-prod-20260519"></script> -->
   <script src="js/jarvis-assistant.js?v=mark-xxxix-20260511"></script>
-  <script src="js/programming-assistant.js?v=tutor-state-20260518"></script>
-  <script src="js/programming-auth.js?v=auth-guest-gate-20260518"></script>
+  <script src="js/programming-assistant.js?v=brain-connect-20260519"></script>
+  <script src="js/programming-auth.js?v=auth-guest-gate-20260519"></script>
 </body>
 </html>

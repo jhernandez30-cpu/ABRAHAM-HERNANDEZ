@@ -6,6 +6,8 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response
 
 from app.config import settings
 from app.routes import auth, chat, health, history, index, search, sources, upload
@@ -23,6 +25,14 @@ def create_app() -> FastAPI:
         version="0.4.0",
     )
 
+    class PrivateNetworkAccessMiddleware(BaseHTTPMiddleware):
+        async def dispatch(self, request: Request, call_next) -> Response:
+            response = await call_next(request)
+            if request.headers.get("access-control-request-private-network", "").lower() == "true":
+                response.headers["Access-Control-Allow-Private-Network"] = "true"
+            return response
+
+    app.add_middleware(PrivateNetworkAccessMiddleware)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.allowed_origins,
@@ -30,6 +40,7 @@ def create_app() -> FastAPI:
         allow_credentials=False,
         allow_methods=["*"],
         allow_headers=["*"],
+        expose_headers=["Access-Control-Allow-Private-Network"],
     )
 
     app.include_router(health.router)
