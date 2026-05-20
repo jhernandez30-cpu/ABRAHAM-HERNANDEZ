@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -51,6 +51,19 @@ def create_app() -> FastAPI:
     app.include_router(sources.router)
     app.include_router(upload.router)
     app.include_router(history.router)
+
+    @app.exception_handler(HTTPException)
+    async def http_exception_handler(_: Request, exc: HTTPException) -> JSONResponse:
+        detail = exc.detail
+        message = detail if isinstance(detail, str) else str(detail)
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={
+                "ok": False,
+                "error": message,
+                "detail": detail,
+            },
+        )
 
     @app.exception_handler(RequestValidationError)
     async def validation_exception_handler(_: Request, exc: RequestValidationError) -> JSONResponse:

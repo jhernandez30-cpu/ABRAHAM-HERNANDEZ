@@ -39,6 +39,7 @@
   let activeEmail = '';
   let authChecked = false;
   let authHydrating = false;
+  let authProviders = { google: false, apple: false, local: true };
 
   window.JAHAuth = {
     getToken: () => state.token,
@@ -64,6 +65,7 @@
     bindBaseEvents();
     applyPreferences(state.preferences, false);
     renderAuthState();
+    await loadAuthProviders();
     if (authCallback.error) {
       openAuthModal('login');
       setAuthStatus(authErrorMessage(authCallback.error, authCallback.provider), 'error');
@@ -73,6 +75,7 @@
     } finally {
       authHydrating = false;
       authChecked = true;
+      renderAuthState();
       window.dispatchEvent(new CustomEvent('jah-auth-ready', {
         detail: {
           context: getContext(),
@@ -163,8 +166,34 @@
     if (els.accountPanelOverlay) els.accountPanelOverlay.hidden = true;
   }
 
+  async function loadAuthProviders() {
+    const apiBaseUrl = resolveApiBaseUrl();
+    if (!apiBaseUrl) {
+      authProviders = { google: false, apple: false, local: true };
+      return authProviders;
+    }
+    try {
+      const response = await fetchWithTimeout(`${apiBaseUrl}/api/auth/providers`, { method: 'GET' }, 4000);
+      if (response.ok) {
+        const data = await response.json();
+        authProviders = {
+          google: Boolean(data.google),
+          apple: Boolean(data.apple),
+          local: data.local !== false
+        };
+      }
+    } catch (error) {
+      authProviders = { google: false, apple: false, local: true };
+    }
+    return authProviders;
+  }
+
   function renderAuthEntry() {
     if (!els.authModalContent) return;
+    loadAuthProviders().then(() => {
+      if (!els.authModalContent) return;
+      applyProviderButtonState();
+    });
     els.authModalContent.innerHTML = `
       <h2 id="authModalTitle" class="auth-title">Iniciar sesi&oacute;n o registrarse</h2>
       <p class="auth-description">Obtendr&aacute;s respuestas m&aacute;s inteligentes y podr&aacute;s cargar archivos, im&aacute;genes y mucho m&aacute;s.</p>
@@ -209,6 +238,7 @@
     document.getElementById('googleLoginBtn')?.addEventListener('click', handleGoogleAuth);
     document.getElementById('appleLoginBtn')?.addEventListener('click', handleAppleAuth);
     document.getElementById('phoneLoginBtn')?.addEventListener('click', handlePhoneLogin);
+    applyProviderButtonState();
     document.getElementById('authEmailForm')?.addEventListener('submit', event => {
       event.preventDefault();
       const email = document.getElementById('authEmailInput')?.value.trim() || '';
@@ -322,6 +352,8 @@
     if (hasError) return;
 
     setAuthStatus('Creando cuenta...');
+    const backendReady = await ensureAuthBackendAvailable();
+    if (!backendReady) return;
     try {
       const data = await authFetch('/api/auth/register', {
         method: 'POST',
@@ -359,6 +391,8 @@
     if (hasError) return;
 
     setAuthStatus('Iniciando sesi&oacute;n...');
+    const backendReady = await ensureAuthBackendAvailable();
+    if (!backendReady) return;
     try {
       const data = await authFetch('/api/auth/login', {
         method: 'POST',
@@ -388,13 +422,47 @@
     handleAppleAuth();
   }
 
+  function applyProviderButtonState() {
+    const googleBtn = document.getElementById('googleLoginBtn');
+    const appleBtn = document.getElementById('appleLoginBtn');
+    if (googleBtn) {
+      googleBtn.disabled = !authProviders.google;
+      googleBtn.title = authProviders.google
+        ? 'Continuar con Google'
+        : 'Google no configurado en el backend (GOOGLE_CLIENT_ID y GOOGLE_CLIENT_SECRET en bridge_api/.env)';
+      googleBtn.classList.toggle('is-disabled', !authProviders.google);
+    }
+    if (appleBtn) {
+      appleBtn.disabled = !authProviders.apple;
+      appleBtn.title = authProviders.apple
+        ? 'Continuar con Apple'
+        : 'Apple no configurado en el backend (APPLE_CLIENT_ID y APPLE_CLIENT_SECRET en bridge_api/.env)';
+      appleBtn.classList.toggle('is-disabled', !authProviders.apple);
+    }
+  }
+
   async function startProviderAuth(provider) {
     const providerLabel = provider === 'apple' ? 'Apple' : 'Google';
+    const apiBaseUrl = resolveApiBaseUrl();
+    if (!apiBaseUrl) {
+      setAuthStatus(`No se puede conectar con ${providerLabel}: el backend de autenticación no está configurado. Inicia bridge_api en http://127.0.0.1:8787.`, 'error');
+      return;
+    }
+    await loadAuthProviders();
+    if (!authProviders[provider]) {
+      setAuthStatus(
+        provider === 'google'
+          ? 'Google Login pendiente de configuración. Añade GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET y GOOGLE_REDIRECT_URI en bridge_api/.env y en Google Cloud Console.'
+          : 'Apple Login pendiente de configuración. Añade APPLE_CLIENT_ID, APPLE_CLIENT_SECRET y APPLE_REDIRECT_URI en bridge_api/.env y en Apple Developer.',
+        'error'
+      );
+      return;
+    }
     setAuthStatus(`Conectando con ${providerLabel}...`);
     const backendReady = await ensureAuthBackendAvailable();
     if (!backendReady) return;
     const returnTo = currentReturnUrl();
-    window.location.assign(`${resolveApiBaseUrl()}/api/auth/${provider}/start?return_to=${encodeURIComponent(returnTo)}`);
+    window.location.assign(`${apiBaseUrl}/api/auth/${provider}/start?return_to=${encodeURIComponent(returnTo)}`);
   }
 
   function handlePhoneLogin() {
@@ -472,9 +540,8 @@
       if (data.authenticated && data.user) {
         acceptSession(data);
         if (authCode) {
-          openAuthModal('login');
-          setAuthStatus('Sesion iniciada correctamente.', 'success');
-          window.setTimeout(closeAuthModal, 500);
+          closeAuthModal();
+          renderAuthState();
         }
       } else if (authCode) {
         openAuthModal('login');
@@ -825,7 +892,7 @@
   async function authFetch(path, options = {}) {
     const apiBaseUrl = resolveApiBaseUrl();
     if (!apiBaseUrl) {
-      const error = new Error('El backend de autenticación no está configurado. Define window.APP_CONFIG.API_BASE_URL para producción o abre el asistente en modo local con el backend activo.');
+      const error = new Error('El backend de autenticación no está disponible. Para desarrollo local, inicia el backend con: cd bridge_api && python main.py. Para producción, configura API_BASE_URL.');
       error.status = 0;
       error.code = 'AUTH_BACKEND_NOT_CONFIGURED';
       throw error;
@@ -882,21 +949,37 @@
     void requestUrl;
     void path;
     if (error?.name === 'AbortError') {
-      return 'El backend de autenticación no está disponible en este momento.';
+      return 'El backend de autenticación no respondió a tiempo. Verifica que el servidor esté ejecutándose en ' + resolveApiBaseUrl() + '.';
     }
-    return 'El backend de autenticación no está disponible en este momento.';
+    return 'No se pudo conectar con el backend de autenticación en ' + resolveApiBaseUrl() + '. Verifica que el servidor esté ejecutándose (cd bridge_api && python main.py).';
   }
 
   function authHttpErrorMessage(status, path, data = {}) {
+    const backendMsg = backendErrorMessage(data);
     if (status === 404) {
-      if (path.includes('/register')) return 'La ruta de registro no esta configurada correctamente en el backend.';
-      if (path.includes('/login')) return 'La ruta de inicio de sesion no esta configurada correctamente en el backend.';
-      return 'La ruta de autenticacion no esta configurada correctamente en el backend.';
+      if (path.includes('/register')) return 'La ruta de registro no existe en el backend. Verifica que el backend esté actualizado.';
+      if (path.includes('/login')) return 'La ruta de login no existe en el backend. Verifica que el backend esté actualizado.';
+      return 'La ruta de autenticación no existe en el backend.';
     }
     if (status === 405) {
-      return 'La ruta de autenticacion existe, pero el metodo HTTP no coincide con el backend.';
+      return 'El método HTTP no es compatible con la ruta del backend.';
     }
-    return backendErrorMessage(data) || `Error HTTP ${status} en autenticacion.`;
+    if (status === 409) {
+      return backendMsg || 'Ya existe una cuenta con ese correo electrónico.';
+    }
+    if (status === 401) {
+      return backendMsg || 'Correo o contraseña incorrectos.';
+    }
+    if (status === 422) {
+      return backendMsg || 'Los datos enviados no son válidos. Revisa los campos del formulario.';
+    }
+    if (status === 500) {
+      return 'Error interno del servidor. Intenta de nuevo en unos momentos.';
+    }
+    if (status === 503) {
+      return backendMsg || 'El servicio de autenticación no está disponible temporalmente.';
+    }
+    return backendMsg || `Error HTTP ${status} en autenticación.`;
   }
 
   function backendErrorMessage(data = {}) {
@@ -928,11 +1011,24 @@
   }
 
   async function ensureAuthBackendAvailable() {
+    const apiBaseUrl = resolveApiBaseUrl();
+    if (!apiBaseUrl) {
+      setAuthStatus('El backend de autenticación no está configurado. Define API_BASE_URL o abre el asistente en modo local.', 'error');
+      return false;
+    }
     try {
       await authFetch('/api/health', { method: 'GET', timeoutMs: 4500 });
       return true;
     } catch (error) {
-      setAuthStatus(error.message || 'El backend de autenticación no está disponible en este momento.', 'error');
+      const isNotConfigured = error.code === 'AUTH_BACKEND_NOT_CONFIGURED';
+      const onPublicSite = window.APP_CONFIG?.IS_GITHUB_PAGES && window.location.protocol === 'https:';
+      let hint = isNotConfigured
+        ? 'El backend no está configurado. En local: cd bridge_api && source .venv/bin/activate && uvicorn main:app --host 127.0.0.1 --port 8787'
+        : 'No se pudo conectar con el backend en ' + apiBaseUrl + '. Verifica que bridge_api esté ejecutándose.';
+      if (onPublicSite && !isNotConfigured) {
+        hint += ' Desde GitHub Pages el navegador puede bloquear llamadas a localhost; prueba abrir el asistente en http://127.0.0.1:5500/asistente-programacion.html con el backend activo.';
+      }
+      setAuthStatus(hint, 'error');
       return false;
     }
   }
@@ -976,18 +1072,18 @@
   }
 
   function authErrorMessage(errorCode, provider) {
-    const providerLabel = provider === 'apple' ? 'Apple' : provider === 'google' ? 'Google' : 'autenticacion';
+    const providerLabel = provider === 'apple' ? 'Apple' : provider === 'google' ? 'Google' : 'autenticación';
     const normalized = String(errorCode || '').toLowerCase();
     if (normalized.includes('google_not_configured')) {
-      return 'Google OAuth no esta configurado en el backend. Revisa GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET y GOOGLE_REDIRECT_URI.';
+      return 'Google Login no está configurado. Añade GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET y GOOGLE_REDIRECT_URI en bridge_api/.env.';
     }
     if (normalized.includes('apple_not_configured')) {
-      return 'Apple OAuth no esta configurado en el backend. Revisa APPLE_CLIENT_ID, APPLE_CLIENT_SECRET y APPLE_REDIRECT_URI.';
+      return 'Apple Login no está configurado. Añade APPLE_CLIENT_ID, APPLE_CLIENT_SECRET y APPLE_REDIRECT_URI en bridge_api/.env.';
     }
     if (normalized.includes('access_denied')) {
       return `Inicio con ${providerLabel} cancelado.`;
     }
-    return `No se pudo iniciar sesion con ${providerLabel}. ${errorCode || ''}`.trim();
+    return `No se pudo iniciar sesión con ${providerLabel}. ${errorCode || ''}`.trim();
   }
 
   function normalizePreferences(value) {

@@ -1119,6 +1119,13 @@
   font-size: 1.02rem;
 }
 
+.auth-provider-btn.is-disabled,
+.auth-provider-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  filter: grayscale(0.35);
+}
+
 .auth-separator {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);

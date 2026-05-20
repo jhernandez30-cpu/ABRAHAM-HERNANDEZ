@@ -79,6 +79,16 @@ def _auth_error(exc: AuthServiceError) -> HTTPException:
     return HTTPException(status_code=exc.status_code, detail=str(exc))
 
 
+@router.get("/api/auth/providers")
+async def auth_providers() -> dict[str, Any]:
+    return {
+        "ok": True,
+        "google": auth_service.google_configured(),
+        "apple": auth_service.apple_configured(),
+        "local": True,
+    }
+
+
 @router.post("/api/auth/register")
 async def register(payload: RegisterRequest) -> dict[str, Any]:
     try:

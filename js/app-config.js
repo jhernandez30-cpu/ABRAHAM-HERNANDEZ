@@ -1,14 +1,7 @@
 (() => {
   const LOCAL_API_BASE_URL = 'http://127.0.0.1:8787';
-  const PRODUCTION_APP_CONFIG = {
-    // Railway: reemplaza este valor por "https://URL_PUBLICA_DE_RAILWAY" cuando tengas el dominio.
-    API_BASE_URL: ''
-  };
   const GITHUB_PAGES_HOSTS = new Set(['jhernandez30-cpu.github.io']);
-  const currentConfig = {
-    ...PRODUCTION_APP_CONFIG,
-    ...(window.APP_CONFIG || {})
-  };
+  const currentConfig = window.APP_CONFIG || {};
 
   function readMeta(name) {
     const meta = document.querySelector(`meta[name="${name}"]`);
@@ -81,26 +74,25 @@
     const productionUrl = readMetaApiBaseUrl() || readQueryApiBaseUrl();
     if (productionUrl) return 'production';
 
-    if (detectLocalMode()) return 'local';
-    if (isGitHubPagesHost()) return 'production';
+    if (detectLocalMode() || isGitHubPagesHost()) return 'local';
     return 'production';
   }
 
   function resolveApiBaseUrl() {
     const liveConfig = window.APP_CONFIG || currentConfig;
     const runMode = resolveRunMode();
-    const productionOverride = normalizeApiBaseUrl(
+    const overrideUrl = normalizeApiBaseUrl(
       readMetaApiBaseUrl()
       || readQueryApiBaseUrl()
       || (runMode === 'production' ? liveConfig.API_BASE_URL : '')
     );
 
     if (runMode === 'production') {
-      return productionOverride;
+      return overrideUrl;
     }
 
     return normalizeApiBaseUrl(
-      productionOverride
+      overrideUrl
       || liveConfig.API_BASE_URL
       || window.TUTOR_IA_BRIDGE_URL
       || LOCAL_API_BASE_URL
