@@ -5,7 +5,7 @@
  * key y DATABASE_URL van solo en Railway.
  */
 (() => {
-  const productionApiBaseUrl = 'https://URL_PUBLICA_DE_RAILWAY';
+  const productionApiBaseUrl = 'https://jah-ai-bridge-production.up.railway.app';
   const supabaseUrl = 'https://TU-PROYECTO.supabase.co';
   const supabaseAnonKey = 'TU_SUPABASE_ANON_KEY_PUBLICA';
 
