@@ -1,0 +1,1950 @@
+@font-face {
+  font-family: "Urbanist";
+  src: url("../preview-2025/fonts/urbanist-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Urbanist";
+  src: url("../preview-2025/fonts/urbanist-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Urbanist";
+  src: url("../preview-2025/fonts/urbanist-900.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ProFontWindows";
+  src: url("../preview-2025/fonts/pro-font-windows-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --jah-bg: #f5efe6;
+  --jah-bg-2: #eadfce;
+  --jah-bg-3: #dfd1bc;
+  --jah-text: #2d2a24;
+  --jah-muted: #675f51;
+  --jah-line: rgba(45, 42, 36, 0.16);
+  --jah-line-strong: rgba(45, 42, 36, 0.32);
+  --jah-card: rgba(245, 239, 230, 0.76);
+  --jah-card-solid: #f1e5d5;
+  --jah-blue: #263c70;
+  --jah-blue-dark: #052e87;
+  --jah-orange: #ff8400;
+  --jah-white: #ffffff;
+  --jah-shadow: 0 18px 56px rgba(45, 42, 36, 0.14);
+  --jah-radius: 8px;
+  --jah-header: 96px;
+  --jah-max: 1180px;
+}
+
+body.jah-preview-surface {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    linear-gradient(rgba(45, 42, 36, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45, 42, 36, 0.045) 1px, transparent 1px),
+    linear-gradient(180deg, var(--jah-bg), #eee3d2 58%, var(--jah-bg));
+  background-size: 42px 42px, 42px 42px, auto;
+  color: var(--jah-text);
+  font-family: "Urbanist", Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body.jah-preview-surface *,
+body.jah-preview-surface *::before,
+body.jah-preview-surface *::after {
+  box-sizing: border-box;
+}
+
+body.jah-preview-surface::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg, rgba(255, 132, 0, 0.1), transparent 28%),
+    linear-gradient(300deg, rgba(38, 60, 112, 0.1), transparent 32%);
+}
+
+body.jah-preview-surface a {
+  color: inherit;
+}
+
+body.jah-preview-surface img,
+body.jah-preview-surface video,
+body.jah-preview-surface canvas,
+body.jah-preview-surface svg {
+  max-width: 100%;
+}
+
+body.jah-preview-surface .container {
+  width: min(var(--jah-max), calc(100% - 32px));
+  margin-inline: auto;
+}
+
+body.jah-preview-surface header {
+  position: relative;
+  z-index: 50;
+}
+
+body.jah-preview-surface .navbar {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  width: min(100% - 32px, var(--jah-max));
+  min-height: 58px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 8px 10px 8px 14px;
+  border: 1px solid rgba(45, 42, 36, 0.12);
+  border-radius: 999px;
+  background: rgba(241, 229, 213, 0.92);
+  color: var(--jah-text);
+  box-shadow: 0 14px 38px rgba(45, 42, 36, 0.1);
+  backdrop-filter: blur(16px);
+}
+
+body.jah-preview-surface .site-header {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  width: min(100% - 32px, var(--jah-max));
+  transform: translateX(-50%);
+  z-index: 60;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+body.jah-preview-surface .site-header .utility-bar {
+  width: fit-content;
+  max-width: 100%;
+  min-height: 34px;
+  margin: 0 auto 8px;
+  padding: 0 14px;
+  border: 1px solid rgba(45, 42, 36, 0.18);
+  border-radius: 999px;
+  background: var(--jah-text);
+  color: var(--jah-bg);
+  box-shadow: 0 12px 28px rgba(45, 42, 36, 0.12);
+}
+
+body.jah-preview-surface .site-header .utility-item i,
+body.jah-preview-surface .site-header .utility-item svg {
+  color: var(--jah-orange);
+  filter: none;
+}
+
+body.jah-preview-surface .site-header .nav {
+  width: 100%;
+  min-height: 58px;
+  padding: 8px 10px 8px 14px;
+  border: 1px solid rgba(45, 42, 36, 0.12);
+  border-radius: 999px;
+  background: rgba(241, 229, 213, 0.92);
+  color: var(--jah-text);
+  box-shadow: 0 14px 38px rgba(45, 42, 36, 0.1);
+  backdrop-filter: blur(16px);
+}
+
+body.jah-preview-surface .logo,
+body.jah-preview-surface .brand {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+body.jah-preview-surface .brand-logo,
+body.jah-preview-surface .logo a,
+body.jah-preview-surface .brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--jah-text);
+  text-decoration: none;
+}
+
+body.jah-preview-surface .brand-logo img,
+body.jah-preview-surface .logo img,
+body.jah-preview-surface .brand-mark {
+  width: 92px;
+  height: auto;
+  max-height: 62px;
+  object-fit: contain;
+}
+
+body.jah-preview-surface .logo-text {
+  font-family: "ProFontWindows", monospace;
+  color: var(--jah-text);
+  font-size: 18px;
+}
+
+body.jah-preview-surface .nav-links {
+  position: static;
+  top: auto;
+  left: auto;
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(245, 239, 230, 0.78);
+  overflow-x: auto;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+  scrollbar-width: none;
+}
+
+body.jah-preview-surface .nav-links::-webkit-scrollbar {
+  display: none;
+}
+
+body.jah-preview-surface .nav-link,
+body.jah-preview-surface .nav-links > a,
+body.jah-preview-surface .site-header .nav-links > a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  min-width: 104px;
+  padding: 0 14px;
+  border-radius: 999px;
+  color: var(--jah-text);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+body.jah-preview-surface .nav-link:hover,
+body.jah-preview-surface .nav-link.active,
+body.jah-preview-surface .nav-links > a:hover,
+body.jah-preview-surface .site-header .nav-links > a:hover {
+  background: var(--jah-text);
+  color: var(--jah-bg);
+  transform: translateY(-1px);
+}
+
+body.jah-preview-surface main {
+  width: 100%;
+}
+
+body.jah-preview-surface .page-hero,
+body.jah-preview-surface #contact-page,
+body.jah-preview-surface .hero {
+  position: relative;
+  min-height: auto;
+  padding: calc(var(--jah-header) + 70px) 0 clamp(54px, 7vw, 96px);
+  background: transparent;
+  color: var(--jah-text);
+  overflow: hidden;
+}
+
+body.jah-preview-surface .page-hero::after,
+body.jah-preview-surface #contact-page::after,
+body.jah-preview-surface .hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--jah-line-strong), transparent);
+}
+
+body.jah-preview-surface .page-hero-grid,
+body.jah-preview-surface .hero-grid,
+body.jah-preview-surface .contact-grid,
+body.jah-preview-surface .split-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.92fr);
+  gap: clamp(22px, 5vw, 64px);
+  align-items: center;
+}
+
+body.jah-preview-surface .breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  color: var(--jah-muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+body.jah-preview-surface .breadcrumbs a {
+  text-decoration: none;
+}
+
+body.jah-preview-surface .hero-kicker,
+body.jah-preview-surface .section-kicker,
+body.jah-preview-surface .contact-kicker,
+body.jah-preview-surface .info-card-kicker,
+body.jah-preview-surface .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-bottom: 12px;
+  padding: 6px 10px;
+  border: 1px solid rgba(38, 60, 112, 0.24);
+  border-radius: 999px;
+  background: rgba(38, 60, 112, 0.08);
+  color: var(--jah-blue);
+  font-family: "ProFontWindows", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+body.jah-preview-surface h1,
+body.jah-preview-surface .section-title {
+  max-width: 980px;
+  margin: 0;
+  color: var(--jah-text);
+  font-size: clamp(42px, 7vw, 88px);
+  font-weight: 900;
+  line-height: 0.96;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+body.jah-preview-surface h2 {
+  margin: 0;
+  color: var(--jah-text);
+  font-size: clamp(30px, 4vw, 56px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+body.jah-preview-surface h3 {
+  color: var(--jah-text);
+  font-size: clamp(19px, 2vw, 26px);
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+body.jah-preview-surface p,
+body.jah-preview-surface li {
+  color: var(--jah-muted);
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.48;
+}
+
+body.jah-preview-surface .hero-lede,
+body.jah-preview-surface .section-lede,
+body.jah-preview-surface .section-subtitle,
+body.jah-preview-surface .contact-hero-copy > p,
+body.jah-preview-surface .hero-copy > p {
+  max-width: 720px;
+  margin-top: 18px;
+  color: var(--jah-muted);
+}
+
+body.jah-preview-surface .hero-actions,
+body.jah-preview-surface .section-actions,
+body.jah-preview-surface .contact-direct-actions,
+body.jah-preview-surface .nav-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+body.jah-preview-surface .hero-actions,
+body.jah-preview-surface .section-actions {
+  margin-top: 26px;
+}
+
+body.jah-preview-surface .btn,
+body.jah-preview-surface .btn-submit,
+body.jah-preview-surface button[type="submit"],
+body.jah-preview-surface .service-card a,
+body.jah-preview-surface .contact-direct-actions a,
+body.jah-preview-surface .category-filter,
+body.jah-preview-surface .filter-btn,
+body.jah-preview-surface .chatbot-menu-link,
+body.jah-preview-surface .cookie-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--jah-line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--jah-text);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+body.jah-preview-surface .btn:hover,
+body.jah-preview-surface .btn-submit:hover,
+body.jah-preview-surface button[type="submit"]:hover,
+body.jah-preview-surface .service-card a:hover,
+body.jah-preview-surface .contact-direct-actions a:hover,
+body.jah-preview-surface .category-filter:hover,
+body.jah-preview-surface .filter-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--jah-text);
+  background: var(--jah-text);
+  color: var(--jah-bg);
+  box-shadow: 0 14px 32px rgba(45, 42, 36, 0.14);
+}
+
+body.jah-preview-surface .btn-primary,
+body.jah-preview-surface .btn-submit,
+body.jah-preview-surface button[type="submit"],
+body.jah-preview-surface .filter-btn.active,
+body.jah-preview-surface .desktop-shop {
+  border-color: var(--jah-text);
+  background: var(--jah-text);
+  color: var(--jah-bg);
+}
+
+body.jah-preview-surface .btn-primary:hover,
+body.jah-preview-surface .btn-submit:hover,
+body.jah-preview-surface button[type="submit"]:hover,
+body.jah-preview-surface .filter-btn.active:hover {
+  background: var(--jah-orange);
+  color: var(--jah-white);
+  border-color: var(--jah-orange);
+}
+
+body.jah-preview-surface .btn-outline,
+body.jah-preview-surface .btn-secondary {
+  background: rgba(245, 239, 230, 0.42);
+}
+
+body.jah-preview-surface .page-section,
+body.jah-preview-surface .section,
+body.jah-preview-surface .trust-bar,
+body.jah-preview-surface .lifestyle {
+  position: relative;
+  padding: clamp(54px, 7vw, 96px) 0;
+  background: transparent;
+}
+
+body.jah-preview-surface .page-section.alt,
+body.jah-preview-surface .section:nth-of-type(even) {
+  background: rgba(223, 209, 188, 0.28);
+}
+
+body.jah-preview-surface .section-heading,
+body.jah-preview-surface .section-heading.center,
+body.jah-preview-surface .cta-band {
+  display: grid;
+  gap: 14px;
+  margin-bottom: clamp(24px, 4vw, 46px);
+}
+
+body.jah-preview-surface .section-heading.center {
+  justify-items: center;
+  text-align: center;
+}
+
+body.jah-preview-surface .hero-panel,
+body.jah-preview-surface .seo-card,
+body.jah-preview-surface .service-card,
+body.jah-preview-surface .faq-card,
+body.jah-preview-surface .info-card,
+body.jah-preview-surface .form-card,
+body.jah-preview-surface .contact-form-panel,
+body.jah-preview-surface .contact-followup-card,
+body.jah-preview-surface .comparison-table,
+body.jah-preview-surface .cta-band,
+body.jah-preview-surface .resource-card,
+body.jah-preview-surface .project-card,
+body.jah-preview-surface .category-card,
+body.jah-preview-surface .product-card,
+body.jah-preview-surface .feature-card,
+body.jah-preview-surface .testimonial,
+body.jah-preview-surface .metric,
+body.jah-preview-surface .trust-item,
+body.jah-preview-surface .specs-panel,
+body.jah-preview-surface .features-wrap,
+body.jah-preview-surface .lifestyle-band,
+body.jah-preview-surface #contet-container {
+  border: 1px solid var(--jah-line);
+  border-radius: var(--jah-radius);
+  background: var(--jah-card);
+  box-shadow: var(--jah-shadow);
+  backdrop-filter: blur(14px);
+}
+
+body.jah-preview-surface .hero-panel,
+body.jah-preview-surface .seo-card,
+body.jah-preview-surface .service-card,
+body.jah-preview-surface .faq-card,
+body.jah-preview-surface .info-card,
+body.jah-preview-surface .form-card,
+body.jah-preview-surface .contact-followup-card,
+body.jah-preview-surface .resource-card,
+body.jah-preview-surface .project-card,
+body.jah-preview-surface .category-card,
+body.jah-preview-surface .product-card,
+body.jah-preview-surface .feature-card,
+body.jah-preview-surface .testimonial,
+body.jah-preview-surface .metric,
+body.jah-preview-surface .trust-item {
+  padding: clamp(20px, 3vw, 32px);
+  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+body.jah-preview-surface .seo-card:hover,
+body.jah-preview-surface .service-card:hover,
+body.jah-preview-surface .faq-card:hover,
+body.jah-preview-surface .resource-card:hover,
+body.jah-preview-surface .project-card:hover,
+body.jah-preview-surface .category-card:hover,
+body.jah-preview-surface .product-card:hover,
+body.jah-preview-surface .feature-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--jah-line-strong);
+  background: rgba(245, 239, 230, 0.94);
+  box-shadow: 0 22px 62px rgba(45, 42, 36, 0.18);
+}
+
+body.jah-preview-surface .hero-panel,
+body.jah-preview-surface .cta-band,
+body.jah-preview-surface .features-wrap,
+body.jah-preview-surface .specs-panel,
+body.jah-preview-surface .lifestyle-band,
+body.jah-preview-surface #contet-container {
+  padding: clamp(24px, 4vw, 44px);
+}
+
+body.jah-preview-surface .seo-grid,
+body.jah-preview-surface .service-grid,
+body.jah-preview-surface .faq-grid,
+body.jah-preview-surface .project-grid,
+body.jah-preview-surface .resource-grid,
+body.jah-preview-surface .category-grid,
+body.jah-preview-surface .product-grid,
+body.jah-preview-surface .feature-grid,
+body.jah-preview-surface .testimonial-grid,
+body.jah-preview-surface .trust-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+body.jah-preview-surface .service-card i,
+body.jah-preview-surface .contact-item i,
+body.jah-preview-surface .feature-card i,
+body.jah-preview-surface .trust-item i {
+  color: var(--jah-blue);
+}
+
+body.jah-preview-surface .comparison-table {
+  overflow: hidden;
+}
+
+body.jah-preview-surface .comparison-row {
+  display: grid;
+  grid-template-columns: 0.7fr 1.3fr 1fr;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid var(--jah-line);
+}
+
+body.jah-preview-surface .comparison-row:last-child {
+  border-bottom: 0;
+}
+
+body.jah-preview-surface .comparison-row.header {
+  background: var(--jah-text);
+  color: var(--jah-bg);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+body.jah-preview-surface .contact-need-list,
+body.jah-preview-surface .contact-trust-row,
+body.jah-preview-surface .filters,
+body.jah-preview-surface .social-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+body.jah-preview-surface .contact-need-list span,
+body.jah-preview-surface .contact-trust-row span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--jah-line);
+  border-radius: 999px;
+  background: rgba(245, 239, 230, 0.54);
+  color: var(--jah-text);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+body.jah-preview-surface .contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--jah-line);
+}
+
+body.jah-preview-surface .contact-item:last-of-type {
+  border-bottom: 0;
+}
+
+body.jah-preview-surface .social-btn,
+body.jah-preview-surface .icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--jah-line);
+  border-radius: 50%;
+  background: var(--jah-bg);
+  color: var(--jah-text);
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+body.jah-preview-surface .social-btn:hover,
+body.jah-preview-surface .icon-button:hover {
+  transform: translateY(-2px);
+  background: var(--jah-text);
+  color: var(--jah-bg);
+}
+
+body.jah-preview-surface input,
+body.jah-preview-surface textarea,
+body.jah-preview-surface select {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid var(--jah-line);
+  border-radius: var(--jah-radius);
+  padding: 12px 14px;
+  background: rgba(245, 239, 230, 0.82);
+  color: var(--jah-text);
+  font: inherit;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+body.jah-preview-surface textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+body.jah-preview-surface input:focus,
+body.jah-preview-surface textarea:focus,
+body.jah-preview-surface select:focus {
+  border-color: var(--jah-blue);
+  background: var(--jah-white);
+  box-shadow: 0 0 0 4px rgba(38, 60, 112, 0.1);
+}
+
+body.jah-preview-surface label {
+  display: inline-flex;
+  margin-bottom: 8px;
+  color: var(--jah-text);
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+body.jah-preview-surface .form-group {
+  margin-bottom: 16px;
+}
+
+body.jah-preview-surface .form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+body.jah-preview-surface footer,
+body.jah-preview-surface .site-footer {
+  position: relative;
+  padding: clamp(36px, 6vw, 64px) 16px;
+  background: rgba(223, 209, 188, 0.78);
+  color: var(--jah-text);
+  text-align: center;
+}
+
+body.jah-preview-surface footer::before,
+body.jah-preview-surface .site-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(100%, var(--jah-max));
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, var(--jah-line-strong), transparent);
+}
+
+body.jah-preview-surface .footer-logo,
+body.jah-preview-surface .footer-brand {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+body.jah-preview-surface .footer-logo img,
+body.jah-preview-surface .footer-brand img {
+  width: 94px;
+  height: auto;
+  object-fit: contain;
+}
+
+body.jah-preview-surface .site-footer-links,
+body.jah-preview-surface .footer-top-links,
+body.jah-preview-surface .footer-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  max-width: var(--jah-max);
+  margin: 0 auto 18px;
+}
+
+body.jah-preview-surface .site-footer-links a,
+body.jah-preview-surface .footer-grid a,
+body.jah-preview-surface .footer-top-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--jah-line-strong);
+  border-radius: 999px;
+  color: var(--jah-text);
+  font-size: 12px;
+  font-weight: 900;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+body.jah-preview-surface .site-footer-links a:hover,
+body.jah-preview-surface .footer-grid a:hover,
+body.jah-preview-surface .footer-top-links a:hover {
+  background: var(--jah-text);
+  color: var(--jah-bg);
+}
+
+body.jah-preview-surface .custom-cursor {
+  display: none !important;
+}
+
+body.jah-preview-surface .preloader-logo-image {
+  display: block;
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+body.jah-preview-surface .preloader-hidden .preloader-logo-image {
+  transform: scale(0.4);
+  opacity: 0;
+}
+
+body.jah-preview-surface .back-to-top {
+  border: 1px solid var(--jah-line);
+  background: var(--jah-text);
+  color: var(--jah-bg);
+}
+
+body.jah-preview-surface .utility-bar,
+body.jah-preview-surface .marquee {
+  background: var(--jah-text);
+  color: var(--jah-bg);
+}
+
+body.jah-preview-surface .hero-showcase,
+body.jah-preview-surface .hero-product,
+body.jah-preview-surface .hero-visual-card {
+  min-width: 0;
+}
+
+body.jah-preview-surface .hero-showcase img,
+body.jah-preview-surface .category-card img,
+body.jah-preview-surface .product-card img,
+body.jah-preview-surface .project-card img,
+body.jah-preview-surface .resource-card img {
+  border-radius: var(--jah-radius);
+  object-fit: cover;
+}
+
+body.jah-preview-surface #contet-container {
+  width: min(var(--jah-max), calc(100% - 32px));
+  max-width: var(--jah-max);
+  margin: calc(var(--jah-header) + 36px) auto 56px;
+  overflow: hidden;
+}
+
+body.jah-preview-surface #contet-container > svg {
+  display: none;
+}
+
+body.jah-preview-surface #text-container {
+  margin-top: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+body.jah-preview-surface #text-container h1:first-child::before {
+  content: "";
+  display: block;
+  width: 96px;
+  height: 64px;
+  margin-bottom: 18px;
+  background: url("../assets/jah-logo.png") center / contain no-repeat;
+}
+
+body.jah-preview-surface #text-container h1,
+body.jah-preview-surface #text-container h2,
+body.jah-preview-surface #text-container h3 {
+  margin-top: 28px;
+  margin-bottom: 12px;
+}
+
+body.jah-preview-surface #text-container ul {
+  display: grid;
+  gap: 8px;
+  padding-left: 1.2rem;
+}
+
+body.jah-preview-surface #text-container a {
+  overflow-wrap: anywhere;
+}
+
+body.jah-preview-surface .cookie-overlay {
+  background: rgba(45, 42, 36, 0.46);
+}
+
+body.jah-preview-surface .cookie-banner-inner {
+  width: min(100%, var(--jah-max));
+  max-width: 100%;
+}
+
+body.jah-preview-surface .cookie-card,
+body.jah-preview-surface .cookie-settings-panel {
+  border-color: var(--jah-line);
+  border-radius: var(--jah-radius) var(--jah-radius) 0 0;
+  background: rgba(245, 239, 230, 0.96);
+  color: var(--jah-text);
+  box-shadow: 0 -20px 60px rgba(45, 42, 36, 0.18);
+}
+
+body.jah-preview-surface .cookie-icon {
+  border-color: rgba(38, 60, 112, 0.28);
+  background: rgba(38, 60, 112, 0.1);
+  color: var(--jah-blue);
+}
+
+body.jah-preview-surface .cookie-text p,
+body.jah-preview-surface .cookie-settings-body p,
+body.jah-preview-surface .cookie-category p {
+  color: var(--jah-muted);
+}
+
+body.jah-preview-surface .cookie-btn-accept,
+body.jah-preview-surface .cookie-toggle input:checked + .cookie-toggle-slider {
+  background: var(--jah-text);
+  color: var(--jah-bg);
+}
+
+body.jah-preview-surface .cookie-btn-settings,
+body.jah-preview-surface .cookie-text a {
+  color: var(--jah-blue) !important;
+}
+
+body.jah-preview-surface .chatbot-widget {
+  --chatbot-accent: #263c70;
+  --chatbot-accent-dark: #052e87;
+  --chatbot-bg: rgba(245, 239, 230, 0.96);
+  --chatbot-line: rgba(45, 42, 36, 0.18);
+  --chatbot-muted: #675f51;
+  color: var(--jah-text);
+}
+
+body.jah-preview-surface .chatbot-panel,
+body.jah-preview-surface .chatbot-message.bot {
+  color: var(--jah-text);
+}
+
+body.jah-preview-surface .chatbot-title strong,
+body.jah-preview-surface .chatbot-close {
+  color: var(--jah-text);
+}
+
+body.jah-preview-surface .chatbot-message.user,
+body.jah-preview-surface .chatbot-send {
+  color: var(--jah-bg);
+  background: var(--jah-text);
+}
+
+body.jah-preview-surface .jah-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+body.jah-preview-surface .jah-reveal.jah-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.jah-preview-surface *,
+  body.jah-preview-surface *::before,
+  body.jah-preview-surface *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  body.jah-preview-surface .jah-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 980px) {
+  body.jah-preview-surface .navbar {
+    align-items: flex-start;
+    border-radius: 24px;
+    flex-direction: column;
+  }
+
+  body.jah-preview-surface .site-header {
+    top: 10px;
+    width: calc(100% - 20px);
+  }
+
+  body.jah-preview-surface .site-header .nav {
+    align-items: flex-start;
+    flex-direction: column;
+    min-height: 0;
+    border-radius: 24px;
+    padding: 8px;
+  }
+
+  body.jah-preview-surface .site-header .utility-bar {
+    justify-content: flex-start;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  body.jah-preview-surface .nav-links {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  body.jah-preview-surface .page-hero,
+  body.jah-preview-surface #contact-page,
+  body.jah-preview-surface .hero {
+    padding-top: calc(var(--jah-header) + 112px);
+  }
+
+  body.jah-preview-surface .page-hero-grid,
+  body.jah-preview-surface .hero-grid,
+  body.jah-preview-surface .contact-grid,
+  body.jah-preview-surface .split-layout {
+    grid-template-columns: 1fr;
+  }
+
+  body.jah-preview-surface .comparison-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --jah-header: 82px;
+  }
+
+  body.jah-preview-surface .navbar {
+    top: 10px;
+    width: calc(100% - 20px);
+    padding: 8px;
+  }
+
+  body.jah-preview-surface .brand-logo img,
+  body.jah-preview-surface .logo img,
+  body.jah-preview-surface .brand-mark {
+    width: 74px;
+    max-height: 50px;
+  }
+
+  body.jah-preview-surface .nav-link,
+  body.jah-preview-surface .nav-links > a,
+  body.jah-preview-surface .site-header .nav-links > a {
+    min-width: auto;
+    padding: 0 12px;
+    font-size: 11px;
+  }
+
+  body.jah-preview-surface h1,
+  body.jah-preview-surface .section-title {
+    font-size: clamp(36px, 13vw, 54px);
+  }
+
+  body.jah-preview-surface h2 {
+    font-size: clamp(28px, 10vw, 42px);
+  }
+
+  body.jah-preview-surface .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  body.jah-preview-surface .btn,
+  body.jah-preview-surface .btn-submit,
+  body.jah-preview-surface button[type="submit"],
+  body.jah-preview-surface .service-card a,
+  body.jah-preview-surface .contact-direct-actions a {
+    width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+
+  body.jah-preview-surface .cookie-card {
+    padding: 1.3rem;
+  }
+}
+
+/* Correccion visual final: lenguaje oscuro premium para paginas internas. */
+body.jah-preview-surface {
+  --jah-bg: #070a10;
+  --jah-bg-2: #0e141d;
+  --jah-bg-3: #151d2a;
+  --jah-text: #f7f1e8;
+  --jah-muted: #b5aa9a;
+  --jah-line: rgba(247, 241, 232, 0.13);
+  --jah-line-strong: rgba(247, 241, 232, 0.26);
+  --jah-card: rgba(14, 20, 29, 0.82);
+  --jah-card-solid: #111927;
+  --jah-blue: #61d9ff;
+  --jah-blue-dark: #2f79ff;
+  --jah-orange: #ff9a3c;
+  --jah-shadow: 0 22px 70px rgba(0, 0, 0, 0.42);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 22% 10%, rgba(97, 217, 255, 0.14), transparent 34%),
+    radial-gradient(circle at 84% 18%, rgba(255, 154, 60, 0.11), transparent 30%),
+    linear-gradient(180deg, #070a10 0%, #0c111a 52%, #070a10 100%);
+  background-size: 44px 44px, 44px 44px, auto, auto, auto;
+  color: var(--jah-text);
+}
+
+body.jah-preview-surface::before {
+  background:
+    linear-gradient(120deg, rgba(97, 217, 255, 0.1), transparent 32%),
+    linear-gradient(280deg, rgba(255, 154, 60, 0.08), transparent 35%);
+}
+
+body.jah-preview-surface .navbar,
+body.jah-preview-surface .site-header .nav {
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: rgba(9, 13, 20, 0.9);
+  color: var(--jah-text);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.42);
+}
+
+body.jah-preview-surface .site-header .utility-bar {
+  border-color: rgba(255, 255, 255, 0.13);
+  background: rgba(247, 241, 232, 0.08);
+  color: var(--jah-text);
+}
+
+body.jah-preview-surface .nav-links {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+body.jah-preview-surface .brand-logo,
+body.jah-preview-surface .logo a,
+body.jah-preview-surface .brand,
+body.jah-preview-surface .logo-text,
+body.jah-preview-surface .nav-link,
+body.jah-preview-surface .nav-links > a,
+body.jah-preview-surface .site-header .nav-links > a {
+  color: var(--jah-text);
+}
+
+body.jah-preview-surface .nav-link:hover,
+body.jah-preview-surface .nav-link.active,
+body.jah-preview-surface .nav-links > a:hover,
+body.jah-preview-surface .site-header .nav-links > a:hover {
+  background: linear-gradient(135deg, var(--jah-blue-dark), var(--jah-blue));
+  color: #06101a;
+}
+
+body.jah-preview-surface .page-hero,
+body.jah-preview-surface #contact-page,
+body.jah-preview-surface .hero,
+body.jah-preview-surface .hero-section {
+  padding-top: calc(var(--jah-header) + 86px);
+  padding-bottom: 72px;
+}
+
+body.jah-preview-surface .page-hero::before,
+body.jah-preview-surface .hero::before,
+body.jah-preview-surface .section::before {
+  opacity: 0.32;
+}
+
+body.jah-preview-surface h1,
+body.jah-preview-surface .page-title,
+body.jah-preview-surface .hero-title {
+  max-width: 980px;
+  color: var(--jah-text);
+  font-size: clamp(34px, 4vw, 54px) !important;
+  line-height: 1.05 !important;
+  letter-spacing: 0;
+}
+
+body.jah-preview-surface h2,
+body.jah-preview-surface .section-title {
+  color: var(--jah-text);
+  font-size: clamp(28px, 3.6vw, 42px);
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+body.jah-preview-surface h3,
+body.jah-preview-surface h4,
+body.jah-preview-surface .card-title {
+  color: var(--jah-text);
+  letter-spacing: 0;
+}
+
+body.jah-preview-surface p,
+body.jah-preview-surface li,
+body.jah-preview-surface .subtitle,
+body.jah-preview-surface .section-subtitle,
+body.jah-preview-surface .card-text,
+body.jah-preview-surface .breadcrumbs {
+  color: var(--jah-muted);
+}
+
+body.jah-preview-surface .breadcrumbs a,
+body.jah-preview-surface .text-link,
+body.jah-preview-surface .inline-link {
+  color: var(--jah-blue);
+}
+
+body.jah-preview-surface .seo-card,
+body.jah-preview-surface .service-card,
+body.jah-preview-surface .faq-card,
+body.jah-preview-surface .project-card,
+body.jah-preview-surface .resource-card,
+body.jah-preview-surface .feature-card,
+body.jah-preview-surface .product-card,
+body.jah-preview-surface .category-card,
+body.jah-preview-surface .testimonial,
+body.jah-preview-surface .info-card,
+body.jah-preview-surface .form-card,
+body.jah-preview-surface .hero-panel,
+body.jah-preview-surface .cta-band,
+body.jah-preview-surface .content-card,
+body.jah-preview-surface .process-card,
+body.jah-preview-surface .pricing-card,
+body.jah-preview-surface .comparison-card,
+body.jah-preview-surface .legal-card,
+body.jah-preview-surface #contet-container {
+  border: 1px solid var(--jah-line);
+  background: linear-gradient(180deg, rgba(17, 25, 39, 0.9), rgba(11, 16, 25, 0.88));
+  color: var(--jah-text);
+  box-shadow: var(--jah-shadow);
+}
+
+body.jah-preview-surface .seo-card:hover,
+body.jah-preview-surface .service-card:hover,
+body.jah-preview-surface .project-card:hover,
+body.jah-preview-surface .resource-card:hover,
+body.jah-preview-surface .feature-card:hover,
+body.jah-preview-surface .product-card:hover {
+  border-color: rgba(97, 217, 255, 0.34);
+  transform: translateY(-4px);
+}
+
+body.jah-preview-surface .stat,
+body.jah-preview-surface .metric,
+body.jah-preview-surface .tag,
+body.jah-preview-surface .badge,
+body.jah-preview-surface .pill {
+  border-color: var(--jah-line);
+  background: rgba(247, 241, 232, 0.08);
+  color: var(--jah-text);
+}
+
+body.jah-preview-surface .btn,
+body.jah-preview-surface .btn-primary,
+body.jah-preview-surface .btn-submit,
+body.jah-preview-surface button[type="submit"],
+body.jah-preview-surface .service-card a,
+body.jah-preview-surface .contact-direct-actions a {
+  border: 1px solid rgba(97, 217, 255, 0.34);
+  background: linear-gradient(135deg, #1f5eff, #61d9ff);
+  color: #06101a;
+  box-shadow: 0 16px 38px rgba(47, 121, 255, 0.24);
+}
+
+body.jah-preview-surface .btn-secondary,
+body.jah-preview-surface .btn-outline,
+body.jah-preview-surface .ghost-button {
+  border-color: var(--jah-line-strong);
+  background: rgba(247, 241, 232, 0.06);
+  color: var(--jah-text);
+  box-shadow: none;
+}
+
+body.jah-preview-surface input,
+body.jah-preview-surface textarea,
+body.jah-preview-surface select {
+  border-color: var(--jah-line);
+  background: rgba(4, 8, 14, 0.72);
+  color: var(--jah-text);
+}
+
+body.jah-preview-surface input::placeholder,
+body.jah-preview-surface textarea::placeholder {
+  color: rgba(247, 241, 232, 0.48);
+}
+
+body.jah-preview-surface table,
+body.jah-preview-surface .table-wrapper {
+  border-color: var(--jah-line);
+  background: rgba(17, 25, 39, 0.72);
+  color: var(--jah-text);
+}
+
+body.jah-preview-surface footer,
+body.jah-preview-surface .footer {
+  border-top: 1px solid var(--jah-line);
+  background: rgba(5, 8, 13, 0.92);
+  color: var(--jah-text);
+}
+
+body.jah-preview-surface .site-footer-links a,
+body.jah-preview-surface footer a {
+  color: var(--jah-text);
+}
+
+body.jah-preview-surface .site-footer-links a:hover,
+body.jah-preview-surface footer a:hover {
+  color: var(--jah-blue);
+}
+
+/* Bloque final de fondo: iguala paginas internas al beige plano del preview. */
+body.jah-preview-surface,
+body.jah-preview-surface.internal-lucas-page,
+body.jah-preview-surface.masterclass-integrated,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page {
+  --portfolio-bg: #f5efe6 !important;
+  --portfolio-bg-soft: #f5efe6 !important;
+  --portfolio-surface: rgba(245, 239, 230, 0.78) !important;
+  --portfolio-surface-2: rgba(245, 239, 230, 0.86) !important;
+  --portfolio-surface-3: rgba(245, 239, 230, 0.94) !important;
+  --portfolio-text: #2d2a24 !important;
+  --portfolio-text-soft: #2d2a24 !important;
+  --portfolio-muted: #675f51 !important;
+  --surface: #f5efe6 !important;
+  --dark: #f5efe6 !important;
+  background: #f5efe6 !important;
+  background-image: none !important;
+  color: #2d2a24 !important;
+}
+
+body.jah-preview-surface.internal-lucas-page main,
+body.jah-preview-surface.internal-lucas-page .page-shell,
+body.jah-preview-surface.internal-lucas-page .page-shell main,
+body.jah-preview-surface.internal-lucas-page .page-hero,
+body.jah-preview-surface.internal-lucas-page .section,
+body.jah-preview-surface.internal-lucas-page .section:first-of-type,
+body.jah-preview-surface.internal-lucas-page .page-section,
+body.jah-preview-surface.internal-lucas-page .page-section.alt,
+body.jah-preview-surface.internal-lucas-page .content-section,
+body.jah-preview-surface.internal-lucas-page #contact-page,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page main,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page .page-hero,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page .section,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page .section:first-of-type,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page .page-section,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page .page-section.alt,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page .content-section,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page #contact-page {
+  background: #f5efe6 !important;
+  background-image: none !important;
+  color: #2d2a24 !important;
+}
+
+body.jah-preview-surface.internal-lucas-page .page-hero::before,
+body.jah-preview-surface.internal-lucas-page .page-hero::after,
+body.jah-preview-surface.internal-lucas-page .section::before,
+body.jah-preview-surface.internal-lucas-page .section::after,
+body.jah-preview-surface.internal-lucas-page .page-section::before,
+body.jah-preview-surface.internal-lucas-page .page-section::after,
+body.jah-preview-surface.internal-lucas-page #contact-page::before,
+body.jah-preview-surface.internal-lucas-page #contact-page::after,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page .page-hero::before,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page .page-hero::after,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page .section::before,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page .section::after,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page .page-section::before,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page .page-section::after,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page #contact-page::before,
+body.jah-preview-surface.masterclass-integrated.internal-lucas-page #contact-page::after {
+  display: none !important;
+  background: none !important;
+}
+
+body.jah-preview-surface.internal-lucas-page h1,
+body.jah-preview-surface.internal-lucas-page h2,
+body.jah-preview-surface.internal-lucas-page h3,
+body.jah-preview-surface.internal-lucas-page h4,
+body.jah-preview-surface.internal-lucas-page p,
+body.jah-preview-surface.internal-lucas-page li,
+body.jah-preview-surface.internal-lucas-page .page-title,
+body.jah-preview-surface.internal-lucas-page .hero-lede,
+body.jah-preview-surface.internal-lucas-page .section-title,
+body.jah-preview-surface.internal-lucas-page .section-subtitle,
+body.jah-preview-surface.internal-lucas-page #contact-page .section-title,
+body.jah-preview-surface.internal-lucas-page #contact-page .section-subtitle {
+  color: #2d2a24 !important;
+  text-shadow: none !important;
+}
+
+body.jah-preview-surface.internal-lucas-page .hero-panel h2,
+body.jah-preview-surface.internal-lucas-page .hero-panel h3,
+body.jah-preview-surface.internal-lucas-page .info-card h2,
+body.jah-preview-surface.internal-lucas-page .info-card h3 {
+  color: #2d2a24 !important;
+  font-size: clamp(1.25rem, 2.2vw, 1.8rem) !important;
+  line-height: 1.1 !important;
+  margin-bottom: 0.75rem !important;
+}
+
+body.jah-preview-surface.internal-lucas-page .seo-card,
+body.jah-preview-surface.internal-lucas-page .service-card,
+body.jah-preview-surface.internal-lucas-page .resource-card,
+body.jah-preview-surface.internal-lucas-page .project-card,
+body.jah-preview-surface.internal-lucas-page .info-card,
+body.jah-preview-surface.internal-lucas-page .form-card,
+body.jah-preview-surface.internal-lucas-page .hero-panel,
+body.jah-preview-surface.internal-lucas-page .cta-band,
+body.jah-preview-surface.internal-lucas-page .content-card,
+body.jah-preview-surface.internal-lucas-page .faq-card,
+body.jah-preview-surface.internal-lucas-page .case-card,
+body.jah-preview-surface.internal-lucas-page .metric-card,
+body.jah-preview-surface.internal-lucas-page .step-card,
+body.jah-preview-surface.internal-lucas-page .card,
+body.jah-preview-surface.internal-lucas-page .skill-card,
+body.jah-preview-surface.internal-lucas-page .cert-item,
+body.jah-preview-surface.internal-lucas-page .credential-card,
+body.jah-preview-surface.internal-lucas-page .formation-card,
+body.jah-preview-surface.internal-lucas-page .experience-item,
+body.jah-preview-surface.internal-lucas-page .indicator-card,
+body.jah-preview-surface.internal-lucas-page .contact-option,
+body.jah-preview-surface.internal-lucas-page .contact-followup-card {
+  background: rgba(245, 239, 230, 0.78) !important;
+  background-image: none !important;
+  border-color: rgba(45, 42, 36, 0.16) !important;
+  color: #2d2a24 !important;
+}
+
+/* Visual final: fondo beige del preview, acento naranja y texto oscuro legible. */
+body.jah-preview-surface {
+  --accent: #ff8400 !important;
+  --accent-2: #ffad42 !important;
+  --accent-glow: rgba(255, 132, 0, 0.28) !important;
+  --accent-soft: rgba(255, 132, 0, 0.12) !important;
+  --portfolio-accent: #ff8400 !important;
+  --portfolio-accent-hover: #ffad42 !important;
+  --portfolio-accent-rgb: 255, 132, 0 !important;
+  --jah-blue: #ff8400 !important;
+  --jah-blue-dark: #c95f00 !important;
+  --jah-orange: #ff8400 !important;
+  --ink: #2d2a24 !important;
+  --muted: #675f51 !important;
+  background-color: #f5efe6 !important;
+}
+
+body.jah-preview-surface .navbar,
+body.jah-preview-surface .site-header .nav {
+  min-height: 70px;
+  border: 1px solid rgba(45, 42, 36, 0.13) !important;
+  background: rgba(241, 229, 213, 0.94) !important;
+  box-shadow: 0 16px 44px rgba(45, 42, 36, 0.12) !important;
+}
+
+body.jah-preview-surface .nav-links {
+  background: rgba(255, 250, 242, 0.68) !important;
+}
+
+body.jah-preview-surface .nav-link,
+body.jah-preview-surface .nav-links > a,
+body.jah-preview-surface .site-header .nav-links > a,
+body.jah-preview-surface.internal-lucas-page .nav-links a,
+body.jah-preview-surface.internal-lucas-page .nav-link {
+  border: 1px solid transparent !important;
+  color: #2d2a24 !important;
+  text-shadow: none !important;
+}
+
+body.jah-preview-surface .nav-link::before,
+body.jah-preview-surface .nav-link::after,
+body.jah-preview-surface .nav-links > a::before,
+body.jah-preview-surface .nav-links > a::after {
+  background: #ff8400 !important;
+  border-color: #ff8400 !important;
+}
+
+body.jah-preview-surface .nav-link:hover,
+body.jah-preview-surface .nav-link.active,
+body.jah-preview-surface .nav-links > a:hover,
+body.jah-preview-surface .site-header .nav-links > a:hover,
+body.jah-preview-surface.internal-lucas-page .nav-links a:hover,
+body.jah-preview-surface.internal-lucas-page .nav-links a.active,
+body.jah-preview-surface.internal-lucas-page .nav-link.active {
+  border-color: rgba(255, 132, 0, 0.46) !important;
+  background: rgba(255, 132, 0, 0.16) !important;
+  color: #2d2a24 !important;
+  box-shadow: inset 0 -3px 0 #ff8400, 0 10px 24px rgba(45, 42, 36, 0.08) !important;
+}
+
+body.jah-preview-surface h1,
+body.jah-preview-surface h2,
+body.jah-preview-surface h3,
+body.jah-preview-surface h4,
+body.jah-preview-surface h5,
+body.jah-preview-surface h6,
+body.jah-preview-surface p,
+body.jah-preview-surface li,
+body.jah-preview-surface label,
+body.jah-preview-surface small,
+body.jah-preview-surface strong,
+body.jah-preview-surface .page-title,
+body.jah-preview-surface .hero-title,
+body.jah-preview-surface .section-title,
+body.jah-preview-surface .section-subtitle,
+body.jah-preview-surface .hero-lede,
+body.jah-preview-surface .card-title,
+body.jah-preview-surface .card-text,
+body.jah-preview-surface .contact-hero-copy,
+body.jah-preview-surface .contact-hero-copy *,
+body.jah-preview-surface .contact-grid,
+body.jah-preview-surface .contact-grid *,
+body.jah-preview-surface #contact-page .section-title,
+body.jah-preview-surface #contact-page .section-subtitle {
+  color: #2d2a24 !important;
+  text-shadow: none !important;
+}
+
+body.jah-preview-surface .breadcrumbs,
+body.jah-preview-surface .breadcrumbs span {
+  color: #675f51 !important;
+}
+
+body.jah-preview-surface .breadcrumbs a,
+body.jah-preview-surface .hero-kicker,
+body.jah-preview-surface .section-kicker,
+body.jah-preview-surface .contact-kicker,
+body.jah-preview-surface .info-card-kicker,
+body.jah-preview-surface .form-card-header span,
+body.jah-preview-surface .text-link,
+body.jah-preview-surface .inline-link,
+body.jah-preview-surface .social-btn,
+body.jah-preview-surface .contact-item i,
+body.jah-preview-surface .contact-trust-row i,
+body.jah-preview-surface .contact-need-list i {
+  color: #c95f00 !important;
+  text-shadow: none !important;
+}
+
+body.jah-preview-surface .hero-kicker,
+body.jah-preview-surface .section-kicker,
+body.jah-preview-surface .contact-kicker,
+body.jah-preview-surface .info-card-kicker,
+body.jah-preview-surface .form-card-header span,
+body.jah-preview-surface .seo-pill,
+body.jah-preview-surface .tag,
+body.jah-preview-surface .badge,
+body.jah-preview-surface .pill,
+body.jah-preview-surface .stack-tags span,
+body.jah-preview-surface .intent-tags span,
+body.jah-preview-surface .profile-tags span,
+body.jah-preview-surface .formation-card span {
+  border-color: rgba(255, 132, 0, 0.28) !important;
+  background: rgba(255, 132, 0, 0.1) !important;
+  color: #8a4300 !important;
+}
+
+body.jah-preview-surface .btn,
+body.jah-preview-surface .btn-primary,
+body.jah-preview-surface .btn-submit,
+body.jah-preview-surface button[type="submit"],
+body.jah-preview-surface .service-card a,
+body.jah-preview-surface .contact-direct-actions a:first-child,
+body.jah-preview-surface .hero-actions a:first-child {
+  border-color: rgba(201, 95, 0, 0.24) !important;
+  background: linear-gradient(135deg, #ff8400, #ffad42) !important;
+  color: #2d2a24 !important;
+  box-shadow: 0 14px 32px rgba(255, 132, 0, 0.22) !important;
+}
+
+body.jah-preview-surface .btn:hover,
+body.jah-preview-surface .btn-primary:hover,
+body.jah-preview-surface .btn-submit:hover,
+body.jah-preview-surface .service-card a:hover,
+body.jah-preview-surface .contact-direct-actions a:hover {
+  background: linear-gradient(135deg, #ff9a1f, #ffc167) !important;
+  color: #2d2a24 !important;
+  transform: translateY(-2px);
+}
+
+body.jah-preview-surface .btn-secondary,
+body.jah-preview-surface .btn-outline,
+body.jah-preview-surface .ghost-button,
+body.jah-preview-surface .hero-actions a:nth-child(n + 2),
+body.jah-preview-surface .contact-direct-actions a:nth-child(n + 2) {
+  border-color: rgba(45, 42, 36, 0.28) !important;
+  background: rgba(255, 250, 242, 0.44) !important;
+  color: #2d2a24 !important;
+  box-shadow: none !important;
+}
+
+body.jah-preview-surface .seo-card,
+body.jah-preview-surface .service-card,
+body.jah-preview-surface .faq-card,
+body.jah-preview-surface .project-card,
+body.jah-preview-surface .resource-card,
+body.jah-preview-surface .feature-card,
+body.jah-preview-surface .product-card,
+body.jah-preview-surface .category-card,
+body.jah-preview-surface .testimonial,
+body.jah-preview-surface .info-card,
+body.jah-preview-surface .form-card,
+body.jah-preview-surface .hero-panel,
+body.jah-preview-surface .cta-band,
+body.jah-preview-surface .content-card,
+body.jah-preview-surface .process-card,
+body.jah-preview-surface .pricing-card,
+body.jah-preview-surface .comparison-card,
+body.jah-preview-surface .legal-card,
+body.jah-preview-surface .case-card,
+body.jah-preview-surface .metric-card,
+body.jah-preview-surface .step-card,
+body.jah-preview-surface .card,
+body.jah-preview-surface .skill-card,
+body.jah-preview-surface .cert-item,
+body.jah-preview-surface .credential-card,
+body.jah-preview-surface .formation-card,
+body.jah-preview-surface .experience-item,
+body.jah-preview-surface .indicator-card,
+body.jah-preview-surface .contact-option,
+body.jah-preview-surface .contact-followup-card {
+  background: rgba(241, 229, 213, 0.82) !important;
+  border: 1px solid rgba(45, 42, 36, 0.14) !important;
+  color: #2d2a24 !important;
+  box-shadow: 0 18px 48px rgba(45, 42, 36, 0.11) !important;
+}
+
+body.jah-preview-surface .seo-card:hover,
+body.jah-preview-surface .service-card:hover,
+body.jah-preview-surface .project-card:hover,
+body.jah-preview-surface .resource-card:hover,
+body.jah-preview-surface .feature-card:hover {
+  border-color: rgba(255, 132, 0, 0.36) !important;
+  box-shadow: 0 22px 54px rgba(255, 132, 0, 0.16) !important;
+}
+
+body.jah-preview-surface input,
+body.jah-preview-surface textarea,
+body.jah-preview-surface select {
+  background: rgba(255, 250, 242, 0.66) !important;
+  border-color: rgba(45, 42, 36, 0.2) !important;
+  color: #2d2a24 !important;
+}
+
+body.jah-preview-surface input:focus,
+body.jah-preview-surface textarea:focus,
+body.jah-preview-surface select:focus {
+  border-color: rgba(255, 132, 0, 0.72) !important;
+  box-shadow: 0 0 0 3px rgba(255, 132, 0, 0.16) !important;
+}
+
+/* Pulido profesional final para pies, enlaces secundarios y contenido legal. */
+body.jah-preview-surface footer,
+body.jah-preview-surface .footer,
+body.jah-preview-surface .footer-content,
+body.jah-preview-surface .site-footer,
+body.jah-preview-surface .portfolio-marquee-bar {
+  background: rgba(241, 229, 213, 0.86) !important;
+  border-color: rgba(45, 42, 36, 0.14) !important;
+  color: #2d2a24 !important;
+}
+
+body.jah-preview-surface footer *,
+body.jah-preview-surface .footer *,
+body.jah-preview-surface .site-footer *,
+body.jah-preview-surface .portfolio-marquee-item,
+body.jah-preview-surface .footer-credits,
+body.jah-preview-surface .copyright {
+  color: #2d2a24 !important;
+  text-shadow: none !important;
+}
+
+body.jah-preview-surface .site-footer-links,
+body.jah-preview-surface .footer-links,
+body.jah-preview-surface .footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+body.jah-preview-surface .site-footer-links a,
+body.jah-preview-surface .footer-links a,
+body.jah-preview-surface .footer-nav a,
+body.jah-preview-surface footer a {
+  border: 1px solid rgba(45, 42, 36, 0.22) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 250, 242, 0.58) !important;
+  color: #2d2a24 !important;
+  font-weight: 800 !important;
+  text-decoration: none !important;
+}
+
+body.jah-preview-surface .site-footer-links a:hover,
+body.jah-preview-surface .footer-links a:hover,
+body.jah-preview-surface .footer-nav a:hover,
+body.jah-preview-surface footer a:hover {
+  border-color: rgba(255, 132, 0, 0.56) !important;
+  background: rgba(255, 132, 0, 0.16) !important;
+  color: #2d2a24 !important;
+}
+
+body.jah-preview-surface .page-hero,
+body.jah-preview-surface .page-section,
+body.jah-preview-surface #contact-page {
+  border-bottom: 1px solid rgba(45, 42, 36, 0.08);
+}
+
+body.jah-preview-surface .container {
+  width: min(1180px, calc(100% - 48px));
+}
+
+body.jah-preview-surface .hero-actions,
+body.jah-preview-surface .contact-direct-actions,
+body.jah-preview-surface .cta-actions {
+  gap: 12px;
+}
+
+body.jah-preview-surface .hero-actions a,
+body.jah-preview-surface .contact-direct-actions a,
+body.jah-preview-surface .cta-actions a {
+  min-height: 52px;
+  border-radius: 8px !important;
+}
+
+@media (max-width: 640px) {
+  body.jah-preview-surface .container {
+    width: min(100% - 28px, 1180px);
+  }
+
+  body.jah-preview-surface .site-footer-links a,
+  body.jah-preview-surface .footer-links a,
+  body.jah-preview-surface .footer-nav a,
+  body.jah-preview-surface footer a {
+    width: auto;
+    min-height: 38px;
+    padding: 0 12px !important;
+    font-size: 11px !important;
+  }
+}
+
+body.jah-preview-surface .chatbot-container,
+body.jah-preview-surface .chatbot-window {
+  border-color: var(--jah-line);
+  background: rgba(9, 13, 20, 0.94);
+  color: var(--jah-text);
+}
+
+@media (max-width: 980px) {
+  body.jah-preview-surface main {
+    padding-top: 48px;
+  }
+
+  body.jah-preview-surface .page-hero,
+  body.jah-preview-surface #contact-page,
+  body.jah-preview-surface .hero {
+    padding-top: calc(var(--jah-header) + 124px);
+  }
+}
+
+@media (max-width: 640px) {
+  body.jah-preview-surface main {
+    padding-top: 28px;
+  }
+
+  body.jah-preview-surface h1,
+  body.jah-preview-surface .page-title,
+  body.jah-preview-surface .hero-title,
+  body.jah-preview-surface .section-title {
+    font-size: clamp(30px, 9vw, 40px) !important;
+    line-height: 1.06 !important;
+  }
+
+  body.jah-preview-surface .page-hero,
+  body.jah-preview-surface #contact-page,
+  body.jah-preview-surface .hero {
+    padding-top: calc(var(--jah-header) + 142px);
+    padding-bottom: 48px;
+  }
+}
+
+/* Ajuste solicitado: fondo claro igual al index-preview.html de referencia. */
+body.jah-preview-surface {
+  --jah-bg: #f5efe6;
+  --jah-bg-2: #eadfce;
+  --jah-bg-3: #dfd1bc;
+  --jah-text: #2d2a24;
+  --jah-muted: #675f51;
+  --jah-line: rgba(45, 42, 36, 0.16);
+  --jah-line-strong: rgba(45, 42, 36, 0.32);
+  --jah-card: rgba(245, 239, 230, 0.78);
+  --jah-card-solid: #f1e5d5;
+  --jah-blue: #263c70;
+  --jah-blue-dark: #052e87;
+  --jah-orange: #ff8400;
+  --jah-shadow: 0 18px 56px rgba(45, 42, 36, 0.14);
+  background: #f5efe6 !important;
+  color: var(--jah-text);
+}
+
+body.jah-preview-surface::before {
+  background: none !important;
+}
+
+body.jah-preview-surface main,
+body.jah-preview-surface section,
+body.jah-preview-surface .page-hero,
+body.jah-preview-surface .page-section,
+body.jah-preview-surface #contact-page,
+body.jah-preview-surface .hero,
+body.jah-preview-surface .hero-section,
+body.jah-preview-surface .section,
+body.jah-preview-surface .internal-section,
+body.jah-preview-surface .content-section {
+  background: #f5efe6 !important;
+  background-image: none !important;
+  color: var(--jah-text) !important;
+}
+
+body.jah-preview-surface .page-hero::before,
+body.jah-preview-surface .page-hero::after,
+body.jah-preview-surface .page-section::before,
+body.jah-preview-surface .page-section::after,
+body.jah-preview-surface #contact-page::before,
+body.jah-preview-surface #contact-page::after,
+body.jah-preview-surface .hero::before,
+body.jah-preview-surface .hero::after,
+body.jah-preview-surface .section::before,
+body.jah-preview-surface .section::after {
+  display: none !important;
+  background: none !important;
+}
+
+body.jah-preview-surface .navbar,
+body.jah-preview-surface .site-header .nav {
+  border-color: rgba(45, 42, 36, 0.12);
+  background: rgba(241, 229, 213, 0.92);
+  color: var(--jah-text);
+  box-shadow: 0 14px 38px rgba(45, 42, 36, 0.1);
+}
+
+body.jah-preview-surface .site-header .utility-bar {
+  border-color: rgba(45, 42, 36, 0.18);
+  background: var(--jah-text);
+  color: var(--jah-bg);
+}
+
+body.jah-preview-surface .nav-links {
+  background: rgba(245, 239, 230, 0.78);
+}
+
+body.jah-preview-surface .brand-logo,
+body.jah-preview-surface .logo a,
+body.jah-preview-surface .brand,
+body.jah-preview-surface .logo-text,
+body.jah-preview-surface .nav-link,
+body.jah-preview-surface .nav-links > a,
+body.jah-preview-surface .site-header .nav-links > a,
+body.jah-preview-surface h1,
+body.jah-preview-surface h2,
+body.jah-preview-surface h3,
+body.jah-preview-surface h4,
+body.jah-preview-surface .page-title,
+body.jah-preview-surface .hero-title,
+body.jah-preview-surface .section-title,
+body.jah-preview-surface .card-title {
+  color: var(--jah-text) !important;
+  text-shadow: none !important;
+}
+
+body.jah-preview-surface .nav-link:hover,
+body.jah-preview-surface .nav-link.active,
+body.jah-preview-surface .nav-links > a:hover,
+body.jah-preview-surface .site-header .nav-links > a:hover {
+  background: var(--jah-text);
+  color: var(--jah-bg) !important;
+}
+
+body.jah-preview-surface p,
+body.jah-preview-surface li,
+body.jah-preview-surface .subtitle,
+body.jah-preview-surface .section-subtitle,
+body.jah-preview-surface .card-text,
+body.jah-preview-surface .breadcrumbs {
+  color: var(--jah-muted) !important;
+}
+
+body.jah-preview-surface .breadcrumbs a,
+body.jah-preview-surface .text-link,
+body.jah-preview-surface .inline-link {
+  color: var(--jah-blue) !important;
+}
+
+body.jah-preview-surface .seo-card,
+body.jah-preview-surface .service-card,
+body.jah-preview-surface .faq-card,
+body.jah-preview-surface .project-card,
+body.jah-preview-surface .resource-card,
+body.jah-preview-surface .feature-card,
+body.jah-preview-surface .product-card,
+body.jah-preview-surface .category-card,
+body.jah-preview-surface .testimonial,
+body.jah-preview-surface .info-card,
+body.jah-preview-surface .form-card,
+body.jah-preview-surface .hero-panel,
+body.jah-preview-surface .cta-band,
+body.jah-preview-surface .content-card,
+body.jah-preview-surface .process-card,
+body.jah-preview-surface .pricing-card,
+body.jah-preview-surface .comparison-card,
+body.jah-preview-surface .legal-card,
+body.jah-preview-surface #contet-container {
+  border-color: var(--jah-line);
+  background: rgba(245, 239, 230, 0.78) !important;
+  color: var(--jah-text) !important;
+  box-shadow: var(--jah-shadow);
+}
+
+body.jah-preview-surface .stat,
+body.jah-preview-surface .metric,
+body.jah-preview-surface .tag,
+body.jah-preview-surface .badge,
+body.jah-preview-surface .pill {
+  border-color: var(--jah-line);
+  background: rgba(255, 255, 255, 0.46) !important;
+  color: var(--jah-text) !important;
+}
+
+body.jah-preview-surface .btn,
+body.jah-preview-surface .btn-primary,
+body.jah-preview-surface .btn-submit,
+body.jah-preview-surface button[type="submit"],
+body.jah-preview-surface .service-card a,
+body.jah-preview-surface .contact-direct-actions a {
+  border-color: rgba(45, 42, 36, 0.16);
+  background: var(--jah-text);
+  color: var(--jah-bg);
+  box-shadow: 0 14px 32px rgba(45, 42, 36, 0.16);
+}
+
+body.jah-preview-surface .btn-secondary,
+body.jah-preview-surface .btn-outline,
+body.jah-preview-surface .ghost-button {
+  border-color: var(--jah-line-strong);
+  background: transparent;
+  color: var(--jah-text);
+  box-shadow: none;
+}
+
+body.jah-preview-surface input,
+body.jah-preview-surface textarea,
+body.jah-preview-surface select {
+  border-color: var(--jah-line);
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--jah-text);
+}
+
+body.jah-preview-surface input::placeholder,
+body.jah-preview-surface textarea::placeholder {
+  color: rgba(45, 42, 36, 0.5);
+}
+
+body.jah-preview-surface footer,
+body.jah-preview-surface .footer {
+  border-top-color: var(--jah-line);
+  background: rgba(234, 223, 206, 0.78);
+  color: var(--jah-text);
+}
+
+body.jah-preview-surface .site-footer-links a,
+body.jah-preview-surface footer a {
+  color: var(--jah-text);
+}
+
+body.jah-preview-surface .site-footer-links a:hover,
+body.jah-preview-surface footer a:hover {
+  color: var(--jah-blue);
+}

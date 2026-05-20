@@ -19,7 +19,31 @@ if load_dotenv:
 
 
 def _path_from_env(name: str, default: Path) -> Path:
-    return Path(os.getenv(name, str(default))).expanduser()
+    path = Path(os.getenv(name, str(default))).expanduser()
+    if not path.is_absolute():
+        path = PROJECT_ROOT / path
+    return path
+
+
+def _current_app_env() -> str:
+    return os.getenv("APP_ENV", "development").strip().lower() or "development"
+
+
+def _default_development_tutor_root() -> Path:
+    candidates = [
+        Path.home() / "Documentos" / "tutor_ia",
+        Path.home() / "Documents" / "tutor_ia",
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return candidates[0]
+
+
+def _default_tutor_root() -> Path:
+    if _current_app_env() == "production":
+        return PROJECT_ROOT / "tutor_ia"
+    return _default_development_tutor_root()
 
 
 def _csv_env(name: str, default: str) -> list[str]:
@@ -30,28 +54,51 @@ def _email_csv_env(name: str, default: str = "") -> list[str]:
     return [item.strip().lower() for item in os.getenv(name, default).split(",") if item.strip()]
 
 
+def _int_env(name: str, default: int) -> int:
+    value = os.getenv(name, "")
+    if not value:
+        return default
+    return int(value)
+
+
+APP_ENV = _current_app_env()
+DEFAULT_TUTOR_IA_ROOT = _path_from_env("TUTOR_IA_ROOT", _default_tutor_root())
+DEFAULT_ALLOWED_ORIGINS = (
+    "http://localhost,"
+    "http://127.0.0.1,"
+    "http://localhost:5500,"
+    "http://127.0.0.1:5500,"
+    "https://jhernandez30-cpu.github.io"
+)
+
+
 @dataclass(frozen=True)
 class Settings:
-    host: str = os.getenv("JAH_AI_HOST", "127.0.0.1")
-    port: int = int(os.getenv("JAH_AI_PORT", "8787"))
+    app_env: str = APP_ENV
+    api_base_url: str = os.getenv(
+        "API_BASE_URL",
+        "http://127.0.0.1:8787" if APP_ENV == "development" else "",
+    ).rstrip("/")
+    host: str = os.getenv("JAH_AI_HOST", "0.0.0.0" if APP_ENV == "production" else "127.0.0.1")
+    port: int = _int_env("PORT", _int_env("JAH_AI_PORT", 8787))
     log_level: str = os.getenv("JAH_AI_LOG_LEVEL", "INFO")
 
-    tutor_ia_root: Path = _path_from_env("TUTOR_IA_ROOT", Path.home() / "Documents" / "tutor_ia")
+    tutor_ia_root: Path = DEFAULT_TUTOR_IA_ROOT
     persist_dir: Path = _path_from_env(
         "TUTOR_IA_PERSIST_DIR",
-        Path.home() / "Documents" / "tutor_ia" / "vectores" / "brain_db",
+        DEFAULT_TUTOR_IA_ROOT / "vectores" / "brain_db",
     )
     rag_persist_dir: Path = _path_from_env(
         "TUTOR_IA_RAG_PERSIST_DIR",
-        Path.home() / "Documents" / "tutor_ia" / "vectores" / "jah_ai_rag",
+        DEFAULT_TUTOR_IA_ROOT / "vectores" / "jah_ai_rag",
     )
     knowledge_dir: Path = _path_from_env(
         "TUTOR_IA_KNOWLEDGE_DIR",
-        Path.home() / "Documents" / "tutor_ia" / "conocimiento",
+        DEFAULT_TUTOR_IA_ROOT / "conocimiento",
     )
     upload_dir: Path = _path_from_env(
         "JAH_AI_UPLOAD_DIR",
-        Path.home() / "Documents" / "tutor_ia" / "conocimiento" / "_uploads",
+        DEFAULT_TUTOR_IA_ROOT / "conocimiento" / "_uploads",
     )
     history_path: Path = _path_from_env("JAH_AI_HISTORY_PATH", BASE_DIR / "app" / "storage" / "history.json")
     context_summary_path: Path = _path_from_env(
@@ -178,7 +225,7 @@ class Settings:
     allowed_origins: list[str] = field(
         default_factory=lambda: _csv_env(
             "JAH_AI_ALLOWED_ORIGINS",
-            "null,http://localhost,http://127.0.0.1,http://localhost:5500,http://127.0.0.1:5500,https://jhernandez30-cpu.github.io",
+            DEFAULT_ALLOWED_ORIGINS,
         )
     )
     allowed_origin_regex: str | None = os.getenv(
