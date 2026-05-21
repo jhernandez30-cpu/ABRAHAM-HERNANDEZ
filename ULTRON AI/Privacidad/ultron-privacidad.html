@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es-NI">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Politica de Privacidad de ULTRON AI</title>
+  <meta name="description" content="Politica de privacidad de ULTRON AI, aplicacion de productividad e inteligencia artificial para Windows desarrollada por Abraham Josue Hernandez Gonzalez.">
+  <meta name="author" content="Abraham Josue Hernandez Gonzalez">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#07080d">
+  <link rel="canonical" href="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/ULTRON%20AI/Privacidad/ultron-privacidad.html">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_NI">
+  <meta property="og:site_name" content="ULTRON AI">
+  <meta property="og:title" content="Politica de Privacidad de ULTRON AI">
+  <meta property="og:description" content="Informacion sobre recopilacion, uso, almacenamiento y proteccion de datos en ULTRON AI.">
+  <meta property="og:url" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/ULTRON%20AI/Privacidad/ultron-privacidad.html">
+  <meta property="og:image" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/UTLRON/ChatGPT%20Image%2017%20may%202026,%2017_39_11.png">
+  <meta property="og:image:alt" content="Interfaz futurista de ULTRON AI">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Politica de Privacidad de ULTRON AI">
+  <meta name="twitter:description" content="Politica de privacidad publica de ULTRON AI.">
+  <meta name="twitter:image" content="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/assets/UTLRON/ChatGPT%20Image%2017%20may%202026,%2017_39_11.png">
+
+  <link rel="icon" type="image/x-icon" href="../../assets/UTLRON/ultron.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/ultron.css">
+  <style>
+    .privacy-page {
+      padding-top: 76px;
+    }
+
+    .privacy-hero {
+      position: relative;
+      min-height: 54svh;
+      display: flex;
+      align-items: center;
+      padding: clamp(5rem, 10vw, 7.5rem) clamp(1rem, 4vw, 3rem) clamp(3rem, 7vw, 5rem);
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .privacy-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(90deg, rgba(3, 4, 7, 0.96), rgba(3, 4, 7, 0.72)),
+        url("../../assets/UTLRON/ChatGPT%20Image%2017%20may%202026,%2017_39_11.png") center / cover;
+      opacity: 0.92;
+    }
+
+    .privacy-hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 48, 69, 0.24), transparent 26rem),
+        linear-gradient(to top, var(--bg), transparent 44%);
+    }
+
+    .privacy-hero-inner {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+    }
+
+    .privacy-hero h1 {
+      max-width: 900px;
+      margin: 1rem 0 0;
+      font-size: clamp(2.6rem, 7vw, 5.7rem);
+      line-height: 0.96;
+      font-family: "Rajdhani", "Inter", sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .privacy-updated {
+      margin: 1.25rem 0 0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .privacy-content {
+      width: min(100% - 2rem, 920px);
+      margin: 0 auto;
+      padding: clamp(3rem, 7vw, 5.5rem) 0;
+    }
+
+    .privacy-intro {
+      margin: 0 0 2rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .privacy-section {
+      padding: 1.5rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .privacy-section h2 {
+      margin: 0 0 1rem;
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      font-family: "Rajdhani", "Inter", sans-serif;
+      color: var(--text);
+    }
+
+    .privacy-section p {
+      margin: 0 0 1rem;
+      color: var(--muted);
+    }
+
+    .privacy-section ul {
+      margin: 0 0 1rem;
+      padding-left: 1.25rem;
+      color: var(--muted);
+    }
+
+    .privacy-section li {
+      margin: 0.55rem 0;
+    }
+
+    .privacy-contact {
+      display: grid;
+      gap: 0.65rem;
+      margin-top: 1rem;
+      padding: 1rem;
+      border: 1px solid rgba(255, 77, 88, 0.25);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .privacy-contact p {
+      margin: 0;
+    }
+
+    .privacy-contact a {
+      color: var(--red-hot);
+      font-weight: 700;
+    }
+
+    @media (max-width: 720px) {
+      .privacy-page {
+        padding-top: 70px;
+      }
+
+      .privacy-hero {
+        min-height: 42svh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ultron-noise" aria-hidden="true"></div>
+  <div class="ultron-scanline" aria-hidden="true"></div>
+
+  <header class="ultron-header" data-header>
+    <a class="ultron-brand" href="../ultron.html" aria-label="Volver a ULTRON">
+      <img src="../../assets/UTLRON/ultron.ico" alt="" width="36" height="36" decoding="async">
+      <span>ULTRON</span>
+    </a>
+
+    <button class="nav-toggle" type="button" aria-label="Abrir navegacion" aria-expanded="false" data-nav-toggle>
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="ultron-nav" aria-label="Navegacion de privacidad" data-nav>
+      <a href="#informacion">Informacion</a>
+      <a href="#uso">Uso</a>
+      <a href="#servicios">Servicios externos</a>
+      <a href="#seguridad">Seguridad</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+
+    <a class="nav-cta" href="../ultron.html">Volver a ULTRON</a>
+  </header>
+
+  <main class="privacy-page">
+    <section class="privacy-hero" id="inicio">
+      <div class="privacy-hero-inner reveal">
+        <span class="eyebrow">Privacidad y datos</span>
+        <h1>Pol&iacute;tica de Privacidad de ULTRON AI</h1>
+        <p class="privacy-updated">&Uacute;ltima actualizaci&oacute;n: 21 de mayo de 2026</p>
+      </div>
+    </section>
+
+    <article class="privacy-content">
+      <p class="privacy-intro reveal">ULTRON AI es una aplicaci&oacute;n de productividad e inteligencia artificial para Windows desarrollada por Abraham Josu&eacute; Hern&aacute;ndez Gonz&aacute;lez. Esta pol&iacute;tica de privacidad explica c&oacute;mo la aplicaci&oacute;n puede recopilar, usar, almacenar y proteger la informaci&oacute;n del usuario.</p>
+
+      <section class="privacy-section reveal" id="informacion">
+        <h2>1. Informaci&oacute;n que puede recopilar la aplicaci&oacute;n</h2>
+        <p>ULTRON AI puede recopilar o procesar la siguiente informaci&oacute;n, dependiendo de las funciones que el usuario utilice:</p>
+        <ul>
+          <li>Nombre, correo electr&oacute;nico o datos de cuenta, si el usuario inicia sesi&oacute;n.</li>
+          <li>Mensajes, consultas o instrucciones escritas dentro del asistente.</li>
+          <li>Archivos, documentos o contenido que el usuario decida cargar voluntariamente.</li>
+          <li>Configuraciones, preferencias y datos necesarios para mejorar la experiencia de uso.</li>
+          <li>Informaci&oacute;n t&eacute;cnica b&aacute;sica, como errores de funcionamiento, estado de conexi&oacute;n o configuraci&oacute;n de la aplicaci&oacute;n.</li>
+          <li>Datos de voz, micr&oacute;fono o audio &uacute;nicamente si el usuario activa funciones relacionadas con voz.</li>
+        </ul>
+        <p>ULTRON AI no recopila informaci&oacute;n sensible de forma intencional sin autorizaci&oacute;n del usuario.</p>
+      </section>
+
+      <section class="privacy-section reveal" id="uso">
+        <h2>2. Uso de la informaci&oacute;n</h2>
+        <p>La informaci&oacute;n se utiliza para:</p>
+        <ul>
+          <li>Permitir el funcionamiento del asistente inteligente.</li>
+          <li>Responder consultas del usuario.</li>
+          <li>Guardar preferencias o historial, si la funci&oacute;n est&aacute; activada.</li>
+          <li>Mejorar la experiencia de uso de la aplicaci&oacute;n.</li>
+          <li>Conectar la aplicaci&oacute;n con servicios de inteligencia artificial, autenticaci&oacute;n, base de datos o almacenamiento cuando sea necesario.</li>
+          <li>Diagnosticar errores t&eacute;cnicos y mejorar la estabilidad del sistema.</li>
+        </ul>
+      </section>
+
+      <section class="privacy-section reveal" id="servicios">
+        <h2>3. Servicios externos</h2>
+        <p>ULTRON AI puede integrarse con servicios externos como proveedores de inteligencia artificial, autenticaci&oacute;n, bases de datos, almacenamiento o APIs configuradas por el desarrollador o por el usuario.</p>
+        <p>Cuando se utilicen servicios externos, cierta informaci&oacute;n necesaria para procesar la solicitud puede ser enviada a dichos servicios. El uso de esos datos tambi&eacute;n puede estar sujeto a las pol&iacute;ticas de privacidad de cada proveedor externo.</p>
+      </section>
+
+      <section class="privacy-section reveal" id="seguridad">
+        <h2>4. Almacenamiento y seguridad</h2>
+        <p>ULTRON AI busca proteger la informaci&oacute;n del usuario mediante buenas pr&aacute;cticas de seguridad, control de acceso y almacenamiento responsable.</p>
+        <p>La informaci&oacute;n puede almacenarse localmente en el dispositivo del usuario o en servicios externos configurados para funciones como autenticaci&oacute;n, historial, preferencias o base de conocimiento.</p>
+        <p>Ning&uacute;n sistema es completamente infalible, por lo que se recomienda al usuario no ingresar contrase&ntilde;as, informaci&oacute;n bancaria, datos m&eacute;dicos, informaci&oacute;n legal sensible o datos personales altamente confidenciales dentro del asistente, salvo que comprenda y acepte los riesgos correspondientes.</p>
+      </section>
+
+      <section class="privacy-section reveal" id="control">
+        <h2>5. Control del usuario</h2>
+        <p>El usuario puede decidir qu&eacute; informaci&oacute;n comparte con ULTRON AI. Tambi&eacute;n puede solicitar la eliminaci&oacute;n de datos asociados a su uso, cuando dicha informaci&oacute;n est&eacute; almacenada bajo control del desarrollador.</p>
+        <p>El usuario puede borrar datos locales desde la configuraci&oacute;n de la aplicaci&oacute;n, desinstalando la aplicaci&oacute;n o eliminando archivos asociados, seg&uacute;n corresponda.</p>
+      </section>
+
+      <section class="privacy-section reveal" id="comparticion">
+        <h2>6. Compartici&oacute;n de informaci&oacute;n</h2>
+        <p>ULTRON AI no vende informaci&oacute;n personal del usuario.</p>
+        <p>La informaci&oacute;n solo podr&aacute; compartirse cuando sea necesario para:</p>
+        <ul>
+          <li>Procesar solicitudes mediante servicios externos.</li>
+          <li>Cumplir obligaciones legales.</li>
+          <li>Proteger la seguridad de la aplicaci&oacute;n, del usuario o de terceros.</li>
+          <li>Mantener el funcionamiento t&eacute;cnico de la aplicaci&oacute;n.</li>
+        </ul>
+      </section>
+
+      <section class="privacy-section reveal" id="menores">
+        <h2>7. Menores de edad</h2>
+        <p>ULTRON AI est&aacute; orientado a usuarios que puedan utilizar herramientas de productividad e inteligencia artificial de forma responsable. Si un menor utiliza la aplicaci&oacute;n, debe hacerlo bajo supervisi&oacute;n de un padre, madre, tutor o responsable legal.</p>
+      </section>
+
+      <section class="privacy-section reveal" id="cambios">
+        <h2>8. Cambios en esta pol&iacute;tica</h2>
+        <p>Esta pol&iacute;tica puede actualizarse cuando se agreguen nuevas funciones, integraciones o cambios en el tratamiento de datos. La versi&oacute;n actualizada estar&aacute; disponible en la URL p&uacute;blica de la pol&iacute;tica de privacidad.</p>
+      </section>
+
+      <section class="privacy-section reveal" id="contacto">
+        <h2>9. Contacto</h2>
+        <p>Para consultas relacionadas con privacidad, soporte o eliminaci&oacute;n de datos, puede contactar al desarrollador:</p>
+        <div class="privacy-contact">
+          <p><strong>Nombre:</strong> Abraham Josu&eacute; Hern&aacute;ndez Gonz&aacute;lez</p>
+          <p><strong>Correo:</strong> <a href="mailto:josuea.hernandezg@gmail.com">josuea.hernandezg@gmail.com</a></p>
+          <p><strong>Sitio web:</strong> <a href="https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/">https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/</a></p>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <footer class="ultron-footer">
+    <a class="ultron-brand" href="../ultron.html" aria-label="Volver a ULTRON">
+      <img src="../../assets/UTLRON/ultron.ico" alt="" width="32" height="32" loading="lazy" decoding="async">
+      <span>ULTRON</span>
+    </a>
+    <p>Creado por Abraham Josu&eacute; Hern&aacute;ndez Gonz&aacute;lez</p>
+    <p><a href="../../index.html">Portafolio principal</a> &middot; <span id="currentYear">2026</span></p>
+  </footer>
+
+  <script src="../../assets/js/ultron.js"></script>
+</body>
+</html>

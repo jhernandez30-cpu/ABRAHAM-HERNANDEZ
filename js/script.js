@@ -196,7 +196,7 @@ function initPortfolioChatbot() {
   const answers = [
     {
       keys: ['hola', 'buenas', 'hey', 'saludos', 'inicio', 'empezar', 'ayuda'],
-      text: `Hola, soy JAH, el asistente virtual de Abraham. El sitio ahora usa la nueva experiencia visual de <a href="${homeUrl}">index.html</a>. Puedo ayudarte a elegir una solución, explorar <a href="${pageUrl('ultron.html')}">ULTRON</a>, abrir <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>, entrar a <a href="${projectUrls.jahStore}">THE JAH STORE</a> o revisar proyectos y servicios.`,
+      text: `Hola, soy JAH, el asistente virtual de Abraham. El sitio ahora usa la nueva experiencia visual de <a href="${homeUrl}">index.html</a>. Puedo ayudarte a elegir una solución, explorar <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>, abrir <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>, entrar a <a href="${projectUrls.jahStore}">THE JAH STORE</a> o revisar proyectos y servicios.`,
       suggestions: ['Guíame', 'Servicios', 'ULTRON', 'JAH IA']
     },
     {
@@ -216,7 +216,7 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['mapa', 'navegar', 'sitio', 'secciones', 'paginas', 'páginas', 'menu', 'todo el sitio'],
-      text: `Mapa del sitio actualizado: <a href="${homeUrl}">inicio nuevo</a>, <a href="${homeSectionUrl('servicios')}">servicios</a>, <a href="${homeSectionUrl('proyectos')}">proyectos destacados</a>, <a href="${homeSectionUrl('sobre-mi')}">sobre mí</a>, <a href="${pageUrl('ultron.html')}">ULTRON</a>, <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>, <a href="${pageUrl('interactua.html')}">herramientas IA</a>, <a href="${projectUrls.jahStore}">THE JAH STORE</a>, <a href="${pageUrl('recursos/')}">recursos</a> y <a href="${pageUrl('contacto.html')}">contacto</a>.`,
+      text: `Mapa del sitio actualizado: <a href="${homeUrl}">inicio nuevo</a>, <a href="${homeSectionUrl('servicios')}">servicios</a>, <a href="${homeSectionUrl('proyectos')}">proyectos destacados</a>, <a href="${homeSectionUrl('sobre-mi')}">sobre mí</a>, <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>, <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>, <a href="${pageUrl('interactua.html')}">herramientas IA</a>, <a href="${projectUrls.jahStore}">THE JAH STORE</a>, <a href="${pageUrl('recursos/')}">recursos</a> y <a href="${pageUrl('contacto.html')}">contacto</a>.`,
       suggestions: ['ULTRON', 'JAH IA', 'Servicios', 'Contacto']
     },
     {
@@ -276,7 +276,7 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['proyecto', 'proyectos', 'portfolio', 'portafolio', 'demo', 'caso', 'casos', 'trabajos'],
-      text: `Los proyectos destacados del nuevo sitio son: <a href="${projectUrls.muralSandino}" target="_blank" rel="noopener">Mural Sandino</a>, <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener">Benjamín Zeledón</a>, <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener">Variedades Nora</a> y <a href="${projectUrls.jahStore}">THE JAH STORE</a>. También puedes abrir <a href="${pageUrl('ultron.html')}">ULTRON</a> y <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>.`,
+      text: `Los proyectos destacados del nuevo sitio son: <a href="${projectUrls.muralSandino}" target="_blank" rel="noopener">Mural Sandino</a>, <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener">Benjamín Zeledón</a>, <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener">Variedades Nora</a> y <a href="${projectUrls.jahStore}">THE JAH STORE</a>. También puedes abrir <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a> y <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>.`,
       suggestions: ['Mural Sandino', 'Benjamín Zeledón', 'Variedades Nora', 'THE JAH STORE']
     },
     {
@@ -316,7 +316,7 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['ultron', 'ultron ia', 'asistente ultron', 'sistema ultron', 'asistente inteligente', 'windows', 'ubuntu', 'android', 'descargas'],
-      text: `<a href="${pageUrl('ultron.html')}">ULTRON</a> es la página oficial de presentación del asistente inteligente: una experiencia futurista para PC y dispositivos móviles, con enfoque en voz, memoria contextual, automatización, productividad y presencia digital. Desde ahí puedes ver su visión, capacidades, arquitectura conceptual y próximas descargas para Microsoft, Ubuntu y Google Play.`,
+      text: `<a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a> es la página oficial de presentación del asistente inteligente: una experiencia futurista para PC y dispositivos móviles, con enfoque en voz, memoria contextual, automatización, productividad y presencia digital. Desde ahí puedes ver su visión, capacidades, arquitectura conceptual y próximas descargas para Microsoft, Ubuntu y Google Play.`,
       suggestions: ['JAH IA', 'Servicios', 'Proyectos', 'Contacto']
     },
     {
@@ -356,7 +356,7 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['ia', 'ai', 'inteligencia artificial', 'agente', 'agentes', 'herramientas ia', 'notebooklm', 'interactua'],
-      text: `En <a href="${pageUrl('interactua.html')}">Interactúa</a> hay herramientas IA para captación de cliente, análisis de competencia, estrategia, seguridad, desarrollo, bases de datos y C#. Para practicar código, abre <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>. Si quieres ver la visión del asistente inteligente futurista, abre <a href="${pageUrl('ultron.html')}">ULTRON</a>.`,
+      text: `En <a href="${pageUrl('interactua.html')}">Interactúa</a> hay herramientas IA para captación de cliente, análisis de competencia, estrategia, seguridad, desarrollo, bases de datos y C#. Para practicar código, abre <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>. Si quieres ver la visión del asistente inteligente futurista, abre <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>.`,
       suggestions: ['JAH IA', 'ULTRON', 'Recursos', 'Contacto']
     },
     {
@@ -414,7 +414,7 @@ function initPortfolioChatbot() {
             <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener" class="chatbot-menu-link">Benjamín Zeledón</a>
             <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener" class="chatbot-menu-link">Variedades Nora</a>
             <a href="${projectUrls.jahStore}" class="chatbot-menu-link">THE JAH STORE</a>
-            <a href="${pageUrl('ultron.html')}" class="chatbot-menu-link">ULTRON</a>
+            <a href="${pageUrl('ULTRON%20AI/ultron.html')}" class="chatbot-menu-link">ULTRON</a>
             <a href="${pageUrl('asistente-programacion.html')}" class="chatbot-menu-link">JAH IA</a>
             <a href="${projectUrls.itsaSegurity}" target="_blank" rel="noopener" class="chatbot-menu-link">ITSA Segurity</a>
             <a href="${pageUrl('recursos/')}" class="chatbot-menu-link">Recursos</a>
