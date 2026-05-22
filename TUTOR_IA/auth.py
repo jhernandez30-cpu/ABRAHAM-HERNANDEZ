@@ -159,7 +159,12 @@ def upsert_google_user(profile: dict) -> tuple[bool, str, dict | None]:
 
 
 def get_google_redirect_uri() -> str:
-    return os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:8501")
+    default_redirect = (
+        os.getenv("FRONTEND_URL", "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ")
+        if os.getenv("APP_ENV", "development").strip().lower() == "production"
+        else "http://localhost:8501"
+    )
+    return os.getenv("GOOGLE_REDIRECT_URI", default_redirect)
 
 
 def google_oauth_configured() -> bool:

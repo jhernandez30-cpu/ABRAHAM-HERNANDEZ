@@ -40,35 +40,38 @@ Carga estas variables en el servicio backend:
 ```env
 APP_ENV=production
 AUTH_PROVIDER=supabase
-API_BASE_URL=https://URL_PUBLICA_DE_RAILWAY
+API_BASE_URL=https://jah-ai-bridge-production.up.railway.app
 AUTH_FRONTEND_URL=https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/asistente-programacion.html
-FRONTEND_URL=https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/asistente-programacion.html
-JAH_AI_ALLOWED_ORIGINS=https://jhernandez30-cpu.github.io,http://localhost,http://127.0.0.1,http://localhost:5500,http://127.0.0.1:5500
-CORS_ALLOWED_ORIGINS=https://jhernandez30-cpu.github.io,http://localhost,http://127.0.0.1,http://localhost:5500,http://127.0.0.1:5500
-JAH_AI_ALLOWED_ORIGIN_REGEX=^https://jhernandez30-cpu\.github\.io$|^http://(localhost|127\.0\.0\.1)(:\d+)?$
-TUTOR_IA_ROOT=/app/tutor_ia
-TUTOR_IA_PERSIST_DIR=/app/tutor_ia/vectores/brain_db
-TUTOR_IA_RAG_PERSIST_DIR=/app/tutor_ia/vectores/jah_ai_rag
-TUTOR_IA_KNOWLEDGE_DIR=/app/tutor_ia/conocimiento
-JAH_AI_UPLOAD_DIR=/app/tutor_ia/conocimiento/_uploads
+FRONTEND_URL=https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ
+JAH_AI_ALLOWED_ORIGINS=https://jhernandez30-cpu.github.io
+CORS_ALLOWED_ORIGINS=https://jhernandez30-cpu.github.io
+JAH_AI_ALLOWED_ORIGIN_REGEX=^https://jhernandez30-cpu\.github\.io$
+TUTOR_IA_ROOT=tutor_ia
+TUTOR_IA_PERSIST_DIR=tutor_ia/vectores/brain_db
+TUTOR_IA_RAG_PERSIST_DIR=tutor_ia/vectores/jah_ai_rag
+TUTOR_IA_KNOWLEDGE_DIR=tutor_ia/conocimiento
+JAH_AI_UPLOAD_DIR=tutor_ia/conocimiento/_uploads
 SUPABASE_URL=https://TU-PROYECTO.supabase.co
 SUPABASE_ANON_KEY=...
 SUPABASE_GOOGLE_ENABLED=true
 SUPABASE_APPLE_ENABLED=true
 DATABASE_URL=postgresql://...
 POSTGRES_CONNECT_TIMEOUT_SECONDS=8
+OWNER_EMAIL=josuea.hernandezg@gmail.com
+ADMIN_EMAILS=josuea.hernandezg@gmail.com
 ```
 
 Opcionales:
 
 ```env
 SUPABASE_SERVICE_ROLE_KEY=...
-OWNER_EMAIL=tu-correo@dominio.com
-ADMIN_EMAILS=tu-correo@dominio.com
 WEB_SEARCH_PROVIDER=tavily
 TAVILY_API_KEY=...
+MODEL_PROVIDER=fallback
+MODEL_NAME=llama3.2:1b
 OLLAMA_BASE_URL=...
-JAH_AI_MODEL=llama3.2:1b
+OPENAI_API_KEY=...
+GEMINI_API_KEY=...
 ```
 
 ## Comandos Railway
@@ -81,7 +84,7 @@ railway login
 railway link
 railway variable set APP_ENV=production
 railway variable set AUTH_PROVIDER=supabase
-railway variable set API_BASE_URL=https://URL_PUBLICA_DE_RAILWAY
+railway variable set API_BASE_URL=https://jah-ai-bridge-production.up.railway.app
 railway up --detach -m "Deploy JAH AI bridge with Supabase auth"
 ```
 
@@ -107,7 +110,7 @@ printf "%s" "$DATABASE_URL" | railway variable set DATABASE_URL --stdin
 Crea `js/app-config.production.js` desde `js/app-config.production.example.js` y define:
 
 ```js
-API_BASE_URL: 'https://URL_PUBLICA_DE_RAILWAY'
+API_BASE_URL: 'https://jah-ai-bridge-production.up.railway.app'
 SUPABASE_URL: 'https://TU-PROYECTO.supabase.co'
 SUPABASE_ANON_KEY: 'TU_SUPABASE_ANON_KEY_PUBLICA'
 ```

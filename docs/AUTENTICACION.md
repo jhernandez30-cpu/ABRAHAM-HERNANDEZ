@@ -14,7 +14,7 @@ El frontend solo debe recibir valores publicos:
 
 ```js
 window.APP_CONFIG = {
-  API_BASE_URL: 'https://URL_PUBLICA_DE_RAILWAY',
+  API_BASE_URL: 'https://jah-ai-bridge-production.up.railway.app',
   SUPABASE_URL: 'https://TU-PROYECTO.supabase.co',
   SUPABASE_ANON_KEY: 'TU_SUPABASE_ANON_KEY_PUBLICA',
   SUPABASE_GOOGLE_ENABLED: true,
@@ -33,11 +33,11 @@ Variables minimas:
 ```env
 APP_ENV=production
 AUTH_PROVIDER=supabase
-API_BASE_URL=https://URL_PUBLICA_DE_RAILWAY
+API_BASE_URL=https://jah-ai-bridge-production.up.railway.app
 AUTH_FRONTEND_URL=https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/asistente-programacion.html
-FRONTEND_URL=https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/asistente-programacion.html
-JAH_AI_ALLOWED_ORIGINS=https://jhernandez30-cpu.github.io,http://localhost,http://127.0.0.1,http://localhost:5500,http://127.0.0.1:5500
-CORS_ALLOWED_ORIGINS=https://jhernandez30-cpu.github.io,http://localhost,http://127.0.0.1,http://localhost:5500,http://127.0.0.1:5500
+FRONTEND_URL=https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ
+JAH_AI_ALLOWED_ORIGINS=https://jhernandez30-cpu.github.io
+CORS_ALLOWED_ORIGINS=https://jhernandez30-cpu.github.io
 SUPABASE_URL=https://TU-PROYECTO.supabase.co
 SUPABASE_ANON_KEY=...
 SUPABASE_GOOGLE_ENABLED=true
@@ -59,8 +59,8 @@ DATABASE_URL=postgresql://...
 ## Validacion local
 
 ```bash
-cd /home/abraham/Documentos/ABRAHAM-HERNANDEZ-main/bridge_api
-uvicorn main:app --host 127.0.0.1 --port 8787 --reload
+cd ABRAHAM-HERNANDEZ-main
+uvicorn main:app --app-dir bridge_api --host 127.0.0.1 --port 8787 --reload
 ```
 
 Luego abre:

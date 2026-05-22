@@ -16,7 +16,7 @@ Ayudar a negocios a construir, proteger y optimizar sus soluciones digitales con
 
 ## Datos operativos
 
-- Proyecto local: `C:\Users\herna\Documents\ITSA-Segurity-main`
+- Proyecto: `ITSA-Segurity-main`
 - Sitio publicado: `https://jhernandez30-cpu.github.io/ITSA-Segurity/`
 - WhatsApp: `+505 8987 1374`
 - Correo: `itsasecurity@gmail.com`

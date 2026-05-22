@@ -21,7 +21,7 @@ def create_app() -> FastAPI:
 
     app = FastAPI(
         title="JAH AI Bridge API",
-        description="Bridge local entre el frontend JAH AI y el cerebro RAG TUTOR_IA.",
+        description="Bridge HTTPS entre el frontend JAH AI y el cerebro RAG TUTOR_IA.",
         version="0.4.0",
     )
 
@@ -38,8 +38,8 @@ def create_app() -> FastAPI:
         allow_origins=settings.allowed_origins,
         allow_origin_regex=settings.allowed_origin_regex,
         allow_credentials=False,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=["GET", "POST", "PUT", "OPTIONS"],
+        allow_headers=["Authorization", "Content-Type", "X-Session-Id", "X-Requested-With", "Accept", "Origin"],
         expose_headers=["Access-Control-Allow-Private-Network"],
     )
 

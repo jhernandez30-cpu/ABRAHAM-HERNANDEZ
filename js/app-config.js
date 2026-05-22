@@ -1,5 +1,6 @@
 (() => {
   const LOCAL_API_BASE_URL = 'http://127.0.0.1:8787';
+  const PRODUCTION_API_BASE_URL = 'https://jah-ai-bridge-production.up.railway.app';
   const GITHUB_PAGES_HOSTS = new Set(['jhernandez30-cpu.github.io']);
   const currentConfig = window.APP_CONFIG || {};
 
@@ -73,35 +74,49 @@
     return String(value || '').trim().replace(/\/$/, '');
   }
 
+  function isProductionSafeApiUrl(value) {
+    try {
+      const url = new URL(value);
+      return url.protocol === 'https:' && !isLocalHostname(url.hostname);
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function resolveProductionApiBaseUrl(liveConfig = currentConfig) {
+    const configured = normalizeApiBaseUrl(
+      readQueryApiBaseUrl()
+      || readMetaApiBaseUrl()
+      || liveConfig.API_BASE_URL
+      || PRODUCTION_API_BASE_URL
+    );
+    if (configured && isProductionSafeApiUrl(configured)) return configured;
+    return PRODUCTION_API_BASE_URL;
+  }
+
   function resolveRunMode() {
     const explicit = readMetaRunMode()
       || readStoredRunMode()
       || String(currentConfig.RUN_MODE || '').trim().toLowerCase();
     if (explicit === 'production' || explicit === 'local') return explicit;
 
-    const productionUrl = readMetaApiBaseUrl() || readQueryApiBaseUrl();
-    if (productionUrl) return 'production';
-
     if (detectLocalMode()) return 'local';
     if (isGitHubPagesHost()) return 'production';
+    const productionUrl = readQueryApiBaseUrl() || readMetaApiBaseUrl() || currentConfig.API_BASE_URL;
+    if (productionUrl) return 'production';
     return 'production';
   }
 
   function resolveApiBaseUrl() {
     const liveConfig = window.APP_CONFIG || currentConfig;
     const runMode = resolveRunMode();
-    const overrideUrl = normalizeApiBaseUrl(
-      readMetaApiBaseUrl()
-      || readQueryApiBaseUrl()
-      || (runMode === 'production' ? liveConfig.API_BASE_URL : '')
-    );
 
     if (runMode === 'production') {
-      return overrideUrl;
+      return resolveProductionApiBaseUrl(liveConfig);
     }
 
     return normalizeApiBaseUrl(
-      overrideUrl
+      readQueryApiBaseUrl()
       || liveConfig.API_BASE_URL
       || window.TUTOR_IA_BRIDGE_URL
       || LOCAL_API_BASE_URL
@@ -123,6 +138,7 @@
     SUPABASE_GOOGLE_ENABLED: currentConfig.SUPABASE_GOOGLE_ENABLED === true,
     SUPABASE_APPLE_ENABLED: currentConfig.SUPABASE_APPLE_ENABLED === true,
     LOCAL_API_BASE_URL,
+    PRODUCTION_API_BASE_URL,
     IS_LOCAL_MODE: detectLocalMode(),
     IS_GITHUB_PAGES: isGitHubPagesHost(),
     resolveApiBaseUrl,

@@ -8,9 +8,9 @@ tags: [portfolio, abraham-hernandez, frontend, github-pages]
 
 # Portfolio Abraham Hernandez
 
-Proyecto local:
+Proyecto:
 
-`C:\Users\herna\Documents\ABRAHAM-HERNANDEZ-main`
+`ABRAHAM-HERNANDEZ-main`
 
 Sitio publicado:
 
@@ -25,7 +25,7 @@ Pagina web personal para presentar perfil profesional, servicios, proyectos, rec
 - HTML, CSS y JavaScript.
 - Paginas estaticas optimizadas para GitHub Pages.
 - Secciones de servicios, proyectos, recursos y contacto.
-- Integracion con TUTOR_IA mediante puente local para el asistente.
+- Integracion con TUTOR_IA mediante backend HTTPS en Railway para el asistente.
 
 ## Proyecto destacado
 

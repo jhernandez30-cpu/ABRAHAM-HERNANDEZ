@@ -5,17 +5,17 @@
 | Capa | Ubicacion | Rol |
 |------|-----------|-----|
 | Frontend estatico | GitHub Pages / archivo local | `asistente-programacion.html` + `js/` |
-| Bridge API | `bridge_api/` (repo) | FastAPI local o Railway HTTPS |
-| Cerebro | `~/Documentos/tutor_ia` en desarrollo, `/app/tutor_ia` en Railway | Vectores, conocimiento, RAG |
+| Bridge API | `bridge_api/` (repo) | FastAPI en Railway HTTPS o desarrollo local |
+| Cerebro | `tutor_ia/` dentro del proyecto desplegado | Vectores, conocimiento, RAG |
 
-GitHub Pages **no ejecuta Python**. Solo puede hablar con tutor_ia si el backend local esta activo en tu PC o si despliegas un backend publico.
+GitHub Pages **no ejecuta Python**. En produccion solo puede hablar con tutor_ia mediante el backend HTTPS publico en Railway.
 
 ## Configuracion central (`js/app-config.js`)
 
 ```javascript
 window.APP_CONFIG = {
-  RUN_MODE: "local",              // "local" | "production"
-  API_BASE_URL: "http://127.0.0.1:8787",
+  RUN_MODE: "production",         // "local" | "production"
+  API_BASE_URL: "https://jah-ai-bridge-production.up.railway.app",
   LOCAL_API_BASE_URL: "http://127.0.0.1:8787"
 };
 ```
@@ -28,44 +28,29 @@ window.APP_CONFIG = {
 
 ### Modo produccion
 
-En GitHub Pages el frontend queda en modo produccion. Debes pegar la URL HTTPS real de Railway en `js/app-config.js`.
+En GitHub Pages el frontend queda en modo produccion y usa `https://jah-ai-bridge-production.up.railway.app`.
 
-Cuando exista un backend publico en HTTPS:
+Si cambias el dominio de Railway:
 
-1. Despliega `bridge_api` en una URL publica HTTPS.
-2. En `js/app-config.js`, reemplaza `API_BASE_URL: ''` por la URL publica de Railway.
+1. Despliega `bridge_api` en la nueva URL publica HTTPS.
+2. Actualiza `PRODUCTION_API_BASE_URL` en `js/app-config.js` y la meta `jah-api-base-url` en `asistente-programacion.html`.
 3. Publica el frontend en GitHub Pages.
 
-No uses una URL publica inventada hasta tener el backend desplegado.
-
-## Iniciar tutor_ia en Ubuntu
-
-```bash
-cd ~/Documentos/tutor_ia
-chmod +x install_ubuntu.sh start_ubuntu.sh
-./install_ubuntu.sh    # solo la primera vez
-./start_ubuntu.sh
-```
-
-Comando interno:
-
-```bash
-python -m uvicorn backend.main:app --host 127.0.0.1 --port 8787 --reload
-```
+No pongas una URL local en el frontend publicado.
 
 Alternativa desde el repo del portafolio:
 
 ```bash
-cd ~/Documentos/ABRAHAM-HERNANDEZ-main/bridge_api
+cd ABRAHAM-HERNANDEZ-main
 python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn main:app --host 127.0.0.1 --port 8787 --reload
+pip install -r bridge_api/requirements.txt
+uvicorn main:app --app-dir bridge_api --host 127.0.0.1 --port 8787 --reload
 ```
 
 Configura en `.env`:
 
 ```env
-TUTOR_IA_ROOT=/home/abraham/Documentos/tutor_ia
+TUTOR_IA_ROOT=tutor_ia
 JAH_AI_ALLOWED_ORIGINS=http://localhost,http://127.0.0.1,http://localhost:5500,http://127.0.0.1:5500,https://jhernandez30-cpu.github.io
 ```
 
@@ -81,7 +66,8 @@ Respuesta minima esperada:
 ```json
 {
   "status": "ok",
-  "service": "tutor_ia",
+  "service": "jah-ai-bridge",
+  "tutor_ia": "ready",
   "tutor_ia_status": "CONNECTED"
 }
 ```
@@ -99,15 +85,15 @@ curl http://127.0.0.1:8787/api/health
 | `tutorIaEnabled` | `localStorage.tutorIaEnabled` | Preferencia del usuario (activar cerebro) |
 | `tutorIaConnectionStatus` | Solo en memoria | `CONNECTED`, `DISCONNECTED`, `BACKEND_UNAVAILABLE`, `CHECKING`, `RECOVERING` |
 
-Regla: si activas el tutor y el backend no responde, veras **Activado · Backend local no disponible**. La preferencia **no** se desactiva sola.
+Regla: si activas el tutor y el backend no responde, veras **El backend tutor_ia no esta disponible. Revisa Railway o la URL del servicio.** La preferencia **no** se desactiva sola.
 
-El panel tecnico (`#brainStatus`, boton `#tutorIABtn`) solo es visible para usuario **administrador** autenticado.
+El estado tecnico publico (`#brainStatus`) consulta `/api/health`. Los controles administrativos siguen protegidos para usuario administrador autenticado.
 
 ## Abrir desde GitHub Pages
 
 URL: `https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/asistente-programacion.html`
 
-En GitHub Pages el frontend espera una URL publica HTTPS configurada en `js/app-config.js`. Para probar contra el backend local, fuerza `RUN_MODE=local` desde la consola o usa el parametro `?api_base=http://127.0.0.1:8787`.
+En GitHub Pages el frontend espera una URL publica HTTPS configurada en `js/app-config.js`. Para desarrollo local, abre el archivo en localhost o fuerza `RUN_MODE=local`.
 
 ### Limitacion del navegador (Private Network Access)
 
@@ -116,9 +102,9 @@ Una pagina **HTTPS publica** que llama a `http://127.0.0.1` puede ser bloqueada 
 - **Private Network Access (PNA)** de Chrome/Edge
 - **Mixed Content** (HTTPS -> HTTP)
 
-El backend envia `Access-Control-Allow-Private-Network: true`, pero el navegador puede seguir bloqueando la peticion. En ese caso el indicador mostrara *Backend local no disponible* aunque el servidor este encendido.
+El backend envia `Access-Control-Allow-Private-Network: true` solo para desarrollo, pero el navegador puede seguir bloqueando la peticion.
 
-**Solucion robusta:** desplegar el bridge en HTTPS publico y usar `RUN_MODE=production`.
+**Solucion robusta:** usar el bridge HTTPS publico de Railway y `RUN_MODE=production`.
 
 **Alternativas de desarrollo:**
 

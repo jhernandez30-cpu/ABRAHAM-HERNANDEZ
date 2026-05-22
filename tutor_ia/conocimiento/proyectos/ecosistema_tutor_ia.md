@@ -22,8 +22,8 @@
 - Entra automaticamente dentro del `Cerebro Unificado` cuando hay especialistas disponibles.
 
 4. Cerebro Jarvis / Programador
-- Detecta `C:\Users\herna\Documents\OpenJarvis-main` y toma sus perfiles de programacion como disciplina de razonamiento.
-- Detecta `C:\Users\herna\Documents\jarvis-mlx-main` y aprovecha el patron de interfaz por voz con Whisper local.
+- Detecta rutas configuradas por `TUTOR_IA_OPENJARVIS_ROOT` y toma sus perfiles de programacion como disciplina de razonamiento.
+- Detecta rutas configuradas por `TUTOR_IA_JARVIS_MLX_ROOT` y aprovecha el patron de interfaz por voz con Whisper local.
 - Integra perfiles internos: orquestador, arquitecto, debugger, code reviewer y auditor seguro.
 - En Windows no carga MLX directamente; solo usa la idea de STT/TTS local para no traer dependencias de macOS/Apple Silicon.
 - Se puede redirigir con `TUTOR_IA_OPENJARVIS_ROOT` y `TUTOR_IA_JARVIS_MLX_ROOT`.

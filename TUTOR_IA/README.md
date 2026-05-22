@@ -1,6 +1,10 @@
 # TUTOR_IA Web Bridge
 
-Este puente permite que `asistente-programacion.html` consulte el cerebro local de TUTOR_IA desde:
+Este puente es legado/local. En produccion `asistente-programacion.html` consulta el backend Railway:
+
+`https://jah-ai-bridge-production.up.railway.app/api/chat`
+
+Para desarrollo local tambien puede usarse:
 
 `http://127.0.0.1:8787/api/chat`
 
@@ -16,7 +20,7 @@ Tambien acepta aliases compatibles con el `BrainConnector` central creado en la 
 
 ## Importante
 
-GitHub Pages solo sirve archivos estaticos. No ejecuta Python. Para que el asistente responda con el cerebro real, este puente debe estar corriendo en tu PC o en un servidor propio.
+GitHub Pages solo sirve archivos estaticos. No ejecuta Python. Para que el asistente responda con el cerebro real en produccion, el backend debe estar corriendo en Railway o en un servidor HTTPS equivalente.
 
 No subas `vectores/brain_db/`, `database/users.db`, `tutor_ia.db`, `.venv/` ni logs al repositorio. La carpeta `vectores/brain_db` puede contener tus fuentes privadas y `tutor_ia.db` contiene usuarios e historial del Asistente de Programacion.
 

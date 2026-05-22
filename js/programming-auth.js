@@ -653,15 +653,15 @@
     }
     const apiBaseUrl = resolveApiBaseUrl();
     if (!apiBaseUrl) {
-      setAuthStatus(`No se puede conectar con ${providerLabel}: el backend de autenticación no está configurado. Inicia bridge_api en http://127.0.0.1:8787.`, 'error');
+      setAuthStatus(`No se puede conectar con ${providerLabel}: el backend de autenticación no está configurado. Revisa la URL pública de Railway.`, 'error');
       return;
     }
     await loadAuthProviders();
     if (!authProviders[provider]) {
       setAuthStatus(
         provider === 'google'
-          ? 'Google Login pendiente de configuración. Añade GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET y GOOGLE_REDIRECT_URI en bridge_api/.env y en Google Cloud Console.'
-          : 'Apple Login pendiente de configuración. Añade APPLE_CLIENT_ID, APPLE_CLIENT_SECRET y APPLE_REDIRECT_URI en bridge_api/.env y en Apple Developer.',
+          ? 'Google Login pendiente de configuración. Activa Google en Supabase Auth y define las variables necesarias en Railway.'
+          : 'Apple Login pendiente de configuración. Activa Apple en Supabase Auth y define las variables necesarias en Railway.',
         'error'
       );
       return;
@@ -1107,7 +1107,7 @@
   async function authFetch(path, options = {}) {
     const apiBaseUrl = resolveApiBaseUrl();
     if (!apiBaseUrl) {
-      const error = new Error('El backend de autenticación no está disponible. Para desarrollo local, inicia el backend con: cd bridge_api && python main.py. Para producción, configura API_BASE_URL.');
+      const error = new Error('El backend de autenticación no está disponible. Configura la URL HTTPS de Railway en API_BASE_URL.');
       error.status = 0;
       error.code = 'AUTH_BACKEND_NOT_CONFIGURED';
       throw error;
@@ -1164,9 +1164,9 @@
     void requestUrl;
     void path;
     if (error?.name === 'AbortError') {
-      return 'El backend de autenticación no respondió a tiempo. Verifica que el servidor esté ejecutándose en ' + resolveApiBaseUrl() + '.';
+      return 'El backend de autenticación no respondió a tiempo. Verifica Railway y la URL configurada: ' + resolveApiBaseUrl() + '.';
     }
-    return 'No se pudo conectar con el backend de autenticación en ' + resolveApiBaseUrl() + '. Verifica que el servidor esté ejecutándose (cd bridge_api && python main.py).';
+    return 'No se pudo conectar con el backend de autenticación en ' + resolveApiBaseUrl() + '. Verifica Railway, CORS y la URL del servicio.';
   }
 
   function authHttpErrorMessage(status, path, data = {}) {
@@ -1228,7 +1228,7 @@
   async function ensureAuthBackendAvailable() {
     const apiBaseUrl = resolveApiBaseUrl();
     if (!apiBaseUrl) {
-      setAuthStatus('El backend de autenticación no está configurado. Define API_BASE_URL o abre el asistente en modo local.', 'error');
+      setAuthStatus('El backend de autenticación no está configurado. Define la URL HTTPS de Railway en API_BASE_URL.', 'error');
       return false;
     }
     try {
@@ -1238,10 +1238,10 @@
       const isNotConfigured = error.code === 'AUTH_BACKEND_NOT_CONFIGURED';
       const onPublicSite = window.APP_CONFIG?.IS_GITHUB_PAGES && window.location.protocol === 'https:';
       let hint = isNotConfigured
-        ? 'El backend no está configurado. En local: cd bridge_api && source .venv/bin/activate && uvicorn main:app --host 127.0.0.1 --port 8787'
-        : 'No se pudo conectar con el backend en ' + apiBaseUrl + '. Verifica que bridge_api esté ejecutándose.';
+        ? 'El backend no está configurado. Define la URL HTTPS de Railway en API_BASE_URL.'
+        : 'No se pudo conectar con el backend en ' + apiBaseUrl + '. Verifica Railway, CORS y la URL del servicio.';
       if (onPublicSite && !isNotConfigured) {
-        hint += ' Desde GitHub Pages el navegador puede bloquear llamadas a localhost; prueba abrir el asistente en http://127.0.0.1:5500/asistente-programacion.html con el backend activo.';
+        hint += ' Desde GitHub Pages el asistente debe llamar al backend HTTPS de Railway, no a procesos locales.';
       }
       setAuthStatus(hint, 'error');
       return false;

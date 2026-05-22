@@ -7,6 +7,7 @@ from fastapi import APIRouter, HTTPException, Request
 from app.config import settings
 from app.services.auth_service import AuthServiceError, auth_service
 from app.services.brain_service import brain_service
+from app.services.supabase_service import supabase_service
 
 
 router = APIRouter(tags=["health"])
@@ -61,19 +62,29 @@ def health_payload() -> dict:
         persist_dir_exists = bool(brain.get("persist_dir_exists"))
     except Exception:
         tutor_status = "BACKEND_UNAVAILABLE"
-    service_status = "ok" if tutor_connected else "degraded"
+    supabase_health = supabase_service.health()
+    database_status = str(supabase_health.get("database_status") or "not_configured")
+    supabase_status = str(supabase_health.get("status") or "not_configured")
+    service_status = "ok" if tutor_connected and database_status == "connected" else "degraded"
+    tutor_label = "ready" if tutor_connected else "degraded" if root_exists or knowledge_dir_exists else "missing"
 
     return {
         "ok": True,
         "success": True,
         "status": service_status,
-        "service": "tutor_ia",
+        "service": "jah-ai-bridge",
         "bridge_status": "ok",
         "environment": settings.app_env,
         "auth_provider": settings.auth_provider,
+        "supabase": supabase_status,
         "supabase_auth_configured": bool(settings.supabase_url and settings.supabase_anon_key),
+        "supabase_google_enabled": bool(supabase_health.get("google_enabled")),
+        "supabase_apple_enabled": bool(supabase_health.get("apple_enabled")),
+        "database": "connected" if database_status == "connected" else database_status,
+        "database_connected": bool(supabase_health.get("database_connected")),
         "postgres_configured": bool(settings.database_url),
         "tutor_ia_status": tutor_status,
+        "tutor_ia": tutor_label,
         "tutor_ia_connected": tutor_connected,
         "tutor_status": tutor_status,
         "fragments": fragments,
@@ -81,8 +92,10 @@ def health_payload() -> dict:
         "tutor_ia_root_available": root_exists,
         "knowledge_dir_available": knowledge_dir_exists,
         "rag_persist_dir_available": persist_dir_exists,
-        "message": "JAH AI Bridge API funcionando correctamente",
-        "mode": "local-fastapi-bridge",
+        "message": "JAH AI Bridge API activo. Revisa tutor_ia, supabase y database para estado detallado.",
+        "mode": "railway-fastapi-bridge",
+        "frontend_url": settings.auth_frontend_url,
+        "cors_allowed_origins": settings.allowed_origins,
         "timestamp": last_healthcheck,
         "last_healthcheck": last_healthcheck,
     }
@@ -106,7 +119,7 @@ def admin_system_status_payload() -> dict:
         "rag_status": "READY" if brain_fragments > 0 else "RAG_DEGRADED",
         "bridge_status": "ok",
         "message": "JAH AI Bridge API funcionando correctamente",
-        "mode": "local-fastapi-bridge",
+        "mode": "railway-fastapi-bridge",
         "model": settings.model_name,
         "fragments": brain_fragments,
         "tutor_connected": tutor_connected,

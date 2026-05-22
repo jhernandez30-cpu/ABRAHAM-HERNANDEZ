@@ -17,6 +17,10 @@ function getBridgeUrl() {
   ).trim().replace(/\/$/, '');
 }
 
+function isLocalBridgeMode() {
+  return String(window.APP_CONFIG?.RUN_MODE || '').toLowerCase() === 'local';
+}
+
 function getChatEndpoint() {
   const bridgeUrl = getBridgeUrl();
   return bridgeUrl ? `${bridgeUrl}/api/chat` : '';
@@ -435,9 +439,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (normalized === 'CONNECTED') return 'Conectado';
     if (normalized === 'CHECKING') return 'Comprobando conexion';
     if (normalized === 'RECOVERING') return 'Recuperando conexion';
-    if (normalized === 'BACKEND_UNAVAILABLE') return 'Backend local no disponible';
-    if (normalized === 'DISCONNECTED') return 'Backend local no disponible';
-    if (normalized === 'DEGRADED') return 'Degradado';
+    if (normalized === 'BACKEND_UNAVAILABLE') return 'Backend tutor_ia no disponible';
+    if (normalized === 'DISCONNECTED') return 'Backend tutor_ia no disponible';
+    if (normalized === 'DEGRADED') return 'Backend activo parcialmente';
     return 'Sin verificar';
   }
 
@@ -446,6 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!tutorIAEnabled) return 'offline';
     if (normalized === 'CONNECTED') return 'ready';
     if (normalized === 'CHECKING' || normalized === 'RECOVERING' || normalized === 'UNKNOWN') return 'checking';
+    if (normalized === 'DEGRADED') return 'warning';
     return 'error';
   }
 
@@ -473,7 +478,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderTutorTechnicalStatus() {
     updateTutorButtonState();
-    if (!adminSystemStatusVisible) return;
     if (!tutorIAEnabled) {
       setBrainStatus('offline', 'Cerebro tutor_ia: Desactivado');
       return;
@@ -513,7 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function refreshAdminTechnicalState() {
     const visible = isAdminUser();
     setAdminTechnicalVisibility(visible);
-    if (visible && tutorIAEnabled) detectTutorBrain();
+    if (tutorIAEnabled) detectTutorBrain();
   }
 
   async function fetchWithTimeout(url, options = {}, timeoutMs = 12000) {
@@ -527,7 +531,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function detectTutorBrain() {
-    if (!adminSystemStatusVisible) return;
     if (!tutorIAEnabled) {
       setTutorConnectionStatus('UNKNOWN', 'Desactivado');
       return;
@@ -536,11 +539,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const bridgeUrl = getBridgeUrl();
     const endpointCandidates = getEndpointCandidates();
     if (!bridgeUrl) {
-      setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Backend local no configurado');
+      setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'URL del backend no configurada');
       return;
     }
     if (!endpointCandidates.length) {
-      setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Backend local no configurado');
+      setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Endpoint de chat no configurado');
       return;
     }
 
@@ -549,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetchWithTimeout(ragHealthUrl(), { method: 'GET' }, 5000);
       if (!response.ok) {
-        setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Backend local no disponible');
+        setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'El backend tutor_ia no está disponible. Revisa Railway o la URL del servicio.');
         return;
       }
 
@@ -561,7 +564,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const authHeaders = window.JAHAuth && typeof window.JAHAuth.getAuthHeaders === 'function'
         ? window.JAHAuth.getAuthHeaders()
         : {};
-      if (authHeaders.Authorization) {
+      if (adminSystemStatusVisible && authHeaders.Authorization) {
         try {
           const adminResponse = await fetchWithTimeout(adminStatusUrl(), {
             method: 'GET',
@@ -583,7 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       setTutorConnectionStatus(tutorStatus, label);
     } catch (error) {
-      setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'Backend local no disponible');
+      setTutorConnectionStatus('BACKEND_UNAVAILABLE', 'El backend tutor_ia no está disponible. Revisa Railway o la URL del servicio.');
     }
   }
 
@@ -616,7 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
       formData.append('chat_history_enabled', String(preferences.chat_history_enabled !== false));
     }
     formData.append('response_profile', 'web_fast');
-    formData.append('local_first', 'true');
+    formData.append('local_first', String(isLocalBridgeMode()));
     formData.append('fast_mode', String(!deepThinkingEnabled));
     formData.append('deep_thinking', String(deepThinkingEnabled));
     formData.append('bridge_api', 'true');
@@ -671,7 +674,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function backendConnectionError() {
     const target = getBridgeUrl() || 'API_BASE_URL';
-    const error = new Error(`No se pudo conectar con el backend de JAH AI. Verifica que el servicio este activo o que ${target} este configurado correctamente.`);
+    const error = new Error(`El backend tutor_ia no está disponible. Revisa Railway o la URL del servicio: ${target}.`);
     error.code = 'BACKEND_CONNECTION';
     return error;
   }
@@ -702,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
       source,
       input_source: source,
       response_profile: tutorIAEnabled || deepThinkingEnabled ? 'balanced' : 'web_fast',
-      local_first: true,
+      local_first: isLocalBridgeMode(),
       fast_mode: !(tutorIAEnabled || deepThinkingEnabled),
       bridge_api: true,
       bridge_api_url: getBridgeUrl(),
@@ -731,10 +734,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function askBackendChat(question, chatId, source = 'typed_chat') {
-    if (adminSystemStatusVisible) setBrainStatus('checking', chatLoadingText());
+    setBrainStatus('checking', chatLoadingText());
     const healthy = await verifyBackendHealth();
     if (!healthy) {
-      if (adminSystemStatusVisible) setBrainStatus('error', 'Backend tutor_ia no disponible');
+      setBrainStatus('error', 'Backend tutor_ia no disponible');
       throw backendConnectionError();
     }
 
@@ -765,9 +768,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const sourcesCount = Array.isArray(data.sources) ? data.sources.length : 0;
-    if (adminSystemStatusVisible) {
-      setBrainStatus('ready', sourcesCount ? `Respuesta recibida - ${sourcesCount} fuentes` : 'Respuesta recibida');
-    }
+    setBrainStatus('ready', sourcesCount ? `Respuesta recibida - ${sourcesCount} fuentes` : 'Respuesta recibida');
     return {
       ...data,
       show_sources: sourcesCount > 0,
@@ -1108,18 +1109,18 @@ document.addEventListener('DOMContentLoaded', () => {
       ? filesForMessage.map(file => file.name).filter(Boolean)
       : [];
     const fileStatus = fileNames.length
-      ? `Archivo recibido por la interfaz: ${fileNames.join(', ')}. El backend debe leerlo antes de llamar al modelo; vuelve a enviar la misma pregunta si el proceso local estaba ocupado.`
+      ? `Archivo recibido por la interfaz: ${fileNames.join(', ')}. El backend debe leerlo antes de llamar al modelo; vuelve a enviar la misma pregunta si el servicio estaba ocupado.`
       : 'No habia archivos adjuntos en este mensaje.';
 
     if (error && error.name === 'AbortError') {
-      return `El modelo local/Ollama no respondio dentro de ${Math.round(CHAT_TIMEOUT_MS / 1000)} segundos. ${fileStatus}\n\nPosibles soluciones:\n- Revisa que Ollama no tenga otra generacion en curso.\n- Usa un modelo ligero como llama3.2:1b para la interfaz web.\n- Reinicia el puente TUTOR_IA si el proceso quedo ocupado.\n- Si el archivo es grande, intenta una peticion mas concreta sobre una parte del archivo.`;
+      return `El backend tutor_ia no respondio dentro de ${Math.round(CHAT_TIMEOUT_MS / 1000)} segundos. ${fileStatus}\n\nPosibles soluciones:\n- Revisa Railway y los logs del servicio jah-ai-bridge.\n- Confirma que /api/health responde correctamente.\n- Si el archivo es grande, intenta una peticion mas concreta sobre una parte del archivo.`;
     }
     if (error && error.code === 'BACKEND_CONNECTION') {
       return error.message;
     }
     const detail = error && error.message ? ` Detalle: ${error.message}` : '';
     const bridgeUrl = getBridgeUrl();
-    return `No pude completar la consulta con TUTOR_IA. ${fileStatus}${detail} Verifica el puente local en ${bridgeUrl}/health o ${bridgeUrl}/api/health.`;
+    return `No pude completar la consulta con TUTOR_IA. ${fileStatus}${detail} Verifica el backend en ${bridgeUrl}/api/health.`;
   }
 
   function autosizeInput() {
@@ -1146,7 +1147,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateTutorButtonState();
     if (!tutorIAEnabled) {
       renderTutorTechnicalStatus();
-    } else if (options.checkConnection !== false && adminSystemStatusVisible) {
+    } else if (options.checkConnection !== false) {
       detectTutorBrain();
     } else {
       renderTutorTechnicalStatus();
@@ -1220,13 +1221,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!getUploadEndpoint()) {
       addMessageToChat(activeChatId, {
         role: 'assistant',
-        content: 'El backend de archivos no esta configurado. Define API_BASE_URL o ejecuta el backend local antes de subir archivos.'
+        content: 'El backend de archivos no esta configurado. Define la URL HTTPS de Railway en API_BASE_URL antes de subir archivos.'
       });
       renderChat();
       return;
     }
 
-    if (adminSystemStatusVisible) setBrainStatus('checking', 'Subiendo archivo al cerebro tutor_ia...');
+    setBrainStatus('checking', 'Subiendo archivo al cerebro tutor_ia...');
     let uploaded = 0;
     let failed = 0;
 
@@ -1261,12 +1262,12 @@ document.addEventListener('DOMContentLoaded', () => {
         ? 'Archivo cargado correctamente al cerebro tutor_ia.'
         : `${uploaded} archivos cargados correctamente al cerebro tutor_ia.`;
       addMessageToChat(chatId, { role: 'assistant', content: message });
-      if (adminSystemStatusVisible) setBrainStatus('ready', message);
+      setBrainStatus('ready', message);
     }
     if (failed) {
       const message = 'No se pudo subir el archivo. Verificá que el backend esté activo.';
       addMessageToChat(chatId, { role: 'assistant', content: message });
-      if (adminSystemStatusVisible) setBrainStatus('error', 'Error al subir archivo');
+      setBrainStatus('error', 'Error al subir archivo');
     }
     renderChat();
   }

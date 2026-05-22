@@ -29,6 +29,13 @@ def _current_app_env() -> str:
     return os.getenv("APP_ENV", "development").strip().lower() or "development"
 
 
+def _production_api_base_url() -> str:
+    public_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN", "").strip().strip("/")
+    if public_domain:
+        return f"https://{public_domain}".rstrip("/")
+    return "https://jah-ai-bridge-production.up.railway.app"
+
+
 def _default_development_tutor_root() -> Path:
     candidates = [
         Path.home() / "Documentos" / "tutor_ia",
@@ -44,6 +51,25 @@ def _default_tutor_root() -> Path:
     if _current_app_env() == "production":
         return PROJECT_ROOT / "tutor_ia"
     return _default_development_tutor_root()
+
+
+def _default_frontend_url() -> str:
+    if _current_app_env() == "production":
+        return "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/asistente-programacion.html"
+    return "http://127.0.0.1:5500/asistente-programacion.html"
+
+
+def _default_oauth_redirect(path: str) -> str:
+    api_base_url = os.getenv("API_BASE_URL", "").strip().rstrip("/")
+    if _current_app_env() == "production":
+        return f"{api_base_url or _production_api_base_url()}{path}"
+    return f"http://127.0.0.1:8787{path}"
+
+
+def _default_ollama_base_url() -> str:
+    if _current_app_env() == "production":
+        return ""
+    return "http://127.0.0.1:11434"
 
 
 def _csv_env(name: str, default: str) -> list[str]:
@@ -67,12 +93,14 @@ def _bool_env(name: str, default: str = "false") -> bool:
 
 APP_ENV = _current_app_env()
 DEFAULT_TUTOR_IA_ROOT = _path_from_env("TUTOR_IA_ROOT", _default_tutor_root())
-DEFAULT_ALLOWED_ORIGINS = (
-    "http://localhost,"
-    "http://127.0.0.1,"
-    "http://localhost:5500,"
-    "http://127.0.0.1:5500,"
-    "https://jhernandez30-cpu.github.io"
+DEFAULT_ALLOWED_ORIGINS = "https://jhernandez30-cpu.github.io" if APP_ENV == "production" else (
+    "http://localhost,http://127.0.0.1,http://localhost:5500,"
+    "http://127.0.0.1:5500,https://jhernandez30-cpu.github.io"
+)
+DEFAULT_ALLOWED_ORIGIN_REGEX = (
+    r"^https://jhernandez30-cpu\.github\.io$"
+    if APP_ENV == "production"
+    else r"^https://jhernandez30-cpu\.github\.io$|^http://(localhost|127\.0\.0\.1)(:\d+)?$"
 )
 
 
@@ -81,7 +109,7 @@ class Settings:
     app_env: str = APP_ENV
     api_base_url: str = os.getenv(
         "API_BASE_URL",
-        "http://127.0.0.1:8787" if APP_ENV == "development" else "",
+        "http://127.0.0.1:8787" if APP_ENV == "development" else _production_api_base_url(),
     ).rstrip("/")
     host: str = os.getenv("JAH_AI_HOST", "0.0.0.0" if APP_ENV == "production" else "127.0.0.1")
     port: int = _int_env("PORT", _int_env("JAH_AI_PORT", 8787))
@@ -142,8 +170,9 @@ class Settings:
     recent_context_turns: int = int(os.getenv("JAH_AI_RECENT_CONTEXT_TURNS", "4"))
     context_summary_max_chars: int = int(os.getenv("JAH_AI_CONTEXT_SUMMARY_MAX_CHARS", "2800"))
 
-    model_name: str = os.getenv("JAH_AI_MODEL", "llama3.2:1b")
-    ollama_base_url: str = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434").rstrip("/")
+    model_provider: str = os.getenv("MODEL_PROVIDER", "ollama" if APP_ENV != "production" else "fallback").strip().lower()
+    model_name: str = os.getenv("MODEL_NAME", os.getenv("JAH_AI_MODEL", "llama3.2:1b"))
+    ollama_base_url: str = os.getenv("OLLAMA_BASE_URL", _default_ollama_base_url()).rstrip("/")
     ollama_timeout_seconds: int = int(os.getenv("JAH_AI_OLLAMA_TIMEOUT_SECONDS", "45"))
     ollama_num_ctx: int = int(os.getenv("JAH_AI_OLLAMA_NUM_CTX", "4096"))
     ollama_num_predict: int = int(os.getenv("JAH_AI_OLLAMA_NUM_PREDICT", "900"))
@@ -156,7 +185,7 @@ class Settings:
     auth_provider: str = os.getenv("AUTH_PROVIDER", "local").strip().lower() or "local"
     auth_frontend_url: str = os.getenv(
         "AUTH_FRONTEND_URL",
-        os.getenv("FRONTEND_URL", "http://127.0.0.1:5500/asistente-programacion.html"),
+        os.getenv("FRONTEND_URL", _default_frontend_url()),
     )
     auth_session_ttl_hours: int = int(os.getenv("AUTH_SESSION_TTL_HOURS", "168"))
     owner_email: str = os.getenv("OWNER_EMAIL", "").strip().lower()
@@ -178,14 +207,14 @@ class Settings:
     google_client_secret: str = os.getenv("GOOGLE_CLIENT_SECRET", "")
     google_redirect_uri: str = os.getenv(
         "GOOGLE_REDIRECT_URI",
-        "http://127.0.0.1:8787/api/auth/google/callback",
+        _default_oauth_redirect("/api/auth/google/callback"),
     )
     google_oauth_scope: str = os.getenv("GOOGLE_OAUTH_SCOPE", "openid email profile")
     apple_client_id: str = os.getenv("APPLE_CLIENT_ID", "")
     apple_client_secret: str = os.getenv("APPLE_CLIENT_SECRET", "")
     apple_redirect_uri: str = os.getenv(
         "APPLE_REDIRECT_URI",
-        "http://127.0.0.1:8787/api/auth/apple/callback",
+        _default_oauth_redirect("/api/auth/apple/callback"),
     )
     apple_oauth_scope: str = os.getenv("APPLE_OAUTH_SCOPE", "name email")
 
@@ -243,7 +272,7 @@ class Settings:
     )
     allowed_origin_regex: str | None = os.getenv(
         "JAH_AI_ALLOWED_ORIGIN_REGEX",
-        r"^https://jhernandez30-cpu\.github\.io$|^http://(localhost|127\.0\.0\.1)(:\d+)?$",
+        DEFAULT_ALLOWED_ORIGIN_REGEX,
     )
 
 

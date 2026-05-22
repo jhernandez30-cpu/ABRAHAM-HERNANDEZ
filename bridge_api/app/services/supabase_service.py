@@ -40,6 +40,35 @@ class SupabaseService:
     def database_configured(self) -> bool:
         return bool(settings.database_url)
 
+    def health(self) -> dict[str, Any]:
+        database_status = "not_configured"
+        database_connected = False
+        database_error = ""
+        if self.database_configured():
+            try:
+                with self._connect() as conn:
+                    with conn.cursor() as cursor:
+                        cursor.execute("SELECT 1")
+                        cursor.fetchone()
+                database_status = "connected"
+                database_connected = True
+            except Exception as exc:
+                database_status = "error"
+                database_error = self._safe_error(exc)
+                LOGGER.warning("Supabase Postgres health check failed: %s", database_error)
+
+        return {
+            "configured": self.configured(),
+            "enabled": self.enabled(),
+            "status": "configured" if self.configured() else "not_configured",
+            "google_enabled": self.provider_enabled("google"),
+            "apple_enabled": self.provider_enabled("apple"),
+            "database_configured": self.database_configured(),
+            "database_connected": database_connected,
+            "database_status": database_status,
+            "database_error": database_error,
+        }
+
     def provider_enabled(self, provider: str) -> bool:
         if not self.configured():
             return False

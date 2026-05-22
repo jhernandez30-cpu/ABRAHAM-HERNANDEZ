@@ -8,6 +8,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Request, UploadFile
 
 from app.models.schemas import ChatRequest, ChatResponse, Source
+from app.services.auth_service import AuthServiceError, auth_service
 from app.services.file_service import file_service
 from app.services.history_service import history_service
 from app.services.workflow_service import workflow_service
@@ -104,8 +105,38 @@ def _memory_session_id(payload: ChatRequest) -> str:
     return f"{base[:96]}:{digest}"
 
 
+def _bearer_token(request: Request) -> str:
+    header = request.headers.get("authorization", "")
+    prefix = "bearer "
+    if header.lower().startswith(prefix):
+        return header[len(prefix) :].strip()
+    return ""
+
+
+def _apply_authenticated_context(request: Request, payload: ChatRequest) -> None:
+    token = _bearer_token(request)
+    if not token:
+        payload.user_id = ""
+        payload.user_email = ""
+        payload.user_name = ""
+        return
+    try:
+        session = auth_service.session_from_token(token)
+    except AuthServiceError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc)) from exc
+    if not session.get("authenticated"):
+        raise HTTPException(status_code=401, detail="Sesion no autenticada.")
+    user = session.get("user") if isinstance(session.get("user"), dict) else {}
+    payload.user_id = str(user.get("id") or "")
+    payload.user_email = str(user.get("email") or "")
+    payload.user_name = str(user.get("name") or "")
+    session_preferences = session.get("preferences") if isinstance(session.get("preferences"), dict) else {}
+    payload.user_preferences = {**session_preferences, **(payload.user_preferences or {})}
+
+
 async def _handle_chat(request: Request) -> ChatResponse:
     payload, files = await _parse_chat_request(request)
+    _apply_authenticated_context(request, payload)
     uploaded_sources: list[Source] = []
     memory_session_id = _memory_session_id(payload)
 

@@ -1,6 +1,6 @@
 # JAH AI Bridge API + Cerebro RAG
 
-Backend local FastAPI para conectar `asistente-programacion.html` con el cerebro documental de JAH AI configurado en `TUTOR_IA_ROOT`.
+Backend FastAPI para conectar `asistente-programacion.html` con el cerebro documental de JAH AI configurado en `TUTOR_IA_ROOT`. En produccion corre en Railway; en desarrollo puede correr local.
 
 El RAG lee documentos de `tutor_ia\conocimiento`, los divide en fragmentos, genera embeddings locales y guarda la base vectorial en ChromaDB.
 
@@ -205,7 +205,7 @@ En GitHub Pages o produccion no uses `127.0.0.1` para usuarios reales. Debes des
 
 ```js
 window.APP_CONFIG = {
-  API_BASE_URL: "https://api.tu-dominio.com"
+  API_BASE_URL: "https://jah-ai-bridge-production.up.railway.app"
 };
 ```
 
@@ -214,7 +214,7 @@ Si `API_BASE_URL` no esta configurado en produccion, los botones de login muestr
 Para desarrollo local, levanta el backend antes de registrar o iniciar sesion:
 
 ```powershell
-cd C:\Users\herna\Documents\ABRAHAM-HERNANDEZ-main\bridge_api
+cd C:\ruta\a\ABRAHAM-HERNANDEZ-main\bridge_api
 .\venv\Scripts\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8787
 ```
 
@@ -229,15 +229,15 @@ Si abres `asistente-programacion.html` directamente como archivo local, el backe
 Variables principales:
 
 ```text
-AUTH_FRONTEND_URL=http://127.0.0.1:5500/asistente-programacion.html
+AUTH_FRONTEND_URL=https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/asistente-programacion.html
 OWNER_EMAIL=admin@tu-dominio.com
 ADMIN_EMAILS=admin@tu-dominio.com
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
-GOOGLE_REDIRECT_URI=http://127.0.0.1:8787/api/auth/google/callback
+GOOGLE_REDIRECT_URI=https://jah-ai-bridge-production.up.railway.app/api/auth/google/callback
 APPLE_CLIENT_ID=
 APPLE_CLIENT_SECRET=
-APPLE_REDIRECT_URI=http://127.0.0.1:8787/api/auth/apple/callback
+APPLE_REDIRECT_URI=https://jah-ai-bridge-production.up.railway.app/api/auth/apple/callback
 ```
 
 Para enlazar usuarios con SQL Server / TUTORIA, activa la conexion solo en `.env` local:
@@ -283,16 +283,17 @@ Invoke-RestMethod http://127.0.0.1:8787/api/admin/system-status -Headers @{
 
 ## Conectar con asistente-programacion.html
 
-No hace falta redisenar el frontend. Cuando el backend este activo, el asistente puede enviar mensajes a:
+No hace falta redisenar el frontend. En produccion el asistente envia mensajes a:
 
 ```text
-http://127.0.0.1:8787/api/chat
+https://jah-ai-bridge-production.up.railway.app/api/chat
 ```
 
 Ejemplo con `fetch`:
 
 ```js
-const response = await fetch("http://127.0.0.1:8787/api/chat", {
+const apiBaseUrl = window.APP_CONFIG?.API_BASE_URL || "https://jah-ai-bridge-production.up.railway.app";
+const response = await fetch(`${apiBaseUrl}/api/chat`, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({

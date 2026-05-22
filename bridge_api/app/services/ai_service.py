@@ -22,6 +22,10 @@ class AIService:
         fallback_context: str = "",
         fallback_message: str = "",
     ) -> tuple[str, str]:
+        if settings.model_provider != "ollama" or not settings.ollama_base_url:
+            LOGGER.info("No remote model provider configured; using deterministic fallback answer.")
+            return self._fallback_answer(fallback_message, fallback_context), "fallback-no-model"
+
         try:
             response = requests.post(
                 f"{settings.ollama_base_url}/api/generate",
@@ -45,7 +49,7 @@ class AIService:
         except Exception as exc:
             LOGGER.warning("Ollama generation failed: %s", exc)
 
-        return self._fallback_answer(fallback_message, fallback_context), "fallback-local"
+        return self._fallback_answer(fallback_message, fallback_context), "fallback-model-unavailable"
 
     def _build_prompt(self, message: str, context: str, history_context: str) -> str:
         return f"""Eres JAH AI, un asistente de programacion para Abraham Hernandez.
@@ -69,15 +73,16 @@ RESPUESTA:
         if context.strip():
             excerpt = context.strip()[:1800]
             return (
-                "No pude contactar el modelo local de IA, pero encontre contexto relevante en los documentos.\n\n"
+                "El backend tutor_ia esta activo, pero no hay un proveedor de modelo IA disponible. "
+                "Encontre contexto relevante en los documentos.\n\n"
                 f"Pregunta: {message or 'sin pregunta'}\n\n"
                 "Fragmentos relevantes recuperados:\n"
                 f"{excerpt}\n\n"
-                "Activa Ollama si quieres que el modelo redacte una respuesta completa sobre estos fragmentos."
+                "Configura OLLAMA_BASE_URL, OPENAI_API_KEY o GEMINI_API_KEY en Railway para respuestas generativas completas."
             )
         return (
-            "La API local esta funcionando, pero no pude contactar el modelo IA ni encontrar contexto suficiente. "
-            "Verifica que TUTOR_IA exista, que `vectores/brain_db` este indexado y que Ollama este activo."
+            "El backend tutor_ia esta respondiendo, pero no hay un proveedor de modelo IA disponible ni contexto RAG suficiente. "
+            "Verifica en Railway TUTOR_IA_ROOT, los indices de vectores y las variables del proveedor de IA."
         )
 
 

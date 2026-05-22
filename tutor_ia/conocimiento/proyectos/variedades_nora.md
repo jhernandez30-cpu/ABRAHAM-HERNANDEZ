@@ -8,9 +8,9 @@ tags: [variedades-nora, ecommerce, tienda-online, nicaragua]
 
 # Variedades Nora
 
-Proyecto local:
+Proyecto:
 
-`C:\Users\herna\Documents\Variedades-Nora-publish`
+`Variedades-Nora-publish`
 
 Sitio publicado:
 

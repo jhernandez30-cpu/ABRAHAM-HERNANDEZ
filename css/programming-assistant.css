@@ -240,13 +240,24 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--warning);
+  background: #9ca3af;
   box-shadow: none;
+}
+
+.brain-status[data-state="checking"] .brain-status-dot {
+  background: #9ca3af;
+  box-shadow: 0 0 0 4px rgba(156, 163, 175, 0.16);
 }
 
 .brain-status[data-state="ready"] .brain-status-dot {
   background: var(--success);
   box-shadow: 0 0 0 4px rgba(16, 163, 127, 0.14);
+}
+
+.brain-status[data-state="warning"] .brain-status-dot,
+.brain-status[data-state="degraded"] .brain-status-dot {
+  background: var(--warning);
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.16);
 }
 
 .brain-status[data-state="offline"] .brain-status-dot,

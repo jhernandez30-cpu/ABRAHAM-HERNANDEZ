@@ -145,7 +145,17 @@ SOURCE_REQUEST_RE = re.compile(
     r"\b(fuente|fuentes|cita|citas|bibliografia|documento|documentos|de donde|origen)\b",
     re.IGNORECASE,
 )
-DEFAULT_ALLOWED_ORIGINS = "null,http://localhost,http://127.0.0.1,https://jhernandez30-cpu.github.io"
+APP_ENV = os.getenv("APP_ENV", "development").strip().lower()
+DEFAULT_ALLOWED_ORIGINS = (
+    "https://jhernandez30-cpu.github.io"
+    if APP_ENV == "production"
+    else "null,http://localhost,http://127.0.0.1,https://jhernandez30-cpu.github.io"
+)
+DEFAULT_BRIDGE_API_URL = (
+    "https://jah-ai-bridge-production.up.railway.app"
+    if APP_ENV == "production"
+    else "http://127.0.0.1:8787"
+)
 ALLOWED_ORIGINS = {
     origin.strip().rstrip("/")
     for origin in os.getenv("TUTOR_IA_WEB_ALLOWED_ORIGINS", DEFAULT_ALLOWED_ORIGINS).split(",")
@@ -376,7 +386,7 @@ def get_brain_connector():
     if brain_connector_singleton is None:
         brain_connector_singleton = BrainConnector(
             brain_root=TUTOR_ROOT,
-            bridge_api_url=os.getenv("BRIDGE_API_URL", "http://127.0.0.1:8787"),
+            bridge_api_url=os.getenv("BRIDGE_API_URL", DEFAULT_BRIDGE_API_URL),
         )
     return brain_connector_singleton
 
@@ -2474,8 +2484,8 @@ class TutorBridgeHandler(BaseHTTPRequestHandler):
 
 
 def main():
-    host = os.getenv("TUTOR_IA_WEB_HOST", "127.0.0.1")
-    port = int(os.getenv("TUTOR_IA_WEB_PORT", "8787"))
+    host = os.getenv("TUTOR_IA_WEB_HOST", "0.0.0.0" if APP_ENV == "production" else "127.0.0.1")
+    port = int(os.getenv("PORT", os.getenv("TUTOR_IA_WEB_PORT", "8787")))
     server = ThreadingHTTPServer((host, port), TutorBridgeHandler)
     print(f"TUTOR_IA web bridge listening on http://{host}:{port}")
     print(f"TUTOR_IA root: {TUTOR_ROOT}")

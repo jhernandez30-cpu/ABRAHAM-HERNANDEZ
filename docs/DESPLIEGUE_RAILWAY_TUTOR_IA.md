@@ -11,17 +11,17 @@ uvicorn main:app --app-dir bridge_api --host 0.0.0.0 --port $PORT
 
 - El build desde la raiz del proyecto usa Railpack y `requirements.txt`, que referencia `bridge_api/requirements.txt`.
 - `bridge_api/app/config.py` ahora soporta `APP_ENV`, `API_BASE_URL`, `PORT` y rutas derivadas de `TUTOR_IA_ROOT`.
-- En produccion ya no depende de `/home/abraham/Documentos/tutor_ia`; por defecto usa `/app/tutor_ia`.
-- CORS permite GitHub Pages y localhost, sin wildcard `*`.
+- En produccion ya no depende de rutas locales de la maquina; por defecto usa `tutor_ia` dentro del proyecto desplegado.
+- CORS permite GitHub Pages sin wildcard `*`.
 - `/api/health` informa si el backend esta activo y si `tutor_ia` esta conectado o degradado sin exponer rutas internas.
 - Se agrego `tutor_ia/` dentro del proyecto con una copia ligera del conocimiento en Markdown/texto. No se incluyeron `.env`, bases de datos, vectores, logs, entornos virtuales ni PDFs pesados.
 
 ## Repo que debes subir
 
-Sube el proyecto completo:
+Sube el proyecto completo desde la raiz local del repositorio:
 
 ```text
-/home/abraham/Documentos/ABRAHAM-HERNANDEZ-main
+ABRAHAM-HERNANDEZ-main
 ```
 
 No subas solo `bridge_api`, porque Railway necesita ver tambien:
@@ -37,14 +37,17 @@ Crea estas variables en el servicio de Railway:
 
 ```env
 APP_ENV=production
-TUTOR_IA_ROOT=/app/tutor_ia
-TUTOR_IA_PERSIST_DIR=/app/tutor_ia/vectores/brain_db
-TUTOR_IA_RAG_PERSIST_DIR=/app/tutor_ia/vectores/jah_ai_rag
-TUTOR_IA_KNOWLEDGE_DIR=/app/tutor_ia/conocimiento
-JAH_AI_UPLOAD_DIR=/app/tutor_ia/conocimiento/_uploads
-JAH_AI_ALLOWED_ORIGINS=http://localhost,http://127.0.0.1,http://localhost:5500,http://127.0.0.1:5500,https://jhernandez30-cpu.github.io
-JAH_AI_ALLOWED_ORIGIN_REGEX=^https://jhernandez30-cpu\.github\.io$|^http://(localhost|127\.0\.0\.1)(:\d+)?$
+API_BASE_URL=https://jah-ai-bridge-production.up.railway.app
+TUTOR_IA_ROOT=tutor_ia
+TUTOR_IA_PERSIST_DIR=tutor_ia/vectores/brain_db
+TUTOR_IA_RAG_PERSIST_DIR=tutor_ia/vectores/jah_ai_rag
+TUTOR_IA_KNOWLEDGE_DIR=tutor_ia/conocimiento
+JAH_AI_UPLOAD_DIR=tutor_ia/conocimiento/_uploads
+JAH_AI_ALLOWED_ORIGINS=https://jhernandez30-cpu.github.io
+CORS_ALLOWED_ORIGINS=https://jhernandez30-cpu.github.io
+JAH_AI_ALLOWED_ORIGIN_REGEX=^https://jhernandez30-cpu\.github\.io$
 AUTH_FRONTEND_URL=https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/asistente-programacion.html
+FRONTEND_URL=https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ
 SQLSERVER_ENABLED=false
 AUTH_PROVIDER=supabase
 SUPABASE_URL=https://TU-PROYECTO.supabase.co
@@ -52,12 +55,16 @@ SUPABASE_ANON_KEY=...
 SUPABASE_GOOGLE_ENABLED=true
 SUPABASE_APPLE_ENABLED=true
 DATABASE_URL=postgresql://...
+OWNER_EMAIL=josuea.hernandezg@gmail.com
+ADMIN_EMAILS=josuea.hernandezg@gmail.com
+MODEL_PROVIDER=fallback
+MODEL_NAME=llama3.2:1b
 ```
 
 Cuando Railway genere el dominio, puedes agregar tambien:
 
 ```env
-API_BASE_URL=https://URL_PUBLICA_DE_RAILWAY
+API_BASE_URL=https://jah-ai-bridge-production.up.railway.app
 ```
 
 No pongas secretos en `.env.example`. Si despues activas Google, Apple, Tavily, SQL Server u otro proveedor, crea sus variables manualmente en Railway.
@@ -89,7 +96,7 @@ Esa parte depende de tu cuenta y del panel de Railway, por eso no se automatizo.
 Despues del deploy:
 
 ```bash
-curl https://URL_PUBLICA_DE_RAILWAY/api/health
+curl https://jah-ai-bridge-production.up.railway.app/api/health
 ```
 
 Respuesta esperada:
@@ -106,7 +113,7 @@ Respuesta esperada:
 Si `tutor_ia_status` aparece como `DEGRADED`, `tutor_ia_connected` puede ser `false`: el backend esta vivo pero todavia no hay fragmentos RAG indexados. Puedes indexar el conocimiento con:
 
 ```bash
-curl -X POST https://URL_PUBLICA_DE_RAILWAY/api/index \
+curl -X POST https://jah-ai-bridge-production.up.railway.app/api/index \
   -H "Content-Type: application/json" \
   -d '{"force_reindex": false}'
 ```
@@ -119,11 +126,11 @@ Cuando Railway genere el dominio, abre:
 js/app-config.js
 ```
 
-Configura `js/app-config.production.js` desde la plantilla:
+La URL publica ya queda definida como `https://jah-ai-bridge-production.up.railway.app`. Si cambias el dominio de Railway, actualiza la meta `jah-api-base-url` en `asistente-programacion.html` o `PRODUCTION_API_BASE_URL` en `js/app-config.js`. Para Supabase publica, configura `js/app-config.production.js` desde la plantilla:
 
 ```js
 window.APP_CONFIG = {
-  API_BASE_URL: 'https://URL_PUBLICA_DE_RAILWAY',
+  API_BASE_URL: 'https://jah-ai-bridge-production.up.railway.app',
   SUPABASE_URL: 'https://TU-PROYECTO.supabase.co',
   SUPABASE_ANON_KEY: 'TU_SUPABASE_ANON_KEY_PUBLICA',
   SUPABASE_GOOGLE_ENABLED: true,
@@ -144,7 +151,7 @@ No inventes la URL. Usa la URL HTTPS real generada por Railway y las claves real
 https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/asistente-programacion.html
 ```
 
-5. Verifica desde el navegador que las llamadas apunten a `https://URL_PUBLICA_DE_RAILWAY/api/health` y `https://URL_PUBLICA_DE_RAILWAY/api/chat`.
+5. Verifica desde el navegador que las llamadas apunten a `https://jah-ai-bridge-production.up.railway.app/api/health` y `https://jah-ai-bridge-production.up.railway.app/api/chat`.
 
 ## Validacion local equivalente a Railway
 
@@ -152,7 +159,7 @@ Desde la raiz del proyecto:
 
 ```bash
 APP_ENV=production \
-TUTOR_IA_ROOT=/home/abraham/Documentos/ABRAHAM-HERNANDEZ-main/tutor_ia \
+TUTOR_IA_ROOT="$PWD/tutor_ia" \
 PORT=8787 \
 uvicorn main:app --app-dir bridge_api --host 0.0.0.0 --port 8787
 ```
