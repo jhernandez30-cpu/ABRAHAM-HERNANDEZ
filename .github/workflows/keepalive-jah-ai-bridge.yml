@@ -1,0 +1,16 @@
+name: Keep JAH AI Bridge Awake
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Ping Railway health endpoint
+        run: |
+          curl --fail --show-error --silent --max-time 45 \
+            https://jah-ai-bridge-production.up.railway.app/api/health
