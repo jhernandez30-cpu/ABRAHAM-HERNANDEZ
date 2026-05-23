@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <base href="./">
     <meta charset="UTF-8" />
@@ -264,24 +264,31 @@
     </div>
     <script>
       (() => {
+        const getPortfolioLocale = () => {
+          const stored = (window.localStorage.getItem("portfolio-locale") || "es").toLowerCase();
+          return stored === "en" ? "en" : "es";
+        };
+
         const siteLinks = [
-          ["Servicios", "servicios/"],
-          ["Recursos", "recursos/"],
-          ["Contacto", "contacto.html"],
-          ["CV", "cv.pdf", { download: true }],
-          ["Web a medida", "desarrollo-web-a-medida/"],
-          ["Dashboards", "dashboards-tiempo-real/"],
-          ["Automatizacion", "automatizacion-procesos-python/"],
-          ["APIs", "integracion-apis/"],
-          ["Chatbots", "chatbots-para-web/"],
-          ["Frontend", "desarrollo-frontend-react-vue/"]
+          [{ es: "Servicios", en: "Services" }, "servicios/"],
+          [{ es: "Recursos", en: "Resources" }, "recursos/"],
+          [{ es: "Contacto", en: "Contact" }, "contacto.html"],
+          [{ es: "CV", en: "Resume" }, "cv.pdf", { download: true }],
+          [{ es: "Web a medida", en: "Custom web" }, "desarrollo-web-a-medida/"],
+          [{ es: "Dashboards", en: "Dashboards" }, "dashboards-tiempo-real/"],
+          [{ es: "Automatización", en: "Automation" }, "automatizacion-procesos-python/"],
+          [{ es: "APIs", en: "APIs" }, "integracion-apis/"],
+          [{ es: "Chatbots", en: "Chatbots" }, "chatbots-para-web/"],
+          [{ es: "Frontend", en: "Frontend" }, "desarrollo-frontend-react-vue/"]
         ];
 
         const serviceMap = new Map([
           ["Desarrollo Web", "desarrollo-web-a-medida/"],
+          ["Web Development", "desarrollo-web-a-medida/"],
           ["Backend & APIs", "integracion-apis/"],
           ["Software", "desarrollo-frontend-react-vue/"],
           ["Cloud & DevOps", "dashboards-tiempo-real/"],
+          ["AI Automation", "automatizacion-procesos-python/"],
           ["Automatizacion IA", "automatizacion-procesos-python/"],
           ["Automatización IA", "automatizacion-procesos-python/"]
         ]);
@@ -304,6 +311,12 @@
           { label: "JAH AI", href: "asistente-programacion.html" },
           { label: "ULTRON", href: "ULTRON%20AI/ultron.html" }
         ];
+
+        const getLocalizedText = (value) => {
+          if (typeof value === "string") return value;
+          const locale = getPortfolioLocale();
+          return value[locale] || value.es || value.en || "";
+        };
 
 	        const anchors = [
 	          ["inicio", "#hero"],
@@ -400,22 +413,37 @@
 
         const enhanceFooterLinks = () => {
           document.querySelectorAll(".footer-content").forEach((footer) => {
-            if (footer.querySelector(".preview-site-links")) return;
-            const nav = document.createElement("nav");
-            nav.className = "preview-site-links";
-            nav.setAttribute("aria-label", "Enlaces principales del sitio");
+            let nav = footer.querySelector(".preview-site-links");
+            if (!nav) {
+              nav = document.createElement("nav");
+              nav.className = "preview-site-links";
+              nav.setAttribute("aria-label", getLocalizedText({
+                es: "Enlaces principales del sitio",
+                en: "Main site links"
+              }));
 
-            siteLinks.forEach(([label, href, options = {}]) => {
-              const link = document.createElement("a");
+              const credits = footer.querySelector(".footer-credits");
+              footer.insertBefore(nav, credits || null);
+            }
+            nav.setAttribute("aria-label", getLocalizedText({
+              es: "Enlaces principales del sitio",
+              en: "Main site links"
+            }));
+
+            siteLinks.forEach(([label, href, options = {}], index) => {
+              let link = nav.querySelector(`[data-preview-site-link="${index}"]`);
+              if (!link) {
+                link = document.createElement("a");
+                link.setAttribute("data-preview-site-link", String(index));
+                nav.appendChild(link);
+              }
               link.href = href;
-              link.textContent = label;
+              link.textContent = getLocalizedText(label);
               if (options.download) link.setAttribute("download", "");
+              else link.removeAttribute("download");
               if (options.external || isExternal(href)) setExternalAttrs(link);
-              nav.appendChild(link);
+              else setLocalAttrs(link);
             });
-
-            const credits = footer.querySelector(".footer-credits");
-            footer.insertBefore(nav, credits || null);
           });
         };
 
@@ -487,7 +515,7 @@
           });
         };
 
-        const replacePreviewLogos = () => {
+	        const replacePreviewLogos = () => {
           document.querySelectorAll("svg.logo-svg").forEach((logo) => {
             const image = document.createElement("img");
             image.src = "assets/jah-logo.png";
@@ -592,8 +620,8 @@
 		            return;
 		          }
 
-		          window.location.href = match.href;
-		        };
+			          window.location.href = match.href;
+			        };
 
         const scrollInitialHash = () => {
           if (!window.location.hash) return true;
@@ -626,10 +654,10 @@
           }
 	        };
 
-	        document.addEventListener("DOMContentLoaded", enhancePreviewNavigation);
-	        window.addEventListener("load", enhancePreviewNavigation);
-	        document.addEventListener("click", handleProjectLinkClick, true);
-	        document.addEventListener("auxclick", handleProjectLinkClick, true);
+		        document.addEventListener("DOMContentLoaded", enhancePreviewNavigation);
+		        window.addEventListener("load", enhancePreviewNavigation);
+		        document.addEventListener("click", handleProjectLinkClick, true);
+		        document.addEventListener("auxclick", handleProjectLinkClick, true);
 
 	        let attempts = 0;
         const interval = window.setInterval(() => {

@@ -183,17 +183,83 @@ function initPortfolioChatbot() {
     jahStore: pageUrl('jah/index.html'),
     itsaSegurity: 'https://jhernandez30-cpu.github.io/ITSA-Segurity/'
   };
-  const whatsappBudget = 'https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20un%20presupuesto%20para%20un%20proyecto';
+  const whatsappBudgetEs = 'https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20un%20presupuesto%20para%20un%20proyecto';
+  const whatsappBudgetEn = 'https://wa.me/50589871374?text=Hello%20Abraham,%20I%20want%20a%20quote%20for%20a%20project';
   const linkedinUrl = 'https://www.linkedin.com/in/abrhamdev/';
   const githubUrl = 'https://github.com/jhernandez30-cpu';
   const instagramUrl = 'https://www.instagram.com/abrhamdev/';
   const youtubeUrl = 'https://www.youtube.com/@abrhamdev';
   const jahAvatarUrl = pageUrl('assets/img/jah-avatar.png');
-  const fallbackAnswer = {
+
+  const getChatbotLocale = () => {
+    const savedLocale = localStorage.getItem('portfolio-locale');
+    if (savedLocale === 'en') return 'en';
+    if (savedLocale === 'es') return 'es';
+    return document.documentElement.lang.toLowerCase().startsWith('en') ? 'en' : 'es';
+  };
+
+  const chatbotUi = {
+    es: {
+      panelAria: 'Chatbot del portafolio',
+      avatarAlt: 'Avatar de JAH',
+      status: 'Asistente virtual',
+      closeChat: 'Cerrar chat',
+      openChat: 'Abrir chat',
+      menu: 'Menú de JAH',
+      suggestedQuestions: 'Preguntas sugeridas',
+      quickLinks: 'Enlaces rápidos',
+      newHome: 'Inicio nuevo',
+      about: 'Sobre mí',
+      services: 'Servicios',
+      featuredProjects: 'Proyectos destacados',
+      resources: 'Recursos',
+      interact: 'Interactúa',
+      downloadCv: 'Descargar CV',
+      contact: 'Contacto',
+      jahAi: 'JAH IA',
+      inputPlaceholder: 'Escribe tu pregunta...',
+      inputAria: 'Mensaje para el chatbot',
+      sendMessage: 'Enviar mensaje',
+      typingAria: 'El asistente está escribiendo',
+      intro: 'Hola, soy JAH. Ya estoy actualizado con la nueva home, proyectos reales, THE JAH STORE, ULTRON, JAH IA e ITSA Segurity. Escribe lo que quieres ver o abre el menú desplegable.'
+    },
+    en: {
+      panelAria: 'Portfolio chatbot',
+      avatarAlt: 'JAH avatar',
+      status: 'Virtual assistant',
+      closeChat: 'Close chat',
+      openChat: 'Open chat',
+      menu: 'JAH menu',
+      suggestedQuestions: 'Suggested questions',
+      quickLinks: 'Quick links',
+      newHome: 'New home',
+      about: 'About',
+      services: 'Services',
+      featuredProjects: 'Featured projects',
+      resources: 'Resources',
+      interact: 'Interact',
+      downloadCv: 'Download resume',
+      contact: 'Contact',
+      jahAi: 'JAH AI',
+      inputPlaceholder: 'Type your question...',
+      inputAria: 'Message for the chatbot',
+      sendMessage: 'Send message',
+      typingAria: 'The assistant is typing',
+      intro: 'Hi, I am JAH. I am updated with the new home, real projects, THE JAH STORE, ULTRON, JAH AI, and ITSA Segurity. Type what you want to see or open the dropdown menu.'
+    }
+  };
+
+  const getUi = () => chatbotUi[getChatbotLocale()] || chatbotUi.es;
+
+  const fallbackAnswerEs = {
     text: `Puedo orientarte con el sitio actualizado: servicios, proyectos, THE JAH STORE, ULTRON, JAH IA, recursos o contacto. También puedes volver al <a href="${homeUrl}">inicio nuevo</a>, revisar <a href="${homeSectionUrl('proyectos')}">proyectos</a> o pedir una orientación en <a href="${pageUrl('contacto.html')}">Contacto</a>.`,
     suggestions: ['Guíame', 'Servicios', 'ULTRON', 'JAH IA']
   };
-  const answers = [
+  const fallbackAnswerEn = {
+    text: `I can guide you through the updated site: services, projects, THE JAH STORE, ULTRON, JAH AI, resources, or contact. You can also return to the <a href="${homeUrl}">new home</a>, review <a href="${homeSectionUrl('proyectos')}">projects</a>, or request guidance through <a href="${pageUrl('contacto.html')}">Contact</a>.`,
+    suggestions: ['Guide me', 'Services', 'ULTRON', 'JAH AI']
+  };
+  const answersEs = [
     {
       keys: ['hola', 'buenas', 'hey', 'saludos', 'inicio', 'empezar', 'ayuda'],
       text: `Hola, soy JAH, el asistente virtual de Abraham. El sitio ahora usa la nueva experiencia visual de <a href="${homeUrl}">index.html</a>. Puedo ayudarte a elegir una solución, explorar <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>, abrir <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>, entrar a <a href="${projectUrls.jahStore}">THE JAH STORE</a> o revisar proyectos y servicios.`,
@@ -361,12 +427,12 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['contacto', 'correo', 'email', 'cotizar', 'contratar', 'precio', 'costo', 'presupuesto', 'disponible', 'disponibilidad', 'freelance', 'trabajo'],
-      text: `Para solicitar presupuesto, entra a <a href="${pageUrl('contacto.html')}">Contacto</a> o escribe por <a href="${whatsappBudget}" target="_blank" rel="noopener">WhatsApp al +505 8987 1374</a>. Ayuda incluir qué necesitas desarrollar, qué problema quieres resolver, si ya tienes una web o sistema, plazo aproximado y cualquier detalle relevante del proyecto.`,
+      text: `Para solicitar presupuesto, entra a <a href="${pageUrl('contacto.html')}">Contacto</a> o escribe por <a href="${whatsappBudgetEs}" target="_blank" rel="noopener">WhatsApp al +505 8987 1374</a>. Ayuda incluir qué necesitas desarrollar, qué problema quieres resolver, si ya tienes una web o sistema, plazo aproximado y cualquier detalle relevante del proyecto.`,
       suggestions: ['WhatsApp', 'Servicios', 'Proyectos', 'CV']
     },
     {
       keys: ['linkedin', 'github', 'instagram', 'youtube', 'redes', 'social', 'whatsapp'],
-      text: `Redes y contacto: <a href="${whatsappBudget}" target="_blank" rel="noopener">WhatsApp</a>, <a href="${linkedinUrl}" target="_blank" rel="noopener">LinkedIn</a>, <a href="${githubUrl}" target="_blank" rel="noopener">GitHub</a>, <a href="${instagramUrl}" target="_blank" rel="noopener">Instagram</a> y <a href="${youtubeUrl}" target="_blank" rel="noopener">YouTube</a>.`,
+      text: `Redes y contacto: <a href="${whatsappBudgetEs}" target="_blank" rel="noopener">WhatsApp</a>, <a href="${linkedinUrl}" target="_blank" rel="noopener">LinkedIn</a>, <a href="${githubUrl}" target="_blank" rel="noopener">GitHub</a>, <a href="${instagramUrl}" target="_blank" rel="noopener">Instagram</a> y <a href="${youtubeUrl}" target="_blank" rel="noopener">YouTube</a>.`,
       suggestions: ['Contacto', 'GitHub', 'LinkedIn', 'CV']
     },
     {
@@ -376,64 +442,222 @@ function initPortfolioChatbot() {
     }
   ];
 
-  const quickReplies = ['Guíame', 'Proyectos', 'THE JAH STORE', 'ULTRON', 'JAH IA'];
+  const answersEn = [
+    {
+      keys: ['hello', 'hi', 'hey', 'start', 'help', 'home', 'hola', 'ayuda'],
+      text: `Hi, I am JAH, Abraham's virtual assistant. The site now uses the new visual experience from <a href="${homeUrl}">index.html</a>. I can help you choose a solution, explore <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>, open <a href="${pageUrl('asistente-programacion.html')}">JAH AI</a>, visit <a href="${projectUrls.jahStore}">THE JAH STORE</a>, or review projects and services.`,
+      suggestions: ['Guide me', 'Services', 'ULTRON', 'JAH AI']
+    },
+    {
+      keys: ['jah', 'josue', 'josué', 'abraham hernandez', 'abraham hernández', 'who is', 'profile', 'systems engineer', 'web developer'],
+      text: `Josué Abraham Hernández is a web developer and systems engineer in Nicaragua. This site presents services, real projects, automation, dashboards, APIs, chatbots, JAH AI, ULTRON, and THE JAH STORE with a more premium visual experience.`,
+      suggestions: ['About', 'Services', 'Projects', 'Contact']
+    },
+    {
+      keys: ['guide', 'guide me', 'recommend', 'recommendation', 'what do i need', 'need help', 'route', 'advice'],
+      text: `Quick guide: if your company loses time on repetitive work, review <a href="${pageUrl('automatizacion-procesos-python/')}">Python automation</a>. If metrics are unclear, review <a href="${pageUrl('dashboards-tiempo-real/')}">real-time dashboards</a>. If you need better lead capture, review <a href="${pageUrl('desarrollo-web-a-medida/')}">custom web development</a>. If your tools do not communicate, review <a href="${pageUrl('integracion-apis/')}">API integration</a>. If you receive frequent questions, review <a href="${pageUrl('chatbots-para-web/')}">web chatbots</a>.`,
+      suggestions: ['Problems', 'Services', 'Budget', 'Contact']
+    },
+    {
+      keys: ['problem', 'problems', 'solve', 'manual tasks', 'disconnected tools', 'visibility', 'scattered data'],
+      text: `Abraham helps solve problems such as repetitive tasks that consume hours, systems that do not communicate, missing dashboards for decisions, websites or forms that do not convert, and internal processes that need a custom digital solution.`,
+      suggestions: ['Automation', 'Dashboards', 'Custom web', 'Contact']
+    },
+    {
+      keys: ['map', 'navigate', 'site', 'sections', 'pages', 'menu', 'whole site', 'sitemap'],
+      text: `Updated site map: <a href="${homeUrl}">new home</a>, <a href="${homeSectionUrl('servicios')}">services</a>, <a href="${homeSectionUrl('proyectos')}">featured projects</a>, <a href="${homeSectionUrl('sobre-mi')}">about</a>, <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>, <a href="${pageUrl('asistente-programacion.html')}">JAH AI</a>, <a href="${pageUrl('interactua.html')}">AI tools</a>, <a href="${projectUrls.jahStore}">THE JAH STORE</a>, <a href="${pageUrl('recursos/')}">resources</a>, and <a href="${pageUrl('contacto.html')}">contact</a>.`,
+      suggestions: ['ULTRON', 'JAH AI', 'Services', 'Contact']
+    },
+    {
+      keys: ['service', 'services', 'offer', 'offering', 'development', 'professional web', 'software'],
+      text: `Main services: <a href="${pageUrl('desarrollo-web-a-medida/')}">custom web development</a>, <a href="${pageUrl('dashboards-tiempo-real/')}">real-time dashboards</a>, <a href="${pageUrl('automatizacion-procesos-python/')}">Python automation</a>, <a href="${pageUrl('integracion-apis/')}">API integration</a>, <a href="${pageUrl('chatbots-para-web/')}">chatbots and assistants</a>, and <a href="${pageUrl('desarrollo-frontend-react-vue/')}">professional frontend</a>. They are built for companies that need to solve concrete needs, not just use technology for its own sake.`,
+      suggestions: ['Who it is for', 'Process', 'Budget', 'Contact']
+    },
+    {
+      keys: ['skills', 'html', 'css', 'javascript', 'python', 'c#', 'c sharp', 'sql', 'power bi', 'cybersecurity', 'databases', 'web development', 'artificial intelligence'],
+      text: `Highlighted skills: HTML, CSS, JavaScript, Python, C#, SQL, Power BI, databases, web development, APIs, automation, cybersecurity, and artificial intelligence.`,
+      suggestions: ['Services', 'Projects', 'Resources', 'Contact']
+    },
+    {
+      keys: ['web developer nicaragua', 'nicaragua', 'local', 'local profile'],
+      text: `The <a href="${pageUrl('desarrollador-web-nicaragua/')}">web developer in Nicaragua</a> page is aimed at companies that need more than a basic website: professional presence, lead capture, automation, dashboards, form integration, APIs, or custom internal tools.`,
+      suggestions: ['Services', 'Process', 'Budget', 'Contact']
+    },
+    {
+      keys: ['process', 'how you work', 'methodology', 'steps', 'work method'],
+      text: `The work process is clear: first the problem is understood, then a solution is defined with scope and priorities, then it is developed and integrated, and finally it is delivered with adjustments for real use and next steps when needed.`,
+      suggestions: ['Services', 'Contact', 'Budget', 'About']
+    },
+    {
+      keys: ['dashboard', 'dashboards', 'data', 'metrics', 'kpi', 'report', 'reports', 'real time', 'alerts', 'websocket', 'socket'],
+      text: `If you need live data, KPIs, or alerts, review <a href="${pageUrl('dashboards-tiempo-real/')}">real-time dashboards</a>. This is useful for operations, sales, security, or support when the team cannot wait for manual reports.`,
+      suggestions: ['ITSA Segurity', 'Dashboard vs report', 'APIs', 'Contact']
+    },
+    {
+      keys: ['automation', 'python', 'excel', 'manual', 'repetitive task', 'repetitive tasks', 'save time', 'processes', 'validation'],
+      text: `If your team repeats tasks, copies data, or builds reports manually, review <a href="${pageUrl('automatizacion-procesos-python/')}">Python automation</a>. You can also read <a href="${pageUrl('recursos/que-procesos-automatizar-python/')}">which business processes can be automated with Python</a>.`,
+      suggestions: ['APIs', 'Reports', 'Budget', 'Resources']
+    },
+    {
+      keys: ['website', 'web page', 'site', 'web system', 'custom web', 'landing', 'form', 'internal tool', 'internal panel'],
+      text: `If you need a professional page, internal system, form, or custom web tool, review <a href="${pageUrl('desarrollo-web-a-medida/')}">custom web development</a>. For a local approach, you can also visit <a href="${pageUrl('desarrollador-web-nicaragua/')}">web developer in Nicaragua</a>.`,
+      suggestions: ['Frontend', 'Services', 'Budget', 'Projects']
+    },
+    {
+      keys: ['frontend', 'react', 'vue', 'interface', 'interfaces', 'ui', 'digital product', 'saas', 'admin panel'],
+      text: `For modern interfaces, admin panels, digital products, or frontend connected to APIs, review <a href="${pageUrl('desarrollo-frontend-react-vue/')}">React and Vue frontend</a>. Abraham works with components, responsive design, accessibility, and integration with real data.`,
+      suggestions: ['APIs', 'Projects', 'Services', 'Contact']
+    },
+    {
+      keys: ['api', 'apis', 'integration', 'webhook', 'connect', 'sync', 'crm', 'forms', 'systems'],
+      text: `If you need to connect tools, forms, CRM, databases, or external services, review <a href="${pageUrl('integracion-apis/')}">API integration</a>. You can also read <a href="${pageUrl('recursos/api-rest-vs-webhook/')}">API REST vs webhook</a>.`,
+      suggestions: ['Automation', 'APIs', 'Webhook', 'Contact']
+    },
+    {
+      keys: ['chatbot', 'bot', 'whatsapp', 'leads', 'client', 'clients', 'support', 'frequent questions'],
+      text: `If you want to answer questions, capture leads, or send users to WhatsApp, review <a href="${pageUrl('chatbots-para-web/')}">web chatbots</a>.`,
+      suggestions: ['Contact', 'Services', 'AI', 'Budget']
+    },
+    {
+      keys: ['project', 'projects', 'portfolio', 'demo', 'case', 'cases', 'work'],
+      text: `Featured projects on the new site: <a href="${projectUrls.muralSandino}" target="_blank" rel="noopener">Mural Sandino</a>, <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener">Benjamín Zeledón</a>, <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener">Variedades Nora</a>, and <a href="${projectUrls.jahStore}">THE JAH STORE</a>. You can also open <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a> and <a href="${pageUrl('asistente-programacion.html')}">JAH AI</a>.`,
+      suggestions: ['Mural Sandino', 'Benjamín Zeledón', 'Variedades Nora', 'THE JAH STORE']
+    },
+    {
+      keys: ['itsa', 'segurity', 'security', 'monitoring', 'incidents', 'company', 'my company'],
+      text: `<a href="${projectUrls.itsaSegurity}" target="_blank" rel="noopener">ITSA Segurity</a> is the business brand focused on security, monitoring, technology, and digital solutions. In the new menu it appears as a direct external access, separated from the main project cards.`,
+      suggestions: ['Dashboards', 'Company', 'Contact', 'Services']
+    },
+    {
+      keys: ['sandino', 'mural sandino', 'sandino museum', 'digital museum', 'social science', 'social sciences', 'augusto sandino'],
+      text: `<a href="${projectUrls.muralSandino}" target="_blank" rel="noopener">Mural Sandino</a> opens the educational digital museum. It is an interactive social science and history experience.`,
+      suggestions: ['Projects', 'Resources', 'Services', 'Contact']
+    },
+    {
+      keys: ['benjamin', 'benjamín', 'zeledon', 'zeledón', 'interactive benjamin', 'benjamin zeledon'],
+      text: `<a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener">Benjamín Zeledón</a> opens the correct interactive educational experience and is connected as a real project in the new portfolio.`,
+      suggestions: ['Mural Sandino', 'Variedades Nora', 'THE JAH STORE', 'Projects']
+    },
+    {
+      keys: ['variedades nora', 'nora', 'ecommerce', 'e-commerce', 'store', 'online store'],
+      text: `<a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener">Variedades Nora</a> opens the correct online store. It is the commercial e-commerce project connected from the new site's projects section.`,
+      suggestions: ['Projects', 'Custom web', 'Contact', 'Services']
+    },
+    {
+      keys: ['the jah store', 'jah store', 'brand', 'jah brand', 'logo jah', 'clothing'],
+      text: `<a href="${projectUrls.jahStore}">THE JAH STORE</a> is the local brand/store page with a sport and premium aesthetic. In the new portfolio it opens at <strong>jah/index.html</strong>.`,
+      suggestions: ['Projects', 'Home', 'Contact', 'Services']
+    },
+    {
+      keys: ['ultron', 'ultron ai', 'assistant ultron', 'smart assistant', 'windows', 'ubuntu', 'android', 'downloads'],
+      text: `<a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a> is the official presentation page for the smart assistant: a futuristic experience for PC and mobile devices, focused on voice, contextual memory, automation, productivity, and digital presence.`,
+      suggestions: ['JAH AI', 'Services', 'Projects', 'Contact']
+    },
+    {
+      keys: ['resource', 'resources', 'blog', 'guide', 'article', 'read', 'learn'],
+      text: `In <a href="${pageUrl('recursos/')}">Resources</a> there are guides about Python automation, real-time dashboards vs automatic reports, and API REST vs webhook. It is the best route if you are still evaluating what solution you need.`,
+      suggestions: ['Python guide', 'Dashboard vs report', 'API vs webhook', 'Services']
+    },
+    {
+      keys: ['technology', 'technologies', 'stack', 'javascript', 'typescript', 'sql', 'node', 'mongodb', 'postgresql', 'git'],
+      text: `Stack and site areas: React, Vue, JavaScript, TypeScript, Python, REST APIs, SQL, WebSockets, Socket.IO, Node.js, databases, Power BI, cybersecurity, and Git/GitHub Actions. To see how it applies, review <a href="${pageUrl('proyectos/')}">projects</a> or <a href="${pageUrl('sobre-mi/')}">about</a>.`,
+      suggestions: ['Projects', 'About', 'Frontend', 'APIs']
+    },
+    {
+      keys: ['about', 'profile', 'abraham', 'who are you', 'experience', 'work style'],
+      text: `On the new home you can go to <a href="${homeSectionUrl('sobre-mi')}">About</a> to see Abraham's profile as a web developer and systems engineer. The expanded <a href="${pageUrl('sobre-mi/')}">About</a> page is also preserved with more professional context.`,
+      suggestions: ['Resume', 'Resources', 'Services', 'Contact']
+    },
+    {
+      keys: ['jah ai', 'programming assistant', 'learn programming', 'programming', 'course', 'exercises'],
+      text: `<a href="${pageUrl('asistente-programacion.html')}">JAH AI</a> is the portfolio's programming assistant. It has routes, questions, exercises, quizzes, and base books to learn programming in a guided way.`,
+      suggestions: ['ULTRON', 'Interact', 'Resources', 'Home']
+    },
+    {
+      keys: ['ai', 'artificial intelligence', 'agent', 'agents', 'ai tools', 'notebooklm', 'interact'],
+      text: `In <a href="${pageUrl('interactua.html')}">Interact</a> there are AI tools for client acquisition, competitor analysis, strategy, security, development, databases, and C#. To practice code, open <a href="${pageUrl('asistente-programacion.html')}">JAH AI</a>. To see the smart assistant vision, open <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>.`,
+      suggestions: ['JAH AI', 'ULTRON', 'Resources', 'Contact']
+    },
+    {
+      keys: ['contact', 'email', 'quote', 'hire', 'price', 'cost', 'budget', 'available', 'availability', 'freelance', 'work'],
+      text: `To request a quote, go to <a href="${pageUrl('contacto.html')}">Contact</a> or write through <a href="${whatsappBudgetEn}" target="_blank" rel="noopener">WhatsApp at +505 8987 1374</a>. It helps to include what you need to build, what problem you want to solve, whether you already have a website or system, the approximate deadline, and any relevant project details.`,
+      suggestions: ['WhatsApp', 'Services', 'Projects', 'Resume']
+    },
+    {
+      keys: ['linkedin', 'github', 'instagram', 'youtube', 'social', 'whatsapp'],
+      text: `Social and contact links: <a href="${whatsappBudgetEn}" target="_blank" rel="noopener">WhatsApp</a>, <a href="${linkedinUrl}" target="_blank" rel="noopener">LinkedIn</a>, <a href="${githubUrl}" target="_blank" rel="noopener">GitHub</a>, <a href="${instagramUrl}" target="_blank" rel="noopener">Instagram</a>, and <a href="${youtubeUrl}" target="_blank" rel="noopener">YouTube</a>.`,
+      suggestions: ['Contact', 'GitHub', 'LinkedIn', 'Resume']
+    },
+    {
+      keys: ['faq', 'frequently asked questions', 'google', 'chatgpt', 'seo'],
+      text: `The site is reinforced for SEO with metadata, descriptions, internal links, a local <a href="${pageUrl('desarrollador-web-nicaragua/')}">web developer in Nicaragua</a> landing page, FAQs in services, and content oriented to searches such as business web development, process automation, dashboards, APIs, and chatbots.`,
+      suggestions: ['Resources', 'Services', 'Sitemap', 'Contact']
+    }
+  ];
+
+  const quickRepliesEs = ['Guíame', 'Proyectos', 'THE JAH STORE', 'ULTRON', 'JAH IA'];
+  const quickRepliesEn = ['Guide me', 'Projects', 'THE JAH STORE', 'ULTRON', 'JAH AI'];
+  const getAnswerSource = () => (getChatbotLocale() === 'en' ? answersEn : answersEs);
+  const getFallbackAnswer = () => (getChatbotLocale() === 'en' ? fallbackAnswerEn : fallbackAnswerEs);
+  const getQuickReplies = () => (getChatbotLocale() === 'en' ? quickRepliesEn : quickRepliesEs);
+  const ui = getUi();
   const widget = document.createElement('div');
   widget.className = 'chatbot-widget';
   widget.innerHTML = `
-    <div class="chatbot-panel" role="dialog" aria-label="Chatbot del portafolio" aria-hidden="true">
+    <div class="chatbot-panel" role="dialog" aria-label="${ui.panelAria}" aria-hidden="true">
       <div class="chatbot-header">
         <div class="chatbot-title">
           <div class="chatbot-avatar">
-            <img class="jah-header-avatar" src="${jahAvatarUrl}" alt="Avatar de JAH" loading="lazy" decoding="async">
+            <img class="jah-header-avatar" src="${jahAvatarUrl}" alt="${ui.avatarAlt}" loading="lazy" decoding="async">
           </div>
           <div>
             <strong>JAH</strong>
-            <span><span class="chatbot-status-dot"></span>Asistente virtual</span>
+            <span><span class="chatbot-status-dot"></span><span class="chatbot-status-text">${ui.status}</span></span>
           </div>
         </div>
-        <button class="chatbot-close" type="button" aria-label="Cerrar chat"><i class="fas fa-times"></i></button>
+        <button class="chatbot-close" type="button" aria-label="${ui.closeChat}"><i class="fas fa-times"></i></button>
       </div>
       <div class="chatbot-messages" aria-live="polite"></div>
       <div class="chatbot-menu">
         <button class="chatbot-menu-toggle" type="button" aria-expanded="false">
-          <span><i class="fas fa-list"></i> Menú de JAH</span>
+          <span><i class="fas fa-list"></i> <span class="chatbot-menu-toggle-text">${ui.menu}</span></span>
           <i class="fas fa-chevron-down" aria-hidden="true"></i>
         </button>
         <div class="chatbot-menu-panel" hidden>
           <div class="chatbot-menu-section">
-            <span class="chatbot-menu-label">Preguntas sugeridas</span>
-            <div class="chatbot-menu-options" aria-label="Preguntas sugeridas"></div>
+            <span class="chatbot-menu-label chatbot-suggestions-label">${ui.suggestedQuestions}</span>
+            <div class="chatbot-menu-options" aria-label="${ui.suggestedQuestions}"></div>
           </div>
           <div class="chatbot-menu-section">
-            <span class="chatbot-menu-label">Enlaces rápidos</span>
-            <a href="${homeUrl}" class="chatbot-menu-link">Inicio nuevo</a>
-            <a href="${pageUrl('sobre-mi/')}" class="chatbot-menu-link">Sobre mí</a>
-            <a href="${pageUrl('servicios/')}" class="chatbot-menu-link">Servicios</a>
-            <a href="${homeSectionUrl('proyectos')}" class="chatbot-menu-link">Proyectos destacados</a>
+            <span class="chatbot-menu-label chatbot-quick-links-label">${ui.quickLinks}</span>
+            <a href="${homeUrl}" class="chatbot-menu-link" data-chatbot-link="newHome">${ui.newHome}</a>
+            <a href="${pageUrl('sobre-mi/')}" class="chatbot-menu-link" data-chatbot-link="about">${ui.about}</a>
+            <a href="${pageUrl('servicios/')}" class="chatbot-menu-link" data-chatbot-link="services">${ui.services}</a>
+            <a href="${homeSectionUrl('proyectos')}" class="chatbot-menu-link" data-chatbot-link="featuredProjects">${ui.featuredProjects}</a>
             <a href="${projectUrls.muralSandino}" target="_blank" rel="noopener" class="chatbot-menu-link">Mural Sandino</a>
             <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener" class="chatbot-menu-link">Benjamín Zeledón</a>
             <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener" class="chatbot-menu-link">Variedades Nora</a>
             <a href="${projectUrls.jahStore}" class="chatbot-menu-link">THE JAH STORE</a>
             <a href="${pageUrl('ULTRON%20AI/ultron.html')}" class="chatbot-menu-link">ULTRON</a>
-            <a href="${pageUrl('asistente-programacion.html')}" class="chatbot-menu-link">JAH IA</a>
+            <a href="${pageUrl('asistente-programacion.html')}" class="chatbot-menu-link" data-chatbot-link="jahAi">${ui.jahAi}</a>
             <a href="${projectUrls.itsaSegurity}" target="_blank" rel="noopener" class="chatbot-menu-link">ITSA Segurity</a>
-            <a href="${pageUrl('recursos/')}" class="chatbot-menu-link">Recursos</a>
-            <a href="${pageUrl('interactua.html')}" class="chatbot-menu-link">Interactúa</a>
-            <a href="${pageUrl('cv.pdf')}" class="chatbot-menu-link" download>Descargar CV</a>
-            <a href="${pageUrl('contacto.html')}" class="chatbot-menu-link">Contacto</a>
-            <a href="https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20un%20presupuesto%20para%20un%20proyecto" target="_blank" rel="noopener" class="chatbot-menu-link">WhatsApp</a>
+            <a href="${pageUrl('recursos/')}" class="chatbot-menu-link" data-chatbot-link="resources">${ui.resources}</a>
+            <a href="${pageUrl('interactua.html')}" class="chatbot-menu-link" data-chatbot-link="interact">${ui.interact}</a>
+            <a href="${pageUrl('cv.pdf')}" class="chatbot-menu-link" data-chatbot-link="downloadCv" download>${ui.downloadCv}</a>
+            <a href="${pageUrl('contacto.html')}" class="chatbot-menu-link" data-chatbot-link="contact">${ui.contact}</a>
+            <a href="${getChatbotLocale() === 'en' ? whatsappBudgetEn : whatsappBudgetEs}" target="_blank" rel="noopener" class="chatbot-menu-link" data-chatbot-link="whatsapp">WhatsApp</a>
             <a href="${linkedinUrl}" target="_blank" rel="noopener" class="chatbot-menu-link">LinkedIn</a>
             <a href="${githubUrl}" target="_blank" rel="noopener" class="chatbot-menu-link">GitHub</a>
           </div>
         </div>
       </div>
       <form class="chatbot-form">
-        <input class="chatbot-input" type="text" placeholder="Escribe tu pregunta..." aria-label="Mensaje para el chatbot" autocomplete="off">
-        <button class="chatbot-send" type="submit" aria-label="Enviar mensaje"><i class="fas fa-paper-plane"></i></button>
+        <input class="chatbot-input" type="text" placeholder="${ui.inputPlaceholder}" aria-label="${ui.inputAria}" autocomplete="off">
+        <button class="chatbot-send" type="submit" aria-label="${ui.sendMessage}"><i class="fas fa-paper-plane"></i></button>
       </form>
     </div>
-    <button class="chatbot-toggle" type="button" aria-label="Abrir chat">
-      <img class="jah-floating-avatar" src="${jahAvatarUrl}" alt="Abrir chatbot JAH" loading="lazy" decoding="async">
+    <button class="chatbot-toggle" type="button" aria-label="${ui.openChat}">
+      <img class="jah-floating-avatar" src="${jahAvatarUrl}" alt="${ui.openChat}" loading="lazy" decoding="async">
     </button>
   `;
 
@@ -445,9 +669,16 @@ function initPortfolioChatbot() {
   const messages = widget.querySelector('.chatbot-messages');
   const form = widget.querySelector('.chatbot-form');
   const input = widget.querySelector('.chatbot-input');
+  const sendButton = widget.querySelector('.chatbot-send');
   const menuToggle = widget.querySelector('.chatbot-menu-toggle');
   const menuPanel = widget.querySelector('.chatbot-menu-panel');
   const menuOptions = widget.querySelector('.chatbot-menu-options');
+  const statusText = widget.querySelector('.chatbot-status-text');
+  const menuToggleText = widget.querySelector('.chatbot-menu-toggle-text');
+  const suggestionsLabel = widget.querySelector('.chatbot-suggestions-label');
+  const quickLinksLabel = widget.querySelector('.chatbot-quick-links-label');
+  const headerAvatar = widget.querySelector('.jah-header-avatar');
+  const floatingAvatar = widget.querySelector('.jah-floating-avatar');
 
   function addMessage(content, type) {
     const message = document.createElement('div');
@@ -474,7 +705,7 @@ function initPortfolioChatbot() {
   function showTyping() {
     const typing = document.createElement('div');
     typing.className = 'chatbot-message bot chatbot-typing';
-    typing.setAttribute('aria-label', 'El asistente esta escribiendo');
+    typing.setAttribute('aria-label', getUi().typingAria);
     typing.innerHTML = '<span></span><span></span><span></span>';
     messages.appendChild(typing);
     messages.scrollTop = messages.scrollHeight;
@@ -490,7 +721,7 @@ function initPortfolioChatbot() {
 
   function getAnswer(question) {
     const cleanQuestion = normalize(question);
-    const rankedAnswers = answers
+    const rankedAnswers = getAnswerSource()
       .map(item => ({
         ...item,
         score: item.keys.reduce((score, key) => score + (cleanQuestion.includes(normalize(key)) ? 1 : 0), 0)
@@ -500,10 +731,10 @@ function initPortfolioChatbot() {
 
     if (match) return match;
 
-    return fallbackAnswer;
+    return getFallbackAnswer();
   }
 
-  function renderQuickReplies(labels = quickReplies) {
+  function renderQuickReplies(labels = getQuickReplies()) {
     menuOptions.innerHTML = '';
     labels.forEach(label => {
       const option = document.createElement('button');
@@ -517,6 +748,42 @@ function initPortfolioChatbot() {
       menuOptions.appendChild(option);
       addHoverEffect(option);
     });
+  }
+
+  function setToggleLabel() {
+    const currentUi = getUi();
+    const isOpen = widget.classList.contains('open');
+    toggle.setAttribute('aria-label', isOpen ? currentUi.closeChat : currentUi.openChat);
+    floatingAvatar.alt = currentUi.openChat;
+  }
+
+  function applyChatbotLanguage(resetMessages = false) {
+    const currentUi = getUi();
+    panel.setAttribute('aria-label', currentUi.panelAria);
+    headerAvatar.alt = currentUi.avatarAlt;
+    statusText.textContent = currentUi.status;
+    closeBtn.setAttribute('aria-label', currentUi.closeChat);
+    menuToggleText.textContent = currentUi.menu;
+    suggestionsLabel.textContent = currentUi.suggestedQuestions;
+    quickLinksLabel.textContent = currentUi.quickLinks;
+    menuOptions.setAttribute('aria-label', currentUi.suggestedQuestions);
+    input.placeholder = currentUi.inputPlaceholder;
+    input.setAttribute('aria-label', currentUi.inputAria);
+    sendButton.setAttribute('aria-label', currentUi.sendMessage);
+    widget.querySelectorAll('[data-chatbot-link]').forEach(link => {
+      const key = link.getAttribute('data-chatbot-link');
+      if (key === 'whatsapp') {
+        link.href = getChatbotLocale() === 'en' ? whatsappBudgetEn : whatsappBudgetEs;
+        return;
+      }
+      if (currentUi[key]) link.textContent = currentUi[key];
+    });
+    setToggleLabel();
+    renderQuickReplies();
+    if (resetMessages) {
+      messages.innerHTML = '';
+      addMessage(currentUi.intro, 'bot');
+    }
   }
 
   function setMenuOpen(open) {
@@ -561,7 +828,7 @@ function initPortfolioChatbot() {
   toggle.addEventListener('click', () => {
     const isOpen = widget.classList.toggle('open');
     panel.setAttribute('aria-hidden', String(!isOpen));
-    toggle.setAttribute('aria-label', isOpen ? 'Cerrar chat' : 'Abrir chat');
+    setToggleLabel();
     if (isOpen) input.focus();
   });
 
@@ -574,7 +841,7 @@ function initPortfolioChatbot() {
     if (event.key === 'Escape' && widget.classList.contains('open')) {
       widget.classList.remove('open');
       panel.setAttribute('aria-hidden', 'true');
-      toggle.setAttribute('aria-label', 'Abrir chat');
+      setToggleLabel();
       toggle.focus();
     }
   });
@@ -583,7 +850,7 @@ function initPortfolioChatbot() {
     setMenuOpen(false);
     widget.classList.remove('open');
     panel.setAttribute('aria-hidden', 'true');
-    toggle.setAttribute('aria-label', 'Abrir chat');
+    setToggleLabel();
     toggle.focus();
   });
 
@@ -593,5 +860,15 @@ function initPortfolioChatbot() {
     sendQuestion(input.value);
   });
 
-  addMessage('Hola, soy JAH. Ya estoy actualizado con la nueva home, proyectos reales, THE JAH STORE, ULTRON, JAH IA e ITSA Segurity. Escribe lo que quieres ver o abre el menú desplegable.', 'bot');
+  let lastLocale = getChatbotLocale();
+  const localeObserver = new MutationObserver(() => {
+    const nextLocale = getChatbotLocale();
+    if (nextLocale === lastLocale) return;
+    lastLocale = nextLocale;
+    applyChatbotLanguage(true);
+  });
+  localeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+
+  applyChatbotLanguage(false);
+  addMessage(getUi().intro, 'bot');
 }
