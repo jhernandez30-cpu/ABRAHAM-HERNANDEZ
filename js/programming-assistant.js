@@ -638,19 +638,19 @@ document.addEventListener('DOMContentLoaded', () => {
     tutorIABtn.dataset.preference = tutorIAEnabled ? 'enabled' : 'disabled';
     tutorIABtn.dataset.connection = tutorConnectionStatus;
     tutorIABtn.title = tutorIAEnabled
-      ? `Cerebro tutor_ia: Activado · ${tutorConnectionLabel}`
-      : 'Cerebro tutor_ia: Desactivado';
+      ? `Pensamiento profundo: Activado · ${tutorConnectionLabel}`
+      : 'Pensamiento profundo: Desactivado';
   }
 
   function renderTutorTechnicalStatus() {
     updateTutorButtonState();
     if (!tutorIAEnabled) {
-      setBrainStatus('offline', 'Cerebro tutor_ia: Desactivado');
+      setBrainStatus('offline', 'Pensamiento profundo: Desactivado');
       return;
     }
     setBrainStatus(
       tutorConnectionUiState(),
-      `Cerebro tutor_ia: Activado · ${tutorConnectionLabel}`
+      `Pensamiento profundo: Activado · ${tutorConnectionLabel}`
     );
   }
 

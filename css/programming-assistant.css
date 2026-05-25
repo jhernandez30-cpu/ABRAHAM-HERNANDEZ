@@ -1132,9 +1132,14 @@
 
 .assistant-panel-title {
   margin: 4px 0 0;
+  background: none;
+  -webkit-background-clip: border-box;
+  -webkit-text-fill-color: #1f1e1a;
+  background-clip: border-box;
   font-size: 1.45rem;
   line-height: 1.15;
   color: #1f1e1a;
+  text-shadow: none;
 }
 
 .assistant-panel-description {
