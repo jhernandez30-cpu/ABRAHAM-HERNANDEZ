@@ -36,8 +36,9 @@ def _require_admin(request: Request) -> dict:
 
 def _tutor_status_from_brain(brain: dict) -> tuple[bool, str]:
     brain_fragments = int(brain.get("fragments", 0) or 0)
-    tutor_connected = bool(brain.get("root_exists")) and bool(brain.get("chroma_connected")) and brain_fragments > 0
-    tutor_status = "CONNECTED" if tutor_connected else "DEGRADED" if brain.get("root_exists") else "DISCONNECTED"
+    tutor_available = bool(brain.get("root_exists")) or bool(brain.get("knowledge_dir_exists"))
+    tutor_connected = tutor_available and (bool(brain.get("chroma_connected")) or brain_fragments >= 0)
+    tutor_status = "CONNECTED" if tutor_connected else "DISCONNECTED"
     return tutor_connected, tutor_status
 
 
@@ -65,14 +66,16 @@ def health_payload() -> dict:
     supabase_health = supabase_service.health()
     database_status = str(supabase_health.get("database_status") or "not_configured")
     supabase_status = str(supabase_health.get("status") or "not_configured")
-    service_status = "ok" if tutor_connected and database_status == "connected" else "degraded"
-    tutor_label = "ready" if tutor_connected else "degraded" if root_exists or knowledge_dir_exists else "missing"
+    service_status = "ok" if tutor_connected else "degraded"
+    tutor_label = "ready" if tutor_connected else "missing"
+    rag_status = "READY" if fragments > 0 and persist_dir_exists else "DEGRADED"
 
     return {
         "ok": True,
         "success": True,
         "status": service_status,
         "service": "jah-ai-bridge",
+        "backend": "available",
         "bridge_status": "ok",
         "environment": settings.app_env,
         "auth_provider": settings.auth_provider,
@@ -87,6 +90,7 @@ def health_payload() -> dict:
         "tutor_ia": tutor_label,
         "tutor_ia_connected": tutor_connected,
         "tutor_status": tutor_status,
+        "rag_status": rag_status,
         "fragments": fragments,
         "tutor_ia_root": _public_path_status(root_exists),
         "tutor_ia_root_available": root_exists,

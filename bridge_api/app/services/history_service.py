@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from app.config import settings
-from app.models.schemas import HistoryRecord
+from app.models.schemas import HistoryRecord, HistorySessionSummary
 from app.services.supabase_service import supabase_service
 
 
@@ -37,6 +37,33 @@ class HistoryService:
         data = self._read()
         records = data.get(session_id, [])
         return [HistoryRecord(**record) for record in records]
+
+    def list_sessions(self, user_id: str = "", limit: int = 40) -> list[HistorySessionSummary]:
+        data = self._read()
+        summaries: list[HistorySessionSummary] = []
+        for session_id, raw_records in data.items():
+            if not isinstance(raw_records, list) or not raw_records:
+                continue
+            records = [HistoryRecord(**record) for record in raw_records if isinstance(record, dict)]
+            if not records:
+                continue
+            if user_id and not any(str(record.metadata.get("user_id") or "") == user_id for record in records):
+                continue
+            if not user_id and any(str(record.metadata.get("user_id") or "") for record in records):
+                continue
+            latest = max((record.created_at for record in records), default=None)
+            title = self._compact_text(records[-1].user_message, 64) or "Historial backend"
+            summaries.append(
+                HistorySessionSummary(
+                    session_id=session_id,
+                    title=title,
+                    turn_count=len(records),
+                    updated_at=latest,
+                    history=records[-20:],
+                )
+            )
+        summaries.sort(key=lambda item: item.updated_at or datetime.min.replace(tzinfo=timezone.utc), reverse=True)
+        return summaries[:limit]
 
     def get_summary(self, session_id: str) -> dict[str, Any]:
         summaries = self._read_json(self.summary_path)

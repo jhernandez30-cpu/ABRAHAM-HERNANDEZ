@@ -138,3 +138,40 @@ class HistoryResponse(BaseModel):
     ok: bool = True
     session_id: str
     history: list[HistoryRecord] = Field(default_factory=list)
+
+
+class HistorySessionSummary(BaseModel):
+    session_id: str
+    title: str = "Historial backend"
+    turn_count: int = 0
+    updated_at: datetime | None = None
+    history: list[HistoryRecord] = Field(default_factory=list)
+
+
+class HistoryListResponse(BaseModel):
+    ok: bool = True
+    authenticated: bool = False
+    history: list[HistorySessionSummary] = Field(default_factory=list)
+    count: int = 0
+    message: str = ""
+
+
+class WorkspaceItem(BaseModel):
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+    id: str = ""
+    name: str = Field(..., min_length=1, max_length=120)
+    description: str = Field(default="", max_length=1200)
+    user_id: str = Field(default="", max_length=160)
+    chatIds: list[str] = Field(default_factory=list)
+    projectIds: list[str] = Field(default_factory=list)
+    createdAt: datetime | None = None
+    updatedAt: datetime | None = None
+
+
+class WorkspaceListResponse(BaseModel):
+    ok: bool = True
+    authenticated: bool = False
+    items: list[WorkspaceItem] = Field(default_factory=list)
+    count: int = 0
+    storage: str = "json"

@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/seo-pages.css">
-  <link rel="stylesheet" href="css/programming-assistant.css?v=auth-20260511">
+  <link rel="stylesheet" href="css/programming-assistant.css?v=actions-20260525">
   <link rel="stylesheet" href="css/jarvis.css">
 </head>
 <body class="programming-app-page">
@@ -58,47 +58,47 @@
     <section class="chat-app" aria-label="Chat de programación con JAH AI y TUTOR_IA">
       <aside class="chat-sidebar" id="chatSidebar" aria-label="Historial de conversaciones">
         <div class="sidebar-mobile-row">
-          <button id="closeSidebarBtn" class="sidebar-icon" type="button" aria-label="Cerrar historial">
+          <button id="closeSidebarBtn" class="sidebar-icon" type="button" aria-label="Cerrar historial" title="Cerrar historial">
             <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         </div>
 
-        <label class="chat-search sidebar-nav-item is-active" for="chatSearchInput">
+        <button id="openSearchBtn" class="chat-search sidebar-nav-item" type="button" data-action="search" aria-label="Buscar en JAH AI" title="Buscar en conversaciones, proyectos y espacios">
           <i class="fas fa-search" aria-hidden="true"></i>
-          <input id="chatSearchInput" type="search" placeholder="Buscar" autocomplete="off">
-        </label>
+          <span>Buscar</span>
+        </button>
 
-        <div class="brain-status sidebar-nav-item" id="brainStatus" data-state="checking">
+        <button class="brain-status sidebar-nav-item" id="brainStatus" type="button" data-state="checking" data-action="system-status" aria-label="Abrir estado del sistema" title="Abrir estado del sistema">
           <span class="brain-status-dot" aria-hidden="true"></span>
           <strong id="brainStatusText">Estado del sistema</strong>
-        </div>
+        </button>
 
         <nav class="sidebar-nav" aria-label="Navegación de JAH AI">
-          <button id="newChatBtn" class="sidebar-nav-item sidebar-action" type="button">
+          <button id="newChatBtn" class="sidebar-nav-item sidebar-action" type="button" data-action="new-chat" aria-label="Crear nuevo chat" title="Crear nuevo chat">
             <i class="fas fa-plus" aria-hidden="true"></i>
             <span>Nuevo chat</span>
           </button>
-          <button class="sidebar-nav-item sidebar-ghost" type="button">
+          <button id="historyPanelBtn" class="sidebar-nav-item sidebar-ghost" type="button" data-action="history" aria-label="Abrir historial" title="Abrir historial">
             <i class="fas fa-clock-rotate-left" aria-hidden="true"></i>
             <span>Historial</span>
           </button>
-          <button class="sidebar-nav-item sidebar-ghost" type="button">
+          <button id="discoverPanelBtn" class="sidebar-nav-item sidebar-ghost" type="button" data-action="discover" aria-label="Abrir descubrir" title="Abrir prompts y capacidades">
             <i class="fas fa-compass" aria-hidden="true"></i>
             <span>Descubrir</span>
           </button>
-          <button class="sidebar-nav-item sidebar-ghost" type="button">
+          <button id="spacesPanelBtn" class="sidebar-nav-item sidebar-ghost" type="button" data-action="spaces" aria-label="Abrir espacios" title="Organizar espacios de trabajo">
             <i class="fas fa-grip" aria-hidden="true"></i>
             <span>Espacios</span>
           </button>
-          <button class="sidebar-nav-item sidebar-ghost" type="button">
+          <button id="projectsPanelBtn" class="sidebar-nav-item sidebar-ghost" type="button" data-action="projects" aria-label="Abrir proyectos" title="Organizar proyectos">
             <i class="fas fa-code" aria-hidden="true"></i>
             <span>Proyectos</span>
           </button>
-          <button class="sidebar-nav-item sidebar-ghost" type="button">
+          <button id="securityPanelBtn" class="sidebar-nav-item sidebar-ghost" type="button" data-action="security" aria-label="Abrir seguridad" title="Ver estado de seguridad">
             <i class="fas fa-shield-halved" aria-hidden="true"></i>
             <span>Seguridad</span>
           </button>
-          <button class="sidebar-nav-item sidebar-ghost" type="button">
+          <button id="morePanelBtn" class="sidebar-nav-item sidebar-ghost" type="button" data-action="more" aria-label="Abrir mas opciones" title="Abrir mas opciones">
             <i class="fas fa-ellipsis" aria-hidden="true"></i>
             <span>Más</span>
           </button>
@@ -106,7 +106,7 @@
 
         <div class="history-heading">
           <span>Historial</span>
-          <button id="clearHistoryBtn" type="button">Limpiar</button>
+          <button id="clearHistoryBtn" type="button" data-action="clear-history" aria-label="Limpiar historial" title="Limpiar historial">Limpiar</button>
         </div>
 
         <div id="chatHistoryList" class="chat-history-list" aria-live="polite"></div>
@@ -116,7 +116,7 @@
 
       <section class="chat-main" aria-labelledby="assistantTitle">
         <div class="chat-topbar">
-          <button id="openSidebarBtn" class="topbar-icon" type="button" aria-label="Abrir historial">
+          <button id="openSidebarBtn" class="topbar-icon" type="button" aria-label="Abrir historial" title="Abrir historial">
             <i class="fas fa-bars" aria-hidden="true"></i>
           </button>
           <div class="chat-title">
@@ -127,40 +127,40 @@
 
         <div id="assistantAuthArea" class="assistant-auth-bar" data-auth-state="checking">
           <div id="guestAuthActions" class="guest-auth-actions" hidden>
-            <button id="openLoginBtn" class="auth-pill auth-pill-dark" type="button">Iniciar sesi&oacute;n</button>
-            <button id="openRegisterBtn" class="auth-pill auth-pill-light" type="button">Registrarse gratuitamente</button>
+            <button id="openLoginBtn" class="auth-pill auth-pill-dark" type="button" aria-label="Iniciar sesion" title="Iniciar sesion">Iniciar sesi&oacute;n</button>
+            <button id="openRegisterBtn" class="auth-pill auth-pill-light" type="button" aria-label="Registrarse gratuitamente" title="Registrarse gratuitamente">Registrarse gratuitamente</button>
           </div>
 
           <div id="userAccountArea" class="user-account-area" hidden>
-            <button id="userMenuBtn" class="user-account-button" type="button" aria-haspopup="true" aria-expanded="false">
+            <button id="userMenuBtn" class="user-account-button" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Abrir menu de usuario" title="Abrir menu de usuario">
               <span id="userAvatar" class="user-avatar" aria-hidden="true">U</span>
               <span id="userDisplayName" class="user-display-name">Usuario</span>
               <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </button>
 
             <div id="userMenu" class="user-menu" role="menu" hidden>
-              <button type="button" role="menuitem" data-account-action="upgrade">
+              <button type="button" role="menuitem" data-account-action="upgrade" aria-label="Ver plan actual" title="Ver plan actual">
                 <i class="fas fa-arrow-up-right-dots" aria-hidden="true"></i>
                 <span>Upgrade plan</span>
               </button>
-              <button type="button" role="menuitem" data-account-action="personalization">
+              <button type="button" role="menuitem" data-account-action="personalization" aria-label="Abrir personalizacion" title="Abrir personalizacion">
                 <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
                 <span>Personalizaci&oacute;n</span>
               </button>
-              <button type="button" role="menuitem" data-account-action="profile">
+              <button type="button" role="menuitem" data-account-action="profile" aria-label="Abrir perfil" title="Abrir perfil">
                 <i class="fas fa-user" aria-hidden="true"></i>
                 <span>Perfil</span>
               </button>
-              <button type="button" role="menuitem" data-account-action="settings">
+              <button type="button" role="menuitem" data-account-action="settings" aria-label="Abrir ajustes" title="Abrir ajustes">
                 <i class="fas fa-gear" aria-hidden="true"></i>
                 <span>Configuraci&oacute;n</span>
               </button>
-              <button type="button" role="menuitem" data-account-action="help">
+              <button type="button" role="menuitem" data-account-action="help" aria-label="Abrir ayuda" title="Abrir ayuda">
                 <i class="fas fa-circle-question" aria-hidden="true"></i>
                 <span>Ayuda</span>
               </button>
               <span class="user-menu-divider" aria-hidden="true"></span>
-              <button type="button" role="menuitem" data-account-action="logout">
+              <button type="button" role="menuitem" data-account-action="logout" aria-label="Cerrar sesion" title="Cerrar sesion">
                 <i class="fas fa-right-from-bracket" aria-hidden="true"></i>
                 <span>Cerrar sesi&oacute;n</span>
               </button>
@@ -171,7 +171,7 @@
         <div id="coachMessages" class="chat-messages" aria-live="polite">
           <div id="emptyChatState" class="empty-chat-state">
             <h1 id="assistantTitle">JAH AI</h1>
-            <button id="loginSoftInvite" class="login-soft-invite" type="button" hidden>Inicia sesi&oacute;n para guardar perfil, preferencias e historial entre dispositivos.</button>
+            <button id="loginSoftInvite" class="login-soft-invite" type="button" aria-label="Iniciar sesion para sincronizar" title="Iniciar sesion para sincronizar" hidden>Inicia sesi&oacute;n para guardar perfil, preferencias e historial entre dispositivos.</button>
           </div>
         </div>
 
@@ -185,12 +185,12 @@
 
             <div class="composer-toolbar">
               <div class="composer-tools" aria-label="Herramientas del asistente">
-                <button id="tutorIABtn" class="tool-chip is-active" type="button" aria-pressed="true" data-admin-only hidden>
+                <button id="tutorIABtn" class="tool-chip is-active" type="button" aria-label="Activar o desactivar tutor IA" aria-pressed="true" title="Activar o desactivar tutor IA" data-admin-only hidden>
                   <i class="fas fa-brain" aria-hidden="true"></i>
                   <span>Cerebro tutor_ia</span>
                 </button>
 
-                <button id="smartSearchBtn" class="tool-chip" type="button" aria-pressed="false">
+                <button id="smartSearchBtn" class="tool-chip" type="button" aria-label="Activar busqueda inteligente" aria-pressed="false" title="Activar busqueda inteligente">
                   <i class="fas fa-globe-americas" aria-hidden="true"></i>
                   <span>Búsqueda inteligente</span>
                 </button>
@@ -207,7 +207,7 @@
                   <span class="jarvis-voice-label">Jarvis</span>
                 </button>
 
-                <button class="send-orb" type="submit" aria-label="Enviar mensaje">
+                <button class="send-orb" type="submit" aria-label="Enviar mensaje" title="Enviar mensaje">
                   <i class="fas fa-arrow-up" aria-hidden="true"></i>
                 </button>
               </div>
@@ -233,7 +233,7 @@
 
   <div id="authOverlay" class="auth-overlay" hidden>
     <section class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
-      <button id="closeAuthModalBtn" class="auth-close-btn" type="button" aria-label="Cerrar">
+      <button id="closeAuthModalBtn" class="auth-close-btn" type="button" aria-label="Cerrar" title="Cerrar">
         <i class="fas fa-times" aria-hidden="true"></i>
       </button>
       <div id="authModalContent" class="auth-modal-content"></div>
@@ -242,10 +242,26 @@
 
   <div id="accountPanelOverlay" class="auth-overlay account-panel-overlay" hidden>
     <section class="account-panel" role="dialog" aria-modal="true" aria-labelledby="accountPanelTitle">
-      <button id="closeAccountPanelBtn" class="auth-close-btn" type="button" aria-label="Cerrar">
+      <button id="closeAccountPanelBtn" class="auth-close-btn" type="button" aria-label="Cerrar" title="Cerrar">
         <i class="fas fa-times" aria-hidden="true"></i>
       </button>
       <div id="accountPanelContent" class="account-panel-content"></div>
+    </section>
+  </div>
+
+  <div id="assistantPanelOverlay" class="assistant-panel-overlay" hidden>
+    <section id="assistantPanel" class="assistant-panel" role="dialog" aria-modal="true" aria-labelledby="assistantPanelTitle">
+      <header class="assistant-panel-header">
+        <div>
+          <span id="assistantPanelKicker" class="assistant-panel-kicker">JAH AI</span>
+          <h2 id="assistantPanelTitle" class="assistant-panel-title">Panel</h2>
+          <p id="assistantPanelDescription" class="assistant-panel-description"></p>
+        </div>
+        <button id="closeAssistantPanelBtn" class="assistant-panel-close" type="button" aria-label="Cerrar panel" title="Cerrar panel">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </header>
+      <div id="assistantPanelContent" class="assistant-panel-content" aria-live="polite"></div>
     </section>
   </div>
 
@@ -254,7 +270,7 @@
   <!-- <script src="js/app-config.production.js?v=auth-prod-20260519"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/jarvis-assistant.js?v=mark-xxxix-20260511"></script>
-  <script src="js/programming-assistant.js?v=brain-connect-20260519"></script>
+  <script src="js/programming-assistant.js?v=actions-20260525"></script>
   <script src="js/programming-auth.js?v=auth-fix-20260520"></script>
 </body>
 </html>

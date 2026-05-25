@@ -70,6 +70,14 @@
     return isLocalHostname(window.location.hostname);
   }
 
+  function isPublicPage() {
+    return window.location.protocol === 'https:' && !detectLocalMode();
+  }
+
+  function canUseLocalBackend() {
+    return detectLocalMode() && !isGitHubPagesHost();
+  }
+
   function normalizeApiBaseUrl(value) {
     return String(value || '').trim().replace(/\/$/, '');
   }
@@ -95,13 +103,23 @@
   }
 
   function resolveRunMode() {
-    const explicit = readMetaRunMode()
-      || readStoredRunMode()
-      || String(currentConfig.RUN_MODE || '').trim().toLowerCase();
-    if (explicit === 'production' || explicit === 'local') return explicit;
-
-    if (detectLocalMode()) return 'local';
     if (isGitHubPagesHost()) return 'production';
+
+    const metaMode = readMetaRunMode();
+    if (metaMode === 'production') return 'production';
+    if (metaMode === 'local' && canUseLocalBackend()) return 'local';
+
+    const storedMode = readStoredRunMode();
+    if (storedMode === 'production') return 'production';
+    if (storedMode === 'local' && canUseLocalBackend()) return 'local';
+
+    const configuredMode = String(currentConfig.RUN_MODE || '').trim().toLowerCase();
+    if (configuredMode === 'production') return 'production';
+    if (configuredMode === 'local' && canUseLocalBackend()) return 'local';
+
+    if (isPublicPage()) return 'production';
+    if (canUseLocalBackend()) return 'local';
+
     const productionUrl = readQueryApiBaseUrl() || readMetaApiBaseUrl() || currentConfig.API_BASE_URL;
     if (productionUrl) return 'production';
     return 'production';
@@ -112,6 +130,10 @@
     const runMode = resolveRunMode();
 
     if (runMode === 'production') {
+      return resolveProductionApiBaseUrl(liveConfig);
+    }
+
+    if (!canUseLocalBackend()) {
       return resolveProductionApiBaseUrl(liveConfig);
     }
 
@@ -139,12 +161,21 @@
     SUPABASE_APPLE_ENABLED: currentConfig.SUPABASE_APPLE_ENABLED === true,
     LOCAL_API_BASE_URL,
     PRODUCTION_API_BASE_URL,
-    IS_LOCAL_MODE: detectLocalMode(),
+    IS_LOCAL_MODE: runMode === 'local',
     IS_GITHUB_PAGES: isGitHubPagesHost(),
     resolveApiBaseUrl,
     setRunMode(mode) {
       const normalized = String(mode || '').trim().toLowerCase();
       if (normalized !== 'production' && normalized !== 'local') return;
+      if (normalized === 'local' && !canUseLocalBackend()) {
+        try {
+          localStorage.setItem('jahBridgeRunMode', 'production');
+        } catch (error) {
+          return;
+        }
+        window.location.reload();
+        return;
+      }
       try {
         localStorage.setItem('jahBridgeRunMode', normalized);
       } catch (error) {

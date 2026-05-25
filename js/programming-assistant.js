@@ -2,6 +2,11 @@ const STORAGE_KEY = 'tutorIaChatHistory';
 const ACTIVE_CHAT_KEY = 'tutorIaActiveChatId';
 const SESSION_KEY = 'jah_ai_session_id';
 const TUTOR_IA_ENABLED_KEY = 'tutorIaEnabled';
+const JAH_AI_CHATS_KEY = 'jah_ai_chats';
+const JAH_AI_CURRENT_CHAT_KEY = 'jah_ai_current_chat';
+const JAH_AI_SPACES_KEY = 'jah_ai_spaces';
+const JAH_AI_PROJECTS_KEY = 'jah_ai_projects';
+const JAH_AI_SETTINGS_KEY = 'jah_ai_settings';
 const DEFAULT_MODE = 'Cerebro Unificado';
 const PROJECT_PATH = window.TUTOR_IA_PROJECT_PATH || '';
 const BRAIN_ROOT = window.TUTOR_IA_BRAIN_ROOT || '';
@@ -66,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const adminOnlyElements = document.querySelectorAll('[data-admin-only]');
   const quickContextCard = document.querySelector('.quick-context-card');
   const newChatBtn = document.getElementById('newChatBtn');
-  const chatSearchInput = document.getElementById('chatSearchInput');
+  const openSearchBtn = document.getElementById('openSearchBtn');
   const chatHistoryList = document.getElementById('chatHistoryList');
   const activeChatLabel = document.getElementById('activeChatLabel');
   const clearHistoryBtn = document.getElementById('clearHistoryBtn');
@@ -81,6 +86,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const sendButton = coachForm ? coachForm.querySelector('.send-orb') : null;
   const jarvisVoiceBtn = document.getElementById('jarvisVoiceBtn');
   const jarvisStatus = document.getElementById('jarvisStatus');
+  const assistantPanelOverlay = document.getElementById('assistantPanelOverlay');
+  const assistantPanel = document.getElementById('assistantPanel');
+  const assistantPanelKicker = document.getElementById('assistantPanelKicker');
+  const assistantPanelTitle = document.getElementById('assistantPanelTitle');
+  const assistantPanelDescription = document.getElementById('assistantPanelDescription');
+  const assistantPanelContent = document.getElementById('assistantPanelContent');
+  const closeAssistantPanelBtn = document.getElementById('closeAssistantPanelBtn');
+  const sidebarActionButtons = document.querySelectorAll('[data-action]');
   function getEndpointCandidates() {
     return normalizeEndpoints(window.TUTOR_IA_ENDPOINTS || getDefaultEndpoints());
   }
@@ -100,10 +113,42 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeChatId = '';
   let currentSessionId = '';
   let activeStorageScope = '';
+  let activeHistoryQuery = '';
+  let activePanelType = '';
+  let lastSystemHealth = null;
+  let backendHistoryCache = [];
+  let spaces = [];
+  let projects = [];
+  let assistantSettings = {};
+  let activeSpaceId = '';
+  let activeProjectId = '';
   let authChecked = false;
   let appInitialized = false;
   let historyLoaded = false;
   let isHydrating = true;
+
+  const DISCOVER_PROMPTS = [
+    {
+      title: 'Revisar un bug',
+      description: 'Analiza un error, causa probable y pasos concretos.',
+      prompt: 'Revisa este error como ingeniero senior. Dame causa real, archivos probables, solucion y pruebas: '
+    },
+    {
+      title: 'Optimizar codigo',
+      description: 'Encuentra mejoras sin cambiar el comportamiento.',
+      prompt: 'Optimiza este codigo sin romper compatibilidad. Explica riesgos y pruebas necesarias: '
+    },
+    {
+      title: 'Crear pruebas',
+      description: 'Pide casos de prueba enfocados en riesgo real.',
+      prompt: 'Crea pruebas para esta funcion. Incluye casos borde, errores esperados y datos de ejemplo: '
+    },
+    {
+      title: 'Explicar arquitectura',
+      description: 'Resume dependencias, flujo y puntos fragiles.',
+      prompt: 'Explicame la arquitectura de este modulo y donde conviene modificarlo sin romper nada: '
+    }
+  ];
 
   window.tutorIAEnabled = tutorIAEnabled;
   window.smartSearchEnabled = smartSearchEnabled;
@@ -189,15 +234,45 @@ document.addEventListener('DOMContentLoaded', () => {
     return `chat-${Date.now()}-${Math.random().toString(16).slice(2)}`;
   }
 
+  function createSessionId() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+      return window.crypto.randomUUID();
+    }
+    return `session-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
   function createChat() {
     const createdAt = nowIso();
+    const sessionId = createSessionId();
     return {
       id: createId(),
+      sessionId,
       title: 'Nuevo chat',
       createdAt,
       updatedAt: createdAt,
       messages: []
     };
+  }
+
+  function normalizeChatRecord(chat) {
+    const createdAt = chat.createdAt || chat.created_at || nowIso();
+    const updatedAt = chat.updatedAt || chat.updated_at || createdAt;
+    return {
+      ...chat,
+      id: chat.id || createId(),
+      sessionId: chat.sessionId || chat.session_id || createSessionId(),
+      title: chat.title || 'Nuevo chat',
+      createdAt,
+      updatedAt,
+      messages: Array.isArray(chat.messages) ? chat.messages : []
+    };
+  }
+
+  function ensureChatSessionId(chat) {
+    if (!chat) return loadOrCreateSessionId();
+    if (!chat.sessionId && chat.session_id) chat.sessionId = chat.session_id;
+    if (!chat.sessionId) chat.sessionId = createSessionId();
+    return chat.sessionId;
   }
 
   function flowLog(event, detail = {}) {
@@ -243,6 +318,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function readJsonValue(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return fallback;
+      return JSON.parse(raw);
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function writeJsonValue(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function loadLocalCollection(key) {
+    const parsed = readJsonValue(key, []);
+    return Array.isArray(parsed) ? parsed.filter(item => item && item.id) : [];
+  }
+
+  function loadAssistantSettings() {
+    const parsed = readJsonValue(JAH_AI_SETTINGS_KEY, {});
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+  }
+
+  function persistAssistantSettings(patch = {}) {
+    assistantSettings = {
+      ...assistantSettings,
+      ...patch,
+      updatedAt: nowIso()
+    };
+    writeJsonValue(JAH_AI_SETTINGS_KEY, assistantSettings);
+    return assistantSettings;
+  }
+
+  function mirrorChatStorage() {
+    if (shouldPersistChatHistory()) {
+      writeJsonValue(JAH_AI_CHATS_KEY, chats);
+    }
+    writeStorageValue(JAH_AI_CURRENT_CHAT_KEY, activeChatId);
+  }
+
+  function persistSpaces() {
+    writeJsonValue(JAH_AI_SPACES_KEY, spaces);
+  }
+
+  function persistProjects() {
+    writeJsonValue(JAH_AI_PROJECTS_KEY, projects);
+  }
+
   function readTutorIaPreference(fallback = true) {
     try {
       const stored = localStorage.getItem(TUTOR_IA_ENABLED_KEY);
@@ -270,15 +399,20 @@ document.addEventListener('DOMContentLoaded', () => {
   function loadChats() {
     try {
       const scopedKey = scopedStorageKey(STORAGE_KEY);
+      const scopedMirrorKey = scopedStorageKey(JAH_AI_CHATS_KEY);
       let raw = readStorageValue(scopedKey);
+      if (!raw) raw = readStorageValue(scopedMirrorKey);
       if (!raw) {
-        raw = readStorageValue(STORAGE_KEY) || '[]';
+        raw = readStorageValue(STORAGE_KEY) || readStorageValue(JAH_AI_CHATS_KEY) || '[]';
         if (activeStorageScope && activeStorageScope !== 'guest' && raw !== '[]') {
           writeStorageValue(scopedKey, raw);
+          writeStorageValue(scopedMirrorKey, raw);
         }
       }
       const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed.filter(chat => chat && chat.id) : [];
+      return Array.isArray(parsed)
+        ? parsed.filter(chat => chat && chat.id).map(normalizeChatRecord)
+        : [];
     } catch (error) {
       return [];
     }
@@ -287,11 +421,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function loadActiveChatId() {
     try {
       const scopedKey = scopedStorageKey(ACTIVE_CHAT_KEY);
+      const scopedMirrorKey = scopedStorageKey(JAH_AI_CURRENT_CHAT_KEY);
       let value = readStorageValue(scopedKey);
+      if (!value) value = readStorageValue(scopedMirrorKey);
       if (!value) {
-        value = readStorageValue(ACTIVE_CHAT_KEY) || '';
+        value = readStorageValue(ACTIVE_CHAT_KEY) || readStorageValue(JAH_AI_CURRENT_CHAT_KEY) || '';
         if (activeStorageScope && activeStorageScope !== 'guest' && value) {
           writeStorageValue(scopedKey, value);
+          writeStorageValue(scopedMirrorKey, value);
         }
       }
       return value;
@@ -323,11 +460,18 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       if (!shouldPersistChatHistory()) {
         localStorage.removeItem(scopedStorageKey(STORAGE_KEY));
+        localStorage.removeItem(scopedStorageKey(JAH_AI_CHATS_KEY));
         writeStorageValue(scopedStorageKey(ACTIVE_CHAT_KEY), activeChatId);
+        writeStorageValue(scopedStorageKey(JAH_AI_CURRENT_CHAT_KEY), activeChatId);
+        writeStorageValue(JAH_AI_CURRENT_CHAT_KEY, activeChatId);
         return;
       }
-      writeStorageValue(scopedStorageKey(STORAGE_KEY), JSON.stringify(chats));
+      const serializedChats = JSON.stringify(chats);
+      writeStorageValue(scopedStorageKey(STORAGE_KEY), serializedChats);
+      writeStorageValue(scopedStorageKey(JAH_AI_CHATS_KEY), serializedChats);
       writeStorageValue(scopedStorageKey(ACTIVE_CHAT_KEY), activeChatId);
+      writeStorageValue(scopedStorageKey(JAH_AI_CURRENT_CHAT_KEY), activeChatId);
+      mirrorChatStorage();
     } catch (error) {
       setBrainStatus('error', 'No se pudo guardar historial');
     }
@@ -336,6 +480,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function persistActiveChat() {
     try {
       writeStorageValue(scopedStorageKey(ACTIVE_CHAT_KEY), activeChatId);
+      writeStorageValue(scopedStorageKey(JAH_AI_CURRENT_CHAT_KEY), activeChatId);
+      writeStorageValue(JAH_AI_CURRENT_CHAT_KEY, activeChatId);
     } catch (error) {
       return false;
     }
@@ -370,11 +516,17 @@ document.addEventListener('DOMContentLoaded', () => {
     chats = loadChats();
     activeChatId = loadActiveChatId();
     currentSessionId = loadOrCreateSessionId();
+    spaces = loadLocalCollection(JAH_AI_SPACES_KEY);
+    projects = loadLocalCollection(JAH_AI_PROJECTS_KEY);
+    assistantSettings = loadAssistantSettings();
+    activeSpaceId = assistantSettings.active_space_id || '';
+    activeProjectId = assistantSettings.active_project_id || '';
 
     if (!chats.length) {
       const initialChat = createChat();
       chats = [initialChat];
       activeChatId = initialChat.id;
+      currentSessionId = ensureChatSessionId(initialChat);
       persist();
     }
 
@@ -383,6 +535,8 @@ document.addEventListener('DOMContentLoaded', () => {
       persistActiveChat();
     }
 
+    currentSessionId = ensureChatSessionId(getActiveChat());
+    writeStorageValue(scopedStorageKey(SESSION_KEY), currentSessionId);
     sortChats();
     historyLoaded = true;
     flowLog('history-loaded', {
@@ -426,6 +580,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function getActiveChat() {
     return chats.find(chat => chat.id === activeChatId) || chats[0];
+  }
+
+  function activateChat(chatId, options = {}) {
+    const nextChat = chats.find(chat => chat.id === chatId);
+    if (!nextChat) return false;
+    activeChatId = nextChat.id;
+    currentSessionId = ensureChatSessionId(nextChat);
+    writeStorageValue(scopedStorageKey(SESSION_KEY), currentSessionId);
+    persistActiveChat();
+    if (options.persist !== false) persist();
+    if (options.render !== false && appInitialized) renderChat();
+    return true;
   }
 
   function setBrainStatus(state, text) {
@@ -1008,8 +1174,41 @@ document.addEventListener('DOMContentLoaded', () => {
     coachMessages.scrollTop = coachMessages.scrollHeight;
   }
 
+  function setActiveSidebarAction(action) {
+    const panelActions = new Set([
+      'search',
+      'system-status',
+      'history',
+      'discover',
+      'spaces',
+      'projects',
+      'security',
+      'more'
+    ]);
+    sidebarActionButtons.forEach(button => {
+      const isActive = panelActions.has(action) && button.dataset.action === action;
+      button.classList.toggle('is-active', isActive);
+      if (isActive) {
+        button.setAttribute('aria-current', 'page');
+      } else {
+        button.removeAttribute('aria-current');
+      }
+    });
+  }
+
+  function ensureButtonAccessibility(root = document) {
+    const buttons = root.matches && root.matches('button')
+      ? [root, ...root.querySelectorAll('button')]
+      : [...root.querySelectorAll('button')];
+    buttons.forEach(button => {
+      const label = (button.getAttribute('aria-label') || button.textContent || button.title || '').trim().replace(/\s+/g, ' ');
+      if (label && !button.getAttribute('aria-label')) button.setAttribute('aria-label', label);
+      if (label && !button.getAttribute('title')) button.setAttribute('title', label);
+    });
+  }
+
   function renderHistory() {
-    const query = (chatSearchInput.value || '').trim().toLowerCase();
+    const query = activeHistoryQuery.trim().toLowerCase();
     const filtered = chats.filter(chat => {
       const haystack = [
         chat.title,
@@ -1022,7 +1221,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!filtered.length) {
       const empty = document.createElement('div');
       empty.className = 'empty-history';
-      empty.textContent = query ? 'No encontrÃ© chats con esa bÃºsqueda.' : 'Tus chats aparecerÃ¡n aquÃ­.';
+      empty.textContent = query ? 'No encontre chats con esa busqueda.' : 'Tus chats apareceran aqui.';
       chatHistoryList.appendChild(empty);
       return;
     }
@@ -1046,9 +1245,7 @@ document.addEventListener('DOMContentLoaded', () => {
           deleteChat(chat.id);
           return;
         }
-        activeChatId = chat.id;
-        persistActiveChat();
-        renderChat();
+        activateChat(chat.id);
         closeSidebar();
       });
 
@@ -1057,21 +1254,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function startNewChat() {
-    const current = getActiveChat();
-    if (current && !current.messages.length) {
-      activeChatId = current.id;
-    } else {
-      const chat = createChat();
-      chats.unshift(chat);
-      activeChatId = chat.id;
-    }
+    const chat = createChat();
+    chats.unshift(chat);
+    activeChatId = chat.id;
+    currentSessionId = ensureChatSessionId(chat);
+    writeStorageValue(scopedStorageKey(SESSION_KEY), currentSessionId);
     persist();
     renderChat();
     closeSidebar();
+    closePanel();
     coachInput.focus();
   }
 
-  function deleteChat(chatId) {
+  function deleteChat(chatId, options = {}) {
+    if (options.confirmDelete !== false && !window.confirm('Eliminar esta conversacion del historial local?')) {
+      return false;
+    }
     chats = chats.filter(chat => chat.id !== chatId);
     if (!chats.length) {
       chats = [createChat()];
@@ -1079,16 +1277,951 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!chats.some(chat => chat.id === activeChatId)) {
       activeChatId = chats[0].id;
     }
+    currentSessionId = ensureChatSessionId(getActiveChat());
     persist();
     renderChat();
+    if (activePanelType === 'history') renderHistoryPanel();
+    return true;
   }
 
   function clearHistory() {
+    if (!window.confirm('Limpiar todo el historial local? Esta accion no borra datos del backend.')) {
+      return false;
+    }
     chats = [createChat()];
     activeChatId = chats[0].id;
+    currentSessionId = ensureChatSessionId(chats[0]);
     persist();
     renderChat();
     coachInput.focus();
+    if (activePanelType === 'history') renderHistoryPanel();
+    return true;
+  }
+
+  function clearCurrentChat() {
+    const chat = getActiveChat();
+    if (!chat) return false;
+    if (!window.confirm('Limpiar solo la conversacion actual? El historial anterior se conserva.')) {
+      return false;
+    }
+    chat.title = 'Nuevo chat';
+    chat.messages = [];
+    chat.updatedAt = nowIso();
+    persist();
+    renderChat();
+    openPanel('more', { notice: 'Chat actual limpiado. El historial anterior se conserva.' });
+    coachInput.focus();
+    return true;
+  }
+
+  function getAuthHeaders() {
+    return window.JAHAuth && typeof window.JAHAuth.getAuthHeaders === 'function'
+      ? window.JAHAuth.getAuthHeaders()
+      : {};
+  }
+
+  async function apiFetchJson(path, options = {}, timeoutMs = 6500) {
+    const bridgeUrl = getBridgeUrl();
+    if (!bridgeUrl) {
+      const error = new Error('API_BASE_URL no configurada');
+      error.code = 'API_BASE_URL_MISSING';
+      throw error;
+    }
+    const headers = {
+      ...(options.headers || {}),
+      ...getAuthHeaders()
+    };
+    const response = await fetchWithTimeout(`${bridgeUrl}${path}`, {
+      ...options,
+      headers
+    }, timeoutMs);
+    let data = {};
+    try {
+      data = await response.json();
+    } catch (error) {
+      data = {};
+    }
+    return { response, data };
+  }
+
+  function panelMeta(type) {
+    const metas = {
+      search: ['Buscar', 'Conversaciones, historial, proyectos, espacios y contenido del asistente.'],
+      'system-status': ['Estado del sistema', 'Consulta real a /api/health del backend configurado.'],
+      history: ['Historial', 'Conversaciones anteriores con backend cuando este disponible y localStorage como respaldo.'],
+      discover: ['Descubrir', 'Prompts sugeridos, capacidades y accesos rapidos.'],
+      spaces: ['Espacios', 'Areas de trabajo locales listas para sincronizar con Supabase o PostgreSQL.'],
+      projects: ['Proyectos', 'Organizacion de proyectos con persistencia local temporal.'],
+      security: ['Seguridad', 'Autenticacion, backend, Supabase Auth y base de datos sin exponer tokens.'],
+      more: ['Mas opciones', 'Configuracion, exportacion, ayuda y acciones de mantenimiento.'],
+      settings: ['Configuracion', 'Preferencias locales del asistente.'],
+      help: ['Ayuda', 'Acciones disponibles del asistente.'],
+      about: ['Acerca del asistente', 'Version web del asistente de programacion JAH AI.']
+    };
+    const [title, description] = metas[type] || ['Panel', ''];
+    return { title, description };
+  }
+
+  function openPanel(type, options = {}) {
+    if (!assistantPanelOverlay || !assistantPanelContent) return;
+    activePanelType = type;
+    const meta = panelMeta(type);
+    assistantPanelKicker.textContent = 'JAH AI';
+    assistantPanelTitle.textContent = meta.title;
+    assistantPanelDescription.textContent = meta.description;
+    assistantPanelOverlay.hidden = false;
+    document.body.classList.add('assistant-panel-open');
+    setActiveSidebarAction(type);
+
+    if (['system-status', 'security', 'history', 'spaces', 'projects'].includes(type)) {
+      assistantPanelContent.innerHTML = renderPanelLoading('Consultando backend...');
+    }
+
+    if (type === 'search') renderSearchPanel(options.query || activeHistoryQuery);
+    if (type === 'history') renderHistoryPanel();
+    if (type === 'discover') renderDiscoverPanel();
+    if (type === 'spaces') renderSpacesPanel(options.notice || '');
+    if (type === 'projects') renderProjectsPanel(options.notice || '');
+    if (type === 'more') renderMorePanel(options.notice || '');
+    if (type === 'settings') renderSettingsPanel(options.notice || '');
+    if (type === 'help') renderHelpPanel();
+    if (type === 'about') renderAboutPanel();
+    if (type === 'system-status') renderSystemStatusPanel(true);
+    if (type === 'security') renderSecurityPanel(true);
+  }
+
+  function closePanel() {
+    if (!assistantPanelOverlay) return;
+    assistantPanelOverlay.hidden = true;
+    document.body.classList.remove('assistant-panel-open');
+    activePanelType = '';
+    setActiveSidebarAction('');
+  }
+
+  function renderPanelLoading(text) {
+    return `<div class="assistant-panel-empty"><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i><span>${escapeHtml(text)}</span></div>`;
+  }
+
+  function renderPanelNotice(text, tone = 'info') {
+    if (!text) return '';
+    return `<div class="assistant-panel-notice ${escapeHtml(tone)}">${escapeHtml(text)}</div>`;
+  }
+
+  function renderPanelEmpty(text) {
+    return `<div class="assistant-panel-empty">${escapeHtml(text)}</div>`;
+  }
+
+  function renderStatusBadge(ok, goodText, badText, pendingText = '') {
+    if (ok === 'warn') {
+      return `<span class="assistant-status-badge warn">${escapeHtml(badText)}</span>`;
+    }
+    if (ok === null || ok === undefined) {
+      return `<span class="assistant-status-badge pending">${escapeHtml(pendingText || 'Sin verificar')}</span>`;
+    }
+    return ok
+      ? `<span class="assistant-status-badge ok">${escapeHtml(goodText)}</span>`
+      : `<span class="assistant-status-badge bad">${escapeHtml(badText)}</span>`;
+  }
+
+  function normalizeSystemHealth(data = {}, response = null) {
+    const tutorStatus = deriveTutorStatusFromHealth(data);
+    const tutorLabel = String(data.tutor_ia || data.tutor || '').toLowerCase();
+    const backendActive = Boolean(response && response.ok && data.ok !== false);
+    const supabaseConfigured = Boolean(
+      data.supabase_auth_configured
+      || data.supabase_configured
+      || data.supabase_enabled
+      || data.supabase?.configured
+      || data.auth?.supabase_configured
+    );
+    const databaseConnected = Boolean(
+      data.database_connected
+      || data.postgres_connected
+      || data.database?.connected
+      || data.postgres?.connected
+      || String(data.database || '').toLowerCase() === 'connected'
+    );
+    const databaseConfigured = Boolean(
+      databaseConnected
+      || data.postgres_configured
+      || data.database_configured
+      || data.database?.configured
+      || data.postgres?.configured
+    );
+    return {
+      ok: backendActive,
+      backendActive,
+      tutorReady: tutorStatus === 'CONNECTED' || data.tutor_ia_connected === true || tutorLabel === 'ready',
+      tutorStatus,
+      supabaseConfigured,
+      databaseConnected,
+      databaseConfigured,
+      httpStatus: response ? response.status : 0,
+      apiBaseUrl: getBridgeUrl() || 'API_BASE_URL no configurada',
+      raw: data
+    };
+  }
+
+  async function loadSystemStatus() {
+    const bridgeUrl = getBridgeUrl();
+    if (!bridgeUrl) {
+      lastSystemHealth = {
+        ok: false,
+        backendActive: false,
+        tutorReady: false,
+        tutorStatus: 'BACKEND_UNAVAILABLE',
+        supabaseConfigured: false,
+        databaseConnected: false,
+        databaseConfigured: false,
+        httpStatus: 0,
+        apiBaseUrl: 'API_BASE_URL no configurada',
+        errorType: 'config',
+        message: 'API_BASE_URL no configurada'
+      };
+      setBrainStatus('error', 'Backend no configurado');
+      return lastSystemHealth;
+    }
+
+    setBrainStatus('checking', 'Consultando /api/health...');
+    try {
+      const response = await fetchWithTimeout(`${bridgeUrl}/api/health`, {
+        method: 'GET',
+        headers: getAuthHeaders()
+      }, 6500);
+      const data = await response.json().catch(() => ({}));
+      lastSystemHealth = normalizeSystemHealth(data, response);
+      if (lastSystemHealth.backendActive) {
+        setTutorConnectionStatus(lastSystemHealth.tutorStatus, tutorConnectionStateLabel(lastSystemHealth.tutorStatus));
+      } else {
+        setBrainStatus('error', 'Backend no disponible');
+      }
+      return lastSystemHealth;
+    } catch (error) {
+      const isCorsOrConnection = error instanceof TypeError || String(error.message || '').includes('Failed to fetch');
+      lastSystemHealth = {
+        ok: false,
+        backendActive: false,
+        tutorReady: false,
+        tutorStatus: 'BACKEND_UNAVAILABLE',
+        supabaseConfigured: false,
+        databaseConnected: false,
+        databaseConfigured: false,
+        httpStatus: 0,
+        apiBaseUrl: bridgeUrl,
+        errorType: isCorsOrConnection ? 'cors_or_connection' : 'connection',
+        message: isCorsOrConnection ? 'Error CORS o conexion rechazada' : (error.message || 'Error de conexion')
+      };
+      setBrainStatus('error', 'Backend no disponible');
+      return lastSystemHealth;
+    }
+  }
+
+  function renderSystemStatus(status) {
+    const raw = status.raw || {};
+    return `
+      <div class="assistant-status-grid">
+        <div class="assistant-status-item">
+          <span>Backend</span>
+          ${renderStatusBadge(status.backendActive, 'Activo', 'No disponible')}
+        </div>
+        <div class="assistant-status-item">
+          <span>tutor_ia</span>
+          ${renderStatusBadge(status.tutorReady ? true : status.backendActive ? 'warn' : false, 'Listo', tutorConnectionStateLabel(status.tutorStatus))}
+        </div>
+        <div class="assistant-status-item">
+          <span>Supabase Auth</span>
+          ${renderStatusBadge(status.supabaseConfigured ? true : 'warn', 'Configurado', 'No configurado')}
+        </div>
+        <div class="assistant-status-item">
+          <span>Base de datos</span>
+          ${renderStatusBadge(status.databaseConnected ? true : 'warn', 'Conectada', status.databaseConfigured ? 'Configurada sin conexion' : 'No configurada')}
+        </div>
+      </div>
+      <div class="assistant-panel-card">
+        <strong>Endpoint consultado</strong>
+        <p>${escapeHtml(status.apiBaseUrl)}/api/health</p>
+        <p>HTTP: ${escapeHtml(String(status.httpStatus || 'sin respuesta'))}</p>
+        ${status.message ? `<p>${escapeHtml(status.message)}</p>` : ''}
+      </div>
+      <div class="assistant-panel-card">
+        <strong>Detalle no sensible</strong>
+        <p>Estado tutor_ia: ${escapeHtml(status.tutorStatus || 'Sin verificar')}</p>
+        <p>Historial backend: ${raw.history_path ? 'Configurado' : 'Sin dato publico'}</p>
+      </div>
+    `;
+  }
+
+  async function renderSystemStatusPanel(refresh = false) {
+    const status = refresh || !lastSystemHealth ? await loadSystemStatus() : lastSystemHealth;
+    if (activePanelType !== 'system-status') return;
+    assistantPanelContent.innerHTML = `
+      ${renderSystemStatus(status)}
+      <div class="assistant-panel-actions">
+        <button type="button" class="assistant-panel-btn primary" data-panel-action="reload-status">
+          <i class="fas fa-rotate" aria-hidden="true"></i><span>Recargar estado</span>
+        </button>
+      </div>
+    `;
+  }
+
+  async function loadChatHistory() {
+    const result = {
+      source: 'localStorage',
+      chats,
+      backendChats: [],
+      notice: 'Usando historial local temporal.'
+    };
+
+    if (!getBridgeUrl()) {
+      result.notice = 'Backend no configurado. Usando localStorage.';
+      return result;
+    }
+
+    try {
+      const listResult = await apiFetchJson('/api/history', { method: 'GET' }, 4500);
+      if (listResult.response.ok) {
+        const backendList = Array.isArray(listResult.data)
+          ? listResult.data
+          : listResult.data.chats || listResult.data.history || [];
+        result.backendChats = backendList.map(normalizeBackendHistoryChat).filter(Boolean);
+        result.source = 'backend';
+        result.notice = result.backendChats.length
+          ? 'Historial cargado desde backend.'
+          : 'Backend disponible, pero no devolvio conversaciones.';
+        return result;
+      }
+      console.info('[JAH AI] GET /api/history no disponible; usando fallback localStorage.');
+    } catch (error) {
+      console.info('[JAH AI] No se pudo cargar GET /api/history; usando localStorage.', error.message || error);
+    }
+
+    if (currentSessionId) {
+      try {
+        const sessionResult = await apiFetchJson(`/api/history/${encodeURIComponent(currentSessionId)}`, { method: 'GET' }, 4500);
+        if (sessionResult.response.ok) {
+          const backendChat = normalizeBackendHistoryChat(sessionResult.data);
+          result.backendChats = backendChat ? [backendChat] : [];
+          result.notice = result.backendChats.length
+            ? 'Backend disponible para la sesion actual; la lista completa usa localStorage.'
+            : 'Backend disponible, sin historial para la sesion actual.';
+          return result;
+        }
+      } catch (error) {
+        console.info('[JAH AI] No se pudo cargar /api/history/{session_id}; usando localStorage.', error.message || error);
+      }
+    }
+
+    return result;
+  }
+
+  function normalizeBackendHistoryChat(data) {
+    if (!data) return null;
+    const sessionId = data.session_id || data.sessionId || data.id || currentSessionId;
+    const rawHistory = Array.isArray(data.history)
+      ? data.history
+      : Array.isArray(data.messages)
+        ? data.messages
+        : [];
+    const messages = [];
+    rawHistory.forEach(turn => {
+      if (turn.role && turn.content) {
+        messages.push({
+          id: turn.id || createId(),
+          role: turn.role,
+          content: turn.content,
+          createdAt: turn.created_at || turn.createdAt || nowIso()
+        });
+        return;
+      }
+      const userText = turn.user_message || turn.question || turn.input || '';
+      const assistantText = turn.ai_response || turn.answer || turn.response || '';
+      if (userText) {
+        messages.push({ id: createId(), role: 'user', content: userText, createdAt: turn.created_at || nowIso() });
+      }
+      if (assistantText) {
+        messages.push({ id: createId(), role: 'assistant', content: assistantText, createdAt: turn.created_at || nowIso() });
+      }
+    });
+    return {
+      id: data.id || `backend-${sessionId}`,
+      sessionId,
+      title: data.title || 'Historial backend actual',
+      createdAt: data.created_at || nowIso(),
+      updatedAt: data.updated_at || nowIso(),
+      messages
+    };
+  }
+
+  function renderSearchPanel(query = '') {
+    activeHistoryQuery = query || '';
+    const cleanQuery = activeHistoryQuery.trim().toLowerCase();
+    const results = [];
+
+    chats.forEach(chat => {
+      const content = [chat.title, ...chat.messages.map(message => message.content)].join(' ');
+      if (!cleanQuery || content.toLowerCase().includes(cleanQuery)) {
+        results.push({
+          type: 'Conversacion',
+          title: chat.title || 'Nuevo chat',
+          description: `${chat.messages.length} mensajes - ${formatDate(chat.updatedAt)}`,
+          action: 'select-chat',
+          id: chat.id
+        });
+      }
+    });
+
+    projects.forEach(project => {
+      const content = [project.name, project.description].join(' ');
+      if (!cleanQuery || content.toLowerCase().includes(cleanQuery)) {
+        results.push({
+          type: 'Proyecto',
+          title: project.name,
+          description: project.description || 'Proyecto local',
+          action: 'select-project',
+          id: project.id
+        });
+      }
+    });
+
+    spaces.forEach(space => {
+      const content = [space.name, space.description].join(' ');
+      if (!cleanQuery || content.toLowerCase().includes(cleanQuery)) {
+        results.push({
+          type: 'Espacio',
+          title: space.name,
+          description: space.description || 'Espacio local',
+          action: 'select-space',
+          id: space.id
+        });
+      }
+    });
+
+    DISCOVER_PROMPTS.forEach(item => {
+      const content = [item.title, item.description, item.prompt].join(' ');
+      if (!cleanQuery || content.toLowerCase().includes(cleanQuery)) {
+        results.push({
+          type: 'Prompt',
+          title: item.title,
+          description: item.description,
+          action: 'insert-prompt',
+          prompt: item.prompt
+        });
+      }
+    });
+
+    assistantPanelContent.innerHTML = `
+      <label class="assistant-panel-search">
+        <i class="fas fa-search" aria-hidden="true"></i>
+        <input id="assistantPanelSearchInput" type="search" value="${escapeHtml(activeHistoryQuery)}" placeholder="Buscar conversaciones, historial, proyectos, espacios..." autocomplete="off">
+      </label>
+      <div class="assistant-panel-list">
+        ${results.length ? results.map(renderPanelResult).join('') : renderPanelEmpty('No hay resultados para esa busqueda.')}
+      </div>
+    `;
+    const input = document.getElementById('assistantPanelSearchInput');
+    if (input) {
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
+      input.addEventListener('input', event => renderSearchPanel(event.target.value));
+    }
+    renderHistory();
+  }
+
+  function renderPanelResult(item) {
+    const attrs = [
+      `data-panel-action="${escapeHtml(item.action)}"`
+    ];
+    if (item.id) attrs.push(`data-id="${escapeHtml(item.id)}"`);
+    if (item.prompt) attrs.push(`data-prompt="${escapeHtml(item.prompt)}"`);
+    return `
+      <button type="button" class="assistant-panel-item" ${attrs.join(' ')}>
+        <span class="assistant-panel-item-kicker">${escapeHtml(item.type)}</span>
+        <strong>${escapeHtml(item.title)}</strong>
+        <span>${escapeHtml(item.description || '')}</span>
+      </button>
+    `;
+  }
+
+  async function renderHistoryPanel() {
+    const history = await loadChatHistory();
+    if (activePanelType !== 'history') return;
+    backendHistoryCache = history.backendChats;
+    const backendItems = history.backendChats.length
+      ? `
+        <div class="assistant-panel-section-title">Backend</div>
+        <div class="assistant-panel-list">
+          ${history.backendChats.map(chat => renderPanelResult({
+            type: 'Backend',
+            title: chat.title,
+            description: `${chat.messages.length} mensajes - sesion ${chat.sessionId || 'sin id'}`,
+            action: 'restore-backend-chat',
+            id: chat.id
+          })).join('')}
+        </div>
+      `
+      : '';
+    assistantPanelContent.innerHTML = `
+      ${renderPanelNotice(history.notice)}
+      ${backendItems}
+      <div class="assistant-panel-section-title">Local</div>
+      <div class="assistant-panel-list">
+        ${chats.length ? chats.map(chat => renderPanelResult({
+          type: chat.id === activeChatId ? 'Actual' : 'Conversacion',
+          title: chat.title || 'Nuevo chat',
+          description: `${chat.messages.length} mensajes - ${formatDate(chat.updatedAt)}`,
+          action: 'select-chat',
+          id: chat.id
+        })).join('') : renderPanelEmpty('No hay historial todavia.')}
+      </div>
+      <div class="assistant-panel-actions">
+        <button type="button" class="assistant-panel-btn primary" data-panel-action="new-chat">
+          <i class="fas fa-plus" aria-hidden="true"></i><span>Nuevo chat</span>
+        </button>
+        <button type="button" class="assistant-panel-btn danger" data-panel-action="clear-history">
+          <i class="fas fa-trash" aria-hidden="true"></i><span>Limpiar historial local</span>
+        </button>
+      </div>
+    `;
+  }
+
+  function renderDiscoverPanel() {
+    assistantPanelContent.innerHTML = `
+      <div class="assistant-panel-grid">
+        ${DISCOVER_PROMPTS.map(item => `
+          <article class="assistant-panel-card">
+            <strong>${escapeHtml(item.title)}</strong>
+            <p>${escapeHtml(item.description)}</p>
+            <button type="button" class="assistant-panel-btn" data-panel-action="insert-prompt" data-prompt="${escapeHtml(item.prompt)}">
+              <i class="fas fa-arrow-right" aria-hidden="true"></i><span>Usar prompt</span>
+            </button>
+          </article>
+        `).join('')}
+      </div>
+      <div class="assistant-panel-section-title">Accesos rapidos</div>
+      <div class="assistant-panel-actions">
+        <button type="button" class="assistant-panel-btn" data-panel-action="open-panel" data-target-panel="system-status">
+          <i class="fas fa-heart-pulse" aria-hidden="true"></i><span>Ver backend</span>
+        </button>
+        <button type="button" class="assistant-panel-btn" data-panel-action="open-panel" data-target-panel="projects">
+          <i class="fas fa-code" aria-hidden="true"></i><span>Abrir proyectos</span>
+        </button>
+        <button type="button" class="assistant-panel-btn" data-panel-action="open-panel" data-target-panel="spaces">
+          <i class="fas fa-grip" aria-hidden="true"></i><span>Abrir espacios</span>
+        </button>
+      </div>
+    `;
+  }
+
+  async function loadBackendCollection(kind) {
+    if (!getBridgeUrl()) {
+      return { items: [], notice: 'Backend no configurado. Usando localStorage.' };
+    }
+    try {
+      const result = await apiFetchJson(`/api/${kind}`, { method: 'GET' }, 4500);
+      if (!result.response.ok) {
+        console.info(`[JAH AI] GET /api/${kind} no disponible; usando localStorage temporalmente.`);
+        return { items: [], notice: `Endpoint /api/${kind} no disponible. Usando localStorage temporal.` };
+      }
+      const items = Array.isArray(result.data) ? result.data : result.data[kind] || result.data.items || [];
+      return { items: Array.isArray(items) ? items : [], notice: `Datos de ${kind} cargados desde backend.` };
+    } catch (error) {
+      console.info(`[JAH AI] No se pudo cargar /api/${kind}; usando localStorage.`, error.message || error);
+      return { items: [], notice: `No se pudo cargar /api/${kind}. Usando localStorage temporal.` };
+    }
+  }
+
+  async function saveBackendCollectionItem(kind, item) {
+    if (!getBridgeUrl()) {
+      console.info(`[JAH AI] API_BASE_URL no configurada; ${kind} guardado solo en localStorage.`);
+      return false;
+    }
+    try {
+      const result = await apiFetchJson(`/api/${kind}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(item)
+      }, 4500);
+      if (!result.response.ok) {
+        console.info(`[JAH AI] POST /api/${kind} no disponible; ${kind} guardado en localStorage.`);
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.info(`[JAH AI] Error en POST /api/${kind}; ${kind} guardado en localStorage.`, error.message || error);
+      return false;
+    }
+  }
+
+  async function renderSpacesPanel(notice = '') {
+    const backend = await loadBackendCollection('spaces');
+    if (backend.items.length) {
+      spaces = mergeCollection(spaces, backend.items.map(normalizeWorkspaceItem));
+      persistSpaces();
+    }
+    if (activePanelType !== 'spaces') return;
+    assistantPanelContent.innerHTML = `
+      ${renderPanelNotice(notice || backend.notice)}
+      <form class="assistant-panel-form" data-panel-form="create-space">
+        <label>
+          <span>Nombre del espacio</span>
+          <input name="name" type="text" placeholder="Ej: Clientes, Universidad, Backend" required>
+        </label>
+        <label>
+          <span>Descripcion</span>
+          <textarea name="description" rows="2" placeholder="Para que usaras este espacio"></textarea>
+        </label>
+        <button type="submit" class="assistant-panel-btn primary">
+          <i class="fas fa-plus" aria-hidden="true"></i><span>Crear espacio</span>
+        </button>
+      </form>
+      <div class="assistant-panel-list">
+        ${spaces.length ? spaces.map(space => renderWorkspaceItem(space, 'space')).join('') : renderPanelEmpty('No hay espacios creados.')}
+      </div>
+    `;
+  }
+
+  async function renderProjectsPanel(notice = '') {
+    const backend = await loadBackendCollection('projects');
+    if (backend.items.length) {
+      projects = mergeCollection(projects, backend.items.map(normalizeWorkspaceItem));
+      persistProjects();
+    }
+    if (activePanelType !== 'projects') return;
+    assistantPanelContent.innerHTML = `
+      ${renderPanelNotice(notice || backend.notice)}
+      <form class="assistant-panel-form" data-panel-form="create-project">
+        <label>
+          <span>Nombre del proyecto</span>
+          <input name="name" type="text" placeholder="Ej: Portfolio, API, App movil" required>
+        </label>
+        <label>
+          <span>Descripcion</span>
+          <textarea name="description" rows="2" placeholder="Objetivo o stack principal"></textarea>
+        </label>
+        <button type="submit" class="assistant-panel-btn primary">
+          <i class="fas fa-plus" aria-hidden="true"></i><span>Crear proyecto</span>
+        </button>
+      </form>
+      <div class="assistant-panel-list">
+        ${projects.length ? projects.map(project => renderWorkspaceItem(project, 'project')).join('') : renderPanelEmpty('No hay proyectos creados.')}
+      </div>
+    `;
+  }
+
+  function normalizeWorkspaceItem(item) {
+    const id = item.id || createId();
+    return {
+      ...item,
+      id,
+      name: item.name || item.title || 'Sin nombre',
+      description: item.description || '',
+      chatIds: Array.isArray(item.chatIds) ? item.chatIds : Array.isArray(item.chat_ids) ? item.chat_ids : [],
+      createdAt: item.createdAt || item.created_at || nowIso(),
+      updatedAt: item.updatedAt || item.updated_at || nowIso()
+    };
+  }
+
+  function mergeCollection(localItems, incomingItems) {
+    const byId = new Map(localItems.map(item => [item.id, item]));
+    incomingItems.forEach(item => {
+      if (!item || !item.id) return;
+      byId.set(item.id, { ...(byId.get(item.id) || {}), ...item });
+    });
+    return Array.from(byId.values());
+  }
+
+  function renderWorkspaceItem(item, type) {
+    const isActive = type === 'space' ? item.id === activeSpaceId : item.id === activeProjectId;
+    const selectAction = type === 'space' ? 'select-space' : 'select-project';
+    const attachAction = type === 'space' ? 'attach-chat-space' : 'attach-chat-project';
+    return `
+      <article class="assistant-panel-workspace${isActive ? ' active' : ''}">
+        <div>
+          <span class="assistant-panel-item-kicker">${isActive ? 'Activo' : (type === 'space' ? 'Espacio' : 'Proyecto')}</span>
+          <strong>${escapeHtml(item.name)}</strong>
+          <p>${escapeHtml(item.description || 'Sin descripcion')}</p>
+          <small>${escapeHtml(String((item.chatIds || []).length))} chats asociados</small>
+        </div>
+        <div class="assistant-panel-actions compact">
+          <button type="button" class="assistant-panel-btn" data-panel-action="${selectAction}" data-id="${escapeHtml(item.id)}">
+            <i class="fas fa-check" aria-hidden="true"></i><span>Seleccionar</span>
+          </button>
+          <button type="button" class="assistant-panel-btn" data-panel-action="${attachAction}" data-id="${escapeHtml(item.id)}">
+            <i class="fas fa-link" aria-hidden="true"></i><span>Asociar chat</span>
+          </button>
+        </div>
+      </article>
+    `;
+  }
+
+  async function renderSecurityPanel(refresh = false) {
+    const context = getAuthContext();
+    const status = refresh || !lastSystemHealth ? await loadSystemStatus() : lastSystemHealth;
+    if (activePanelType !== 'security') return;
+    const user = context.user || {};
+    assistantPanelContent.innerHTML = `
+      <div class="assistant-status-grid">
+        <div class="assistant-status-item">
+          <span>Sesion</span>
+          ${renderStatusBadge(Boolean(context.loggedIn), 'Autenticado', 'Invitado')}
+        </div>
+        <div class="assistant-status-item">
+          <span>Backend</span>
+          ${renderStatusBadge(status.backendActive, 'Conectado', 'No disponible')}
+        </div>
+        <div class="assistant-status-item">
+          <span>Supabase Auth</span>
+          ${renderStatusBadge(status.supabaseConfigured ? true : 'warn', 'Configurado', 'No configurado')}
+        </div>
+        <div class="assistant-status-item">
+          <span>Base de datos</span>
+          ${renderStatusBadge(status.databaseConnected ? true : 'warn', 'Conectada', 'No conectada')}
+        </div>
+      </div>
+      <div class="assistant-panel-card">
+        <strong>Usuario actual</strong>
+        <p>${context.loggedIn ? escapeHtml(user.email || user.name || user.id || 'Usuario autenticado') : 'Modo invitado. Inicia sesion para sincronizar informacion.'}</p>
+        <p>Token: ${context.loggedIn ? 'Disponible para Authorization Bearer, no se muestra por seguridad.' : 'No hay token activo.'}</p>
+      </div>
+      <div class="assistant-panel-card">
+        <strong>Recomendaciones</strong>
+        <p>No pegues claves privadas ni SUPABASE_SERVICE_ROLE_KEY en el chat.</p>
+        <p>Usa Supabase Auth para sincronizar historial, espacios y proyectos cuando el backend exponga esos endpoints.</p>
+      </div>
+      <div class="assistant-panel-actions">
+        <button type="button" class="assistant-panel-btn primary" data-panel-action="reload-security">
+          <i class="fas fa-rotate" aria-hidden="true"></i><span>Recargar seguridad</span>
+        </button>
+        ${context.loggedIn ? `
+          <button type="button" class="assistant-panel-btn danger" data-panel-action="logout">
+            <i class="fas fa-right-from-bracket" aria-hidden="true"></i><span>Cerrar sesion</span>
+          </button>
+        ` : `
+          <button type="button" class="assistant-panel-btn" data-panel-action="open-auth">
+            <i class="fas fa-user-lock" aria-hidden="true"></i><span>Iniciar sesion</span>
+          </button>
+        `}
+      </div>
+    `;
+  }
+
+  function renderMorePanel(notice = '') {
+    assistantPanelContent.innerHTML = `
+      ${renderPanelNotice(notice)}
+      <div class="assistant-panel-list">
+        ${[
+          ['settings', 'Configuracion', 'Preferencias locales y estado activo.', 'fa-sliders'],
+          ['clear-current-chat', 'Limpiar chat actual', 'Borra solo los mensajes visibles.', 'fa-broom'],
+          ['export-conversation', 'Exportar conversacion', 'Descarga un JSON de la conversacion actual.', 'fa-file-export'],
+          ['help', 'Ayuda', 'Ver acciones disponibles.', 'fa-circle-question'],
+          ['about', 'Acerca del asistente', 'Informacion de esta interfaz.', 'fa-info-circle'],
+          ['reload-status', 'Recargar estado del sistema', 'Consulta /api/health nuevamente.', 'fa-rotate']
+        ].map(([action, title, description, icon]) => `
+          <button type="button" class="assistant-panel-item" data-panel-action="${action}">
+            <i class="fas ${icon}" aria-hidden="true"></i>
+            <strong>${title}</strong>
+            <span>${description}</span>
+          </button>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function renderSettingsPanel(notice = '') {
+    assistantPanelContent.innerHTML = `
+      ${renderPanelNotice(notice)}
+      <form class="assistant-panel-form" data-panel-form="save-settings">
+        <label class="assistant-panel-check">
+          <input name="rememberPanels" type="checkbox" ${assistantSettings.rememberPanels !== false ? 'checked' : ''}>
+          <span>Guardar espacios y proyectos en localStorage</span>
+        </label>
+        <label class="assistant-panel-check">
+          <input name="showEmptyStates" type="checkbox" ${assistantSettings.showEmptyStates !== false ? 'checked' : ''}>
+          <span>Mostrar estados vacios claros</span>
+        </label>
+        <button type="submit" class="assistant-panel-btn primary">
+          <i class="fas fa-save" aria-hidden="true"></i><span>Guardar configuracion</span>
+        </button>
+      </form>
+      <div class="assistant-panel-card">
+        <strong>Contexto activo</strong>
+        <p>Espacio: ${escapeHtml(spaces.find(item => item.id === activeSpaceId)?.name || 'Ninguno')}</p>
+        <p>Proyecto: ${escapeHtml(projects.find(item => item.id === activeProjectId)?.name || 'Ninguno')}</p>
+      </div>
+    `;
+  }
+
+  function renderHelpPanel() {
+    assistantPanelContent.innerHTML = `
+      <div class="assistant-panel-grid">
+        <article class="assistant-panel-card"><strong>Buscar</strong><p>Encuentra conversaciones, prompts, espacios y proyectos locales.</p></article>
+        <article class="assistant-panel-card"><strong>Historial</strong><p>Restaura conversaciones y usa backend cuando el endpoint exista.</p></article>
+        <article class="assistant-panel-card"><strong>Espacios y proyectos</strong><p>Organiza el chat actual con localStorage temporal.</p></article>
+        <article class="assistant-panel-card"><strong>Seguridad</strong><p>Verifica autenticacion, backend, Supabase y base de datos sin mostrar tokens.</p></article>
+      </div>
+    `;
+  }
+
+  function renderAboutPanel() {
+    assistantPanelContent.innerHTML = `
+      <div class="assistant-panel-card">
+        <strong>JAH AI - Asistente de programacion</strong>
+        <p>Interfaz frontend preparada para tutor_ia, Railway, Supabase Auth y PostgreSQL.</p>
+        <p>API activa configurada: ${escapeHtml(getBridgeUrl() || 'sin configurar')}</p>
+      </div>
+    `;
+  }
+
+  function insertPrompt(text) {
+    if (!coachInput) return;
+    coachInput.value = text;
+    autosizeInput();
+    coachInput.focus();
+  }
+
+  function exportConversation() {
+    const chat = getActiveChat();
+    if (!chat) return;
+    const payload = {
+      exportedAt: nowIso(),
+      source: 'jah-ai-programming-assistant',
+      chat
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${(chat.title || 'jah-ai-chat').replace(/[^a-z0-9_-]+/gi, '-').slice(0, 48)}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    openPanel('more', { notice: 'Conversacion exportada como JSON.' });
+  }
+
+  function createWorkspaceItem(type, form) {
+    const formData = new FormData(form);
+    const item = normalizeWorkspaceItem({
+      id: createId(),
+      name: String(formData.get('name') || '').trim(),
+      description: String(formData.get('description') || '').trim(),
+      chatIds: [],
+      createdAt: nowIso(),
+      updatedAt: nowIso()
+    });
+    if (!item.name) return;
+    if (type === 'space') {
+      spaces.unshift(item);
+      activeSpaceId = item.id;
+      persistSpaces();
+      persistAssistantSettings({ active_space_id: activeSpaceId });
+      saveBackendCollectionItem('spaces', item);
+      renderSpacesPanel('Espacio creado localmente. Se intentara sincronizar si /api/spaces existe.');
+      return;
+    }
+    projects.unshift(item);
+    activeProjectId = item.id;
+    persistProjects();
+    persistAssistantSettings({ active_project_id: activeProjectId });
+    saveBackendCollectionItem('projects', item);
+    renderProjectsPanel('Proyecto creado localmente. Se intentara sincronizar si /api/projects existe.');
+  }
+
+  function associateCurrentChat(type, id) {
+    const list = type === 'space' ? spaces : projects;
+    const item = list.find(entry => entry.id === id);
+    if (!item) return;
+    item.chatIds = Array.isArray(item.chatIds) ? item.chatIds : [];
+    if (!item.chatIds.includes(activeChatId)) item.chatIds.push(activeChatId);
+    item.updatedAt = nowIso();
+    if (type === 'space') {
+      persistSpaces();
+      renderSpacesPanel('Chat actual asociado al espacio.');
+    } else {
+      persistProjects();
+      renderProjectsPanel('Chat actual asociado al proyecto.');
+    }
+  }
+
+  function selectWorkspace(type, id) {
+    if (type === 'space') {
+      activeSpaceId = id;
+      persistAssistantSettings({ active_space_id: id });
+      renderSpacesPanel('Espacio activo actualizado.');
+      return;
+    }
+    activeProjectId = id;
+    persistAssistantSettings({ active_project_id: id });
+    renderProjectsPanel('Proyecto activo actualizado.');
+  }
+
+  function handleSidebarAction(action) {
+    if (!action) return;
+    if (action === 'new-chat') {
+      startNewChat();
+      return;
+    }
+    if (action === 'clear-history') {
+      clearHistory();
+      return;
+    }
+    openPanel(action);
+  }
+
+  async function handlePanelAction(action, button) {
+    if (!action) return;
+    const id = button.dataset.id || '';
+    if (action === 'new-chat') return startNewChat();
+    if (action === 'select-chat') {
+      activateChat(id);
+      closePanel();
+      closeSidebar();
+      coachInput.focus();
+      return;
+    }
+    if (action === 'restore-backend-chat') {
+      const backendChat = backendHistoryCache.find(chat => chat.id === id);
+      if (!backendChat) return;
+      const restored = normalizeChatRecord({
+        ...backendChat,
+        id: createId(),
+        title: backendChat.title || 'Historial backend restaurado',
+        updatedAt: nowIso()
+      });
+      chats.unshift(restored);
+      activeChatId = restored.id;
+      currentSessionId = ensureChatSessionId(restored);
+      persist();
+      renderChat();
+      closePanel();
+      coachInput.focus();
+      return;
+    }
+    if (action === 'insert-prompt') {
+      insertPrompt(button.dataset.prompt || '');
+      return;
+    }
+    if (action === 'open-panel') return openPanel(button.dataset.targetPanel || 'more');
+    if (action === 'select-space') return selectWorkspace('space', id);
+    if (action === 'select-project') return selectWorkspace('project', id);
+    if (action === 'attach-chat-space') return associateCurrentChat('space', id);
+    if (action === 'attach-chat-project') return associateCurrentChat('project', id);
+    if (action === 'clear-current-chat') return clearCurrentChat();
+    if (action === 'clear-history') return clearHistory();
+    if (action === 'export-conversation') return exportConversation();
+    if (action === 'settings') return openPanel('settings');
+    if (action === 'help') return openPanel('help');
+    if (action === 'about') return openPanel('about');
+    if (action === 'reload-status') return openPanel('system-status');
+    if (action === 'reload-security') return openPanel('security');
+    if (action === 'open-auth' && window.JAHAuth && typeof window.JAHAuth.openAuth === 'function') {
+      window.JAHAuth.openAuth('login');
+      return;
+    }
+    if (action === 'logout' && window.JAHAuth && typeof window.JAHAuth.logout === 'function') {
+      await window.JAHAuth.logout();
+      openPanel('security');
+    }
   }
 
   function setComposerLoading(isLoading) {
@@ -1287,6 +2420,8 @@ document.addEventListener('DOMContentLoaded', () => {
     isSubmitting = true;
     const filesForMessage = selectedFiles.map(fileMeta);
     const chatId = activeChatId;
+    currentSessionId = ensureChatSessionId(getActiveChat());
+    writeStorageValue(scopedStorageKey(SESSION_KEY), currentSessionId);
     addMessageToChat(chatId, { role: 'user', content: question, uploadedFiles: filesForMessage });
     coachInput.value = '';
     autosizeInput();
@@ -1510,9 +2645,56 @@ document.addEventListener('DOMContentLoaded', () => {
     refreshMarkVoiceStatus(false);
   }
 
-  newChatBtn.addEventListener('click', startNewChat);
-  clearHistoryBtn.addEventListener('click', clearHistory);
-  chatSearchInput.addEventListener('input', renderHistory);
+  document.addEventListener('click', event => {
+    const actionButton = event.target.closest('[data-action]');
+    if (!actionButton) return;
+    if (!actionButton.closest('.chat-sidebar')) return;
+    event.preventDefault();
+    handleSidebarAction(actionButton.dataset.action);
+  });
+
+  if (assistantPanelOverlay) {
+    assistantPanelOverlay.addEventListener('click', event => {
+      if (event.target === assistantPanelOverlay) closePanel();
+    });
+  }
+
+  if (closeAssistantPanelBtn) {
+    closeAssistantPanelBtn.addEventListener('click', closePanel);
+  }
+
+  if (assistantPanelContent) {
+    assistantPanelContent.addEventListener('click', event => {
+      const actionButton = event.target.closest('[data-panel-action]');
+      if (!actionButton) return;
+      event.preventDefault();
+      handlePanelAction(actionButton.dataset.panelAction, actionButton);
+    });
+
+    assistantPanelContent.addEventListener('submit', event => {
+      const form = event.target.closest('[data-panel-form]');
+      if (!form) return;
+      event.preventDefault();
+      const formType = form.dataset.panelForm;
+      if (formType === 'create-space') createWorkspaceItem('space', form);
+      if (formType === 'create-project') createWorkspaceItem('project', form);
+      if (formType === 'save-settings') {
+        const formData = new FormData(form);
+        persistAssistantSettings({
+          rememberPanels: formData.has('rememberPanels'),
+          showEmptyStates: formData.has('showEmptyStates')
+        });
+        renderSettingsPanel('Configuracion guardada localmente.');
+      }
+    });
+  }
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && assistantPanelOverlay && !assistantPanelOverlay.hidden) {
+      closePanel();
+    }
+  });
+
   openSidebarBtn.addEventListener('click', openSidebar);
   closeSidebarBtn.addEventListener('click', closeSidebar);
   sidebarBackdrop.addEventListener('click', closeSidebar);
@@ -1619,5 +2801,16 @@ document.addEventListener('DOMContentLoaded', () => {
   initJarvisIntegration();
   renderAttachments();
   autosizeInput();
+  ensureButtonAccessibility(document);
+  if (window.MutationObserver && document.body) {
+    const accessibilityObserver = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeType === Node.ELEMENT_NODE) ensureButtonAccessibility(node);
+        });
+      });
+    });
+    accessibilityObserver.observe(document.body, { childList: true, subtree: true });
+  }
   waitForAuthBeforeRender();
 });

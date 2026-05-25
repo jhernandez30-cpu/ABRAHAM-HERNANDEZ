@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
+from urllib.parse import urlparse
 
 try:
     from dotenv import load_dotenv
@@ -19,14 +20,34 @@ if load_dotenv:
 
 
 def _path_from_env(name: str, default: Path) -> Path:
-    path = Path(os.getenv(name, str(default))).expanduser()
+    raw_path = os.getenv(name, str(default)).strip()
+    if _current_app_env() == "production" and _looks_like_local_dev_path(raw_path):
+        raw_path = str(default)
+    path = Path(raw_path).expanduser()
     if not path.is_absolute():
         path = PROJECT_ROOT / path
     return path
 
 
 def _current_app_env() -> str:
-    return os.getenv("APP_ENV", "development").strip().lower() or "development"
+    explicit_env = os.getenv("APP_ENV", "").strip().lower()
+    if explicit_env:
+        return explicit_env
+
+    railway_env = os.getenv("RAILWAY_ENVIRONMENT_NAME", "").strip().lower()
+    if railway_env:
+        return "production" if railway_env in {"production", "prod"} else railway_env
+
+    railway_markers = (
+        "RAILWAY_PROJECT_ID",
+        "RAILWAY_SERVICE_ID",
+        "RAILWAY_DEPLOYMENT_ID",
+        "RAILWAY_PUBLIC_DOMAIN",
+    )
+    if any(os.getenv(name) for name in railway_markers):
+        return "production"
+
+    return "development"
 
 
 def _production_api_base_url() -> str:
@@ -34,6 +55,91 @@ def _production_api_base_url() -> str:
     if public_domain:
         return f"https://{public_domain}".rstrip("/")
     return "https://jah-ai-bridge-production.up.railway.app"
+
+
+def _looks_like_local_dev_path(value: str) -> bool:
+    normalized = str(value or "").replace("\\", "/").lower()
+    return (
+        normalized.startswith("/home/")
+        or normalized.startswith("/users/")
+        or normalized.startswith("c:/users/")
+        or "/documentos/" in normalized
+        or "/documents/" in normalized
+    )
+
+
+def _is_local_url(value: str) -> bool:
+    if not value:
+        return False
+    try:
+        parsed = urlparse(value)
+    except ValueError:
+        return False
+    hostname = (parsed.hostname or "").lower()
+    return hostname in {"localhost", "127.0.0.1", "::1"}
+
+
+def _safe_api_base_url() -> str:
+    configured = os.getenv("API_BASE_URL", "").strip().rstrip("/")
+    if APP_ENV == "production":
+        return configured if configured and not _is_local_url(configured) else _production_api_base_url()
+    return configured or "http://127.0.0.1:8787"
+
+
+def _safe_host() -> str:
+    configured = os.getenv("JAH_AI_HOST", "").strip()
+    if APP_ENV == "production":
+        return configured if configured and configured not in {"127.0.0.1", "localhost", "::1"} else "0.0.0.0"
+    return configured or "127.0.0.1"
+
+
+def _safe_frontend_url() -> str:
+    configured = os.getenv("AUTH_FRONTEND_URL", os.getenv("FRONTEND_URL", "")).strip()
+    if APP_ENV == "production":
+        return configured if configured and not _is_local_url(configured) else _default_frontend_url()
+    return configured or _default_frontend_url()
+
+
+def _origin_from_value(value: str) -> str:
+    raw = str(value or "").strip().rstrip("/")
+    if not raw:
+        return ""
+    try:
+        parsed = urlparse(raw)
+    except ValueError:
+        return raw
+    if parsed.scheme and parsed.netloc:
+        return f"{parsed.scheme}://{parsed.netloc}"
+    return raw
+
+
+def _safe_allowed_origins() -> list[str]:
+    origins = [_origin_from_value(item) for item in _csv_env(
+        "JAH_AI_ALLOWED_ORIGINS",
+        os.getenv("CORS_ALLOWED_ORIGINS", DEFAULT_ALLOWED_ORIGINS),
+    )]
+    origins = [origin for origin in origins if origin]
+    if APP_ENV != "production":
+        return origins
+
+    safe_origins = [
+        origin
+        for origin in origins
+        if origin.startswith("https://") and not _is_local_url(origin) and origin != "*"
+    ]
+    github_origin = "https://jhernandez30-cpu.github.io"
+    if github_origin not in safe_origins:
+        safe_origins.insert(0, github_origin)
+    return safe_origins
+
+
+def _safe_allowed_origin_regex() -> str | None:
+    configured = os.getenv("JAH_AI_ALLOWED_ORIGIN_REGEX", DEFAULT_ALLOWED_ORIGIN_REGEX)
+    if APP_ENV != "production":
+        return configured
+    if not configured or "localhost" in configured or "127" in configured or configured.strip() in {".*", "*"}:
+        return r"^https://jhernandez30-cpu\.github\.io$"
+    return configured
 
 
 def _default_development_tutor_root() -> Path:
@@ -55,7 +161,7 @@ def _default_tutor_root() -> Path:
 
 def _default_frontend_url() -> str:
     if _current_app_env() == "production":
-        return "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ/asistente-programacion.html"
+        return "https://jhernandez30-cpu.github.io/ABRAHAM-HERNANDEZ"
     return "http://127.0.0.1:5500/asistente-programacion.html"
 
 
@@ -107,11 +213,8 @@ DEFAULT_ALLOWED_ORIGIN_REGEX = (
 @dataclass(frozen=True)
 class Settings:
     app_env: str = APP_ENV
-    api_base_url: str = os.getenv(
-        "API_BASE_URL",
-        "http://127.0.0.1:8787" if APP_ENV == "development" else _production_api_base_url(),
-    ).rstrip("/")
-    host: str = os.getenv("JAH_AI_HOST", "0.0.0.0" if APP_ENV == "production" else "127.0.0.1")
+    api_base_url: str = _safe_api_base_url()
+    host: str = _safe_host()
     port: int = _int_env("PORT", _int_env("JAH_AI_PORT", 8787))
     log_level: str = os.getenv("JAH_AI_LOG_LEVEL", "INFO")
 
@@ -137,6 +240,8 @@ class Settings:
         "JAH_AI_CONTEXT_SUMMARY_PATH",
         BASE_DIR / "app" / "storage" / "context_summaries.json",
     )
+    spaces_path: Path = _path_from_env("JAH_AI_SPACES_PATH", BASE_DIR / "app" / "storage" / "spaces.json")
+    projects_path: Path = _path_from_env("JAH_AI_PROJECTS_PATH", BASE_DIR / "app" / "storage" / "projects.json")
     auth_users_path: Path = _path_from_env("JAH_AI_AUTH_USERS_PATH", BASE_DIR / "app" / "storage" / "auth_users.json")
     auth_sessions_path: Path = _path_from_env(
         "JAH_AI_AUTH_SESSIONS_PATH",
@@ -183,10 +288,7 @@ class Settings:
     web_search_timeout_seconds: float = float(os.getenv("WEB_SEARCH_TIMEOUT_SECONDS", "12"))
 
     auth_provider: str = os.getenv("AUTH_PROVIDER", "local").strip().lower() or "local"
-    auth_frontend_url: str = os.getenv(
-        "AUTH_FRONTEND_URL",
-        os.getenv("FRONTEND_URL", _default_frontend_url()),
-    )
+    auth_frontend_url: str = _safe_frontend_url()
     auth_session_ttl_hours: int = int(os.getenv("AUTH_SESSION_TTL_HOURS", "168"))
     owner_email: str = os.getenv("OWNER_EMAIL", "").strip().lower()
     admin_emails: list[str] = field(
@@ -264,16 +366,8 @@ class Settings:
             ".sql",
         }
     )
-    allowed_origins: list[str] = field(
-        default_factory=lambda: _csv_env(
-            "JAH_AI_ALLOWED_ORIGINS",
-            os.getenv("CORS_ALLOWED_ORIGINS", DEFAULT_ALLOWED_ORIGINS),
-        )
-    )
-    allowed_origin_regex: str | None = os.getenv(
-        "JAH_AI_ALLOWED_ORIGIN_REGEX",
-        DEFAULT_ALLOWED_ORIGIN_REGEX,
-    )
+    allowed_origins: list[str] = field(default_factory=_safe_allowed_origins)
+    allowed_origin_regex: str | None = _safe_allowed_origin_regex()
 
 
 settings = Settings()

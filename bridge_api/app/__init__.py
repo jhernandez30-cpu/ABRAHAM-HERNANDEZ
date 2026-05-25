@@ -10,7 +10,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
 from app.config import settings
-from app.routes import auth, chat, health, history, index, search, sources, upload
+from app.routes import auth, chat, health, history, index, search, sources, upload, workspaces
 
 
 def create_app() -> FastAPI:
@@ -51,6 +51,7 @@ def create_app() -> FastAPI:
     app.include_router(sources.router)
     app.include_router(upload.router)
     app.include_router(history.router)
+    app.include_router(workspaces.router)
 
     @app.exception_handler(HTTPException)
     async def http_exception_handler(_: Request, exc: HTTPException) -> JSONResponse:
