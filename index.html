@@ -247,6 +247,28 @@
           font-size: clamp(66px, 5.8vw, 88px) !important;
         }
       }
+
+      @media (max-width: 640px) {
+        .hero-content-inner {
+          width: min(100%, calc(100vw - 32px)) !important;
+          max-width: calc(100vw - 32px) !important;
+        }
+
+        .hero-title {
+          max-width: 100% !important;
+          overflow-wrap: break-word;
+        }
+
+        .hero-banner {
+          right: 12px !important;
+          max-width: min(72vw, 230px) !important;
+          transform: rotate(-5deg) translateY(50%) !important;
+        }
+
+        .banner-copy {
+          max-width: 100% !important;
+        }
+      }
     </style>
   </head>
   <body class="is-loading">

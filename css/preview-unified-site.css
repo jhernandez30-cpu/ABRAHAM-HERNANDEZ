@@ -1283,6 +1283,149 @@ body.jah-preview-surface footer a:hover {
   color: var(--jah-blue);
 }
 
+/* Responsive hardening: keep the shared preview shell usable on phones and tablets. */
+body.jah-preview-surface {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+body.jah-preview-surface .navbar,
+body.jah-preview-surface .site-header,
+body.jah-preview-surface .site-header .nav {
+  max-width: calc(100vw - 20px);
+}
+
+body.jah-preview-surface .nav-links {
+  min-width: 0;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+body.jah-preview-surface .nav-links > a,
+body.jah-preview-surface .site-header .nav-links > a,
+body.jah-preview-surface .nav-link {
+  min-width: max-content;
+  max-width: 100%;
+}
+
+body.jah-preview-surface .page-hero-grid > *,
+body.jah-preview-surface .hero-grid > *,
+body.jah-preview-surface .contact-grid > *,
+body.jah-preview-surface .split-layout > *,
+body.jah-preview-surface .seo-grid > *,
+body.jah-preview-surface .service-grid > *,
+body.jah-preview-surface .faq-grid > *,
+body.jah-preview-surface .project-grid > *,
+body.jah-preview-surface .resource-grid > *,
+body.jah-preview-surface .category-grid > *,
+body.jah-preview-surface .product-grid > *,
+body.jah-preview-surface .feature-grid > *,
+body.jah-preview-surface .testimonial-grid > *,
+body.jah-preview-surface .trust-grid > * {
+  min-width: 0;
+}
+
+body.jah-preview-surface h1,
+body.jah-preview-surface h2,
+body.jah-preview-surface h3,
+body.jah-preview-surface .page-title,
+body.jah-preview-surface .hero-title,
+body.jah-preview-surface .section-title {
+  overflow-wrap: break-word;
+}
+
+body.jah-preview-surface .btn,
+body.jah-preview-surface .btn-primary,
+body.jah-preview-surface .btn-submit,
+body.jah-preview-surface button[type="submit"],
+body.jah-preview-surface .service-card a,
+body.jah-preview-surface .contact-direct-actions a {
+  max-width: 100%;
+}
+
+@media (max-width: 980px) {
+  body.jah-preview-surface .navbar,
+  body.jah-preview-surface .site-header .nav {
+    overflow: hidden;
+  }
+
+  body.jah-preview-surface .nav-links {
+    width: 100%;
+    max-width: 100%;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 2px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  body.jah-preview-surface .nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  body.jah-preview-surface .nav-links > a,
+  body.jah-preview-surface .site-header .nav-links > a,
+  body.jah-preview-surface .nav-link {
+    flex: 0 0 auto;
+    min-width: max-content !important;
+    min-height: 40px;
+    padding-inline: 8px !important;
+    scroll-snap-align: start;
+    white-space: nowrap;
+  }
+
+  body.jah-preview-surface .page-hero,
+  body.jah-preview-surface #contact-page,
+  body.jah-preview-surface .hero,
+  body.jah-preview-surface .hero-section {
+    padding-bottom: 56px;
+  }
+}
+
+@media (max-width: 640px) {
+  body.jah-preview-surface .navbar,
+  body.jah-preview-surface .site-header {
+    width: calc(100% - 20px);
+  }
+
+  body.jah-preview-surface .navbar,
+  body.jah-preview-surface .site-header .nav {
+    border-radius: 20px;
+  }
+
+  body.jah-preview-surface .nav-links {
+    gap: 3px;
+    margin-inline: -2px;
+    padding: 3px 2px 5px;
+  }
+
+  body.jah-preview-surface .nav-links > a,
+  body.jah-preview-surface .site-header .nav-links > a,
+  body.jah-preview-surface .nav-link {
+    min-height: 38px;
+    padding-inline: 8px !important;
+    font-size: 11px !important;
+  }
+
+  body.jah-preview-surface .page-hero,
+  body.jah-preview-surface #contact-page,
+  body.jah-preview-surface .hero,
+  body.jah-preview-surface .hero-section {
+    padding-top: calc(var(--jah-header) + 126px);
+  }
+
+  body.jah-preview-surface .hero-actions,
+  body.jah-preview-surface .section-actions,
+  body.jah-preview-surface .contact-direct-actions,
+  body.jah-preview-surface .cta-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+}
+
 /* Bloque final de fondo: iguala paginas internas al beige plano del preview. */
 body.jah-preview-surface,
 body.jah-preview-surface.internal-lucas-page,
