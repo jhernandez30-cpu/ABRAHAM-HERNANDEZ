@@ -182,6 +182,7 @@ function initPortfolioChatbot() {
     variedadesNora: 'https://jhernandez30-cpu.github.io/Variedades-Nora/',
     jahStore: pageUrl('jah/index.html'),
     jahEnglishAi: pageUrl('JAH%20English%20AI/JAHEnglishAI.html'),
+    jahCutAi: 'https://jah-cut-ai-web.vercel.app/',
     itsaSegurity: 'https://jhernandez30-cpu.github.io/ITSA-Segurity/'
   };
   const whatsappBudgetEs = 'https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20un%20presupuesto%20para%20un%20proyecto';
@@ -343,8 +344,13 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['proyecto', 'proyectos', 'portfolio', 'portafolio', 'demo', 'caso', 'casos', 'trabajos'],
-      text: `Los proyectos destacados del nuevo sitio son: <a href="${projectUrls.muralSandino}" target="_blank" rel="noopener">Mural Sandino</a>, <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener">Benjamín Zeledón</a>, <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener">Variedades Nora</a> y <a href="${projectUrls.jahStore}">THE JAH STORE</a>. También puedes abrir <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a> y <a href="${projectUrls.jahEnglishAi}">JAH English AI</a>.`,
-      suggestions: ['Mural Sandino', 'Benjamín Zeledón', 'Variedades Nora', 'THE JAH STORE']
+      text: `Los proyectos destacados del nuevo sitio son: <a href="${projectUrls.muralSandino}" target="_blank" rel="noopener">Mural Sandino</a>, <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener">Benjamín Zeledón</a>, <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener">Variedades Nora</a>, <a href="${projectUrls.jahStore}">THE JAH STORE</a> y <a href="${projectUrls.jahCutAi}" target="_blank" rel="noopener noreferrer">JAH CUT AI</a>. También puedes abrir <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a> y <a href="${projectUrls.jahEnglishAi}">JAH English AI</a>.`,
+      suggestions: ['JAH CUT AI', 'Mural Sandino', 'Variedades Nora', 'THE JAH STORE']
+    },
+    {
+      keys: ['jah cut', 'jah cut ai', 'video ia', 'videos ia', 'subtitulos ai'],
+      text: `<a href="${projectUrls.jahCutAi}" target="_blank" rel="noopener noreferrer">JAH CUT AI</a> es una plataforma para crear, editar y publicar videos con inteligencia artificial, voz IA, subtítulos automáticos y flujo de publicación profesional.`,
+      suggestions: ['JAH CUT AI', 'Proyectos', 'Servicios', 'Contacto']
     },
     {
       keys: ['itsa', 'segurity', 'seguridad', 'monitoreo', 'incidentes', 'empresa', 'mi empresa'],
@@ -521,8 +527,13 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['project', 'projects', 'portfolio', 'demo', 'case', 'cases', 'work'],
-      text: `Featured projects on the new site: <a href="${projectUrls.muralSandino}" target="_blank" rel="noopener">Mural Sandino</a>, <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener">Benjamín Zeledón</a>, <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener">Variedades Nora</a>, and <a href="${projectUrls.jahStore}">THE JAH STORE</a>. You can also open <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a> and <a href="${projectUrls.jahEnglishAi}">JAH English AI</a>.`,
-      suggestions: ['Mural Sandino', 'Benjamín Zeledón', 'Variedades Nora', 'THE JAH STORE']
+      text: `Featured projects on the new site: <a href="${projectUrls.muralSandino}" target="_blank" rel="noopener">Mural Sandino</a>, <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener">Benjamín Zeledón</a>, <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener">Variedades Nora</a>, <a href="${projectUrls.jahStore}">THE JAH STORE</a>, and <a href="${projectUrls.jahCutAi}" target="_blank" rel="noopener noreferrer">JAH CUT AI</a>. You can also open <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a> and <a href="${projectUrls.jahEnglishAi}">JAH English AI</a>.`,
+      suggestions: ['JAH CUT AI', 'Mural Sandino', 'Variedades Nora', 'THE JAH STORE']
+    },
+    {
+      keys: ['jah cut', 'jah cut ai', 'ai video', 'video ai', 'ai subtitles'],
+      text: `<a href="${projectUrls.jahCutAi}" target="_blank" rel="noopener noreferrer">JAH CUT AI</a> is a platform to create, edit, and publish videos with artificial intelligence, AI voice, automatic subtitles, and a professional publishing flow.`,
+      suggestions: ['JAH CUT AI', 'Projects', 'Services', 'Contact']
     },
     {
       keys: ['itsa', 'segurity', 'security', 'monitoring', 'incidents', 'company', 'my company'],
@@ -639,6 +650,7 @@ function initPortfolioChatbot() {
             <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener" class="chatbot-menu-link">Benjamín Zeledón</a>
             <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener" class="chatbot-menu-link">Variedades Nora</a>
             <a href="${projectUrls.jahStore}" class="chatbot-menu-link">THE JAH STORE</a>
+            <a href="${projectUrls.jahCutAi}" target="_blank" rel="noopener noreferrer" class="chatbot-menu-link">JAH CUT AI</a>
             <a href="${pageUrl('ULTRON%20AI/ultron.html')}" class="chatbot-menu-link">ULTRON</a>
             <a href="${projectUrls.jahEnglishAi}" class="chatbot-menu-link" data-chatbot-link="jahAi">${ui.jahAi}</a>
             <a href="${projectUrls.itsaSegurity}" target="_blank" rel="noopener" class="chatbot-menu-link">ITSA Segurity</a>

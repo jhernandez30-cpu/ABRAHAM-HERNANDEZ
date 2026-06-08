@@ -375,6 +375,16 @@ body.eventually-redesign .info-card h3 {
   color: #ffffff !important;
 }
 
+body.eventually-redesign .case-card-cover {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border: 1px solid var(--eventually-border);
+  border-radius: calc(var(--eventually-radius) - 8px);
+  margin-bottom: 18px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
 body.eventually-redesign .hero-panel p,
 body.eventually-redesign .hero-panel li,
 body.eventually-redesign .seo-card p,

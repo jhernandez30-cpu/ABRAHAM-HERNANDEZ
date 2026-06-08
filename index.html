@@ -484,6 +484,12 @@
 	            href: "JAH%20English%20AI/JAHEnglishAI.html"
 	          },
 	          {
+	            labels: ["JAH CUT AI"],
+	            slugs: ["jah-cut-ai"],
+	            href: "https://jah-cut-ai-web.vercel.app/",
+	            external: true
+	          },
+	          {
 	            labels: ["JAH Link"],
 	            slugs: ["jah-link"],
 	            href: "https://jah-link.vercel.app/",
@@ -657,6 +663,12 @@
           });
         };
 
+        const enhanceProjectImageAlts = () => {
+          document.querySelectorAll('img[src*="project-jah-cut-ai-cover.png"]').forEach((image) => {
+            image.alt = "Portada de JAH CUT AI";
+          });
+        };
+
         const disablePreviewAudio = () => {
           document.querySelectorAll(".header-sounds-toggle, .footer-credits-music").forEach((item) => {
             item.remove();
@@ -771,6 +783,7 @@
           enhanceHeaderPageLinks();
           hideHeaderContactLink();
 	          replacePreviewLogos();
+	          enhanceProjectImageAlts();
 	          syncHeaderActiveBar();
 	          disablePreviewAudio();
 	          fixExistingLinks();
