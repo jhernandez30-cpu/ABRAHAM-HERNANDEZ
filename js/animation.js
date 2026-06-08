@@ -42,7 +42,6 @@ function shouldSkipMasterclassIntegration() {
   return (
     path.includes('/jah/') ||
     path.endsWith('/jah') ||
-    path.endsWith('/asistente-programacion.html') ||
     document.body.classList.contains('programming-app-page')
   );
 }

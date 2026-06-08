@@ -1,6 +1,0 @@
-chromadb
-langchain-ollama
-requests
-anthropic
-python-dotenv
-pyodbc>=5.1.0

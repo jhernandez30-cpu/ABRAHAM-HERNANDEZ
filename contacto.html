@@ -26,333 +26,35 @@
     <link rel="manifest" href="manifest.webmanifest">
 
     <!-- Fuentes e iconos -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
     <!-- CSS principales -->
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/hero.css">
-    <link rel="stylesheet" href="css/seo-pages.css">
-
     <!-- Estilos adicionales para contacto -->
-    <style>
-        /* Texto oculto para lectores de pantalla */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
-        }
-
-        /* Logo en navbar */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 5%;
-        }
-        .logo a {
-            font-family: 'Courier New', monospace;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--accent, #00ff9d);
-            text-decoration: none;
-            letter-spacing: 2px;
-            transition: text-shadow 0.3s ease;
-        }
-        .logo a:hover {
-            text-shadow: 0 0 8px var(--accent-glow, rgba(0, 255, 157, 0.4));
-        }
-
-        /* Footer logo */
-        .footer-logo {
-            font-family: 'Courier New', monospace;
-            font-size: 1.2rem;
-            color: var(--accent, #00ff9d);
-            margin-bottom: 15px;
-            letter-spacing: 2px;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-        }
-        .footer-logo:hover {
-            opacity: 1;
-        }
-
-        /* Responsive navbar */
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                padding: 10px 0;
-            }
-            .logo {
-                margin-bottom: 10px;
-            }
-            .logo a {
-                font-size: 1.5rem;
-            }
-            .nav-links {
-                gap: 15px;
-            }
-        }
-
-        /* Página de contacto */
-        #contact-page {
-            min-height: 80vh;
-            padding-top: 100px;
-            padding-bottom: 60px;
-        }
-        #contact-page .section-title {
-            text-align: center;
-            font-size: 2.8rem;
-            color: var(--accent, #00ff9d);
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        #contact-page .section-subtitle {
-            text-align: center;
-            color: var(--text-secondary);
-            margin-bottom: 50px;
-            font-size: 1.15rem;
-            letter-spacing: 0.3px;
-        }
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-        @media (max-width: 768px) {
-            .contact-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-            #contact-page .section-title {
-                font-size: 2rem;
-            }
-        }
-
-        /* Tarjeta de información */
-        .info-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 35px 30px;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .info-card:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 25px rgba(0, 255, 157, 0.25);
-        }
-        .info-card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            margin-bottom: 22px;
-            padding: 8px 0;
-            transition: transform 0.2s;
-        }
-        .contact-item:hover {
-            transform: translateX(5px);
-        }
-        .contact-item i {
-            font-size: 1.4rem;
-            color: var(--accent);
-            width: 32px;
-            text-align: center;
-        }
-        .contact-item a,
-        .contact-item span {
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-            word-break: break-word;
-        }
-        .contact-item a:hover {
-            color: var(--accent);
-        }
-
-        /* Redes sociales */
-        .social-row {
-            display: flex;
-            gap: 18px;
-            margin-top: 30px;
-            justify-content: center;
-        }
-        .social-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 46px;
-            height: 46px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 50%;
-            color: var(--accent);
-            font-size: 1.4rem;
-            transition: 0.25s ease;
-        }
-        .social-btn:hover {
-            transform: translateY(-6px);
-            border-color: var(--accent);
-            box-shadow: 0 0 18px rgba(0, 255, 157, 0.5);
-            background: rgba(0, 255, 157, 0.08);
-        }
-
-        .availability-note {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid var(--glass-border);
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-        .availability-note i {
-            color: var(--accent);
-            margin-right: 8px;
-        }
-
-        /* Formulario */
-        .form-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 40px;
-            transition: border-color 0.3s;
-        }
-        .form-card:hover {
-            border-color: var(--accent);
-        }
-        .form-group {
-            margin-bottom: 22px;
-        }
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 16px 18px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            color: #fff;
-            font-size: 1rem;
-            transition: 0.25s ease;
-            outline: none;
-        }
-        .form-group select {
-            color: var(--text-secondary);
-            appearance: none;
-        }
-        .form-group select option {
-            background: #111;
-            color: #fff;
-        }
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 12px rgba(0, 255, 157, 0.25);
-        }
-        .btn-submit {
-            width: 100%;
-            padding: 16px;
-            background: var(--accent);
-            border: none;
-            border-radius: 14px;
-            color: #0a0a0a;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: 0.3s ease;
-            letter-spacing: 0.5px;
-        }
-        .btn-submit:hover {
-            box-shadow: 0 0 25px rgba(0, 255, 157, 0.7);
-            transform: translateY(-2px);
-        }
-        .btn-submit i {
-            margin-right: 8px;
-        }
-
-        /* Mensajes de estado */
-        .form-feedback {
-            border-radius: 14px;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            font-weight: 500;
-            display: none;
-        }
-        .form-success {
-            background: rgba(0, 255, 157, 0.1);
-            border: 1px solid var(--accent);
-            color: var(--accent);
-        }
-        .form-error {
-            background: rgba(255, 68, 68, 0.1);
-            border: 1px solid #ff4444;
-            color: #ff4444;
-        }
-        .error-message {
-            color: #ff4444;
-            font-size: 0.85rem;
-            margin-top: 5px;
-            display: none;
-        }
-    </style>
-
     <!-- Anime.js, GSAP y ScrollTrigger -->
-    <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-
     <!-- Política de seguridad CSP -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://formspree.io;">
-  <link rel="stylesheet" href="css/internal-lucas.css">
-  <link rel="stylesheet" href="css/contact-page.css">
-
-
-  <link rel="stylesheet" href="css/preview-unified-site.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/eventually-redesign.css">
 </head>
-<body class="internal-lucas-page jah-preview-surface">
+<body class="eventually-redesign is-preload">
+  <header>
+    <nav class="navbar" id="navbar" aria-label="Navegacion principal">
+      <div class="logo"><a href="index.html" class="brand-logo" aria-label="Inicio - Abraham Hernandez"><img src="assets/jah-logo.png" alt="Logo JAH de Abraham Hernandez" width="180" height="120" loading="eager" decoding="async"></a></div>
+      <div class="nav-links">
+        <a href="sobre-mi/" class="nav-link">Sobre mi</a>
+        <a href="https://itsa-segurity.vercel.app/" class="nav-link" target="_blank" rel="noopener">ITSA SEGURITY</a>
+        <a href="proyectos/" class="nav-link">Proyectos</a>
+        <a href="jah-ai/" class="nav-link">JAH AI</a>
+        <a href="ULTRON%20AI/ultron.html" class="nav-link">ULTRON</a>
+      </div>
+    </nav>
+  </header>
+
     <a class="skip-link" href="#main-content">Saltar al contenido</a>
     <!-- HEADER con navbar y logo -->
-    <header>
-        <nav class="navbar" id="navbar">
-            <div class="logo"><a href="index.html" class="brand-logo" aria-label="Inicio - Abraham Hernández"><img src="assets/jah-logo.png" alt="Logo JAH de Abraham Hernández" width="180" height="120" loading="eager" decoding="async"></a></div>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link">Inicio</a>
-                <a href="index.html#servicios" class="nav-link">Servicios</a>
-                <a href="index.html#proyectos" class="nav-link">Proyectos</a>
-                <a href="index.html#sobre-mi" class="nav-link">Sobre mí</a>
-                <a href="index.html#recursos" class="nav-link">Recursos</a>
-                <a href="index.html#contacto" class="nav-link">Contacto</a>
-            </div>
-        </nav>
-    </header>
-
     <!-- BOTÓN VOLVER ARRIBA -->
-    <div class="back-to-top" id="backToTop">
-        <i class="fas fa-arrow-up"></i>
-    </div>
-
     <!-- Cursor personalizado (soluciona la desaparición) -->
-    <div class="custom-cursor"></div>
-
     <!-- CONTENIDO PRINCIPAL -->
     <main id="main-content">
         <section id="contact-page">
@@ -527,34 +229,26 @@
     </main>
 
     <!-- FOOTER con logo -->
-    <footer>
-        <div class="footer-logo"><img src="assets/jah-logo.png" alt="Logo JAH de Abraham Hernández" width="180" height="120" loading="lazy" decoding="async"></div>
-        <div class="site-footer-links">
-            <a href="dashboards-tiempo-real/">Dashboards</a>
-            <a href="automatizacion-procesos-python/">Automatización</a>
-            <a href="desarrollo-web-a-medida/">Web a medida</a>
-            <a href="desarrollador-web-nicaragua/">Desarrollador web Nicaragua</a>
-            <a href="desarrollo-frontend-react-vue/">Frontend</a>
-            <a href="integracion-apis/">APIs</a>
-            <a href="chatbots-para-web/">Chatbots</a>
-            <a href="proyectos/">Proyectos</a>
-            <a href="contacto.html">Contacto</a>
-        </div>
-        <p>© 2026 Abraham Hernández - Todos los derechos reservados</p>
-        <p style="margin-top: 10px; color: var(--text-secondary);">Diseñado con <i class="fas fa-heart" style="color: var(--accent);"></i> y tecnología de vanguardia</p>
-    </footer>
-
     <!-- Scripts -->
-    <script src="js/animation.js"></script>
-    <script src="js/script.js"></script>
-
     <!-- Formspree Ajax -->
-    <script>
-        window.formspree = window.formspree || function() { (formspree.q = formspree.q || []).push(arguments); };
-        formspree('initForm', { formElement: '#contactForm', formId: 'xaqlpvko' });
-    </script>
-    <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
-
-  <script src="js/preview-unified-site.js"></script>
+      <footer>
+    <div class="footer-logo"><img src="assets/jah-logo.png" alt="Logo JAH de Abraham Hernandez" width="180" height="120" loading="lazy" decoding="async"></div>
+    <div class="site-footer-links">
+      <a href="sobre-mi/">Sobre mi</a>
+      <a href="https://itsa-segurity.vercel.app/" target="_blank" rel="noopener">ITSA SEGURITY</a>
+      <a href="proyectos/">Proyectos</a>
+      <a href="jah-ai/">JAH AI</a>
+      <a href="ULTRON%20AI/ultron.html">ULTRON</a>
+      <a href="contacto.html">Contacto</a>
+    </div>
+    <p>&copy; 2026 Abraham Hernandez - Todos los derechos reservados</p>
+  </footer>
+  <script src="js/script.js"></script>
+  <script>
+    window.formspree = window.formspree || function() { (formspree.q = formspree.q || []).push(arguments); };
+    formspree('initForm', { formElement: '#contactForm', formId: 'xaqlpvko' });
+  </script>
+  <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+  <script src="assets/js/eventually-redesign.js"></script>
 </body>
 </html>

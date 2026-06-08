@@ -156,8 +156,11 @@
         justify-content: center;
       }
 
-      .preview-header-hidden {
+      .preview-header-hidden,
+      .header-home-link.preview-header-hidden,
+      .header-home .preview-header-hidden {
         display: none !important;
+        pointer-events: none !important;
       }
 
       .preview-social-extra .button-wrapper {
@@ -326,7 +329,6 @@
         }
 
         .header-home-link,
-        .header-home-link.preview-header-hidden,
         .header-home-link.preview-header-page-link {
           display: inline-flex !important;
           flex: 0 0 auto !important;
@@ -357,7 +359,6 @@
         }
 
         .header-home-link,
-        .header-home-link.preview-header-hidden,
         .header-home-link.preview-header-page-link {
           min-height: 34px !important;
           padding: 0 12px !important;
@@ -425,8 +426,8 @@
         ];
 
         const headerPageLinks = [
-          { label: "ITSA SEGURITY", href: "https://jhernandez30-cpu.github.io/ITSA-Segurity/", before: "Proyectos", external: true },
-          { label: "JAH AI", href: "asistente-programacion.html" },
+          { label: "ITSA SEGURITY", href: "https://itsa-segurity.vercel.app/", before: "Proyectos", external: true },
+          { label: "JAH AI", href: "jah-ai/" },
           { label: "ULTRON", href: "ULTRON%20AI/ultron.html" }
         ];
 

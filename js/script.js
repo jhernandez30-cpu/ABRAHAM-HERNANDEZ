@@ -181,6 +181,7 @@ function initPortfolioChatbot() {
     benjaminZeledon: 'https://jhernandez30-cpu.github.io/ciencia-sociales/interactiva-benjamin/index.html',
     variedadesNora: 'https://jhernandez30-cpu.github.io/Variedades-Nora/',
     jahStore: pageUrl('jah/index.html'),
+    jahEnglishAi: pageUrl('JAH%20English%20AI/JAHEnglishAI.html'),
     itsaSegurity: 'https://jhernandez30-cpu.github.io/ITSA-Segurity/'
   };
   const whatsappBudgetEs = 'https://wa.me/50589871374?text=Hola%20Abraham,%20quiero%20un%20presupuesto%20para%20un%20proyecto';
@@ -213,15 +214,15 @@ function initPortfolioChatbot() {
       services: 'Servicios',
       featuredProjects: 'Proyectos destacados',
       resources: 'Recursos',
-      interact: 'Interactúa',
+      jahAiLanding: 'JAH AI',
       downloadCv: 'Descargar CV',
       contact: 'Contacto',
-      jahAi: 'JAH IA',
+      jahAi: 'JAH English AI',
       inputPlaceholder: 'Escribe tu pregunta...',
       inputAria: 'Mensaje para el chatbot',
       sendMessage: 'Enviar mensaje',
       typingAria: 'El asistente está escribiendo',
-      intro: 'Hola, soy JAH. Ya estoy actualizado con la nueva home, proyectos reales, THE JAH STORE, ULTRON, JAH IA e ITSA Segurity. Escribe lo que quieres ver o abre el menú desplegable.'
+      intro: 'Hola, soy JAH. Ya estoy actualizado con la nueva home, proyectos reales, THE JAH STORE, ULTRON, JAH English AI e ITSA Segurity. Escribe lo que quieres ver o abre el menú desplegable.'
     },
     en: {
       panelAria: 'Portfolio chatbot',
@@ -237,37 +238,37 @@ function initPortfolioChatbot() {
       services: 'Services',
       featuredProjects: 'Featured projects',
       resources: 'Resources',
-      interact: 'Interact',
+      jahAiLanding: 'JAH AI',
       downloadCv: 'Download resume',
       contact: 'Contact',
-      jahAi: 'JAH AI',
+      jahAi: 'JAH English AI',
       inputPlaceholder: 'Type your question...',
       inputAria: 'Message for the chatbot',
       sendMessage: 'Send message',
       typingAria: 'The assistant is typing',
-      intro: 'Hi, I am JAH. I am updated with the new home, real projects, THE JAH STORE, ULTRON, JAH AI, and ITSA Segurity. Type what you want to see or open the dropdown menu.'
+      intro: 'Hi, I am JAH. I am updated with the new home, real projects, THE JAH STORE, ULTRON, JAH English AI, and ITSA Segurity. Type what you want to see or open the dropdown menu.'
     }
   };
 
   const getUi = () => chatbotUi[getChatbotLocale()] || chatbotUi.es;
 
   const fallbackAnswerEs = {
-    text: `Puedo orientarte con el sitio actualizado: servicios, proyectos, THE JAH STORE, ULTRON, JAH IA, recursos o contacto. También puedes volver al <a href="${homeUrl}">inicio nuevo</a>, revisar <a href="${homeSectionUrl('proyectos')}">proyectos</a> o pedir una orientación en <a href="${pageUrl('contacto.html')}">Contacto</a>.`,
-    suggestions: ['Guíame', 'Servicios', 'ULTRON', 'JAH IA']
+    text: `Puedo orientarte con el sitio actualizado: servicios, proyectos, THE JAH STORE, ULTRON, JAH English AI, recursos o contacto. También puedes volver al <a href="${homeUrl}">inicio nuevo</a>, revisar <a href="${homeSectionUrl('proyectos')}">proyectos</a> o pedir una orientación en <a href="${pageUrl('contacto.html')}">Contacto</a>.`,
+    suggestions: ['Guíame', 'Servicios', 'ULTRON', 'JAH English AI']
   };
   const fallbackAnswerEn = {
-    text: `I can guide you through the updated site: services, projects, THE JAH STORE, ULTRON, JAH AI, resources, or contact. You can also return to the <a href="${homeUrl}">new home</a>, review <a href="${homeSectionUrl('proyectos')}">projects</a>, or request guidance through <a href="${pageUrl('contacto.html')}">Contact</a>.`,
-    suggestions: ['Guide me', 'Services', 'ULTRON', 'JAH AI']
+    text: `I can guide you through the updated site: services, projects, THE JAH STORE, ULTRON, JAH English AI, resources, or contact. You can also return to the <a href="${homeUrl}">new home</a>, review <a href="${homeSectionUrl('proyectos')}">projects</a>, or request guidance through <a href="${pageUrl('contacto.html')}">Contact</a>.`,
+    suggestions: ['Guide me', 'Services', 'ULTRON', 'JAH English AI']
   };
   const answersEs = [
     {
       keys: ['hola', 'buenas', 'hey', 'saludos', 'inicio', 'empezar', 'ayuda'],
-      text: `Hola, soy JAH, el asistente virtual de Abraham. El sitio ahora usa la nueva experiencia visual de <a href="${homeUrl}">index.html</a>. Puedo ayudarte a elegir una solución, explorar <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>, abrir <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>, entrar a <a href="${projectUrls.jahStore}">THE JAH STORE</a> o revisar proyectos y servicios.`,
-      suggestions: ['Guíame', 'Servicios', 'ULTRON', 'JAH IA']
+      text: `Hola, soy JAH, el asistente virtual de Abraham. El sitio ahora usa la nueva experiencia visual de <a href="${homeUrl}">index.html</a>. Puedo ayudarte a elegir una solución, explorar <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>, abrir <a href="${projectUrls.jahEnglishAi}">JAH English AI</a>, entrar a <a href="${projectUrls.jahStore}">THE JAH STORE</a> o revisar proyectos y servicios.`,
+      suggestions: ['Guíame', 'Servicios', 'ULTRON', 'JAH English AI']
     },
     {
       keys: ['jah', 'joshue', 'josue', 'josué', 'abraham hernandez', 'abraham hernández', 'quien es', 'quién es', 'perfil profesional', 'ingeniero en sistemas', 'desarrollador web'],
-      text: `Josué Abraham Hernández es Desarrollador Web e Ingeniero en Sistemas en Nicaragua. Su sitio nuevo presenta servicios, proyectos reales, automatización, dashboards, APIs, chatbots, JAH IA, ULTRON y THE JAH STORE con una experiencia visual más premium.`,
+      text: `Josué Abraham Hernández es Desarrollador Web e Ingeniero en Sistemas en Nicaragua. Su sitio nuevo presenta servicios, proyectos reales, automatización, dashboards, APIs, chatbots, JAH English AI, ULTRON y THE JAH STORE con una experiencia visual más premium.`,
       suggestions: ['Sobre mí', 'Servicios', 'Proyectos', 'Contacto']
     },
     {
@@ -282,8 +283,8 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['mapa', 'navegar', 'sitio', 'secciones', 'paginas', 'páginas', 'menu', 'todo el sitio'],
-      text: `Mapa del sitio actualizado: <a href="${homeUrl}">inicio nuevo</a>, <a href="${homeSectionUrl('servicios')}">servicios</a>, <a href="${homeSectionUrl('proyectos')}">proyectos destacados</a>, <a href="${homeSectionUrl('sobre-mi')}">sobre mí</a>, <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>, <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>, <a href="${pageUrl('interactua.html')}">herramientas IA</a>, <a href="${projectUrls.jahStore}">THE JAH STORE</a>, <a href="${pageUrl('recursos/')}">recursos</a> y <a href="${pageUrl('contacto.html')}">contacto</a>.`,
-      suggestions: ['ULTRON', 'JAH IA', 'Servicios', 'Contacto']
+      text: `Mapa del sitio actualizado: <a href="${homeUrl}">inicio nuevo</a>, <a href="${homeSectionUrl('servicios')}">servicios</a>, <a href="${homeSectionUrl('proyectos')}">proyectos destacados</a>, <a href="${homeSectionUrl('sobre-mi')}">sobre mí</a>, <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>, <a href="${projectUrls.jahEnglishAi}">JAH English AI</a>, <a href="${pageUrl('jah-ai/')}">JAH AI</a>, <a href="${projectUrls.jahStore}">THE JAH STORE</a>, <a href="${pageUrl('recursos/')}">recursos</a> y <a href="${pageUrl('contacto.html')}">contacto</a>.`,
+      suggestions: ['ULTRON', 'JAH English AI', 'Servicios', 'Contacto']
     },
     {
       keys: ['servicio', 'servicios', 'haces', 'ofreces', 'oferta', 'desarrollo', 'web profesional'],
@@ -342,7 +343,7 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['proyecto', 'proyectos', 'portfolio', 'portafolio', 'demo', 'caso', 'casos', 'trabajos'],
-      text: `Los proyectos destacados del nuevo sitio son: <a href="${projectUrls.muralSandino}" target="_blank" rel="noopener">Mural Sandino</a>, <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener">Benjamín Zeledón</a>, <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener">Variedades Nora</a> y <a href="${projectUrls.jahStore}">THE JAH STORE</a>. También puedes abrir <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a> y <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>.`,
+      text: `Los proyectos destacados del nuevo sitio son: <a href="${projectUrls.muralSandino}" target="_blank" rel="noopener">Mural Sandino</a>, <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener">Benjamín Zeledón</a>, <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener">Variedades Nora</a> y <a href="${projectUrls.jahStore}">THE JAH STORE</a>. También puedes abrir <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a> y <a href="${projectUrls.jahEnglishAi}">JAH English AI</a>.`,
       suggestions: ['Mural Sandino', 'Benjamín Zeledón', 'Variedades Nora', 'THE JAH STORE']
     },
     {
@@ -383,7 +384,7 @@ function initPortfolioChatbot() {
     {
       keys: ['ultron', 'ultron ia', 'asistente ultron', 'sistema ultron', 'asistente inteligente', 'windows', 'ubuntu', 'android', 'descargas'],
       text: `<a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a> es la página oficial de presentación del asistente inteligente: una experiencia futurista para PC y dispositivos móviles, con enfoque en voz, memoria contextual, automatización, productividad y presencia digital. Desde ahí puedes ver su visión, capacidades, arquitectura conceptual y próximas descargas para Microsoft, Ubuntu y Google Play.`,
-      suggestions: ['JAH IA', 'Servicios', 'Proyectos', 'Contacto']
+      suggestions: ['JAH English AI', 'Servicios', 'Proyectos', 'Contacto']
     },
     {
       keys: ['recurso', 'recursos', 'blog', 'guia', 'guía', 'articulo', 'artículo', 'leer', 'aprender'],
@@ -412,18 +413,18 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['indicadores', 'años', 'anos', 'practica tecnica', 'práctica técnica', 'areas de servicio', 'demos'],
-      text: `La home actual es <a href="${homeUrl}">index.html</a> y usa el diseño premium del template: hero animado, secciones visuales, proyectos reales, accesos a JAH IA, ULTRON, ITSA Segurity y THE JAH STORE.`,
+      text: `La home actual es <a href="${homeUrl}">index.html</a> y usa el diseño premium del template: hero animado, secciones visuales, proyectos reales, accesos a JAH English AI, ULTRON, ITSA Segurity y THE JAH STORE.`,
       suggestions: ['Proyectos', 'Servicios', 'Sobre mí', 'Contacto']
     },
     {
-      keys: ['jah ia', 'asistente programacion', 'asistente programación', 'aprender programacion', 'aprender programación', 'programar', 'curso', 'ejercicios'],
-      text: `<a href="${pageUrl('asistente-programacion.html')}">JAH IA</a> es el asistente de programación del portafolio. Tiene rutas, preguntas, ejercicios, quiz y libros base para aprender programación de forma guiada.`,
-      suggestions: ['ULTRON', 'Interactúa', 'Recursos', 'Inicio']
+      keys: ['jah ia', 'jah english ai', 'aprender ingles', 'aprender inglés', 'aprender mandarin', 'aprender mandarín', 'idiomas', 'speaking', 'listening'],
+      text: `<a href="${projectUrls.jahEnglishAi}">JAH English AI</a> es la app educativa publicada para aprender inglés y mandarín con IA, práctica oral, listening y vocabulario.`,
+      suggestions: ['JAH English AI', 'ULTRON', 'Recursos', 'Inicio']
     },
     {
-      keys: ['ia', 'ai', 'inteligencia artificial', 'agente', 'agentes', 'herramientas ia', 'notebooklm', 'interactua'],
-      text: `En <a href="${pageUrl('interactua.html')}">Interactúa</a> hay herramientas IA para captación de cliente, análisis de competencia, estrategia, seguridad, desarrollo, bases de datos y C#. Para practicar código, abre <a href="${pageUrl('asistente-programacion.html')}">JAH IA</a>. Si quieres ver la visión del asistente inteligente futurista, abre <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>.`,
-      suggestions: ['JAH IA', 'ULTRON', 'Recursos', 'Contacto']
+      keys: ['ia', 'ai', 'inteligencia artificial', 'agente', 'agentes', 'herramientas ia', 'notebooklm', 'jah ai'],
+      text: `Para herramientas IA de programacion y productividad, abre <a href="${pageUrl('jah-ai/')}">JAH AI</a>. Para aprender idiomas con IA, abre <a href="${projectUrls.jahEnglishAi}">JAH English AI</a>. Si quieres ver la vision del asistente inteligente futurista, abre <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>.`,
+      suggestions: ['JAH English AI', 'ULTRON', 'Recursos', 'Contacto']
     },
     {
       keys: ['contacto', 'correo', 'email', 'cotizar', 'contratar', 'precio', 'costo', 'presupuesto', 'disponible', 'disponibilidad', 'freelance', 'trabajo'],
@@ -445,12 +446,12 @@ function initPortfolioChatbot() {
   const answersEn = [
     {
       keys: ['hello', 'hi', 'hey', 'start', 'help', 'home', 'hola', 'ayuda'],
-      text: `Hi, I am JAH, Abraham's virtual assistant. The site now uses the new visual experience from <a href="${homeUrl}">index.html</a>. I can help you choose a solution, explore <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>, open <a href="${pageUrl('asistente-programacion.html')}">JAH AI</a>, visit <a href="${projectUrls.jahStore}">THE JAH STORE</a>, or review projects and services.`,
-      suggestions: ['Guide me', 'Services', 'ULTRON', 'JAH AI']
+      text: `Hi, I am JAH, Abraham's virtual assistant. The site now uses the new visual experience from <a href="${homeUrl}">index.html</a>. I can help you choose a solution, explore <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>, open <a href="${projectUrls.jahEnglishAi}">JAH English AI</a>, visit <a href="${projectUrls.jahStore}">THE JAH STORE</a>, or review projects and services.`,
+      suggestions: ['Guide me', 'Services', 'ULTRON', 'JAH English AI']
     },
     {
       keys: ['jah', 'josue', 'josué', 'abraham hernandez', 'abraham hernández', 'who is', 'profile', 'systems engineer', 'web developer'],
-      text: `Josué Abraham Hernández is a web developer and systems engineer in Nicaragua. This site presents services, real projects, automation, dashboards, APIs, chatbots, JAH AI, ULTRON, and THE JAH STORE with a more premium visual experience.`,
+      text: `Josué Abraham Hernández is a web developer and systems engineer in Nicaragua. This site presents services, real projects, automation, dashboards, APIs, chatbots, JAH English AI, ULTRON, and THE JAH STORE with a more premium visual experience.`,
       suggestions: ['About', 'Services', 'Projects', 'Contact']
     },
     {
@@ -465,8 +466,8 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['map', 'navigate', 'site', 'sections', 'pages', 'menu', 'whole site', 'sitemap'],
-      text: `Updated site map: <a href="${homeUrl}">new home</a>, <a href="${homeSectionUrl('servicios')}">services</a>, <a href="${homeSectionUrl('proyectos')}">featured projects</a>, <a href="${homeSectionUrl('sobre-mi')}">about</a>, <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>, <a href="${pageUrl('asistente-programacion.html')}">JAH AI</a>, <a href="${pageUrl('interactua.html')}">AI tools</a>, <a href="${projectUrls.jahStore}">THE JAH STORE</a>, <a href="${pageUrl('recursos/')}">resources</a>, and <a href="${pageUrl('contacto.html')}">contact</a>.`,
-      suggestions: ['ULTRON', 'JAH AI', 'Services', 'Contact']
+      text: `Updated site map: <a href="${homeUrl}">new home</a>, <a href="${homeSectionUrl('servicios')}">services</a>, <a href="${homeSectionUrl('proyectos')}">featured projects</a>, <a href="${homeSectionUrl('sobre-mi')}">about</a>, <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>, <a href="${projectUrls.jahEnglishAi}">JAH English AI</a>, <a href="${pageUrl('jah-ai/')}">JAH AI</a>, <a href="${projectUrls.jahStore}">THE JAH STORE</a>, <a href="${pageUrl('recursos/')}">resources</a>, and <a href="${pageUrl('contacto.html')}">contact</a>.`,
+      suggestions: ['ULTRON', 'JAH English AI', 'Services', 'Contact']
     },
     {
       keys: ['service', 'services', 'offer', 'offering', 'development', 'professional web', 'software'],
@@ -520,7 +521,7 @@ function initPortfolioChatbot() {
     },
     {
       keys: ['project', 'projects', 'portfolio', 'demo', 'case', 'cases', 'work'],
-      text: `Featured projects on the new site: <a href="${projectUrls.muralSandino}" target="_blank" rel="noopener">Mural Sandino</a>, <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener">Benjamín Zeledón</a>, <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener">Variedades Nora</a>, and <a href="${projectUrls.jahStore}">THE JAH STORE</a>. You can also open <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a> and <a href="${pageUrl('asistente-programacion.html')}">JAH AI</a>.`,
+      text: `Featured projects on the new site: <a href="${projectUrls.muralSandino}" target="_blank" rel="noopener">Mural Sandino</a>, <a href="${projectUrls.benjaminZeledon}" target="_blank" rel="noopener">Benjamín Zeledón</a>, <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener">Variedades Nora</a>, and <a href="${projectUrls.jahStore}">THE JAH STORE</a>. You can also open <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a> and <a href="${projectUrls.jahEnglishAi}">JAH English AI</a>.`,
       suggestions: ['Mural Sandino', 'Benjamín Zeledón', 'Variedades Nora', 'THE JAH STORE']
     },
     {
@@ -551,7 +552,7 @@ function initPortfolioChatbot() {
     {
       keys: ['ultron', 'ultron ai', 'assistant ultron', 'smart assistant', 'windows', 'ubuntu', 'android', 'downloads'],
       text: `<a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a> is the official presentation page for the smart assistant: a futuristic experience for PC and mobile devices, focused on voice, contextual memory, automation, productivity, and digital presence.`,
-      suggestions: ['JAH AI', 'Services', 'Projects', 'Contact']
+      suggestions: ['JAH English AI', 'Services', 'Projects', 'Contact']
     },
     {
       keys: ['resource', 'resources', 'blog', 'guide', 'article', 'read', 'learn'],
@@ -569,14 +570,14 @@ function initPortfolioChatbot() {
       suggestions: ['Resume', 'Resources', 'Services', 'Contact']
     },
     {
-      keys: ['jah ai', 'programming assistant', 'learn programming', 'programming', 'course', 'exercises'],
-      text: `<a href="${pageUrl('asistente-programacion.html')}">JAH AI</a> is the portfolio's programming assistant. It has routes, questions, exercises, quizzes, and base books to learn programming in a guided way.`,
-      suggestions: ['ULTRON', 'Interact', 'Resources', 'Home']
+      keys: ['jah ai', 'jah english ai', 'learn english', 'learn mandarin', 'languages', 'speaking', 'listening', 'vocabulary'],
+      text: `<a href="${projectUrls.jahEnglishAi}">JAH English AI</a> is the published education app for learning English and Mandarin with AI, speaking practice, listening, and vocabulary.`,
+      suggestions: ['JAH English AI', 'ULTRON', 'Resources', 'Home']
     },
     {
       keys: ['ai', 'artificial intelligence', 'agent', 'agents', 'ai tools', 'notebooklm', 'interact'],
-      text: `In <a href="${pageUrl('interactua.html')}">Interact</a> there are AI tools for client acquisition, competitor analysis, strategy, security, development, databases, and C#. To practice code, open <a href="${pageUrl('asistente-programacion.html')}">JAH AI</a>. To see the smart assistant vision, open <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>.`,
-      suggestions: ['JAH AI', 'ULTRON', 'Resources', 'Contact']
+      text: `For programming and productivity AI tools, open <a href="${pageUrl('jah-ai/')}">JAH AI</a>. To learn languages with AI, open <a href="${projectUrls.jahEnglishAi}">JAH English AI</a>. To see the smart assistant vision, open <a href="${pageUrl('ULTRON%20AI/ultron.html')}">ULTRON</a>.`,
+      suggestions: ['JAH English AI', 'ULTRON', 'Resources', 'Contact']
     },
     {
       keys: ['contact', 'email', 'quote', 'hire', 'price', 'cost', 'budget', 'available', 'availability', 'freelance', 'work'],
@@ -595,8 +596,8 @@ function initPortfolioChatbot() {
     }
   ];
 
-  const quickRepliesEs = ['Guíame', 'Proyectos', 'THE JAH STORE', 'ULTRON', 'JAH IA'];
-  const quickRepliesEn = ['Guide me', 'Projects', 'THE JAH STORE', 'ULTRON', 'JAH AI'];
+  const quickRepliesEs = ['Guíame', 'Proyectos', 'THE JAH STORE', 'ULTRON', 'JAH English AI'];
+  const quickRepliesEn = ['Guide me', 'Projects', 'THE JAH STORE', 'ULTRON', 'JAH English AI'];
   const getAnswerSource = () => (getChatbotLocale() === 'en' ? answersEn : answersEs);
   const getFallbackAnswer = () => (getChatbotLocale() === 'en' ? fallbackAnswerEn : fallbackAnswerEs);
   const getQuickReplies = () => (getChatbotLocale() === 'en' ? quickRepliesEn : quickRepliesEs);
@@ -639,10 +640,10 @@ function initPortfolioChatbot() {
             <a href="${projectUrls.variedadesNora}" target="_blank" rel="noopener" class="chatbot-menu-link">Variedades Nora</a>
             <a href="${projectUrls.jahStore}" class="chatbot-menu-link">THE JAH STORE</a>
             <a href="${pageUrl('ULTRON%20AI/ultron.html')}" class="chatbot-menu-link">ULTRON</a>
-            <a href="${pageUrl('asistente-programacion.html')}" class="chatbot-menu-link" data-chatbot-link="jahAi">${ui.jahAi}</a>
+            <a href="${projectUrls.jahEnglishAi}" class="chatbot-menu-link" data-chatbot-link="jahAi">${ui.jahAi}</a>
             <a href="${projectUrls.itsaSegurity}" target="_blank" rel="noopener" class="chatbot-menu-link">ITSA Segurity</a>
             <a href="${pageUrl('recursos/')}" class="chatbot-menu-link" data-chatbot-link="resources">${ui.resources}</a>
-            <a href="${pageUrl('interactua.html')}" class="chatbot-menu-link" data-chatbot-link="interact">${ui.interact}</a>
+            <a href="${pageUrl('jah-ai/')}" class="chatbot-menu-link" data-chatbot-link="jahAiLanding">JAH AI</a>
             <a href="${pageUrl('cv.pdf')}" class="chatbot-menu-link" data-chatbot-link="downloadCv" download>${ui.downloadCv}</a>
             <a href="${pageUrl('contacto.html')}" class="chatbot-menu-link" data-chatbot-link="contact">${ui.contact}</a>
             <a href="${getChatbotLocale() === 'en' ? whatsappBudgetEn : whatsappBudgetEs}" target="_blank" rel="noopener" class="chatbot-menu-link" data-chatbot-link="whatsapp">WhatsApp</a>

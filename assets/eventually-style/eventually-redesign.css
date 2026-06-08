@@ -1,0 +1,361 @@
+:root {
+  --eventually-bg: #070806;
+  --eventually-panel: rgba(18, 24, 20, 0.78);
+  --eventually-panel-strong: rgba(21, 28, 24, 0.94);
+  --eventually-line: rgba(236, 245, 229, 0.16);
+  --eventually-text: #f6f8f1;
+  --eventually-muted: rgba(234, 240, 230, 0.72);
+  --eventually-soft: rgba(234, 240, 230, 0.1);
+  --eventually-green: #1cb495;
+  --eventually-gold: #e7b86d;
+  --eventually-rust: #cc6f45;
+  --eventually-radius: 8px;
+  --eventually-shadow: 0 24px 70px rgba(0, 0, 0, 0.36);
+}
+
+body.eventually-redesign {
+  min-width: 320px;
+  background:
+    linear-gradient(135deg, rgba(28, 180, 149, 0.14), transparent 32%),
+    linear-gradient(225deg, rgba(231, 184, 109, 0.12), transparent 36%),
+    linear-gradient(180deg, #050604 0%, #0d120f 46%, #070806 100%) !important;
+  color: var(--eventually-text);
+  letter-spacing: 0;
+}
+
+body.eventually-redesign::before {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  content: "";
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 58px 58px;
+  opacity: 0.36;
+}
+
+body.eventually-redesign::after {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: "";
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.7), transparent 48%, rgba(0, 0, 0, 0.64)),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.76));
+}
+
+body.eventually-redesign,
+body.eventually-redesign input,
+body.eventually-redesign textarea,
+body.eventually-redesign select,
+body.eventually-redesign button {
+  font-family: Inter, Poppins, Roboto, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body.eventually-redesign h1,
+body.eventually-redesign h2,
+body.eventually-redesign h3 {
+  color: var(--eventually-text) !important;
+  letter-spacing: 0;
+}
+
+body.eventually-redesign p,
+body.eventually-redesign li,
+body.eventually-redesign .hero-lede,
+body.eventually-redesign .section-lede,
+body.eventually-redesign .case-card p,
+body.eventually-redesign .hero-panel li,
+body.eventually-redesign #text-container p,
+body.eventually-redesign #text-container li {
+  color: var(--eventually-muted) !important;
+}
+
+body.eventually-redesign a {
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+body.eventually-redesign header {
+  background: rgba(7, 8, 6, 0.74);
+  border-bottom: 1px solid var(--eventually-line);
+  backdrop-filter: blur(18px);
+}
+
+body.eventually-redesign .navbar {
+  width: min(1180px, calc(100% - 32px));
+  min-height: 78px;
+  margin: 0 auto;
+}
+
+body.eventually-redesign .nav-links a,
+body.eventually-redesign .nav-link {
+  border-radius: var(--eventually-radius);
+  color: rgba(246, 248, 241, 0.78) !important;
+}
+
+body.eventually-redesign .nav-links a:hover,
+body.eventually-redesign .nav-link:hover,
+body.eventually-redesign .nav-link.active {
+  color: var(--eventually-text) !important;
+  background: rgba(28, 180, 149, 0.12);
+}
+
+body.eventually-redesign .page-hero,
+body.eventually-redesign #contact-page,
+body.eventually-redesign #contet-container {
+  position: relative;
+  padding-top: clamp(120px, 15vw, 180px) !important;
+}
+
+body.eventually-redesign .page-hero {
+  overflow: hidden;
+}
+
+body.eventually-redesign .page-hero::before,
+body.eventually-redesign #contact-page::before,
+body.eventually-redesign #contet-container::before {
+  position: absolute;
+  inset: 82px auto auto 0;
+  width: min(760px, 76vw);
+  height: 1px;
+  content: "";
+  background: linear-gradient(90deg, var(--eventually-green), var(--eventually-gold), transparent);
+  opacity: 0.72;
+}
+
+body.eventually-redesign .page-hero-grid,
+body.eventually-redesign .split-layout,
+body.eventually-redesign .contact-grid {
+  gap: clamp(24px, 5vw, 58px);
+}
+
+body.eventually-redesign .container,
+body.eventually-redesign #contet-container {
+  width: min(1180px, calc(100% - 32px));
+}
+
+body.eventually-redesign .breadcrumbs,
+body.eventually-redesign .hero-kicker,
+body.eventually-redesign .section-kicker,
+body.eventually-redesign .legal-eyebrow {
+  color: var(--eventually-green) !important;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+body.eventually-redesign .page-hero h1,
+body.eventually-redesign #contact-page .section-title,
+body.eventually-redesign #contet-container h1 {
+  max-width: 980px;
+  font-size: clamp(2.45rem, 7vw, 5.6rem) !important;
+  line-height: 0.96 !important;
+  text-wrap: balance;
+}
+
+body.eventually-redesign .hero-lede,
+body.eventually-redesign .section-lede,
+body.eventually-redesign #contact-page .section-subtitle {
+  max-width: 760px;
+  font-size: clamp(1rem, 1.55vw, 1.18rem) !important;
+  line-height: 1.78 !important;
+}
+
+body.eventually-redesign .hero-panel,
+body.eventually-redesign .case-card,
+body.eventually-redesign .info-card,
+body.eventually-redesign .contact-form-container,
+body.eventually-redesign .cta-band,
+body.eventually-redesign .content-list a,
+body.eventually-redesign #text-container .legal-note {
+  border: 1px solid var(--eventually-line) !important;
+  border-radius: var(--eventually-radius) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
+    var(--eventually-panel) !important;
+  box-shadow: var(--eventually-shadow);
+  backdrop-filter: blur(14px);
+}
+
+body.eventually-redesign .hero-panel,
+body.eventually-redesign .case-card,
+body.eventually-redesign .info-card,
+body.eventually-redesign .contact-form-container,
+body.eventually-redesign .cta-band {
+  padding: clamp(22px, 3vw, 34px) !important;
+}
+
+body.eventually-redesign .case-card:hover,
+body.eventually-redesign .content-list a:hover,
+body.eventually-redesign .info-card:hover {
+  border-color: rgba(28, 180, 149, 0.42) !important;
+  transform: translateY(-4px);
+}
+
+body.eventually-redesign .case-card i,
+body.eventually-redesign .info-card h3 i,
+body.eventually-redesign .contact-icon {
+  color: var(--eventually-green) !important;
+}
+
+body.eventually-redesign .page-section {
+  position: relative;
+  padding: clamp(66px, 9vw, 118px) 0 !important;
+}
+
+body.eventually-redesign .page-section.alt {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015)) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.eventually-redesign .case-grid {
+  gap: 18px !important;
+}
+
+body.eventually-redesign .stack-tags span {
+  border: 1px solid rgba(28, 180, 149, 0.24) !important;
+  background: rgba(28, 180, 149, 0.1) !important;
+  color: var(--eventually-text) !important;
+}
+
+body.eventually-redesign .btn,
+body.eventually-redesign button,
+body.eventually-redesign input[type="submit"],
+body.eventually-redesign .case-card a,
+body.eventually-redesign .content-list a {
+  border-radius: var(--eventually-radius) !important;
+}
+
+body.eventually-redesign .btn-primary,
+body.eventually-redesign input[type="submit"] {
+  border: 1px solid rgba(28, 180, 149, 0.78) !important;
+  background: var(--eventually-green) !important;
+  color: #06110e !important;
+  box-shadow: 0 16px 44px rgba(28, 180, 149, 0.18) !important;
+}
+
+body.eventually-redesign .btn-outline {
+  border-color: rgba(246, 248, 241, 0.24) !important;
+  background: rgba(246, 248, 241, 0.07) !important;
+  color: var(--eventually-text) !important;
+}
+
+body.eventually-redesign .btn:hover,
+body.eventually-redesign input[type="submit"]:hover {
+  transform: translateY(-2px);
+}
+
+body.eventually-redesign input,
+body.eventually-redesign textarea,
+body.eventually-redesign select {
+  border: 1px solid rgba(246, 248, 241, 0.18) !important;
+  border-radius: var(--eventually-radius) !important;
+  background: rgba(0, 0, 0, 0.28) !important;
+  color: var(--eventually-text) !important;
+  box-shadow: none !important;
+}
+
+body.eventually-redesign input:focus,
+body.eventually-redesign textarea:focus,
+body.eventually-redesign select:focus {
+  outline: none !important;
+  border-color: rgba(28, 180, 149, 0.78) !important;
+  box-shadow: 0 0 0 3px rgba(28, 180, 149, 0.16) !important;
+}
+
+body.eventually-redesign footer {
+  border-top: 1px solid var(--eventually-line);
+  background: rgba(4, 6, 5, 0.78) !important;
+}
+
+body.eventually-redesign .site-footer-links a,
+body.eventually-redesign footer a {
+  color: rgba(246, 248, 241, 0.76) !important;
+}
+
+body.eventually-redesign .site-footer-links a:hover,
+body.eventually-redesign footer a:hover {
+  color: var(--eventually-green) !important;
+}
+
+body.eventually-redesign #text-container {
+  gap: 22px;
+}
+
+body.eventually-redesign #text-container h2 {
+  margin-top: 36px;
+  color: var(--eventually-gold) !important;
+}
+
+body.eventually-redesign #text-container ul {
+  padding-left: 1.2rem;
+}
+
+body.eventually-redesign .eventually-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.52s ease,
+    transform 0.52s ease;
+}
+
+body.eventually-redesign .eventually-reveal.is-visible,
+body.eventually-redesign.is-preload .eventually-reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 900px) {
+  body.eventually-redesign .navbar {
+    min-height: auto;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  body.eventually-redesign .page-hero,
+  body.eventually-redesign #contact-page,
+  body.eventually-redesign #contet-container {
+    padding-top: 118px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body.eventually-redesign .container,
+  body.eventually-redesign #contet-container {
+    width: min(100% - 24px, 1180px);
+  }
+
+  body.eventually-redesign .page-hero h1,
+  body.eventually-redesign #contact-page .section-title,
+  body.eventually-redesign #contet-container h1 {
+    font-size: clamp(2.1rem, 12vw, 3.4rem) !important;
+  }
+
+  body.eventually-redesign .hero-actions,
+  body.eventually-redesign .section-actions {
+    display: grid;
+  }
+
+  body.eventually-redesign .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.eventually-redesign *,
+  body.eventually-redesign *::before,
+  body.eventually-redesign *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

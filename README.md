@@ -47,7 +47,6 @@ El portafolio incluye:
 - **Habilidades:** Stack tecnológico principal.
 - **Proyectos:** Soluciones destacadas.
 - **Por qué elegirme:** Fortalezas profesionales.
-- **Interactúa:** Sección dinámica para el usuario.
 - **Títulos:** Formación/certificaciones.
 - **Contacto:** Redes y comunicación directa.
 

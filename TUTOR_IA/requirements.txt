@@ -1,7 +1,0 @@
-streamlit
-python-dotenv
-requests
-chromadb
-langchain-ollama
-anthropic
-pyodbc>=5.1.0

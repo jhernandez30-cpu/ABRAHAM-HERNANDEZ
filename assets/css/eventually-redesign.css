@@ -1,0 +1,1167 @@
+/* Clean, scoped Eventually redesign.
+   This file must not style global elements outside pages that opt in with
+   the eventually-redesign class. */
+
+body.eventually-redesign {
+  --eventually-bg: #050b0b;
+  --eventually-bg-soft: #071312;
+  --eventually-panel: rgba(255, 255, 255, 0.06);
+  --eventually-panel-strong: rgba(255, 255, 255, 0.09);
+  --eventually-panel-muted: rgba(255, 255, 255, 0.045);
+  --eventually-border: rgba(255, 255, 255, 0.14);
+  --eventually-border-strong: rgba(29, 227, 193, 0.36);
+  --eventually-text: #f5f7f7;
+  --eventually-muted: rgba(245, 247, 247, 0.78);
+  --eventually-soft: rgba(245, 247, 247, 0.62);
+  --eventually-accent: #1de3c1;
+  --eventually-accent-2: #00d9ff;
+  --eventually-shadow: 0 20px 60px rgba(0, 0, 0, 0.32);
+  --eventually-radius: 18px;
+  --eventually-radius-sm: 12px;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(29, 227, 193, 0.16), transparent 32rem),
+    radial-gradient(circle at bottom right, rgba(0, 217, 255, 0.12), transparent 30rem),
+    linear-gradient(180deg, #061110 0%, #050b0b 58%, #030706 100%);
+  color: var(--eventually-text);
+  overflow-x: hidden;
+}
+
+body.eventually-redesign::before,
+body.eventually-redesign::after {
+  display: none !important;
+}
+
+body.eventually-redesign main,
+body.eventually-redesign .eventually-page {
+  width: min(1120px, calc(100% - 32px));
+  margin-inline: auto;
+}
+
+body.eventually-redesign main {
+  padding-top: clamp(104px, 12vw, 142px);
+  color: var(--eventually-text);
+  background: transparent !important;
+}
+
+body.eventually-redesign main,
+body.eventually-redesign main * {
+  box-sizing: border-box;
+}
+
+body.eventually-redesign main img,
+body.eventually-redesign main video,
+body.eventually-redesign main canvas,
+body.eventually-redesign main svg {
+  max-width: 100%;
+}
+
+body.eventually-redesign header {
+  position: relative;
+  z-index: 80;
+  background: transparent !important;
+}
+
+body.eventually-redesign .navbar,
+body.eventually-redesign .site-header .nav {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  z-index: 90;
+  width: min(1120px, calc(100% - 32px));
+  min-height: 68px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 10px 14px;
+  border: 1px solid var(--eventually-border);
+  border-radius: var(--eventually-radius);
+  background: rgba(7, 17, 16, 0.84) !important;
+  color: var(--eventually-text) !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(18px);
+}
+
+body.eventually-redesign .logo,
+body.eventually-redesign .brand-logo,
+body.eventually-redesign .logo a,
+body.eventually-redesign .brand,
+body.eventually-redesign .logo-text {
+  color: var(--eventually-text) !important;
+}
+
+body.eventually-redesign .logo img,
+body.eventually-redesign .brand-logo img {
+  display: block;
+  width: auto;
+  max-width: 92px;
+  height: auto;
+  filter: drop-shadow(0 0 16px rgba(0, 217, 255, 0.34));
+}
+
+body.eventually-redesign .nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--eventually-radius-sm);
+  background: rgba(255, 255, 255, 0.045) !important;
+}
+
+body.eventually-redesign .nav-link,
+body.eventually-redesign .nav-links > a,
+body.eventually-redesign .site-header .nav-links > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  color: rgba(245, 247, 247, 0.82) !important;
+  background: transparent !important;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+body.eventually-redesign .nav-link:hover,
+body.eventually-redesign .nav-link.active,
+body.eventually-redesign .nav-links > a:hover,
+body.eventually-redesign .nav-links > a.active,
+body.eventually-redesign .site-header .nav-links > a:hover {
+  color: #001715 !important;
+  background: linear-gradient(135deg, var(--eventually-accent), var(--eventually-accent-2)) !important;
+}
+
+body.eventually-redesign main > .page-hero,
+body.eventually-redesign main > .hero,
+body.eventually-redesign main > #contact-page,
+body.eventually-redesign main > #contet-container {
+  width: 100%;
+  margin: 0 auto clamp(28px, 5vw, 54px);
+  padding: clamp(44px, 7vw, 72px);
+  border: 1px solid var(--eventually-border);
+  border-radius: var(--eventually-radius);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025)),
+    rgba(5, 11, 11, 0.72) !important;
+  color: var(--eventually-text) !important;
+  box-shadow: var(--eventually-shadow);
+  overflow: hidden;
+}
+
+body.eventually-redesign main > .page-section,
+body.eventually-redesign main > .section,
+body.eventually-redesign main > .content-section {
+  width: 100%;
+  margin: 0 auto clamp(28px, 5vw, 54px);
+  padding: clamp(34px, 5vw, 54px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--eventually-radius);
+  background: rgba(255, 255, 255, 0.035) !important;
+  color: var(--eventually-text) !important;
+  overflow: hidden;
+}
+
+body.eventually-redesign main > .page-section.alt,
+body.eventually-redesign main > .section:nth-of-type(even) {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.eventually-redesign .container,
+body.eventually-redesign #contet-container {
+  width: min(100%, 1040px);
+  margin-inline: auto;
+}
+
+body.eventually-redesign .page-hero-grid,
+body.eventually-redesign .split-layout,
+body.eventually-redesign .contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  gap: clamp(24px, 5vw, 52px);
+  align-items: center;
+}
+
+body.eventually-redesign .seo-grid,
+body.eventually-redesign .service-grid,
+body.eventually-redesign .case-grid,
+body.eventually-redesign .metric-grid,
+body.eventually-redesign .steps-grid,
+body.eventually-redesign .faq-grid,
+body.eventually-redesign .cards-grid,
+body.eventually-redesign .skills-grid,
+body.eventually-redesign .grid-formacion {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 18px;
+}
+
+body.eventually-redesign main h1,
+body.eventually-redesign main h2,
+body.eventually-redesign main h3,
+body.eventually-redesign main h4,
+body.eventually-redesign main .page-title,
+body.eventually-redesign main .hero-title,
+body.eventually-redesign main .section-title,
+body.eventually-redesign main .card-title {
+  color: var(--eventually-text) !important;
+  letter-spacing: 0;
+  text-shadow: none !important;
+}
+
+body.eventually-redesign .page-hero h1,
+body.eventually-redesign #contact-page .section-title,
+body.eventually-redesign #contet-container h1 {
+  max-width: 880px;
+  margin: 0 0 20px;
+  font-size: clamp(2.55rem, 7vw, 5.25rem) !important;
+  line-height: 1.02 !important;
+}
+
+body.eventually-redesign main p,
+body.eventually-redesign main li,
+body.eventually-redesign main label,
+body.eventually-redesign main small,
+body.eventually-redesign main .subtitle,
+body.eventually-redesign main .section-subtitle,
+body.eventually-redesign main .hero-lede,
+body.eventually-redesign main .section-lede,
+body.eventually-redesign main .card-text {
+  color: var(--eventually-muted) !important;
+}
+
+body.eventually-redesign .hero-lede,
+body.eventually-redesign .section-lede,
+body.eventually-redesign #contact-page .section-subtitle {
+  max-width: 760px;
+  font-size: clamp(1rem, 1.8vw, 1.14rem);
+  line-height: 1.72;
+}
+
+body.eventually-redesign main a:not(.btn):not(.nav-link) {
+  color: var(--eventually-accent-2);
+  text-underline-offset: 3px;
+}
+
+body.eventually-redesign .breadcrumbs,
+body.eventually-redesign .hero-kicker,
+body.eventually-redesign .section-kicker,
+body.eventually-redesign .contact-kicker,
+body.eventually-redesign .info-card-kicker,
+body.eventually-redesign .form-card-header span,
+body.eventually-redesign .legal-eyebrow {
+  color: var(--eventually-accent) !important;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+body.eventually-redesign .breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 0.86rem;
+}
+
+body.eventually-redesign .breadcrumbs a,
+body.eventually-redesign .breadcrumbs span {
+  color: inherit !important;
+}
+
+body.eventually-redesign .hero-kicker,
+body.eventually-redesign .section-kicker,
+body.eventually-redesign .contact-kicker,
+body.eventually-redesign .legal-eyebrow,
+body.eventually-redesign .seo-pill,
+body.eventually-redesign .tag,
+body.eventually-redesign .badge,
+body.eventually-redesign .pill,
+body.eventually-redesign .stack-tags span,
+body.eventually-redesign .intent-tags span,
+body.eventually-redesign .profile-tags span,
+body.eventually-redesign .formation-card span {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  padding: 7px 11px;
+  border: 1px solid rgba(29, 227, 193, 0.28);
+  border-radius: 999px;
+  background: rgba(29, 227, 193, 0.08) !important;
+  color: var(--eventually-accent) !important;
+  font-size: 0.76rem;
+}
+
+body.eventually-redesign .stack-tags,
+body.eventually-redesign .intent-tags,
+body.eventually-redesign .profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+body.eventually-redesign .hero-panel,
+body.eventually-redesign .seo-card,
+body.eventually-redesign .service-card,
+body.eventually-redesign .faq-card,
+body.eventually-redesign .project-card,
+body.eventually-redesign .resource-card,
+body.eventually-redesign .feature-card,
+body.eventually-redesign .product-card,
+body.eventually-redesign .category-card,
+body.eventually-redesign .testimonial,
+body.eventually-redesign .info-card,
+body.eventually-redesign .form-card,
+body.eventually-redesign .contact-form-container,
+body.eventually-redesign .cta-band,
+body.eventually-redesign .content-card,
+body.eventually-redesign .process-card,
+body.eventually-redesign .pricing-card,
+body.eventually-redesign .comparison-card,
+body.eventually-redesign .legal-card,
+body.eventually-redesign .case-card,
+body.eventually-redesign .metric-card,
+body.eventually-redesign .step-card,
+body.eventually-redesign .card,
+body.eventually-redesign .skill-card,
+body.eventually-redesign .cert-item,
+body.eventually-redesign .credential-card,
+body.eventually-redesign .formation-card,
+body.eventually-redesign .experience-item,
+body.eventually-redesign .indicator-card,
+body.eventually-redesign .contact-option,
+body.eventually-redesign .contact-followup-card,
+body.eventually-redesign .content-list a,
+body.eventually-redesign #contet-container .legal-note {
+  border: 1px solid var(--eventually-border) !important;
+  border-radius: var(--eventually-radius) !important;
+  background: var(--eventually-panel) !important;
+  color: var(--eventually-text) !important;
+  box-shadow: none !important;
+}
+
+body.eventually-redesign .hero-panel,
+body.eventually-redesign .seo-card,
+body.eventually-redesign .service-card,
+body.eventually-redesign .faq-card,
+body.eventually-redesign .case-card,
+body.eventually-redesign .info-card,
+body.eventually-redesign .form-card,
+body.eventually-redesign .contact-form-container,
+body.eventually-redesign .cta-band {
+  padding: clamp(20px, 3vw, 28px);
+}
+
+body.eventually-redesign .hero-panel h2,
+body.eventually-redesign .hero-panel h3,
+body.eventually-redesign .seo-card h3,
+body.eventually-redesign .service-card h3,
+body.eventually-redesign .case-card h3,
+body.eventually-redesign .faq-card h3,
+body.eventually-redesign .card h3,
+body.eventually-redesign .info-card h3 {
+  color: #ffffff !important;
+}
+
+body.eventually-redesign .hero-panel p,
+body.eventually-redesign .hero-panel li,
+body.eventually-redesign .seo-card p,
+body.eventually-redesign .service-card p,
+body.eventually-redesign .case-card p,
+body.eventually-redesign .faq-card p,
+body.eventually-redesign .card p,
+body.eventually-redesign .info-card p {
+  color: rgba(245, 247, 247, 0.82) !important;
+}
+
+body.eventually-redesign .seo-card i,
+body.eventually-redesign .service-card i,
+body.eventually-redesign .case-card i,
+body.eventually-redesign .metric-card i,
+body.eventually-redesign .step-card i,
+body.eventually-redesign .card-icon,
+body.eventually-redesign .skill-icon,
+body.eventually-redesign .cert-icon,
+body.eventually-redesign .contact-icon {
+  color: var(--eventually-accent) !important;
+}
+
+body.eventually-redesign .comparison-table {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--eventually-border) !important;
+  border-radius: var(--eventually-radius) !important;
+  background: rgba(255, 255, 255, 0.045) !important;
+}
+
+body.eventually-redesign .comparison-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+body.eventually-redesign .comparison-row:last-child {
+  border-bottom: 0 !important;
+}
+
+body.eventually-redesign .comparison-row > div,
+body.eventually-redesign .comparison-col {
+  min-width: 0;
+  padding: 18px;
+  color: rgba(245, 247, 247, 0.86) !important;
+}
+
+body.eventually-redesign .comparison-row > div + div,
+body.eventually-redesign .comparison-col + .comparison-col {
+  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+body.eventually-redesign .comparison-row strong,
+body.eventually-redesign .comparison-col strong {
+  color: #ffffff !important;
+}
+
+body.eventually-redesign table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border: 1px solid var(--eventually-border);
+  border-radius: var(--eventually-radius);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+body.eventually-redesign th,
+body.eventually-redesign td {
+  padding: 15px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: left;
+  vertical-align: top;
+}
+
+body.eventually-redesign th {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--eventually-accent);
+  font-weight: 700;
+}
+
+body.eventually-redesign td {
+  color: rgba(245, 247, 247, 0.86);
+}
+
+body.eventually-redesign td strong,
+body.eventually-redesign th strong {
+  color: #ffffff;
+}
+
+body.eventually-redesign .btn,
+body.eventually-redesign main .btn,
+body.eventually-redesign main .btn-primary,
+body.eventually-redesign main .btn-submit,
+body.eventually-redesign main button[type="submit"],
+body.eventually-redesign main input[type="submit"],
+body.eventually-redesign main .service-card a,
+body.eventually-redesign main .case-card a,
+body.eventually-redesign main .section-actions a,
+body.eventually-redesign main .hero-actions a,
+body.eventually-redesign main .contact-direct-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 12px 18px;
+  border: 1px solid rgba(29, 227, 193, 0.38) !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, var(--eventually-accent), var(--eventually-accent-2)) !important;
+  color: #001715 !important;
+  font-weight: 850;
+  text-decoration: none;
+  box-shadow: 0 12px 28px rgba(0, 217, 255, 0.12);
+}
+
+body.eventually-redesign main .btn-outline,
+body.eventually-redesign main .btn-secondary,
+body.eventually-redesign main .ghost-button,
+body.eventually-redesign main .hero-actions a:nth-child(n + 2),
+body.eventually-redesign main .contact-direct-actions a:nth-child(n + 2) {
+  background: rgba(255, 255, 255, 0.055) !important;
+  color: var(--eventually-text) !important;
+  box-shadow: none;
+}
+
+body.eventually-redesign main .btn:hover,
+body.eventually-redesign main .service-card a:hover,
+body.eventually-redesign main .case-card a:hover,
+body.eventually-redesign main button[type="submit"]:hover {
+  transform: translateY(-1px);
+  border-color: rgba(29, 227, 193, 0.62) !important;
+}
+
+body.eventually-redesign input,
+body.eventually-redesign textarea,
+body.eventually-redesign select {
+  max-width: 100%;
+}
+
+body.eventually-redesign main input,
+body.eventually-redesign main textarea,
+body.eventually-redesign main select {
+  border: 1px solid var(--eventually-border) !important;
+  border-radius: var(--eventually-radius-sm) !important;
+  background: rgba(255, 255, 255, 0.055) !important;
+  color: var(--eventually-text) !important;
+  box-shadow: none !important;
+}
+
+body.eventually-redesign main input::placeholder,
+body.eventually-redesign main textarea::placeholder {
+  color: rgba(245, 247, 247, 0.5);
+}
+
+body.eventually-redesign main input:focus,
+body.eventually-redesign main textarea:focus,
+body.eventually-redesign main select:focus {
+  outline: none;
+  border-color: rgba(29, 227, 193, 0.72) !important;
+  box-shadow: 0 0 0 3px rgba(29, 227, 193, 0.14) !important;
+}
+
+body.eventually-redesign footer,
+body.eventually-redesign .footer,
+body.eventually-redesign .site-footer {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 36px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: transparent !important;
+  color: var(--eventually-muted) !important;
+}
+
+body.eventually-redesign footer a,
+body.eventually-redesign .site-footer-links a,
+body.eventually-redesign .footer-links a,
+body.eventually-redesign .footer-nav a {
+  color: rgba(245, 247, 247, 0.82) !important;
+}
+
+body.eventually-redesign footer a:hover,
+body.eventually-redesign .site-footer-links a:hover,
+body.eventually-redesign .footer-links a:hover,
+body.eventually-redesign .footer-nav a:hover {
+  color: var(--eventually-accent) !important;
+}
+
+body.eventually-redesign .eventually-reveal {
+  opacity: 1;
+  transform: none;
+}
+
+body.eventually-redesign .footer-logo img {
+  width: min(150px, 44vw);
+  height: auto;
+  display: block;
+  margin: 0 auto 16px;
+  border-radius: 8px;
+  filter: drop-shadow(0 0 18px rgba(29, 227, 193, 0.28));
+}
+
+body.eventually-redesign .site-footer-links,
+body.eventually-redesign .footer-links,
+body.eventually-redesign .footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 18px;
+  margin-bottom: 14px;
+}
+
+body.eventually-redesign .contact-item,
+body.eventually-redesign .availability-note,
+body.eventually-redesign .form-feedback,
+body.eventually-redesign .form-submit-note {
+  color: var(--eventually-muted) !important;
+}
+
+body.eventually-redesign .contact-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  overflow-wrap: anywhere;
+}
+
+body.eventually-redesign .contact-item i,
+body.eventually-redesign .availability-note i {
+  color: var(--eventually-accent) !important;
+}
+
+body.eventually-redesign .social-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+body.eventually-redesign .social-btn {
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(29, 227, 193, 0.34);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.055);
+  color: var(--eventually-accent) !important;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+body.eventually-redesign .social-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(29, 227, 193, 0.72);
+  background: rgba(29, 227, 193, 0.12);
+}
+
+body.eventually-redesign .form-card,
+body.eventually-redesign .contact-form-container,
+body.eventually-redesign .info-card {
+  background: var(--eventually-panel) !important;
+  border: 1px solid var(--eventually-border) !important;
+  border-radius: var(--eventually-radius) !important;
+  box-shadow: var(--eventually-shadow);
+}
+
+body.eventually-redesign .form-card,
+body.eventually-redesign .contact-form-container {
+  padding: clamp(22px, 4vw, 36px);
+}
+
+body.eventually-redesign .form-group {
+  margin-bottom: 18px;
+}
+
+body.eventually-redesign .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--eventually-muted) !important;
+  font-weight: 700;
+}
+
+body.eventually-redesign .btn-submit,
+body.eventually-redesign main button[type="submit"] {
+  width: 100%;
+}
+
+body.eventually-redesign .form-success {
+  color: var(--eventually-accent) !important;
+  border-color: rgba(29, 227, 193, 0.45) !important;
+  background: rgba(29, 227, 193, 0.1) !important;
+}
+
+body.eventually-redesign .form-error,
+body.eventually-redesign .error-message {
+  color: #ff8f8f !important;
+}
+
+body.eventually-redesign .form-error {
+  border-color: rgba(255, 143, 143, 0.42) !important;
+  background: rgba(255, 143, 143, 0.1) !important;
+}
+
+body.eventually-redesign .error-message {
+  display: none;
+  margin-top: 6px;
+  font-size: 0.86rem;
+}
+
+body.eventually-redesign .back-to-top,
+body.eventually-redesign .custom-cursor,
+body.eventually-redesign .loader-wrapper,
+body.eventually-redesign .preloader {
+  display: none !important;
+}
+
+/* Full chatbot shell, scoped because the old global stylesheet is no longer loaded. */
+body.eventually-redesign .chatbot-widget {
+  --chatbot-accent: var(--eventually-accent);
+  --chatbot-bg: rgba(12, 16, 16, 0.96);
+  --chatbot-line: rgba(29, 227, 193, 0.3);
+  --chatbot-muted: rgba(245, 247, 247, 0.72);
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1200;
+  font-family: "Inter", sans-serif;
+}
+
+body.eventually-redesign .chatbot-toggle {
+  width: 58px;
+  height: 58px;
+  border: 1px solid rgba(29, 227, 193, 0.5);
+  border-radius: 50%;
+  background: var(--chatbot-accent);
+  color: #001010;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 0 24px rgba(29, 227, 193, 0.28);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+body.eventually-redesign .chatbot-toggle:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 0 32px rgba(29, 227, 193, 0.36);
+}
+
+body.eventually-redesign .chatbot-panel {
+  position: absolute;
+  right: 0;
+  bottom: 76px;
+  width: min(360px, calc(100vw - 32px));
+  height: 520px;
+  max-height: calc(100vh - 130px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--chatbot-bg) !important;
+  border: 1px solid var(--chatbot-line) !important;
+  border-radius: 18px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), 0 0 20px rgba(29, 227, 193, 0.16);
+  backdrop-filter: blur(14px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(16px) scale(0.98);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+}
+
+body.eventually-redesign .chatbot-widget.open .chatbot-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+body.eventually-redesign .chatbot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(29, 227, 193, 0.18), rgba(255, 255, 255, 0.04));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+body.eventually-redesign .chatbot-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+body.eventually-redesign .chatbot-avatar {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+body.eventually-redesign .chatbot-title strong {
+  display: block;
+  color: var(--eventually-text) !important;
+  font-size: 0.98rem;
+}
+
+body.eventually-redesign .chatbot-title span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--chatbot-muted);
+  font-size: 0.76rem;
+}
+
+body.eventually-redesign .chatbot-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--chatbot-accent);
+  box-shadow: 0 0 10px rgba(29, 227, 193, 0.45);
+}
+
+body.eventually-redesign .chatbot-close {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--eventually-text) !important;
+  cursor: pointer;
+}
+
+body.eventually-redesign .chatbot-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+body.eventually-redesign .chatbot-message {
+  max-width: 86%;
+  padding: 11px 13px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+body.eventually-redesign .chatbot-message-row.bot {
+  display: flex;
+  align-items: flex-start;
+  align-self: flex-start;
+  gap: 10px;
+  max-width: 96%;
+}
+
+body.eventually-redesign .chatbot-message-row.bot .chatbot-message.bot {
+  max-width: calc(100% - 46px);
+}
+
+body.eventually-redesign .chatbot-message.bot {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid var(--chatbot-line) !important;
+  color: var(--eventually-text) !important;
+}
+
+body.eventually-redesign .chatbot-message.user {
+  align-self: flex-end;
+  background: var(--chatbot-accent) !important;
+  color: #001010 !important;
+  font-weight: 700;
+}
+
+body.eventually-redesign .chatbot-message a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+body.eventually-redesign .jah-floating-avatar,
+body.eventually-redesign .jah-header-avatar,
+body.eventually-redesign .jah-bot-avatar {
+  display: block;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+body.eventually-redesign .jah-floating-avatar {
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--eventually-accent-2);
+  box-shadow: 0 0 18px rgba(0, 217, 255, 0.5);
+}
+
+body.eventually-redesign .jah-header-avatar {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border: 2px solid rgba(0, 217, 255, 0.65);
+}
+
+body.eventually-redesign .jah-bot-avatar {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border: 1px solid rgba(0, 217, 255, 0.65);
+}
+
+body.eventually-redesign .chatbot-typing {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+}
+
+body.eventually-redesign .chatbot-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--chatbot-accent);
+  opacity: 0.45;
+  animation: eventuallyChatbotTyping 1s infinite ease-in-out;
+}
+
+body.eventually-redesign .chatbot-typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+body.eventually-redesign .chatbot-typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+body.eventually-redesign .chatbot-menu {
+  padding: 12px 16px 0;
+}
+
+body.eventually-redesign .chatbot-menu-toggle {
+  width: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid rgba(0, 217, 255, 0.38);
+  border-radius: 10px;
+  padding: 10px 13px;
+  background: rgba(0, 217, 255, 0.08);
+  color: var(--eventually-accent-2);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+body.eventually-redesign .chatbot-menu-toggle span {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+body.eventually-redesign .chatbot-menu-toggle .fa-chevron-down {
+  transition: transform 0.2s ease;
+}
+
+body.eventually-redesign .chatbot-widget.menu-open .chatbot-menu-toggle .fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+body.eventually-redesign .chatbot-menu-panel[hidden] {
+  display: none;
+}
+
+body.eventually-redesign .chatbot-menu-panel {
+  display: grid;
+  gap: 12px;
+  max-height: 230px;
+  overflow-y: auto;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid rgba(0, 217, 255, 0.2);
+  border-radius: 10px;
+  background: rgba(2, 8, 12, 0.94);
+}
+
+body.eventually-redesign .chatbot-menu-section {
+  display: grid;
+  gap: 8px;
+}
+
+body.eventually-redesign .chatbot-menu-label {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+body.eventually-redesign .chatbot-menu-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+body.eventually-redesign .chatbot-menu-item,
+body.eventually-redesign .chatbot-menu-link {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 217, 255, 0.34);
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: rgba(0, 217, 255, 0.07);
+  color: var(--eventually-accent-2);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+body.eventually-redesign .chatbot-menu-item:hover,
+body.eventually-redesign .chatbot-menu-link:hover {
+  background: var(--eventually-accent-2);
+  color: #001018;
+  transform: translateY(-1px);
+}
+
+body.eventually-redesign .chatbot-form {
+  display: flex;
+  gap: 10px;
+  padding: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+body.eventually-redesign .chatbot-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--eventually-text);
+  padding: 11px 14px;
+  outline: none;
+}
+
+body.eventually-redesign .chatbot-input:focus {
+  border-color: rgba(29, 227, 193, 0.55);
+  box-shadow: 0 0 0 3px rgba(29, 227, 193, 0.1);
+}
+
+body.eventually-redesign .chatbot-input:disabled {
+  opacity: 0.65;
+}
+
+body.eventually-redesign .chatbot-send {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: var(--chatbot-accent) !important;
+  color: #001010 !important;
+  cursor: pointer;
+}
+
+@keyframes eventuallyChatbotTyping {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+
+  40% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  body.eventually-redesign .navbar,
+  body.eventually-redesign .site-header .nav {
+    align-items: flex-start;
+    min-height: auto;
+    padding: 12px;
+  }
+
+  body.eventually-redesign .nav-links {
+    justify-content: flex-start;
+  }
+
+  body.eventually-redesign .page-hero-grid,
+  body.eventually-redesign .split-layout,
+  body.eventually-redesign .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  body.eventually-redesign main,
+  body.eventually-redesign .eventually-page,
+  body.eventually-redesign footer,
+  body.eventually-redesign .footer,
+  body.eventually-redesign .site-footer {
+    width: min(100% - 20px, 1120px);
+  }
+
+  body.eventually-redesign main {
+    padding-top: 132px;
+  }
+
+  body.eventually-redesign main > .page-hero,
+  body.eventually-redesign main > .hero,
+  body.eventually-redesign main > #contact-page,
+  body.eventually-redesign main > #contet-container,
+  body.eventually-redesign main > .page-section,
+  body.eventually-redesign main > .section,
+  body.eventually-redesign main > .content-section {
+    padding: 24px;
+  }
+
+  body.eventually-redesign .page-hero h1,
+  body.eventually-redesign #contact-page .section-title,
+  body.eventually-redesign #contet-container h1 {
+    font-size: clamp(2.2rem, 12vw, 3.6rem) !important;
+  }
+
+  body.eventually-redesign table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  body.eventually-redesign .comparison-table {
+    overflow-x: auto;
+  }
+
+  body.eventually-redesign .comparison-row {
+    min-width: 620px;
+  }
+}
+
+@media (max-width: 560px) {
+  body.eventually-redesign .navbar,
+  body.eventually-redesign .site-header .nav {
+    top: 10px;
+    width: min(100% - 20px, 1120px);
+  }
+
+  body.eventually-redesign .logo img,
+  body.eventually-redesign .brand-logo img {
+    max-width: 74px;
+  }
+
+  body.eventually-redesign .nav-link,
+  body.eventually-redesign .nav-links > a {
+    min-height: 34px;
+    padding: 8px 10px;
+    font-size: 0.72rem;
+  }
+
+  body.eventually-redesign main {
+    padding-top: 154px;
+  }
+
+  body.eventually-redesign .btn,
+  body.eventually-redesign main .btn,
+  body.eventually-redesign main .hero-actions a,
+  body.eventually-redesign main .section-actions a,
+  body.eventually-redesign main .contact-direct-actions a {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.eventually-redesign .eventually-reveal,
+  body.eventually-redesign main .btn,
+  body.eventually-redesign main .service-card a,
+  body.eventually-redesign main .case-card a {
+    transition: none !important;
+  }
+}
